@@ -1,0 +1,27 @@
+# Built-in primitive rules (docs/05 §4.5). 'legacy_draws = false': accepted but emits no geometry in v1.
+[[primitive]]
+name = "box"
+doc = "Solid unit cube [0,1]³."
+[[primitive]]
+name = "sphere"
+doc = "Sphere centred in the unit cube; radius from the transformed z half-extent (always round)."
+[[primitive]]
+name = "cylinder"
+legacy_draws = false
+doc = "Cylinder along the local x axis (v2). In Structure Synth 1.5 compatibility mode it draws nothing."
+[[primitive]]
+name = "mesh"
+doc = "Quad tube swept from the parent's frame to the current frame."
+[[primitive]]
+name = "line"
+doc = "Line from (0,.5,.5) to (1,.5,.5)."
+[[primitive]]
+name = "dot"
+doc = "Point at the unit-cube centre."
+[[primitive]]
+name = "grid"
+doc = "Wireframe of the unit cube (12 edges)."
+[[primitive]]
+name = "template"
+emits = false
+doc = "Emits a template snippet (template::id) without geometry – used for CSG markers in templates."

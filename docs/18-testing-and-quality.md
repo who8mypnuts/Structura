@@ -7,7 +7,7 @@
 | Static gates | Style, types, layering, size limits, banned APIs | ruff, mypy --strict, import-linter, `check_sizes.py` | Every PR |
 | Unit + property tests | Module correctness | pytest, hypothesis | Every PR |
 | **Golden compatibility** | Structure Synth 1.5 behaviour is reproduced | Corpus + expected outputs from the original C++ | Every PR |
-| **Kernel parity** | GPU and CPU compute the same thing | Probe kernels, statistical image comparison | Every PR (lavapipe); nightly (real GPUs) |
+| **Kernel parity** | All backends (Numba, CUDA, OpenCL, WGSL) compute the same thing | Probe kernels, statistical image comparison | Every PR (Numba + pocl OpenCL + wgpu-on-llvmpipe + NVRTC compile); nightly (GTX 1660: CUDA/OpenCL/wgpu) |
 | Render correctness | The physics is right (energy, sampling) | Furnace tests, chi² tests, analytic scenes | Every PR (CPU), nightly (GPU) |
 | Render regression | Images don't change unexpectedly | Reference images, SSIM/MAE thresholds | Every PR (CPU), nightly (GPU) |
 | Export validation | Files are valid and readable | usd-core, pygltflib, trimesh (dev), headless Blender | PR (readers), nightly (Blender) |
@@ -31,14 +31,13 @@
 
 | Source | Count |
 |--------|-------|
-| 1.5 `Examples/` (29) + `Examples/Tutorials/` (10) | 39 |
-| `StructureSynth-code-samples/` (community) | 117 |
-| **Unique scripts** (duplicates removed by content hash) | **156** |
+| 1.5 `Examples/` + `Examples/Tutorials/` (as shipped in `resources/legacy/examples`) | 38 |
+| `StructureSynth-code-samples/` (community, MIT) | 117 |
+| **Unique scripts** (duplicates removed by content hash) | **155** (154 EisenScript + 1 `#javascript`) |
 | Synthetic micro-scripts (one per semantic rule in [06](06-language-engine.md) §10.6 and each `set` command) | ≈ 120 |
 | Error scripts (mutations of corpus scripts that 1.5 rejects) | ≈ 200 |
 
-Three corpus scripts are `#javascript` movies. They are tested through the JS bridge with the frame count
-reduced.
+One corpus script is a `#javascript` movie. It is tested through the JS bridge with the frame count reduced.
 
 ### 3.2 Golden generator (`tools/golden/`)
 
@@ -115,8 +114,7 @@ A failure prints a **first-divergence report**: the primitive index, the emittin
 
 ## 7. UI tests (pytest-qt)
 
-- The offscreen QPA platform in CI runs the GPU viewport under lavapipe, and the CPU preview path is tested
-  explicitly.
+- CI runs the GLSL preview engine on Mesa llvmpipe (EGL), and tests the Numba preview fallback explicitly.
 - **Smoke:** every panel opens, renders and closes without warnings. Every registered command executes in
   a sensible state.
 - **Workflows:**
@@ -150,7 +148,7 @@ A failure prints a **first-divergence report**: the primitive index, the emittin
 flowchart LR
   A[Static gates<br/>ruff · mypy · import-linter · sizes] --> B[Unit + property]
   B --> C[Golden compat]
-  B --> D[Parity on lavapipe]
+  B --> D[Parity: Numba · pocl · llvmpipe · NVRTC]
   B --> E[UI tests offscreen]
   C --> F[Render regression CPU]
   D --> F
@@ -158,9 +156,9 @@ flowchart LR
   F --> G
 ```
 
-- **Matrix:** {Windows x64, macOS arm64, Ubuntu x64} × {Python 3.12, 3.13}. lavapipe GPU tests run on
-  Ubuntu.
-- **Nightly:** real-GPU parity and regression (NVIDIA, AMD, Intel, Apple), fuzzing, benchmarks, headless
+- **Matrix:** {Windows x64, macOS arm64, Ubuntu x64} × {Python 3.12, 3.13}. Software GPU tests (llvmpipe,
+  pocl) run on Ubuntu.
+- **Nightly:** real-GPU parity and regression on the reference **GTX 1660** (CUDA, OpenCL, wgpu, GLSL), plus AMD/Intel/Apple when available, fuzzing, benchmarks, headless
   Blender validation, full golden corpus across all seeds.
 
 ## 10. Release checklist (manual, per release)

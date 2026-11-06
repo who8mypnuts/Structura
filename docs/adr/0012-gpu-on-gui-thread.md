@@ -1,6 +1,6 @@
 # ADR-0012: All wgpu calls on the GUI thread via a cooperative scheduler
 
-- Status: Proposed (pending spike S6)
+- Status: **Superseded by [ADR-0013](0013-two-render-engines.md)** (project owner requested GLSL previews and CUDA/OpenCL/WGSL/CPU precision backends)
 - Date: planning phase
 
 ## Context

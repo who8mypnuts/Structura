@@ -101,8 +101,8 @@ These were verified by reading the source. [05](05-eisenscript-language.md) form
 | D3 | `v` is a tokenizer operator but the parser rejects it ("Unknown transformation type") | `Tokenizer.cpp`, `EisenParser.cpp` | `v` becomes an alias of `brightness` |
 | D4 | `#include` is documented in the EBNF comments but **not implemented** | `EisenParser.cpp` header, `Preprocessor.cpp` | Implemented in both modes (v1: a line-level include) |
 | D5 | `#define` substring replacement corrupts identifiers (`#define s 2` breaks `rule`) | `Preprocessor.cpp` | v1: reproduced, with a lint warning naming the affected tokens. v2: whole-word. |
-| D6 | Triangles ignore class tags (`triangle[...]::tag`) | `bugs.txt`, `RuleSet.cpp` | Supported in both modes |
-| D7 | Self-referencing retirement cycles crash | `bugs.txt` | Detected at compile time with a diagnostic |
+| D6 | Triangles ignore class tags (`triangle[...]::tag`) | `bugs.txt`, `RuleSet.cpp` | v1 keeps 1.5 behaviour (it is a resolution error, see [05](05-eisenscript-language.md) C14); supported in v2 |
+| D7 | Self-referencing retirement cycles crash (per `bugs.txt`) | `bugs.txt` | Verified to terminate in practice ([05](05-eisenscript-language.md) C15); the chain is bounded as a safety net |
 | D8 | Operator names cannot be rule names (`> c` fails) | `bugs.txt` | v2 only: context-sensitive lexing |
 | D9 | The build runs on the GUI thread with `QProgressDialog` and `processEvents` | `Builder.cpp` | A background Job ([04](04-concurrency-model.md)) |
 | D10 | Global static RNG streams | `RandomStreams.cpp` | RNG state is owned per build |
@@ -134,7 +134,7 @@ Every item ships in Structura 1.0. The column shows where each is specified.
 
 ---
 
-## 2. Sunflow 0.07.3 (basis of Structura Render)
+## 2. Sunflow 0.07.3 (basis of Structura Render; MIT, so code may be ported with attribution)
 
 ### 2.1 Inventory (≈30,800 lines Java, MIT licence)
 
@@ -187,7 +187,7 @@ Every item ships in Structura 1.0. The column shows where each is specified.
 
 ## 3. POV-Ray 3.8 (ideas only — AGPL-3)
 
-POV-Ray's source is AGPL-3. Structura will be GPL-3.0-or-later ([ADR-0010](adr/0010-licensing.md)). **No POV-Ray
+POV-Ray's source is AGPL-3. Structura is MIT ([ADR-0010](adr/0010-licensing.md)). **No POV-Ray
 code is transliterated.** We take only algorithms and features, and reimplement them from the public
 documentation and the literature.
 

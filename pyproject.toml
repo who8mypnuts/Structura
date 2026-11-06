@@ -1,0 +1,137 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "structura"
+version = "0.1.0.dev0"
+description = "Structura — a modern studio for grammar-based 3D structures (successor of Structure Synth)"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+requires-python = ">=3.12"
+authors = [{ name = "The Structura Authors" }]
+classifiers = [
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Multimedia :: Graphics :: 3D Rendering",
+]
+# All runtime dependencies are REQUIRED (docs/03-technology-stack.md). CUDA only exists on Windows/Linux.
+dependencies = [
+  "PySide6>=6.8",
+  "numpy>=2.0",
+  "numba>=0.61",
+  "moderngl>=5.12",
+  "wgpu>=0.32,<0.33",
+  "pyopencl>=2024.2",
+  "pocl-binary-distribution>=3.0",
+  "cuda-python>=12.6; platform_system != 'Darwin'",
+  "nvidia-cuda-nvrtc-cu12>=12.6; platform_system != 'Darwin'",
+  "usd-core>=24.11",
+  "pygltflib>=1.16",
+  "manifold3d>=3.0",
+  "Pillow>=11",
+  "OpenEXR>=3.3",
+  "imageio>=2.36",
+  "imageio-ffmpeg>=0.5",
+  "Jinja2>=3.1",
+  "platformdirs>=4",
+  "tomli-w>=1.0",
+  "psutil>=6",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-qt>=4.4", "hypothesis>=6", "ruff>=0.6", "mypy>=1.11", "import-linter>=2.0", "fonttools>=4.50"]
+
+[project.scripts]
+structura = "structura.cli.main:main"
+
+[project.gui-scripts]
+structura-gui = "structura.app.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/structura"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+  "gpu: needs a real GPU (run on the reference GTX 1660)",
+  "slow: long-running tests (golden corpus, benchmarks)",
+  "golden: compatibility tests against Structure Synth 1.5 outputs",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+src = ["src", "tests", "tools"]
+extend-exclude = ["sample_source", "tools/golden/harness", "tools/golden/build", "src/structura/resources"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "PL", "RUF", "C90"]
+ignore = ["PLR2004", "RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 12
+
+[tool.ruff.lint.pylint]
+max-args = 7
+max-branches = 12
+max-statements = 50
+max-public-methods = 20
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["PLR0913", "N802"]
+# SKL kernels are transpiled to C-like targets: many buffer params and scalar comparisons are idiomatic.
+"src/structura/render/kernels/**" = ["PLR0913", "PLR0917", "PLR1714", "SIM109", "PLW3301"]
+# The builder kernels (Numba) follow the same conventions: buffers are passed explicitly, scalar comparisons.
+"src/structura/core/build/k*.py" = ["PLR0913", "PLR0917", "PLR1714", "SIM109", "PLW3301"]
+"tests/render/kernels_*.py" = ["PLR0913", "PLR0917"]
+"tests/parity/kernels_demo.py" = ["PLR0913", "PLR0917", "PLR1714", "SIM109", "PLW3301"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+mypy_path = "src"
+files = ["src/structura"]
+exclude = ["src/structura/resources/"]
+ignore_missing_imports = true
+
+[tool.importlinter]
+root_package = "structura"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Layers"
+type = "layers"
+layers = [
+  "structura.app | structura.cli",
+  "structura.ui",
+  "structura.services",
+  "structura.render | structura.preview | structura.export | structura.scripting",
+  "structura.compute",
+  "structura.kernels | structura.themes",
+  "structura.core",
+]
+
+[[tool.importlinter.contracts]]
+name = "Domain packages are Qt-free"
+type = "forbidden"
+source_modules = ["structura.core", "structura.kernels", "structura.compute", "structura.render",
+                  "structura.preview", "structura.export", "structura.themes"]
+forbidden_modules = ["PySide6"]
+
+[[tool.mypy.overrides]]
+# Numba-jitted kernels: decorated functions are opaque to mypy (Dispatcher objects returning Any).
+module = ["structura.core.build.kmath", "structura.core.build.kstate", "structura.core.build.krules",
+          "structura.core.build.kstep", "structura.core.rng.mt19937", "structura.core.color.hsv",
+          "structura.render.bvh"]
+warn_return_any = false
+disallow_untyped_calls = false
+
+[[tool.mypy.overrides]]
+# SKL kernel modules are type-checked by the SKL frontend (kernels/skl/frontend), which enforces the SKL type
+# system (f32/u32/vec3, Buf/BufRW indexing); Python's type system cannot express those rules.
+module = ["structura.render.kernels.*"]
+ignore_errors = true

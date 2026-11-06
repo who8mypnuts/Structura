@@ -158,9 +158,15 @@ it:
   (divided by 255 afterwards).
 - `fromHsv(h, 255, 255)` is used for `randomhue` pools.
 
-The implementation is a small pure-Python module. **The test oracle is PySide6's own `QColor`** (property
-tests over random colours). The golden corpus settles any Qt4-vs-Qt6 rounding difference, and the golden
-result always wins.
+The implementation is a small pure-Python module. Its exact semantics were confirmed against the original
+engine (Qt 5.15 golden harness):
+
+- `toHsv` computes in **double precision**, then rounds (`qRound`) to 16-bit channels.
+- `saturation()`, `value()` and `alpha()` reduce 16 → 8 bits with a **rounded** division by 257, not `>> 8`.
+- **Qt 6 (PySide6) differs.** It computes `toHsv` in single precision, which changes saturation by ±1 in
+  about 0.3% of colours (values that fall within float error of a .5 rounding boundary). Structura follows
+  Qt 5. The PySide6 property test therefore excludes colours whose double-precision saturation is within
+  1e-3 of a rounding boundary. The golden corpus is authoritative.
 
 ## 9. Random numbers (`structura.core.rng`)
 

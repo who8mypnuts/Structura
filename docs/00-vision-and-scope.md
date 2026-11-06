@@ -20,11 +20,11 @@ Structura keeps the language and modernises everything else.
 
 | ID | Goal | Measured by |
 |----|------|-------------|
-| G1 | **Faithful compatibility.** Every Structure Synth 1.5 script builds the same structure. | All 156 unique `.es` files in the corpus match golden output ([18](18-testing-and-quality.md)) |
+| G1 | **Faithful compatibility.** Every Structure Synth 1.5 script builds the same structure. | All 155 unique corpus scripts match golden output (achieved for the 154 EisenScript files × 4 seeds in M1) ([18](18-testing-and-quality.md)) |
 | G2 | **Instant feedback.** Live rebuild while typing. | 100k objects rebuilt and on screen in < 300 ms on the reference machine |
-| G3 | **Scale.** Interactive viewport with very large structures. | 60 fps at 1M instances, 30 fps at 5M on the reference GPU |
+| G3 | **Scale.** Interactive viewport with very large structures. | ≥ 45 fps at 1M instances, ≥ 20 fps at 5M on the GTX 1660 |
 | G4 | **Built-in photoreal rendering.** Sunflow-class GI (path tracing, AO, sun-sky, IBL, glass, DOF). | Feature matrix in [10](10-renderer-shading.md) complete; first progressive frame < 100 ms |
-| G5 | **GPU-first, CPU-always.** GPU acceleration everywhere, with a multithreaded CPU fallback that gives the same image. | Kernel parity suite passes on both backends |
+| G5 | **GPU-first, CPU-always.** Two engines: a GLSL preview and a precision renderer on CUDA/OpenCL/WGSL, each with a multithreaded Numba fallback that gives the same result. | Kernel parity suite passes on every backend |
 | G6 | **Modern editor.** Highlighting, completion, diagnostics, hover docs, typing aids, snippets, live tweaking. | Feature checklist in [12](12-editor.md) |
 | G7 | **Beautiful and themeable.** App-wide themes: 6 Nord variants and 34 other schemes (40 total). | Themes in [13](13-theming.md) |
 | G8 | **Open export.** OBJ, PLY, STL, 3MF, glTF/GLB, USD (a/c/z), X3D, Blender script, legacy templates. | All exporters round-trip through validators |
@@ -37,7 +37,7 @@ Structura keeps the language and modernises everything else.
 |----------|-----------|
 | General-purpose 3D modelling (vertex editing, sculpting) | Structura is a generative tool; use Blender downstream. |
 | FBX / Alembic writers | No open, redistributable FBX SDK exists. USD and glTF cover the same pipelines, and Blender converts them. |
-| Hardware ray-tracing cores (RTX/Metal RT) | WebGPU does not expose them. Compute-shader BVH traversal is fast enough for our scenes. Revisit after 1.0. |
+| Hardware ray-tracing cores (OptiX/RTX, Metal RT) | The reference GTX 1660 has none, and they are vendor-specific. Compute BVH traversal on CUDA/OpenCL/WGSL is fast enough for our scenes. Revisit after 1.0. |
 | Spectral rendering, volumetric heterogeneous media, SSS | Listed as post-1.0 ideas from POV-Ray ([10](10-renderer-shading.md) §8). |
 | Running the original C++ | Structura is a rewrite. The original C++ is used only to generate golden test data. |
 | Networked or distributed rendering | Out of scope. The CLI supports batch rendering on a farm. |
@@ -59,9 +59,10 @@ Structura keeps the language and modernises everything else.
    expressions ([05](05-eisenscript-language.md)).
 2. **Engine.** A Numba-compiled builder that streams primitives into a struct-of-arrays SceneIR
    ([06](06-language-engine.md), [07](07-scene-model.md)).
-3. **See.** A WebGPU viewport with instancing, sphere impostors, SSAO, shadows and picking
-   ([08](08-viewport.md)).
-4. **Render.** A Sunflow-derived progressive and final renderer on GPU and CPU ([09](09-renderer.md)–[11](11-compute-backends.md)).
+3. **See.** The *preview engine*: a GLSL/OpenGL viewport (Numba fallback) with instancing, sphere impostors,
+   SSAO, shadows and picking ([08](08-viewport.md)).
+4. **Render.** The *precision engine*: a Sunflow-derived progressive and final renderer on CUDA, OpenCL, WGSL
+   and CPU ([09](09-renderer.md)–[11](11-compute-backends.md)).
 5. **Write.** A modern code editor with a language service ([12](12-editor.md)) and theming ([13](13-theming.md)).
 6. **Ship.** Exporters for meshes, scenes, images and video ([15](15-export.md)); animation, scripting and CLI
    ([16](16-animation-scripting-cli.md)).
@@ -79,11 +80,12 @@ Structura keeps the language and modernises everything else.
 
 | Class | CPU | GPU | Notes |
 |-------|-----|-----|-------|
-| Reference | 8-core x86-64 (2021+) or Apple M1 | NVIDIA RTX 3060 / AMD RX 6600 / Apple M1 (8-core GPU) | All budgets are quoted against this class |
-| Minimum | 4-core x86-64 or Apple M1 | Any Vulkan 1.1 / Metal 2 / DX12 GPU, **or none** | With no GPU, the CPU fallback must stay usable (see [08](08-viewport.md) §9) |
+| **Reference** | 8-core x86-64 | **NVIDIA GeForce GTX 1660, 6 GiB** (Turing, CC 7.5, no RT/tensor cores) | All budgets are quoted against this machine |
+| Minimum | 4-core x86-64 or Apple M1 | OpenGL 3.3 for the preview; any of CUDA / OpenCL 1.2 / Vulkan / Metal / DX12 for the precision engine, **or none** | With no GPU, both Numba fallbacks must stay usable (see [08](08-viewport.md) §9) |
 
 ## 7. Naming
 
 - Product: **Structura**. Python package: `structura`. CLI: `structura`.
 - Native project file: `.structura`. EisenScript files keep `.es`.
-- The renderer is called **Structura Render** in the UI; internally it is `structura.render`.
+- The two engines are **Structura Preview** (`structura.preview`) and **Structura Render** (`structura.render`).
+- Licence: **MIT** ([ADR-0010](adr/0010-licensing.md)). The logo and brand are in [21](21-brand-and-logo.md).

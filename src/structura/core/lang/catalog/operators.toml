@@ -1,0 +1,82 @@
+# EisenScript transformation operators (docs/05-eisenscript-language.md §4.2–4.3).
+# arity: allowed argument counts; args: argument types in order. 'legacy = false' marks aliases that
+# Structure Synth 1.5 did not accept (docs/01 D2/D3) – accepted in both dialects, with info diagnostic W106.
+
+[[operator]]
+name = "x"
+args = ["float"]
+doc = "Translate along the local x axis (post-multiplied, so in the current frame)."
+[[operator]]
+name = "y"
+args = ["float"]
+doc = "Translate along the local y axis."
+[[operator]]
+name = "z"
+args = ["float"]
+doc = "Translate along the local z axis."
+[[operator]]
+name = "rx"
+args = ["degrees"]
+doc = "Rotate about the x axis through the unit-cube centre line (y = z = 0.5)."
+[[operator]]
+name = "ry"
+args = ["degrees"]
+doc = "Rotate about the y axis through the unit-cube centre line (x = z = 0.5)."
+[[operator]]
+name = "rz"
+args = ["degrees"]
+doc = "Rotate about the z axis through the unit-cube centre line (x = y = 0.5)."
+[[operator]]
+name = "s"
+aliases = [{ name = "size", legacy = false }]
+args = ["float", "float", "float"]
+arity = [1, 3]
+doc = "Scale about the unit-cube centre: one factor (uniform) or three (x y z)."
+[[operator]]
+name = "matrix"
+args = ["float", "float", "float", "float", "float", "float", "float", "float", "float"]
+doc = "Apply a 3×3 matrix (row-major) about the unit-cube centre."
+[[operator]]
+name = "reflect"
+args = ["float", "float", "float"]
+doc = "Reflect through the plane with normal (nx ny nz) that passes through the origin."
+[[operator]]
+name = "fx"
+args = []
+doc = "Mirror in x about the unit-cube centre (same as s -1 1 1)."
+[[operator]]
+name = "fy"
+args = []
+doc = "Mirror in y about the unit-cube centre."
+[[operator]]
+name = "fz"
+args = []
+doc = "Mirror in z about the unit-cube centre."
+[[operator]]
+name = "hue"
+aliases = [{ name = "h" }]
+args = ["float"]
+doc = "Add to the hue (degrees, wraps at 360)."
+[[operator]]
+name = "sat"
+args = ["float"]
+doc = "Multiply the saturation (clamped to 0..1)."
+[[operator]]
+name = "brightness"
+aliases = [{ name = "b" }, { name = "v", legacy = false }]
+args = ["float"]
+doc = "Multiply the brightness/value (clamped to 0..1)."
+[[operator]]
+name = "alpha"
+aliases = [{ name = "a" }]
+args = ["float"]
+doc = "Multiply the opacity (clamped to 0..1)."
+[[operator]]
+name = "color"
+aliases = [{ name = "c" }]
+args = ["color-or-random"]
+doc = "Set an absolute colour (name, #rgb, #rrggbb, …) or 'random' to draw from the colour pool."
+[[operator]]
+name = "blend"
+args = ["color", "float"]
+doc = "Blend towards a colour in HSV space with the given strength."

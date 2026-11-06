@@ -457,3 +457,29 @@ Codes are stable. Messages live in `catalog/diagnostics.toml`, and this table is
 | W113 | warning | (v2) Legacy `set` camera/raytracer settings overridden by a `camera`/`render` block |
 | I201 | info | Hover: probability of each ambiguous alternative |
 | I203 | info | Tag resolved to built-in material preset |
+
+---
+
+## 11. Compatibility notes verified against the original engine
+
+The golden harness ([18](18-testing-and-quality.md) §3) runs the original Structure Synth 1.5 code. These
+behaviours were **observed there** and are reproduced in v1 mode. Some correct or refine statements
+elsewhere in this document.
+
+| # | Behaviour | Where |
+|---|-----------|-------|
+| C1 | A loop count ≤ 0 behaves like 1. The loop body runs before the count is checked, like a do-while. | §4.4 |
+| C2 | Tabs are **not** token separators. All whitespace inside a token is deleted, so `x<TAB>1` becomes the token `x1`. | §1 |
+| C3 | Only CR ends a `//` line comment. `/*` starts a block comment even inside a line comment. `*/` is consumed anywhere. | §1 |
+| C4 | A recursive `#define` is reported as "skipped" but **is still applied**, until the 100-substitution cap. | §2.1 |
+| C5 | Identical `random[a,b]` texts on one line are replaced by **one** shared value. | §2.3 |
+| C6 | GUI parameters: float values are rounded to **2 decimals**, then clamped. Values are substituted over the **whole** preprocessed document (including `#` lines), alphabetically, with one shared cap of 100. | §2.2 |
+| C7 | A trailing comment after `(float:a-b)` turns the line into a *plain* define whose value includes the comment text. (1.5's own snippet menu inserts such lines.) | §2.2 |
+| C8 | Termination is checked once per BFS generation, so a generation can **overshoot** `maxobjects`. | §5.1 |
+| C9 | Depth-first mode: all listed rules get `maxdepth 1000` before the script runs. A script's `set maxdepth N` therefore only reaches rules whose depth is still ≤ 0, which in practice means the alternatives of ambiguous rules (these are always overwritten). | §5.2 |
+| C10 | `cylinder`, and `mesh` without a previous state, **count as objects** but draw nothing. | §4.5 |
+| C11 | Emitted direction vectors are computed as `M·e − M·0` in float32 (for example 0.99999994), not read from the matrix. | §4.2 |
+| C12 | `QColor::toHsv` works in double precision, and saturation/value/alpha are rounded 16→8-bit divisions by 257 (Qt 6 differs). | §4.3 |
+| C13 | `set` values are validated **when executed**. A bad value in a rule that never runs is not an error. | §6 |
+| C14 | `triangle[…]::tag` fails in 1.5: the tokenizer splits `::tag` off after the bracket. v1 keeps this; tagged triangles are a v2 feature (this corrects D6 in [01](01-legacy-analysis.md)). | §4.5 |
+| C15 | Retirement cycles (`A > B`, `B > A`) terminate, because a retirement resets the depth. Structura bounds a retirement chain at 100,000 steps as a safety net (this corrects D7). | §4.5 |

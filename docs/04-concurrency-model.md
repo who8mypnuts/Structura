@@ -9,7 +9,8 @@ That pattern is banned, and a lint rule rejects any use of `processEvents`.
 
 | Thread / lane | Kind | Concurrency | Runs | Policy |
 |---------------|------|-------------|------|--------|
-| **GUI** | Qt main thread | 1 | Widgets, editor, viewport draw, **GPU scheduler** (§5), signal fan-out | Never blocks; per-frame work ≤ 8 ms |
+| **GUI** | Qt main thread | 1 | Widgets, editor, **OpenGL preview engine** (§5.1), signal fan-out | Never blocks; per-frame work ≤ 8 ms |
+| **device** lane | `QThread` worker | 1 | Owns the precision engine's GPU device (CUDA context / OpenCL queue / wgpu device): uploads, budgeted dispatches, async readbacks (§5.2) | FIFO with priorities; dispatches ≤ 50 ms GPU time |
 | **analysis** lane | `QThread` worker | 1 | Lint, parse, resolve, semantic tokens, completion model refresh | Latest-wins per document |
 | **build** lane | `QThread` worker | 1 | Numba builder slices (`nogil=True`) | Latest-wins per document |
 | **compute** lane | `QThread` worker | 1 | *Parallel* Numba kernels: BVH build, CPU render tiles, bulk tessellation, packing | FIFO with priorities; **exactly one parallel Numba call at a time** (§6) |
@@ -81,36 +82,36 @@ class JobHandle(QObject):
   runs on release.
 - **Viewport camera change → progressive render reset:** immediate, because the accumulation simply restarts.
 
-## 5. GPU scheduling (cooperative, GUI thread)
+## 5. GPU work: two owners
 
-All wgpu calls happen on the GUI thread. This is a deliberate, documented constraint:
+### 5.1 Preview engine (OpenGL, GUI thread)
 
-- Qt surfaces must be presented from the GUI thread.
-- wgpu-py objects are not documented as safe to share across Python threads.
-- Command *encoding* is cheap (microseconds to a few milliseconds); the heavy work runs asynchronously on
-  the GPU.
-
-The **`GpuScheduler`** (in `structura.gpu.scheduler`) runs once per display frame (vsync-driven via
-rendercanvas `request_draw`, or a 16 ms `QTimer` when idle):
+OpenGL contexts are bound to the thread that owns the `QOpenGLWidget`, so all preview GL calls run on the
+GUI thread inside `paintGL` and a per-frame **`PreviewScheduler`** tick:
 
 ```text
-tick():
-    budget_cpu = 6 ms                      # encoding time allowed on the GUI thread
-    1. viewport frame (if dirty)           # always first: interaction stays smooth
-    2. pending uploads                     # large buffers split into ≤ 32 MB writes, one or more per tick
-    3. progressive render passes           # k dispatches where k is tuned so GPU time ≈ 12–25 ms
-    4. poll async readbacks                # map_async completions → FilmSnapshot → emit pass_completed
+tick():                                    # vsync-driven via QOpenGLWidget.frameSwapped / 16 ms QTimer
+    budget_cpu = 6 ms
+    1. viewport frame (if dirty)           # interaction stays smooth
+    2. pending uploads                     # SceneIR chunks ≤ 32 MiB per tick (glBufferSubData)
+    3. poll pick readbacks                 # PBO + glFenceSync; never glReadPixels on the default framebuffer
 ```
 
-- **Timeout safety (Windows TDR ≈ 2 s, macOS watchdog):** no single dispatch may exceed about 50 ms of GPU
-  time. The scheduler measures with timestamp queries where available, or falls back to wall-clock
-  submit-to-completion. It adapts tile size and samples per dispatch.
-- **Readback** is always asynchronous (`map_async`). The GUI thread never calls a blocking `map`.
-- **Uploads** of large scenes are spread over ticks. The viewport shows already-uploaded chunks
-  progressively.
-- If the GPU device is lost, the scheduler emits `device_lost`. The RenderService switches to the CPU
-  backend, and the viewport switches to its fallback ([08](08-viewport.md) §9). Both surface a
-  non-blocking banner.
+### 5.2 Precision engine (device lane)
+
+- The **device lane** thread owns the compute device for whichever backend is active (CUDA, OpenCL or wgpu;
+  [11](11-compute-backends.md) §5). It never touches widgets. Results leave it as immutable `FilmSnapshot`s
+  through signals.
+- **Timeout safety.** No single dispatch may exceed about 50 ms of GPU time (Windows TDR ≈ 2 s; the macOS
+  watchdog). The lane measures with CUDA/OpenCL events or wgpu timestamps, and adapts tile size and samples
+  per dispatch.
+- **Fairness with the preview.** On a single GPU (such as the GTX 1660), the lane caps its duty cycle while
+  the user interacts with the viewport (default 60%), so the preview keeps ≥ 30 fps during a progressive
+  render.
+- **Readback** is asynchronous (CUDA streams, OpenCL events, wgpu `map_async`). Snapshots are published at
+  ≤ 10 Hz.
+- **Device lost / kernel failure:** the lane emits `device_lost`, retries once, then the RenderService falls
+  back along the backend priority list ([11](11-compute-backends.md) §6) and shows a non-blocking banner.
 
 ## 6. Numba threading rules
 
@@ -130,7 +131,8 @@ tick():
 | Object | Lives on | May be touched from |
 |--------|----------|---------------------|
 | Widgets, `QTextDocument`, `QSyntaxHighlighter` | GUI | GUI only |
-| wgpu device, buffers, pipelines, canvas | GUI | GUI only |
+| OpenGL context and GL objects (preview engine) | GUI | GUI only |
+| Compute device objects (CUDA context, CL queue, wgpu device, device buffers) | device lane | device lane only |
 | Service `QObject`s | GUI | GUI. Workers talk to them through signals only |
 | Job workers (`QObject` in lanes) | Their lane thread | Their lane thread |
 | `SceneIR`, `RenderScene`, `Analysis`, `FilmSnapshot` | Any (immutable) | Any |
@@ -162,12 +164,12 @@ sequenceDiagram
   participant GUI
   participant RS as RenderService
   participant CL as compute lane
-  participant GS as GpuScheduler (GUI)
+  participant GS as device lane
   participant IO as io lane
   GUI->>RS: render_final(scene_ir, settings)
   RS->>CL: CompileRenderScene job (pack + BVH)
   CL-->>RS: finished(RenderScene)
-  RS->>GS: enqueue uploads + tiled adaptive passes
+  RS->>GS: enqueue uploads + tiled adaptive passes (CUDA / OpenCL / wgpu)
   loop every frame
     GS-->>RS: tile_done / pass_done (async readback)
     RS-->>GUI: progress(0.43, "ETA 1m12s"), preview(FilmSnapshot)

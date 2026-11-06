@@ -31,7 +31,7 @@
 ├────────┴──────────────────────────────────────┴──────────────────────────────────┴───────────┤
 │ Problems (2) │ Console │ Build Stats │ Render Queue │ Timeline │ Activity                   │ bottom dock
 ├──────────────────────────────────────────────────────────────────────────────────────────────┤
-│ Ln 4, Col 18 · UTF-8 · EisenScript v1 · 102,400 objects (box 98%) · build 84 ms · GPU: RTX 3060│ status bar
+│ Ln 4, Col 18 · UTF-8 · EisenScript v1 · 102,400 objects (box 98%) · build 84 ms · CUDA: GTX 1660│ status bar
 └──────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 

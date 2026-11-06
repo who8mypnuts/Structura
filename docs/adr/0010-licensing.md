@@ -1,33 +1,43 @@
-# ADR-0010: GPL-3.0-or-later; POV-Ray used for ideas only
+# ADR-0010: MIT licence; clean re-implementation of Structure Synth; POV-Ray for ideas only
 
-- Status: Proposed
-- Date: planning phase
+- Status: **Accepted** (project owner decision)
+- Supersedes: the earlier "GPL-3.0-or-later" proposal
 
 ## Context
 
-- Structure Synth is licensed **LGPL-2.1 or GPL-3** (`LICENSE.README`). Structura's language semantics,
-  templates and examples derive from it.
-- Sunflow is **MIT**.
-- POV-Ray 3.8 source is **AGPL-3**.
-- PySide6 is LGPL-3.
+| Source | Licence | How Structura may use it |
+|--------|---------|--------------------------|
+| Structure Synth 1.5 (C++) | LGPL-2.1 **or** GPL-3 (`LICENSE.README`) | Behaviour may be re-implemented. Code may **not** be translated into MIT code. |
+| Structure Synth `Misc/*.rendertemplate`, `Examples/*.es` | LGPL-2.1/GPL-3 (as part of Structure Synth) | Redistributed **unchanged** as separately licensed data (aggregation) |
+| StructureSynth-code-samples (community scripts) | **MIT** (confirmed by the project owner) | Bundled with attribution |
+| Sunflow 0.07.3 | MIT | Code may be ported directly, with its copyright notice kept in `THIRD_PARTY_NOTICES.md` |
+| POV-Ray 3.8 | AGPL-3 | Ideas only; no code |
+| Qt / PySide6 | LGPL-3 | Dynamically used library; no Qt code copied (this matters for `QColorCompat`) |
 
 ## Decision
 
-- License Structura under **GPL-3.0-or-later**. This is compatible with the LGPL/GPL legacy material, MIT
-  (Sunflow), Apache-2.0 (OIDN, manifold3d), BSD (numpy, Numba, wgpu) and LGPL (PySide6, ffmpeg LGPL build).
-- **POV-Ray: ideas only.** No POV-Ray source is copied or transliterated. Features inspired by POV-Ray are
-  implemented from public documentation and the academic literature. Code reviews reject PRs that reference
-  POV-Ray source lines.
-- All third-party assets (themes, fonts, icons, HDRIs, community scripts) are recorded in
-  `THIRD_PARTY_NOTICES.md` before they are bundled.
-
-## Alternatives considered
-
-- **AGPL-3 (to allow POV-Ray code reuse):** would impose network-use obligations on downstream users for little
-  gain.
-- **MIT/BSD:** incompatible with the LGPL/GPL-derived parts.
+1. **Structura is licensed MIT.**
+2. **Clean re-implementation rule.** The Structure Synth behaviour captured in the specification
+   ([05](../05-eisenscript-language.md), [06](../06-language-engine.md)) is implemented **from the spec**.
+   Contributors must not translate C++ functions line by line.
+   - Matching observable behaviour (output structures, RNG order, quirks) is interoperability, not copying.
+     The golden suite checks behaviour, never source similarity.
+   - Where the spec needs a precise formula (for example the HSV conversion), the formula is written down in
+     the spec in mathematical form and implemented from that.
+3. **Legacy data** (templates, 1.5 examples) lives in `resources/legacy/` with its own `LICENSE-LEGACY.txt`
+   (LGPL-2.1/GPL-3 text). It is shipped as unmodified data files that Structura reads. It is not linked code.
+4. **Golden generator** (`tools/golden/`) compiles the original GPL/LGPL C++ for *testing only*. It is never
+   part of the Structura distribution, and the folder carries its own licence notice.
+5. **QColorCompat** is implemented from documented Qt behaviour and **verified** against PySide6 at test time.
+   No Qt source is copied.
+6. **POV-Ray: ideas only**, from public documentation and papers.
+7. **Third-party runtime dependencies** must be MIT-compatible for distribution:
+   - BSD, MIT, Apache-2.0 and LGPL (dynamically linked) are allowed.
+   - NVIDIA redistributables (NVRTC) follow the CUDA EULA redistribution terms. Their notice must be in
+     `THIRD_PARTY_NOTICES.md`.
 
 ## Consequences
 
-- The legal review items are tracked in risk R11. Community sample scripts stay internal until their licence
-  is clarified.
+- Structura can be freely reused, including commercially.
+- Reviewers reject PRs whose code is visibly transliterated from `sample_source/structuresynth-*`.
+- Sunflow code may be ported directly, which speeds up the renderer. Sunflow's MIT notice must be retained.

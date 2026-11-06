@@ -19,8 +19,10 @@ every platform. So every package below is a hard install requirement with wheels
 | **PySide6** (QtCore, QtGui, QtWidgets, QtSvg, QtQml) | ≥ 6.8 | LGPL-3.0 | UI, signals/slots, threads, `QSyntaxHighlighter`, `QJSEngine` for legacy `#javascript` | Mandated by the brief; QtQml gives a JS engine at no extra cost |
 | **numpy** | ≥ 2.0 | BSD-3 | SceneIR arrays, tessellation, packing, I/O | The foundation of the data-oriented design |
 | **numba** (+ llvmlite) | ≥ 0.61 | BSD-2 | CPU kernels: builder, BVH build, CPU renderer, tessellation hot loops | Multithreaded (`prange`), releases the GIL (`nogil=True`), and can run the *same* SKL source as the GPU ([11](11-compute-backends.md)) |
-| **wgpu** (wgpu-py) | exact minor pin | BSD-2 | GPU compute (renderer) and raster (viewport) | One API over Vulkan, Metal and D3D12, so GPU features are the same on every OS, compute included (macOS OpenGL stops at 4.1 with no compute) |
-| **rendercanvas** | matching wgpu pin | BSD-2 | Qt widget that hosts a wgpu surface | The official wgpu-py canvas layer; it supports PySide6 |
+| **ModernGL** | ≥ 5.12 | MIT | Preview engine: OpenGL 3.3/4.1 core + GLSL on Qt's `QOpenGLWidget` context | The lightest, most reliable modern-GL binding for Python; it attaches to Qt's context ([ADR-0013](adr/0013-two-render-engines.md)) |
+| **cuda-python** + **nvidia-cuda-nvrtc-cu12** | latest 12.x / 13.x | NVIDIA (verify redistribution terms) | Precision engine **CUDA** backend: driver API + runtime compilation of SKL-emitted CUDA C | Fastest backend on the reference GTX 1660. Installed on Windows/Linux (environment marker); CUDA does not exist on macOS. |
+| **pyopencl** + **pocl-binary-distribution** | ≥ 2024.2 | MIT / MIT | Precision engine **OpenCL** backend (AMD/Intel/NVIDIA GPUs); pocl supplies a CPU OpenCL device on every machine | Vendor-neutral GPU compute; pocl makes OpenCL testable without a GPU |
+| **wgpu** (wgpu-py) | exact minor pin | BSD-2 | Precision engine **WGSL** backend (offscreen compute over Vulkan / Metal / D3D12 / GL) | The only GPU-compute path on macOS; a universal fallback elsewhere |
 | **usd-core** | ≥ 24.11 | Modified Apache-2.0 (Pixar) | USD export: `.usda`, `.usdc`, `.usdz`; `PointInstancer`, `UsdPreviewSurface` | The only complete USD writer; the brief requires USD |
 | **pygltflib** | ≥ 1.16 | MIT | glTF 2.0 / GLB, including `EXT_mesh_gpu_instancing` and `KHR_materials_*` | A correct glTF container at low cost |
 | **manifold3d** | ≥ 3.0 | Apache-2.0 | Robust mesh booleans: watertight union for STL/3MF printing; CSG groups | Reliable booleans are hard to write ourselves |
@@ -41,8 +43,9 @@ every platform. So every package below is a hard install requirement with wheels
 | JetBrains Mono (editor font) | OFL-1.1 | Default code font (ligatures off by default) |
 | Lucide icons (SVG) | ISC | Toolbar and panel icons, recoloured per theme at runtime |
 | 4–6 small HDRIs from Poly Haven | CC0 | Built-in environment presets (≤ 2K, EXR) |
-| Legacy `.rendertemplate` files | LGPL/GPL (from Structure Synth) | Backward-compatible template export |
-| Structure Synth example scripts | LGPL/GPL | Examples gallery and golden corpus |
+| Legacy `.rendertemplate` files | LGPL/GPL (from Structure Synth; shipped unmodified as separate data) | Backward-compatible template export |
+| Structure Synth example scripts | LGPL/GPL (shipped as separate data, `resources/legacy/`) | Examples gallery and golden corpus |
+| StructureSynth-code-samples | MIT | Examples gallery and golden corpus |
 
 ## 3. Development dependencies (not shipped)
 
@@ -54,16 +57,17 @@ every platform. So every package below is a hard install requirement with wheels
 | pytest, pytest-qt, pytest-xdist, pytest-benchmark, hypothesis | Tests ([18](18-testing-and-quality.md)) |
 | scikit-image | SSIM/PSNR in render regression tests |
 | pre-commit | Local gates |
-| Mesa lavapipe (CI only) | Software Vulkan, so GPU kernels run in headless CI |
+| Mesa llvmpipe via EGL (CI only) | Software OpenGL 4.5, so the GLSL preview and the wgpu-GL backend run in headless CI |
+| pocl (runtime dep, used by CI) | OpenCL kernels execute on the CPU in CI |
 | Qt5 + C++ toolchain (golden generator only) | Builds the original Structure Synth model code to produce golden outputs ([18](18-testing-and-quality.md) §3) |
 
 ## 4. Alternatives considered (summary; details in ADRs)
 
 | Need | Chosen | Rejected alternatives | ADR |
 |------|--------|----------------------|-----|
-| GPU API | wgpu (WebGPU) | ModernGL/OpenGL (no compute on macOS; GL deprecated there); Vulkan via `vulkan` (too low-level, no macOS without MoltenVK setup); Qt RHI (no Python compute API); CUDA/OptiX, Dr.Jit, NVIDIA Warp (NVIDIA-only); Taichi (single-source, but maintenance has slowed and Qt embedding is weak); PyOpenCL (deprecated on macOS) | [0002](adr/0002-gpu-api-wgpu.md) |
+| GPU APIs | OpenGL/GLSL (preview) + CUDA, OpenCL, WGSL (precision) | wgpu-only (did not meet the owner's CUDA/OpenCL/GLSL requirement); Vulkan via `vulkan` (too low level); Qt RHI (no Python compute API); OptiX (NVIDIA-only; the GTX 1660 has no RT cores); Taichi (maintenance risk) | [0013](adr/0013-two-render-engines.md) |
 | CPU fallback | Numba | Cython (build complexity, no single-source with GPU); pure numpy (no per-ray branching); multiprocessing (IPC cost for large scenes) | [0003](adr/0003-cpu-fallback-numba.md) |
-| Single kernel source | SKL (restricted Python) → Numba + WGSL transpiler | Hand-written WGSL + Numba mirrors (violates DRY); Slang (immature CPU target from Python) | [0004](adr/0004-single-source-kernels.md) |
+| Single kernel source | SKL (restricted Python) → Numba, CUDA C, OpenCL C, WGSL, GLSL | Hand-written per-API kernels (violates DRY); Slang (immature CPU target from Python) | [0004](adr/0004-single-source-kernels.md) |
 | Builder speed | Numba kernel over compiled rule tables | Pure-Python tree walk (≈50× slower); numpy BFS vectorisation (breaks legacy RNG order) | [0005](adr/0005-builder-numba.md) |
 | Editor widget | Custom `QPlainTextEdit` stack | QScintilla (no PySide6 bindings); embedding Monaco in QtWebEngine (200 MB, a second UI toolkit, awkward theming) | [0007](adr/0007-editor-widget.md) |
 | Theme format | TOML semantic-role themes + VS Code / base16 importers | QSS-only (no syntax roles); per-widget colours (not DRY) | [0008](adr/0008-theme-format.md) |
@@ -71,7 +75,7 @@ every platform. So every package below is a hard install requirement with wheels
 
 ## 5. Version & update policy
 
-- Dependencies are pinned by lock file. wgpu and rendercanvas are pinned to an **exact minor version**
-  because their API still moves before 1.0.
+- Dependencies are pinned by lock file. wgpu is pinned to an **exact minor version** because its API still
+  moves before 1.0.
 - Each quarter: a deliberate dependency upgrade PR that runs the full CI matrix, including render regression.
 - Security updates (Pillow, OpenEXR, Qt) are applied immediately.

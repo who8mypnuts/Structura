@@ -1,4 +1,4 @@
-# ADR-0004: SKL — single-source kernels for GPU (WGSL) and CPU (Numba)
+# ADR-0004: SKL — single-source kernels for CUDA, OpenCL, WGSL, GLSL and Numba
 
 - Status: Proposed (pending spike S1)
 - Date: planning phase
@@ -13,11 +13,14 @@ BSDFs and lights are the most error-prone code, and keeping two copies in sync i
 Author kernels in **SKL**, a restricted, typed subset of Python ([11](../11-compute-backends.md)). One front
 end produces:
 
-- WGSL for wgpu;
-- Python source for Numba;
-- numpy dtypes and WGSL structs for buffer layouts.
+- **CUDA C** (via NVRTC);
+- **OpenCL C**;
+- **WGSL**;
+- **GLSL** (shared preview modules);
+- **Numba** Python.
 
-Parity tests verify equivalence.
+All device buffers use a **flat f32/u32 ABI** with generated accessors. Parity tests verify equivalence
+across every available backend.
 
 ## Alternatives considered
 

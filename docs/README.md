@@ -21,10 +21,10 @@ how it will be built, and in what order.
 | 05 | [EisenScript Language](05-eisenscript-language.md) | Formal spec of v1 (compatible) and v2 (extended) |
 | 06 | [Language Engine](06-language-engine.md) | Preprocessor → lexer → parser → resolver → compiler → builder |
 | 07 | [Scene Model](07-scene-model.md) | SceneIR (struct-of-arrays), materials, lights, camera, project files |
-| 08 | [Viewport](08-viewport.md) | Real-time GPU viewport, picking, camera controls |
-| 09 | [Renderer Architecture](09-renderer.md) | Sunflow-derived renderer: pipeline, BVH, samplers, film |
+| 08 | [Preview Engine & Viewport](08-viewport.md) | GLSL/OpenGL viewport with Numba fallback, picking, camera controls |
+| 09 | [Precision Render Engine](09-renderer.md) | Sunflow-derived renderer: pipeline, BVH, samplers, film |
 | 10 | [Renderer Shading](10-renderer-shading.md) | Integrators, materials, lights, cameras, legacy mapping, POV-Ray ideas |
-| 11 | [Compute Backends](11-compute-backends.md) | GPU (wgpu/WGSL) and CPU (Numba) from a single kernel source |
+| 11 | [Compute Backends](11-compute-backends.md) | CUDA, OpenCL, WGSL, GLSL and Numba from a single kernel source (SKL) |
 | 12 | [Code Editor](12-editor.md) | Highlighting, completion, diagnostics, typing, live-coding tools |
 | 13 | [Theming](13-theming.md) | Theme engine, 40 built-in themes (6 Nord variants), import formats |
 | 14 | [UI / UX](14-ui-ux.md) | Window layout, panels, workflows, shortcuts, accessibility |
@@ -34,6 +34,9 @@ how it will be built, and in what order.
 | 18 | [Testing & Quality](18-testing-and-quality.md) | Golden compat corpus, render regression, kernel parity, CI |
 | 19 | [Roadmap](19-roadmap.md) | Phases, milestones, acceptance criteria |
 | 20 | [Risks](20-risks.md) | Risk register and mitigations |
+| 21 | [Brand & Logo](21-brand-and-logo.md) | Logo concept, construction, colours, usage |
+| 22 | [Implementation Notes](22-implementation-notes.md) | Where the code refines or departs from the plan, and why; the status of every milestone |
+| — | [Progress Log](PROGRESS.md) | What has been executed so far, and what is next |
 | — | [Architecture Decision Records](adr/README.md) | The key decisions and their alternatives |
 
 ## Non-negotiable principles (from the project brief)
@@ -44,7 +47,9 @@ how it will be built, and in what order.
    [11](11-compute-backends.md) for how.
 3. **Small units.** Files, classes and functions stay small and reviewable. The limits are in
    [17](17-code-standards-and-layout.md) and CI enforces them.
-4. **GPU acceleration is a must.** Both the viewport and the renderer run on the GPU through WebGPU (wgpu).
+4. **GPU acceleration is a must.** There are two engines ([ADR-0013](adr/0013-two-render-engines.md)):
+   - the **preview engine**: GLSL/OpenGL viewport, with a Numba fallback;
+   - the **precision engine**: CUDA, OpenCL, WGSL (wgpu) or CPU, from one kernel source.
 5. **Multithreaded CPU fallback is essential.** Every GPU feature has a multithreaded CPU path that gives the
    same results.
 6. **Non-blocking.** The GUI thread never waits on work. All long-running work is a *Job* that reports through
@@ -75,6 +80,8 @@ how it will be built, and in what order.
 |------|------------|
 | `sample_source/structuresynth-code-r312-trunk` | Structure Synth SVN r312, the **canonical** legacy source (1.5.0 "Hinxton" + later fixes) |
 | `sample_source/StructureSynth-orig`, `Structure-Synth` | Near-identical mirrors (Structure-Synth also holds `Misc/` templates, tutorials, roadmap) |
-| `sample_source/StructureSynth-code-samples` | 117 community `.es` scripts, used in the compatibility corpus |
+| `sample_source/StructureSynth-code-samples` | 117 community `.es` scripts (MIT), used in the compatibility corpus and bundled as examples |
 | `sample_source/sunflow` | Sunflow 0.07.3 (Java, MIT), the **basis of the built-in renderer** |
 | `sample_source/povray` | POV-Ray 3.8 (C++, **AGPL-3**). Used **for ideas only**; no code is ported (see ADR-0010) |
+
+**Licence:** Structura is **MIT** ([ADR-0010](adr/0010-licensing.md)).

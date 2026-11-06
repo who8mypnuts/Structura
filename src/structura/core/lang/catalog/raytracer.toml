@@ -1,0 +1,49 @@
+# 'set raytracer::KEY value' keys (docs/05 §6.3). Tag-specific keys: 'set raytracer::TAG::reflection|phong'.
+[[key]]
+name = "samples"
+value = "int"
+doc = "Anti-aliasing grid: N×N samples per pixel."
+[[key]]
+name = "ambient-occlusion-samples"
+value = "int"
+doc = "Ambient-occlusion grid: N×N rays per camera sample (0 turns AO off)."
+[[key]]
+name = "max-depth"
+value = "int"
+doc = "Maximum ray depth (reflections and transparency)."
+[[key]]
+name = "dof"
+value = "[center,falloff]"
+doc = "Depth of field: focal plane as a fraction between the near and far planes, and the blur strength."
+[[key]]
+name = "shadows"
+value = "bool"
+doc = "Cast hard shadows from the point light."
+[[key]]
+name = "light"
+value = "[x,y,z]"
+doc = "Point-light position (default: above and left of the camera)."
+[[key]]
+name = "size"
+value = "[WxH]"
+doc = "Output size; 0 on one axis keeps the window's aspect ratio."
+[[key]]
+name = "reflection"
+value = "float"
+doc = "Mirror reflection of untagged primitives (0–1); 'raytracer::TAG::reflection' for one tag."
+[[key]]
+name = "phong"
+value = "[ambient,diffuse,specular]"
+doc = "Phong coefficients of untagged primitives (default 0.6, 0.6, 0.6); 'raytracer::TAG::phong' for one tag."
+[[key]]
+name = "progressive"
+value = "bool"
+doc = "Accepted for compatibility (Structura always renders progressively)."
+[[key]]
+name = "max-threads"
+value = "int"
+doc = "Accepted for compatibility (Structura schedules its own threads)."
+[[key]]
+name = "voxel-steps"
+value = "int"
+doc = "Accepted for compatibility (Structura uses a BVH)."

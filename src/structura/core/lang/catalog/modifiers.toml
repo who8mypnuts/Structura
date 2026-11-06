@@ -1,0 +1,11 @@
+# Rule modifiers (docs/05 §3, §4.5).
+[[modifier]]
+name = "weight"
+aliases = [{ name = "w" }]
+args = ["float"]
+doc = "Relative probability of this definition among rules with the same name."
+[[modifier]]
+name = "maxdepth"
+aliases = [{ name = "md" }]
+args = ["int"]
+doc = "Maximum recursion depth of this rule; optionally '> rule' names a retirement rule."

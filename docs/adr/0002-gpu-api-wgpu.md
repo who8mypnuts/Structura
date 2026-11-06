@@ -1,6 +1,6 @@
 # ADR-0002: WebGPU (wgpu-py) as the single GPU API
 
-- Status: Proposed
+- Status: **Superseded by [ADR-0013](0013-two-render-engines.md)** (project owner requested GLSL previews and CUDA/OpenCL/WGSL/CPU precision backends)
 - Date: planning phase
 
 ## Context

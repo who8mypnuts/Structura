@@ -1,0 +1,92 @@
+/* Structura application stylesheet — generated from the active theme (docs/13 §5). Do not edit. */
+* { outline: none; }
+QWidget { background: {{ c("ui.bg") }}; color: {{ c("ui.fg") }}; font-family: "{{ ui_font }}"; font-size: {{ ui_size }}pt; }
+QWidget:disabled { color: {{ c("ui.fg.disabled") }}; }
+QMainWindow, QMainWindow::separator { background: {{ c("ui.bg.alt") }}; }
+QMainWindow::separator { width: 1px; height: 1px; }
+QMainWindow::separator:hover { background: {{ c("ui.accent") }}; }
+QToolTip { background: {{ c("ui.bg.raised") }}; color: {{ c("ui.fg") }}; border: 1px solid {{ c("ui.border") }}; padding: {{ pad }}px; border-radius: 6px; }
+
+/* Docks & splitters */
+QDockWidget { titlebar-close-icon: none; color: {{ c("ui.fg.muted") }}; }
+QDockWidget::title { background: {{ c("ui.bg.alt") }}; padding: {{ pad }}px {{ pad * 2 }}px; text-transform: uppercase; font-size: {{ ui_size - 1 }}pt; border-bottom: 1px solid {{ c("ui.border") }}; }
+QSplitter::handle { background: {{ c("ui.border") }}; }
+QSplitter::handle:horizontal { width: 1px; }
+QSplitter::handle:vertical { height: 1px; }
+QSplitter::handle:hover { background: {{ c("ui.accent") }}; }
+
+/* Menus */
+QMenuBar { background: {{ c("toolbar.bg") }}; border-bottom: 1px solid {{ c("ui.border") }}; }
+QMenuBar::item { padding: {{ pad }}px {{ pad * 2 }}px; background: transparent; border-radius: 4px; }
+QMenuBar::item:selected { background: {{ c("ui.hover") }}; }
+QMenu { background: {{ c("ui.bg.raised") }}; border: 1px solid {{ c("ui.border") }}; padding: {{ pad }}px; border-radius: 6px; }
+QMenu::item { padding: {{ pad }}px {{ pad * 6 }}px {{ pad }}px {{ pad * 3 }}px; border-radius: 4px; }
+QMenu::item:selected { background: {{ c("ui.selection.bg") }}; color: {{ c("ui.selection.fg") }}; }
+QMenu::separator { height: 1px; background: {{ c("ui.border") }}; margin: {{ pad }}px {{ pad * 2 }}px; }
+QMenu::icon { padding-left: {{ pad }}px; }
+
+/* Tool bars & status bar */
+QToolBar { background: {{ c("toolbar.bg") }}; border: none; border-bottom: 1px solid {{ c("ui.border") }}; padding: {{ pad }}px; spacing: {{ pad }}px; }
+QToolButton { background: transparent; border: 1px solid transparent; border-radius: 6px; padding: {{ pad }}px {{ pad * 2 }}px; }
+QToolButton:hover { background: {{ c("ui.hover") }}; }
+QToolButton:pressed, QToolButton:checked { background: {{ c("ui.pressed") }}; border-color: {{ c("ui.border") }}; }
+QStatusBar { background: {{ c("statusbar.bg") }}; color: {{ c("statusbar.fg") }}; border-top: 1px solid {{ c("ui.border") }}; }
+QStatusBar QLabel { background: transparent; color: {{ c("statusbar.fg") }}; padding: 0 {{ pad * 2 }}px; }
+QStatusBar::item { border: none; }
+
+/* Tabs */
+QTabWidget::pane { border: none; border-top: 1px solid {{ c("ui.border") }}; }
+QTabBar { background: {{ c("ui.bg.alt") }}; qproperty-drawBase: 0; }
+QTabBar::tab { background: {{ c("ui.bg.alt") }}; color: {{ c("tab.inactive.fg") }}; padding: {{ (pad * 1.5) | int }}px {{ pad * 3 }}px; border: none; border-right: 1px solid {{ c("ui.border") }}; }
+QTabBar::tab:selected { background: {{ c("tab.active.bg") }}; color: {{ c("tab.active.fg") }}; border-top: 2px solid {{ c("ui.accent") }}; }
+QTabBar::tab:hover:!selected { background: {{ c("ui.hover") }}; }
+QTabBar::close-button { subcontrol-position: right; border-radius: 4px; margin: 2px;{% if assets.close %} image: url({{ assets.close }});{% endif %} }
+QTabBar::close-button:hover { background: {{ c("ui.hover") }}; }
+
+/* Inputs */
+QLineEdit, QSpinBox, QDoubleSpinBox, QComboBox, QPlainTextEdit, QTextEdit {
+  background: {{ c("ui.bg.sunken") }}; border: 1px solid {{ c("ui.border") }}; border-radius: 6px; padding: {{ pad }}px {{ (pad * 1.5) | int }}px;
+  selection-background-color: {{ c("ui.selection.bg") }}; selection-color: {{ c("ui.selection.fg") }};
+}
+QAbstractSpinBox QLineEdit, QComboBox QLineEdit { border: none; padding: 0; background: transparent; }
+QAbstractSpinBox::up-button, QAbstractSpinBox::down-button { border: none; width: 16px; background: transparent; }
+QAbstractSpinBox::up-button:hover, QAbstractSpinBox::down-button:hover { background: {{ c("ui.hover") }}; }
+QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus, QComboBox:focus { border-color: {{ c("ui.focus.ring") }}; }
+QComboBox::drop-down { border: none; width: {{ pad * 5 }}px; }
+QComboBox QAbstractItemView { background: {{ c("ui.bg.raised") }}; border: 1px solid {{ c("ui.border") }}; selection-background-color: {{ c("ui.selection.bg") }}; }
+QPushButton { background: {{ c("ui.bg.raised") }}; border: 1px solid {{ c("ui.border") }}; border-radius: 6px; padding: {{ (pad * 1.5) | int }}px {{ pad * 3 }}px; }
+QPushButton:hover { border-color: {{ c("ui.border.strong") }}; background: {{ c("ui.hover") }}; }
+QPushButton:pressed { background: {{ c("ui.pressed") }}; }
+QPushButton:default, QPushButton[accent="true"] { background: {{ c("ui.accent") }}; color: {{ c("ui.accent.fg") }}; border-color: {{ c("ui.accent") }}; }
+QPushButton:focus { border-color: {{ c("ui.focus.ring") }}; }
+QCheckBox, QRadioButton { background: transparent; spacing: {{ pad * 2 }}px; }
+QSlider::groove:horizontal { height: 4px; background: {{ c("ui.border") }}; border-radius: 2px; }
+QSlider::sub-page:horizontal { background: {{ c("ui.accent") }}; border-radius: 2px; }
+QSlider::handle:horizontal { background: {{ c("ui.fg") }}; width: 12px; height: 12px; margin: -4px 0; border-radius: 6px; }
+QProgressBar { background: {{ c("ui.bg.sunken") }}; border: none; border-radius: 3px; height: 6px; text-align: center; color: transparent; }
+QProgressBar::chunk { background: {{ c("status.progress") }}; border-radius: 3px; }
+
+/* Item views */
+QAbstractItemView { background: {{ c("ui.bg.alt") }}; border: none; alternate-background-color: {{ c("ui.bg") }}; selection-background-color: {{ c("ui.selection.bg") }}; selection-color: {{ c("ui.selection.fg") }}; }
+QAbstractItemView::item { padding: {{ (pad / 2) | int }}px {{ pad }}px; }
+QAbstractItemView::item:hover { background: {{ c("ui.hover") }}; }
+QHeaderView::section { background: {{ c("ui.bg.alt") }}; color: {{ c("ui.fg.muted") }}; border: none; border-bottom: 1px solid {{ c("ui.border") }}; padding: {{ pad }}px {{ pad * 2 }}px; }
+QTreeView::branch { background: transparent; }
+
+/* Scroll bars: thin, rounded, appear on hover */
+QScrollBar:vertical { background: transparent; width: 10px; margin: 0; }
+QScrollBar:horizontal { background: transparent; height: 10px; margin: 0; }
+QScrollBar::handle { background: {{ c("ui.border") }}; border-radius: 4px; min-height: 24px; min-width: 24px; margin: 2px; }
+QScrollBar::handle:hover { background: {{ c("ui.border.strong") }}; }
+QScrollBar::add-line, QScrollBar::sub-line { width: 0; height: 0; }
+QScrollBar::add-page, QScrollBar::sub-page { background: transparent; }
+
+/* Structura widgets */
+QPlainTextEdit#CodeEditor { background: {{ c("editor.bg") }}; color: {{ c("editor.fg") }}; border: none; border-radius: 0; padding: 0;
+  selection-background-color: {{ c("editor.selection") }}; }
+QWidget#HeaderBar { background: {{ c("toolbar.bg") }}; border-bottom: 1px solid {{ c("ui.border") }}; }
+QLabel#Brand { font-weight: 600; font-size: {{ ui_size + 1 }}pt; background: transparent; }
+QWidget#CommandPalette { background: {{ c("ui.bg.raised") }}; border: 1px solid {{ c("ui.border.strong") }}; border-radius: 8px; }
+QLabel#Muted { color: {{ c("ui.fg.muted") }}; background: transparent; }
+QFrame#Banner { background: {{ c("ui.bg.raised") }}; border-bottom: 1px solid {{ c("ui.border") }}; }
+QLabel#Toast { background: {{ c("ui.bg.raised") }}; border: 1px solid {{ c("ui.border.strong") }}; border-radius: 8px; padding: {{ pad * 2 }}px {{ pad * 3 }}px; }

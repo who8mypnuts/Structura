@@ -1,0 +1,5034 @@
+{
+ "harness": "Structure Synth r312 model/parser + Qt 5.15.13",
+ "seeds": [
+  0,
+  1,
+  42,
+  1234
+ ],
+ "templates": [
+  "Sunflow-Colored",
+  "povray",
+  "renderman"
+ ],
+ "scripts": [
+  {
+   "id": "058ebc50_octopod_ii",
+   "path": "src/structura/resources/legacy/examples/Octopod II.es",
+   "sha1": "058ebc50f00275da7fa0c4a68da09e50d63d5d66",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 11049,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 11099,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 10929,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 10779,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "06799276_baravellespiral2",
+   "path": "src/structura/resources/examples/community/BaravelleSpiral/baravellespiral2.es",
+   "sha1": "06799276ae6edc40bc93fa62fb767e78a2fc2ba8",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 43,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 43,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 43,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 43,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "06bda67e_dodecafractal",
+   "path": "src/structura/resources/examples/community/Dodecahedron/DodecaFractal.es",
+   "sha1": "06bda67e416143bbcb3eff56508db2612e3ff45e",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 14400,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 14400,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 14400,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 14400,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "0b874809_simple2",
+   "path": "src/structura/resources/examples/community/SimpleStructures/simple2.es",
+   "sha1": "0b87480926c85e20bd016bd4f0c29e91ae60a97a",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 8,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 8,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 8,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 8,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "0cfd4983_fratalcross",
+   "path": "src/structura/resources/examples/community/BoxFractal/Fratalcross.es",
+   "sha1": "0cfd49835e427228d31fc7fd64231082c61a5eb3",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 2402,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 2402,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2402,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 2402,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "0da476f8_h60tree",
+   "path": "src/structura/resources/examples/community/Tree/h60tree.es",
+   "sha1": "0da476f8347c0ae69ea0274a2ebf9f406740ca52",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 511,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 511,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 511,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 511,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "0f20f268_nablasystem",
+   "path": "src/structura/resources/legacy/examples/NablaSystem.es",
+   "sha1": "0f20f2683da270ffc0c390cee416c85f0e0ece41",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 871,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 27,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 73,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 5328,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "0f3de0ce_3drandcube3",
+   "path": "src/structura/resources/examples/community/RandomCube/3drandcube3.es",
+   "sha1": "0f3de0cee8df5bb81d48230cacd68a3f92ae6b08",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 4601,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 4601,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 4601,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 4601,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "0f571fe2_tree11",
+   "path": "src/structura/resources/examples/community/Tree/tree11.es",
+   "sha1": "0f571fe24866310999e6372fdad9029b6c687b1a",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 9918,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 9918,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 9918,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 9918,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "11c5fae6_thingy",
+   "path": "src/structura/resources/legacy/examples/Thingy.es",
+   "sha1": "11c5fae622fad385a0fe2bff6eeef6a84c545d4e",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 100051,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 100051,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 100051,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 100051,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "148278f3_torus3",
+   "path": "src/structura/resources/legacy/examples/Torus3.es",
+   "sha1": "148278f384f614341996db7b8917bbecaf976687",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 16849,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 16849,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 16849,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 16849,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "1552086c_boxfractal3d",
+   "path": "src/structura/resources/examples/community/BoxFractal/boxfractal3d.es",
+   "sha1": "1552086c8f40f2c2e292128f8b87a438544cae67",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 730,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 730,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 730,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 730,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "16b8d07e_mondrian2",
+   "path": "src/structura/resources/examples/community/Mondrian/mondrian2.es",
+   "sha1": "16b8d07e4f88c532a97cbee9d1769cd265ee40fc",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 3381,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 4581,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 5556,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 4506,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "18934add_pytree3d4570flipped",
+   "path": "src/structura/resources/examples/community/Pythagoras/pytree3d4570flipped.es",
+   "sha1": "18934add6d47170698adda35d68c5b80eedfb221",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 2047,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 2047,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2047,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 2047,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "19190ccb_sierpinkipyramid",
+   "path": "src/structura/resources/examples/community/SierpinskiPyramid/sierpinkipyramid.es",
+   "sha1": "19190ccba8fe601788883a8f0d8bcdbe20756c00",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 2501,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 2501,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2501,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 2501,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "191bcee1_alhambra_single",
+   "path": "src/structura/resources/examples/community/alhambra_single.es",
+   "sha1": "191bcee1e06e2ce246d0b5915cffd3088ccd9f14",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 16,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 16,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 16,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 16,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "192ae5f0_fractalbox3",
+   "path": "src/structura/resources/examples/community/BoxFractal/fractalbox3.es",
+   "sha1": "192ae5f0c07d4cf2793fc908a0a10c2724c49b83",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 586,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 586,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 586,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 586,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "1b52b3d7_nouveaumovie",
+   "path": "src/structura/resources/legacy/examples/Tutorials/NouveauMovie.es",
+   "sha1": "1b52b3d70a84ea148b483214786ca152865a30d7",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 15765,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 15765,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 15765,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 15765,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "1dc1b8b8_randomframepytree",
+   "path": "src/structura/resources/examples/community/Pythagoras/randomFramePytree.es",
+   "sha1": "1dc1b8b891f5e2d27c6e443c40c9361dffda9cec",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 4591,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 4591,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 4591,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 4591,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "20daaf04_framefractal2",
+   "path": "src/structura/resources/examples/community/FrameFractal/framefractal2.es",
+   "sha1": "20daaf04a0df0ecd578b143b77ff911f46c3b696",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 321,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 321,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 321,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 321,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "220237cb_binarytree2",
+   "path": "src/structura/resources/examples/community/BinaryTree/BinaryTree2.es",
+   "sha1": "220237cb6c6b411f80b0f7f2b4c9603d6fbc38ef",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 3001,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 3001,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 3001,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 3001,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "23a13644_trianglecomposites",
+   "path": "src/structura/resources/legacy/examples/Tutorials/TriangleComposites.es",
+   "sha1": "23a13644e9f136b3f96d2201bbf90182b89ee1dd",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 180,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 170,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 176,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 178,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "242d02d6_swastik",
+   "path": "src/structura/resources/examples/community/SimpleStructures/Swastik.es",
+   "sha1": "242d02d6fb5c5519792afa1e2ff89e891bd7e91c",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 466,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 466,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 466,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 466,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "28ba5df8_tree8_2",
+   "path": "src/structura/resources/examples/community/Tree/tree8_2.es",
+   "sha1": "28ba5df8dcbba7e8b750e11b83e6a4e77099a682",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 9560,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 9560,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 9560,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 9560,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "291f3474_tictactoe3d",
+   "path": "src/structura/resources/examples/community/tictactoe3d.es",
+   "sha1": "291f34748f22f43775ee1f3b8f711a5869676ab5",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 808,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1238,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 842,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1027,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "2b8b9712_3dtree3",
+   "path": "src/structura/resources/examples/community/Tree/3dtree3.es",
+   "sha1": "2b8b97128af6d86fd643a05a8e967592a1427e26",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 7213,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 8823,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 11231,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 25326,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "30e8131f_frame_in_frame",
+   "path": "src/structura/resources/legacy/examples/Frame In Frame.es",
+   "sha1": "30e8131fddcf0cfa03965076a4a2efefa2284d2f",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 240,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 240,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 240,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 240,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "329c48f7_structure3",
+   "path": "src/structura/resources/examples/community/SimpleStructures/structure3.es",
+   "sha1": "329c48f741891ac0d83b64b7f49b8c440789b531",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1252,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1252,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1252,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1252,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "34a993ef_nabla",
+   "path": "src/structura/resources/legacy/examples/Nabla.es",
+   "sha1": "34a993efce137c6ecb9c7be3986b723abdcf7b64",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 12484,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 8737,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 10176,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 12919,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "37818dad_pyrandom",
+   "path": "src/structura/resources/examples/community/Pythagoras/pyrandom.es",
+   "sha1": "37818dadcb21881826222a99bd7a0a77a4c38728",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 2046,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 2046,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2046,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 2046,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "3be7438d_spiraltree4",
+   "path": "src/structura/resources/examples/community/Tree/spiraltree4.es",
+   "sha1": "3be7438d710bc5962a22f2bb08c8ef1791e87dfa",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 5364,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 6295,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 7603,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 17920,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "3e455848_hfractal3d",
+   "path": "src/structura/resources/examples/community/Tree/Hfractal3d.es",
+   "sha1": "3e4558480c4306e9b1d47283e7f5ceec588f0d2e",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 2390,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 2390,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2390,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 2390,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "4144c188_tile1",
+   "path": "src/structura/resources/examples/community/SimpleStructures/tile1.es",
+   "sha1": "4144c18835a482c9030b32c6a80514a98b083edf",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 128,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 128,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 128,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 128,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "41c23f9b_spiraltree1modified",
+   "path": "src/structura/resources/examples/community/Tree/spiraltree1modified.es",
+   "sha1": "41c23f9bb2a005d2bf482f7f8856b50b6a466bcf",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1508,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 911,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1397,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1912,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "426fdb15_spiral1",
+   "path": "src/structura/resources/examples/community/SimpleStructures/spiral1.es",
+   "sha1": "426fdb156617b7178355ca087171b72d2a95bcd5",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 612,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 612,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 612,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 612,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "4701cff1_3drandcube",
+   "path": "src/structura/resources/examples/community/RandomCube/3drandcube.es",
+   "sha1": "4701cff18bebbf9237043bff1b4b3bdcb43b6e9d",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 3961,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 9757,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 10177,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 6985,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "476f37ae_pure_structure",
+   "path": "src/structura/resources/legacy/examples/Pure Structure.es",
+   "sha1": "476f37ae99187030ae609eb266fe3a1ab8682a2c",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 100501,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 100501,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 100501,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 100501,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "4bcd3225_sqsq2",
+   "path": "src/structura/resources/examples/community/BoxFractal/sqsq2.es",
+   "sha1": "4bcd3225331b9319bdef02d95a4cd5215c9652d7",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 260,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 260,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 260,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 260,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "4ed485a8_binarytree3d",
+   "path": "src/structura/resources/examples/community/BinaryTree3d/BinaryTree3d.es",
+   "sha1": "4ed485a841f83e2fea40b2bc6879cc8d8857a55f",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 2818,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 2806,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2811,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 2819,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "50cbf320_forarm",
+   "path": "src/structura/resources/examples/community/SimpleStructures/forarm.es",
+   "sha1": "50cbf320f64bf1014cb91ce07219fe898e4909f4",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 22,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 22,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 22,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 22,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "51a583ce_3dmondrian5",
+   "path": "src/structura/resources/examples/community/Mondrian/3dmondrian5.es",
+   "sha1": "51a583ce1e7b24077e39fa7da9e7829d95d8dd45",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 4928,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 11025,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 11571,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 7658,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "52532d8e_fractalbox2",
+   "path": "src/structura/resources/examples/community/BoxFractal/fractalbox2.es",
+   "sha1": "52532d8e2dfdd555b867fb46473b2a81f37269cb",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 188,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 188,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 188,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 188,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "547feecd_tree7",
+   "path": "src/structura/resources/examples/community/Tree/tree7.es",
+   "sha1": "547feecdf6cc4a71931ce72af456a64adda9258b",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 3697,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1754,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 3087,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 3337,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "54df4285_spiraltree2",
+   "path": "src/structura/resources/examples/community/Tree/spiraltree2.es",
+   "sha1": "54df42858223ef88df9806fe1a55781a374d42c5",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 8943,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 6509,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 15098,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 8750,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "570ec808_spiraltree1",
+   "path": "src/structura/resources/examples/community/Tree/spiraltree1.es",
+   "sha1": "570ec808fe35d4730326efddec44241dd169c53c",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 28542,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 18610,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 41369,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 23527,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "58e2c7f6_fractal4tri",
+   "path": "src/structura/resources/examples/community/SierpinskiPyramid/fractal4tri.es",
+   "sha1": "58e2c7f6a1bd30d696899834c9c086871b5d13be",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 12500,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 12500,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 12500,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 12500,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "59685d82_torus2",
+   "path": "src/structura/resources/legacy/examples/Torus2.es",
+   "sha1": "59685d828014942fe1e225910afdf0d9defb2a44",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 16849,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 16849,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 16849,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 16849,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "5b3f91af_konstrukt",
+   "path": "src/structura/resources/legacy/examples/Konstrukt.es",
+   "sha1": "5b3f91afb796a37b7ed2dc2be2350494ccda9b65",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 2383,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 2383,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2383,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 2383,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "5c802961_modmondrian",
+   "path": "src/structura/resources/examples/community/Mondrian/modmondrian.es",
+   "sha1": "5c8029614fbb58c47a24dcaf5e276dd71c6201be",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 116,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 151,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 241,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 191,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "5d1e8237_sierpinski1",
+   "path": "src/structura/resources/examples/community/SierpinskiPyramid/sierpinski1.es",
+   "sha1": "5d1e8237e90cac2818c5414889c18cffee1bc0b6",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 5120,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 5120,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 5120,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 5120,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "5f1ee33c_flowertree",
+   "path": "src/structura/resources/examples/community/Tree/flowertree.es",
+   "sha1": "5f1ee33c9d32ae4d4139eb504c9eeeadbc3bb078",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 10582,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 10582,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 10582,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 10582,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "5f25892f_fractaltree2",
+   "path": "src/structura/resources/examples/community/Tree/fractaltree2.es",
+   "sha1": "5f25892fbed01ad44dde81bf1ae627d0bc76d012",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 782,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 782,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 782,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 782,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "5fb51931_randomcolor",
+   "path": "src/structura/resources/legacy/examples/Tutorials/RandomColor.es",
+   "sha1": "5fb519313b935b3d19134261eb9e5738f46cf911",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 300,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 300,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 300,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 300,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "65793d7a_testpytree2",
+   "path": "src/structura/resources/examples/community/Pythagoras/TestPytree2.es",
+   "sha1": "65793d7a7bcf5db80c9b67a6296f9c32203a9b25",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 2047,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 2047,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2047,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 2047,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "677e1bde_randbox3d1",
+   "path": "src/structura/resources/examples/community/RandomCube/randbox3d1.es",
+   "sha1": "677e1bded4e21825fa424f368a42f5932cd908d3",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 12193,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 12193,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 12193,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 12193,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "68c50424_spiraltree2d",
+   "path": "src/structura/resources/legacy/examples/SpiralTree2D.es",
+   "sha1": "68c504245e09c15eed88e1e159b42945dda0b5dd",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 39197,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 21790,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 68980,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 100008,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "696d630e_dodecafractal2",
+   "path": "src/structura/resources/examples/community/Dodecahedron/DodecaFractal2.es",
+   "sha1": "696d630eb7246ff38a00e901e8518eb836300d83",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 2880,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 2880,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2880,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 2880,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "69a555bb_3dtree",
+   "path": "src/structura/resources/examples/community/Tree/3dtree.es",
+   "sha1": "69a555bb9595552b369eb0a349b2268dae3fd068",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1648,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1908,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 483,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 10665,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "6a5c5141_squaresq2",
+   "path": "src/structura/resources/examples/community/SierpinskiPyramid/squaresq2.es",
+   "sha1": "6a5c5141c5648a6b1a20d7a80637ebe904fc3368",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 5834,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 5834,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 5834,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 5834,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "6baf6aea_dragoncurve",
+   "path": "src/structura/resources/examples/community/DragonCurve/DragonCurve.es",
+   "sha1": "6baf6aea6ec4d19e841ea10800d7dcafa90a2e92",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1026,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1026,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1026,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1026,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "6c8e2d6d_3dmondrian4",
+   "path": "src/structura/resources/examples/community/Mondrian/3dmondrian4.es",
+   "sha1": "6c8e2d6d7ca1dae74fd6fe9a0f86c502ae04ef73",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 4951,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 6001,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 6811,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 5821,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "6cd094b9_sierpinskipyramid",
+   "path": "src/structura/resources/examples/community/SierpinskiPyramid/SierpinskiPyramid.es",
+   "sha1": "6cd094b97cf1199b6697659e5b4cb59dd483f811",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 385,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 385,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 385,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 385,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "70d4fa02_simple1",
+   "path": "src/structura/resources/examples/community/SimpleStructures/simple1.es",
+   "sha1": "70d4fa02dd52f6e270286a1d5feccda30c6e642d",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 10,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 10,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 10,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 10,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "73a98a6d_trunk4",
+   "path": "src/structura/resources/examples/community/AbstractShape/trunk4.es",
+   "sha1": "73a98a6d74f383f84f16cf2eb65d497f2914f7a5",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 5991,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 5991,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 5991,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 5991,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "74da392f_raytracer___light",
+   "path": "src/structura/resources/legacy/examples/Tutorials/Raytracer - Light.es",
+   "sha1": "74da392fefe1d022b7d76624a52114fda5dfe6ed",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 65,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 65,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 65,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 65,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "76f2d6ef_fractalbox4",
+   "path": "src/structura/resources/examples/community/BoxFractal/fractalbox4.es",
+   "sha1": "76f2d6ef8f8cc8aa84af92dce826a11c08a8827c",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 4372,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 4372,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 4372,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 4372,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "78c3b821_blend",
+   "path": "src/structura/resources/legacy/examples/Tutorials/Blend.es",
+   "sha1": "78c3b82115facf910dbb1e12ffed73cf743bd73c",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 796,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 796,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 796,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 796,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "7bb471b0_arc_sphere",
+   "path": "src/structura/resources/legacy/examples/Arc Sphere.es",
+   "sha1": "7bb471b0a9f3577263c61c52ed1a71499e39c053",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 10443,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 10431,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 10438,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 10468,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "7e11f321_preprocessor",
+   "path": "src/structura/resources/legacy/examples/Tutorials/Preprocessor.es",
+   "sha1": "7e11f3210978d7477015d813bf4ad8cfa2c59f40",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 3457,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 3457,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 3457,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 3457,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "82ef0da5_tree10",
+   "path": "src/structura/resources/examples/community/Tree/tree10.es",
+   "sha1": "82ef0da5bb8d3b75f757f357f0ca716d9ff135e5",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 10524,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 13158,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 13050,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 15168,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "838fa110_nouveau3",
+   "path": "src/structura/resources/legacy/examples/Nouveau3.es",
+   "sha1": "838fa110705cff2ee11ce567a6f14db304693a8c",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 19701,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 19701,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 19701,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 19701,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "85939020_mengersponge",
+   "path": "src/structura/resources/examples/community/MengerSponge/MengerSponge.es",
+   "sha1": "859390202591f734a7f797900639dadcec294ac6",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 8001,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 8001,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 8001,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 8001,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "8671c8f8_nouveau",
+   "path": "src/structura/resources/legacy/examples/Nouveau.es",
+   "sha1": "8671c8f867447d5c7665f048ef7f20c59d25f92a",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 15765,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 15765,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 15765,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 15765,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "885999d8_pytree2",
+   "path": "src/structura/resources/examples/community/Pythagoras/pytree2.es",
+   "sha1": "885999d8c09e3204fca6723dfde5978ada2b2527",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 9200,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 9200,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 9200,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 9200,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "88ec8330_nineworthies",
+   "path": "src/structura/resources/legacy/examples/NineWorthies.es",
+   "sha1": "88ec8330207744610cc9bef40ff21b713101836c",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 52223,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 52223,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 52223,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 52223,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "89531ee4_3drandstar2",
+   "path": "src/structura/resources/examples/community/RandomCube/3drandstar2.es",
+   "sha1": "89531ee4f7cd15e411f836cd95c3972c9b55569b",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1730,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 2370,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2426,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 3354,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "89c63a3a_dipchip",
+   "path": "src/structura/resources/examples/community/Chip/DIPchip.es",
+   "sha1": "89c63a3a8d8e225740859779f36b295acd882d24",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 678,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 573,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 736,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 705,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "8abc1337_roundtree",
+   "path": "src/structura/resources/legacy/examples/RoundTree.es",
+   "sha1": "8abc133752758161719b876803449a8906f7808a",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 3981,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 3981,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 3981,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 3981,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "8d9a04cc_binarytree",
+   "path": "src/structura/resources/examples/community/BinaryTree/BinaryTree.es",
+   "sha1": "8d9a04cc29ab1a76cc808dbb7d21bd31eac32757",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 617,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 617,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 617,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 617,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "8eb56cb8_frameframe1",
+   "path": "src/structura/resources/examples/community/FrameFractal/frameframe1.es",
+   "sha1": "8eb56cb89841082a4cb2779d1219f842f8f62e06",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 7022,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 7022,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 7022,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 7022,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "8f2362db_pythagorastree",
+   "path": "src/structura/resources/examples/community/Pythagoras/PythagorasTree.es",
+   "sha1": "8f2362db2c6569448610a01f8f3e0978233038f8",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1024,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1024,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1024,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1024,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "8fc68f19_swirl",
+   "path": "src/structura/resources/examples/community/SimpleStructures/swirl.es",
+   "sha1": "8fc68f1905a4a24bc401d9d5280f112955e0582c",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 10000,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 10000,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 10000,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 10000,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "927dcd3d_tree9",
+   "path": "src/structura/resources/examples/community/Tree/tree9.es",
+   "sha1": "927dcd3dd9b02ef7d410d3cfeca3a003d6db5ea1",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 10012,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 11106,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 16326,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 25167,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "9563ae61_primitives",
+   "path": "src/structura/resources/legacy/examples/Tutorials/Primitives.es",
+   "sha1": "9563ae619d746cff07b0f5ebdb19ca1dd0df359c",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 52,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 52,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 52,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 52,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "96525ae6_tictactoe",
+   "path": "src/structura/resources/examples/community/tictactoe.es",
+   "sha1": "96525ae603e0cb199799ad63b56898e68ad544d9",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1455,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1939,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1255,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1929,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "9f2d410b_alhambra_full",
+   "path": "src/structura/resources/examples/community/alhambra_full.es",
+   "sha1": "9f2d410b7762105e0ae48253a1203fa975baa084",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 4001,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 4001,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 4001,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 4001,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "9f690dee_randbox3d2",
+   "path": "src/structura/resources/examples/community/RandomCube/randbox3d2.es",
+   "sha1": "9f690dee7bd9e2861913640d1abb859468fd9782",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1094,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1094,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1094,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1094,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "a261f69a_preprocessorgui",
+   "path": "src/structura/resources/legacy/examples/Tutorials/PreprocessorGUI.es",
+   "sha1": "a261f69a6029b2fda7ecf7351c3174e6a8b3edf8",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1153,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1153,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1153,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1153,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "a71300e6_3dmondrian1",
+   "path": "src/structura/resources/examples/community/Mondrian/3dmondrian1.es",
+   "sha1": "a71300e69be53e45643c7618bdd9bda166f41008",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1964,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 3602,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2835,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1730,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "a786492d_menger",
+   "path": "src/structura/resources/legacy/examples/Menger.es",
+   "sha1": "a786492df8c5730f4e404ddfcfd1ae9277339859",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 8000,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 8000,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 8000,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 8000,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "a847d519_chipboard2",
+   "path": "src/structura/resources/examples/community/Chip/ChipBoard2.es",
+   "sha1": "a847d519845174a6db3d2c4658b64c3cbd6ba710",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 2906,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 5568,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2906,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 3632,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "a8e0ac9a_building1",
+   "path": "src/structura/resources/examples/community/MiscStructures/Building1.es",
+   "sha1": "a8e0ac9a536f7fe0c4b75228294c00bbe9ea841b",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1202,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1202,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1202,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1202,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "a934714d_chipboard",
+   "path": "src/structura/resources/examples/community/Chip/ChipBoard.es",
+   "sha1": "a934714d32cfd5e30c2f8961c4eacf2c1e838aaa",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 2543,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 8462,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2490,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 4489,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "aa2e92ff_mondrian",
+   "path": "src/structura/resources/legacy/examples/Mondrian.es",
+   "sha1": "aa2e92ff8907c8a8133d1696fa69d3552f73e5be",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 115,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 150,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 240,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 190,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "ab42a627_fractaltree1",
+   "path": "src/structura/resources/examples/community/Tree/fractaltree1.es",
+   "sha1": "ab42a6276893dacaaeef1ab150df3caea4b6b6e2",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 3907,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 3907,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 3907,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 3907,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "ad55ce4b_3dmondrian6",
+   "path": "src/structura/resources/examples/community/Mondrian/3dmondrian6.es",
+   "sha1": "ad55ce4bbc3f62fe471c643bae8327476572babf",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 3445,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 3861,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 3263,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 3757,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "aeee2354_abstractshape",
+   "path": "src/structura/resources/examples/community/AbstractShape/AbstractShape.es",
+   "sha1": "aeee2354f476cee45dadfd5396333de61b2b83f6",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 44,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 44,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 44,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 44,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "aeefb687_ball",
+   "path": "src/structura/resources/legacy/examples/Ball.es",
+   "sha1": "aeefb687e4b15d6d1592ebdd021b2324930bdf7f",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1998,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1998,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1998,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1998,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "af703aaa_binarytree3",
+   "path": "src/structura/resources/examples/community/BinaryTree/BinaryTree3.es",
+   "sha1": "af703aaa8f03b6fddb0fba3de0ec72c07f4e3b3d",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1250,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1248,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1248,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1248,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "b4dc584c_nouveau2",
+   "path": "src/structura/resources/legacy/examples/Nouveau2.es",
+   "sha1": "b4dc584c69699ee58e947e51fe791e3b807ceecb",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 11821,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 11821,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 11821,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 11821,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "b8a79982_clock",
+   "path": "src/structura/resources/examples/community/Clock/Clock.es",
+   "sha1": "b8a79982f6dcb6e898b7228eb11978afac38cce2",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 91,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 91,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 91,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 91,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "b8d886f1_newmenger3",
+   "path": "src/structura/resources/examples/community/MengerSponge/newMenger3.es",
+   "sha1": "b8d886f18700f6cd9dc20bb402129983ec6f37c9",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 3200,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 3200,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 3200,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 3200,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "ba7c724a_pytree3drandflip",
+   "path": "src/structura/resources/examples/community/Pythagoras/pytree3drandFlip.es",
+   "sha1": "ba7c724a4bd79f6d8c0b47c18d9d4c143c6d4752",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 8191,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 8191,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 8191,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 8191,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "bcc07d35_spiral2",
+   "path": "src/structura/resources/examples/community/SimpleStructures/spiral2.es",
+   "sha1": "bcc07d35e26fd218937d7d02548452ea992d7b4c",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 600,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 600,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 600,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 600,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "bdde19ce_reflection",
+   "path": "src/structura/resources/legacy/examples/Reflection.es",
+   "sha1": "bdde19ce7a9cf2a1412f85ddf865892813db54c9",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1593,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1593,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1593,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1593,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "bdff0598_testpytree3",
+   "path": "src/structura/resources/examples/community/Pythagoras/TestPytree3.es",
+   "sha1": "bdff05980d046bdccc177b0e89270401c0855faa",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 511,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 511,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 511,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 511,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "be859035_grinder",
+   "path": "src/structura/resources/legacy/examples/Grinder.es",
+   "sha1": "be85903509c67b4989f4c9d3d36ef62f167fe93d",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 35856,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 35856,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 35856,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 35856,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "c0679884_hfractal2",
+   "path": "src/structura/resources/examples/community/Tree/Hfractal2.es",
+   "sha1": "c067988434fc6f4b6c100d0e13690bc504fc0d0f",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 256,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 256,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 256,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 256,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "c1a94511_3dmondrian2",
+   "path": "src/structura/resources/examples/community/Mondrian/3dmondrian2.es",
+   "sha1": "c1a94511e37f0fd727bcb7ba8464dafbbc2a764e",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 5215,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 7742,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 6167,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 4815,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "c1b39dd0_tile2",
+   "path": "src/structura/resources/examples/community/SimpleStructures/tile2.es",
+   "sha1": "c1b39dd0028644d2826e0389677a9fd9a9637860",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 27,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 27,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 27,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 27,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "c1e6b9ad_csg_test",
+   "path": "src/structura/resources/legacy/examples/Tutorials/CSG test.es",
+   "sha1": "c1e6b9ad70f6d2400ac5f3888b95649d93ea6f35",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 113,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 117,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 141,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 141,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "c380296d_baravellespiral",
+   "path": "src/structura/resources/examples/community/BaravelleSpiral/baravellespiral.es",
+   "sha1": "c380296d44aceb6c21f58a17f46391ac513068c9",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 48,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 48,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 48,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 48,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "c3b5d3ee_mondrian2d",
+   "path": "src/structura/resources/examples/community/Mondrian/mondrian2d.es",
+   "sha1": "c3b5d3ee1c4b7946574ab2b11b95dc0739fd7440",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 581,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1626,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1186,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 731,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "c641250c_sevensegment",
+   "path": "src/structura/resources/examples/community/Clock/SevenSegment.es",
+   "sha1": "c641250ca9d7e16ec470268bdb622ae02943cef4",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 172,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 136,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 115,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 136,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "c74e6d7c_cuberotation1",
+   "path": "src/structura/resources/examples/community/CubeRotation/CubeRotation1.es",
+   "sha1": "c74e6d7c3e3904e3216a3bb879923cef959b7dbf",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 251,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 251,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 251,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 251,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "cb1d9f47_pytreerandflip",
+   "path": "src/structura/resources/examples/community/Pythagoras/pytreeRandFlip.es",
+   "sha1": "cb1d9f475f63ecfb5c1e90196b109efb9f412f29",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1644,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1666,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1198,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1228,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "cb8d0dc2_nightcity",
+   "path": "src/structura/resources/examples/community/NightCity/nightCity.es",
+   "sha1": "cb8d0dc209917f3036e90b54668a2d645001ddc4",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 3528,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 7943,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 5562,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 5171,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "ccbf963d_structure1",
+   "path": "src/structura/resources/examples/community/SimpleStructures/Structure1.es",
+   "sha1": "ccbf963d514d8bb677b2290acc0fcdff1e3cdb19",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 9415,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 9415,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 9415,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 9415,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "ccd18c64_3drandstar3",
+   "path": "src/structura/resources/examples/community/RandomCube/3drandstar3.es",
+   "sha1": "ccd18c64f1bb9a6c730efd680bca96de7f722013",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1730,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 2370,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2426,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 3354,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "cd344422_3dmondrian3",
+   "path": "src/structura/resources/examples/community/Mondrian/3dmondrian3.es",
+   "sha1": "cd3444221687aeabd09cda53fd372e167b99a9f2",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 5720,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 4342,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 4784,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 5369,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "d16724bb_testpytree5",
+   "path": "src/structura/resources/examples/community/Pythagoras/TestPytree5.es",
+   "sha1": "d16724bbf394e29958fe4f9c8164a4920e35f643",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 511,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 511,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 511,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 511,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "d32b4e39_city_of_glass",
+   "path": "src/structura/resources/legacy/examples/City of Glass.es",
+   "sha1": "d32b4e393c407159240c79e53f094c4e3884cd51",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 53651,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 53805,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 53920,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 53756,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "d3e367a9_sierpinskipyramidcube",
+   "path": "src/structura/resources/examples/community/SierpinskiPyramid/sierpinskipyramidcube.es",
+   "sha1": "d3e367a97e9171784e2c757a3566df4d0595e0a5",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 2746,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 5602,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 4786,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 2998,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "d40f0975_javascript___movie",
+   "path": "src/structura/resources/legacy/examples/Tutorials/JavaScript - Movie.es",
+   "sha1": "d40f0975d31fb7f1b9f39baecefb019c52fa623e",
+   "javascript": true
+  },
+  {
+   "id": "d4b76663_moduli_creatures",
+   "path": "src/structura/resources/legacy/examples/Moduli Creatures.es",
+   "sha1": "d4b766631e83eb67a412fe4e4cd20712e14c49e4",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 13739,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 14257,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 14534,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 14295,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "d4d81a79_pytree3d",
+   "path": "src/structura/resources/examples/community/Pythagoras/pytree3d.es",
+   "sha1": "d4d81a7986c74a40cfd730e097ce197909748901",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 2390,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 2390,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2390,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 2390,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "d4ff3f7a_sierpinskitetra",
+   "path": "src/structura/resources/examples/community/SierpinskiPyramid/sierpinskitetra.es",
+   "sha1": "d4ff3f7a7d2850748e1b5a93347eca45c690a8e9",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 4097,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 4097,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 4097,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 4097,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "d546adf9_synctor",
+   "path": "src/structura/resources/legacy/examples/Synctor.es",
+   "sha1": "d546adf9860b22a6ebb29045c1c1c64d09e75c7b",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 102367,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 100233,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2435,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 2445,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "d6316477_default",
+   "path": "src/structura/resources/legacy/examples/Default.es",
+   "sha1": "d63164779f390f076ea7748c8eb6c46ac3e853fb",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 2387,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 2387,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2387,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 2387,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "d8fff939_tree8",
+   "path": "src/structura/resources/examples/community/Tree/tree8.es",
+   "sha1": "d8fff939cdeb54e48f4403abff3b1e128822136a",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 956,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 956,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 956,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 956,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "d9dab19c_fractal6tri",
+   "path": "src/structura/resources/examples/community/SierpinskiPyramid/fractal6tri.es",
+   "sha1": "d9dab19c1e363a2b73d3cf078b0d169c9d96f4a4",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 3908,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 3908,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 3908,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 3908,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "ddfc98bb_octahedron",
+   "path": "src/structura/resources/examples/community/Mondrian/octahedron.es",
+   "sha1": "ddfc98bb827c7d349f0fc3f7c8780131a0bb92d6",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 736,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 661,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 571,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 751,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "e0f7af81_abstract1",
+   "path": "src/structura/resources/examples/community/AbstractShape/abstract1.es",
+   "sha1": "e0f7af815ab268a8e2f8d44574e80c69a0efbedb",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1617,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1617,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1617,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1617,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "e1546daf_randbox3d4",
+   "path": "src/structura/resources/examples/community/RandomCube/randbox3d4.es",
+   "sha1": "e1546daf1ae10554507d763daf0f8f469e747e3b",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 8580,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 9567,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 7638,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 9977,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "e1ee853b_meshtest",
+   "path": "src/structura/resources/legacy/examples/MeshTest.es",
+   "sha1": "e1ee853b8ef89cf812771713cb62d19df1adc23f",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 38756,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 28684,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 18113,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 21947,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "e3ab4d03_tree6",
+   "path": "src/structura/resources/examples/community/Tree/tree6.es",
+   "sha1": "e3ab4d030afcd7fbc0c499195ca73d4e42a26b75",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 5364,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 6295,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 7603,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 17920,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "e3cc9280_3dtree2",
+   "path": "src/structura/resources/examples/community/Tree/3dtree2.es",
+   "sha1": "e3cc9280ac6dfdfff6a097c14a779ef89cb2643e",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 7213,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 8823,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 11231,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 25326,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "e3f4c94c_framefractal1",
+   "path": "src/structura/resources/examples/community/FrameFractal/framefractal1.es",
+   "sha1": "e3f4c94cb473503a5315efaa16544c9ed7f5282c",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 341,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 341,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 341,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 341,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "e60b9bfa_invertedsierpinkipyramid",
+   "path": "src/structura/resources/examples/community/SierpinskiPyramid/invertedsierpinkipyramid.es",
+   "sha1": "e60b9bfa51713ca99019821121edfaf39361a1e1",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 4687,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 4687,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 4687,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 4687,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "e7e8b177_hfractal",
+   "path": "src/structura/resources/examples/community/Tree/Hfractal.es",
+   "sha1": "e7e8b177012385af171640a03ffb5585d1d5039d",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 512,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 512,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 512,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 512,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "e8af7048_frameframe2",
+   "path": "src/structura/resources/examples/community/FrameFractal/frameframe2.es",
+   "sha1": "e8af70487020c6e12dbd1ce8c6fda0337877893e",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 878,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 878,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 878,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 878,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "e8d0c3e6_fractal5tri",
+   "path": "src/structura/resources/examples/community/SierpinskiPyramid/fractal5tri.es",
+   "sha1": "e8d0c3e66b46cb8415977bb58dfb717f0cb7602b",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 2501,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 2501,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2501,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 2501,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "ee57db06_boxfractal2d",
+   "path": "src/structura/resources/examples/community/BoxFractal/boxfractal2d.es",
+   "sha1": "ee57db0633cdfa69ab3812cea90468f670661b77",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1490,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1438,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1418,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1438,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "f0ba4bbb_testpytree6",
+   "path": "src/structura/resources/examples/community/Pythagoras/TestPytree6.es",
+   "sha1": "f0ba4bbb7a8011540de8f6f641a8fa9a3642a274",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1023,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1023,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1023,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1023,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "f12c252d_testpytree4",
+   "path": "src/structura/resources/examples/community/Pythagoras/TestPytree4.es",
+   "sha1": "f12c252d00179ea253f88631c37b49fbd7d6c181",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 4095,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 4095,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 4095,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 4095,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "f2062c9f_forbunny",
+   "path": "src/structura/resources/examples/community/SimpleStructures/forbunny.es",
+   "sha1": "f2062c9f5fe7c528e5adfa8c110b48f19ac3d26e",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 20,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 20,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 20,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 20,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "f3b9297a_binarykite",
+   "path": "src/structura/resources/legacy/examples/BinaryKite.es",
+   "sha1": "f3b9297a573eb85a8571e3076410beabe1703045",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 16001,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 16001,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 16001,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 16001,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "f4c9e5bb_trees_3d",
+   "path": "src/structura/resources/legacy/examples/Trees 3d.es",
+   "sha1": "f4c9e5bb9115a0f74df67274b19bbc23aaa7d737",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 101309,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 101381,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 100103,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 101102,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "f5d7bf95_antenna",
+   "path": "src/structura/resources/examples/community/Antenna/antenna.es",
+   "sha1": "f5d7bf95d85b131cee56996e0e8ea175c1161296",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 2072,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 2072,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2072,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 2072,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "f63c14f6_chipnew2",
+   "path": "src/structura/resources/examples/community/Chip/ChipNew2.es",
+   "sha1": "f63c14f617dc81dd02fb13b10ef6c620c49fd0b0",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1597,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 3053,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 2493,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 2555,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "f6963a6b_testpytree1",
+   "path": "src/structura/resources/examples/community/Pythagoras/TestPytree1.es",
+   "sha1": "f6963a6bd5445b71ac4e709f8fb9a45ee7a0f7f5",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 1023,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 1023,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 1023,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 1023,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "f93acd6d_levyccurve",
+   "path": "src/structura/resources/examples/community/LevyCCurve/LevyCCurve.es",
+   "sha1": "f93acd6dfb6936e8743a2d0eca9c77b26a4bf84c",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 4098,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 4098,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 4098,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 4098,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "f9ad3788_chip2",
+   "path": "src/structura/resources/examples/community/Chip/Chip2.es",
+   "sha1": "f9ad3788028f1dc09f114f6a633c65dc4a306fdd",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 687,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 741,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 760,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 732,
+     "error": null,
+     "timeout": false
+    }
+   ],
+   "texts": true
+  },
+  {
+   "id": "fa0f2da9_3dframe1",
+   "path": "src/structura/resources/examples/community/3dframe1/3dframe1.es",
+   "sha1": "fa0f2da91edcafe7f8b8e3e5cbce0b8a0303ccfb",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 5305,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 5305,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 5305,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 5305,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  },
+  {
+   "id": "fb80eb5d_spiraltree3",
+   "path": "src/structura/resources/examples/community/Tree/spiraltree3.es",
+   "sha1": "fb80eb5dc7a7d092fde926fb9f942cf8d8e42f81",
+   "javascript": false,
+   "runs": [
+    {
+     "seed": 0,
+     "count": 8180,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1,
+     "count": 8180,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 42,
+     "count": 8180,
+     "error": null,
+     "timeout": false
+    },
+    {
+     "seed": 1234,
+     "count": 8180,
+     "error": null,
+     "timeout": false
+    }
+   ]
+  }
+ ]
+}

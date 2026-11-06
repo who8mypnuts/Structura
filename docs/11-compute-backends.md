@@ -1,41 +1,43 @@
-# 11 — Compute Backends: GPU (wgpu) & CPU (Numba) from One Kernel Source
+# 11 — Compute Backends: CUDA, OpenCL, WGSL, GLSL & Numba from One Kernel Source
 
 ## 1. The problem
 
-The brief asks for three things at once:
+Structura has two engines ([ADR-0013](adr/0013-two-render-engines.md)) and several compute targets:
 
-1. GPU acceleration is a must.
-2. A multithreaded CPU fallback is essential.
-3. DRY.
+| Target | Engine | Why |
+|--------|--------|-----|
+| **CUDA** (NVRTC-compiled CUDA C++) | Precision | Fastest path on NVIDIA (reference GPU: GTX 1660) |
+| **OpenCL C** (pyopencl) | Precision | AMD and Intel GPUs; also any CPU via pocl |
+| **WGSL** (wgpu: Vulkan / Metal / D3D12) | Precision | Universal GPU path, and the only GPU compute path on macOS |
+| **Numba** (LLVM, multithreaded) | Precision + preview fallback | Essential CPU fallback; works everywhere |
+| **GLSL** (OpenGL 3.3 / 4.1) | Preview | Shared camera, colour and view-transform modules for the raster viewport |
 
-A naive design writes the renderer twice, once in a shading language and once in Python/Numba. That
-duplicates the most bug-prone code in the project (intersection, sampling, BSDFs, lights) and guarantees
-drift between the two.
+Writing the intersection, sampling, BSDF and light code five times would be the worst possible DRY
+violation, and a guaranteed source of drift.
 
 ## 2. The approach: SKL (Structura Kernel Language)
 
-**SKL is a restricted, statically typed subset of Python.** Kernel code is written once as ordinary `.py`
-files. One compiler front end produces two outputs:
+**SKL is a restricted, statically typed subset of Python.** Kernels are written once as `*.skl.py` files. One
+compiler front end lowers them to a typed IR, and **per-target emitters** generate the code:
 
 ```mermaid
 flowchart LR
-  SRC["*.skl.py<br/>(Python syntax, type-annotated)"] --> FE[SKL front end<br/>ast → typed IR]
-  FE --> W[WGSL emitter] --> GPU[wgpu compute pipelines]
-  FE --> N[Numba emitter<br/>vectors → tuples] --> CPU["@njit(nogil, parallel)"]
-  FE --> L[Layout emitter<br/>std430 structs → numpy dtypes] --> PACK[Packers / uploads]
+  SRC["*.skl.py<br/>(typed Python subset)"] --> FE["SKL front end<br/>ast → typed IR"]
+  FE --> EN["Numba emitter"] --> CPU["@njit(nogil, parallel)"]
+  FE --> EC["CUDA C emitter"] --> CU["NVRTC → PTX → cuda-python"]
+  FE --> EO["OpenCL C emitter"] --> CL["pyopencl program"]
+  FE --> EW["WGSL emitter"] --> WG["wgpu compute pipeline"]
+  FE --> EG["GLSL emitter"] --> GL["preview shader modules"]
+  FE --> EL["Layout emitter"] --> ABI["flat buffer ABI<br/>numpy packers + accessors"]
 ```
 
-- **GPU:** the typed IR is emitted as WGSL and compiled by wgpu (Vulkan / Metal / D3D12).
-- **CPU:** the same IR is emitted as plain Python. Vector operations are lowered to tuple helper calls, and
-  the result is compiled by Numba. Entry points are wrapped in a `prange` loop over the dispatch grid.
-- **Layouts:** SKL `struct` declarations also produce the **numpy structured dtypes** (std430 alignment and
-  padding). The packers therefore write buffers that both backends read without conversion. The layout is
-  defined once.
-- **Debugging:** the generated Python also runs with `NUMBA_DISABLE_JIT=1`. Kernels can be stepped through in a
-  normal Python debugger on the CPU path.
-
-This is the same idea as Taichi or NVIDIA Warp, scoped down to exactly what Structura needs. Those tools
-were rejected because of vendor lock-in or maintenance risk ([ADR-0004](adr/0004-single-source-kernels.md)).
+- **One source, five targets.** Every emitter is a small module (≤ 300 lines) driven by a shared
+  **builtins table**. For each builtin, the table gives the spelling per target and the Numba implementation.
+- **Flat buffer ABI (portability rule).** Device buffers are **flat arrays of `f32` / `u32`** only. SKL
+  `@struct` types are loaded and stored through *generated accessor functions* (`load_Material(buf, i)`).
+  - This sidesteps `float3` alignment differences between CUDA, OpenCL, WGSL and std430.
+  - The packers on the host write the same flat numpy arrays for every backend. The layout is defined once.
+- **Debuggable.** The Numba output is ordinary Python and runs with `NUMBA_DISABLE_JIT=1` under a debugger.
 
 ## 3. SKL language definition
 
@@ -51,164 +53,159 @@ class Hit:
     normal: vec3
     prim: u32
 
-@func
+@func(exact=True)
 def intersect_unit_box(o: vec3, d: vec3, t_max: f32) -> Hit:
     inv = 1.0 / d
     t0 = (vec3(0.0) - o) * inv
     t1 = (vec3(1.0) - o) * inv
     t_near = max3(min(t0, t1))
     t_far = min3(max(t0, t1))
-    hit = t_near <= t_far and t_far > 0.0 and t_near < t_max
+    ok = t_near <= t_far and t_far > 0.0 and t_near < t_max
     t = select(t_near > 0.0, t_near, t_far)
-    n = box_face_normal(o + d * t)
-    return Hit(select(hit, t, INF), n, u32(0))
+    return Hit(select(ok, t, INF), box_face_normal(o + d * t), u32(0))
 ```
 
-Emitted WGSL (abridged):
-
-```wgsl
-struct Hit { t: f32, normal: vec3<f32>, prim: u32 }
-fn intersect_unit_box(o: vec3<f32>, d: vec3<f32>, t_max: f32) -> Hit {
-  let inv = 1.0 / d;
-  let t0 = (vec3<f32>(0.0) - o) * inv;
-  ...
-}
-```
-
-Emitted Numba Python (abridged):
-
-```python
-@njit(inline="always", nogil=True, fastmath=_FM, cache=True)
-def intersect_unit_box(o, d, t_max):
-    inv = v3_rdiv(F32_1, d)
-    t0 = v3_mul(v3_sub(v3_splat(F32_0), o), inv)
-    ...
-```
+| Target | Emitted form of `t0 = (vec3(0.0) - o) * inv` |
+|--------|-----------------------------------------------|
+| WGSL | `let t0 = (vec3<f32>(0.0) - o) * inv;` |
+| GLSL | `vec3 t0 = (vec3(0.0) - o) * inv;` |
+| OpenCL C | `float3 t0 = ((float3)(0.0f) - o) * inv;` |
+| CUDA C++ | `v3 t0 = (v3s(0.0f) - o) * inv;` (`v3` is a prelude struct with inline operators) |
+| Numba | `t0 = v3_mul(v3_sub(v3_splat(F0), o), inv)` (tuples of `float32`) |
 
 ### 3.2 Allowed constructs
 
 | Category | Allowed |
 |----------|---------|
-| Scalar types | `f32`, `i32`, `u32`, `bool` |
-| Vector / matrix | `vec2`, `vec3`, `vec4` (f32), `ivec*`, `uvec*`, `mat3x4` (affine) |
-| Aggregates | `@struct` classes with typed fields (no methods); fixed-size local arrays `local(u32, 64)` (e.g. the BVH stack) |
-| Buffers | `Storage[T]` (read-only), `StorageRW[T]`, `Uniform[T]`; declared in the kernel signature |
-| Control flow | `if/elif/else`, `for i in range(a, b[, step])`, `while`, `break`, `continue`, early `return` |
-| Expressions | Arithmetic with vector broadcasting, comparisons, `and/or/not`, conditional expression → `select` |
-| Functions | `@func` with full annotations; calls to other `@func`s and to builtins; **no recursion** |
-| Entry points | `@kernel(workgroup=(8, 8, 1))` with `gid: uvec3` plus buffers and uniforms |
-| Imports | Only `structura.kernels.skl` and other `*.skl.py` modules |
+| Scalars | `f32`, `i32`, `u32`, `bool` (`f64` only in functions marked `@func(targets=HOST_PRECISION)`, which excludes WGSL and GLSL) |
+| Vectors / matrices | `vec2`, `vec3`, `vec4`, `ivec*`, `uvec*`, `mat3x4` (affine) |
+| Aggregates | `@struct` with typed fields; fixed-size local arrays `local(u32, 64)` |
+| Buffers | `Buf[f32]`, `Buf[u32]` (read-only) and `BufRW[...]`, with generated struct accessors |
+| Buffer sets | `@bufset class SceneBufs: prim_f: Buf[f32] …` groups buffers that travel together. A `sc: SceneBufs` parameter is expanded by the front end into the individual buffers, `sc.prim_f` becomes `prim_f`, and passing `sc` to a call passes all of them. The IR and the emitted code only see plain buffers, so WGSL/GLSL global bindings keep their names. |
+| Control flow | `if/elif/else`, `for i in range(...)`, `while`, `break`, `continue`, early `return` |
+| Functions | `@func` with full annotations; **no recursion** |
+| Entry points | `@kernel(grid="2d")` with `gid: uvec3`; the emitters produce `__global__`, `__kernel`, `@compute @workgroup_size(8,8,1)`, or a Numba `prange` wrapper |
 
-Not allowed: recursion, closures, exceptions, dynamic allocation, Python objects, `float64`, implicit
-int↔float conversion, and globals other than `const`. The front end rejects these **with the Python source
-location**.
+Not allowed: recursion, closures, exceptions, dynamic allocation, Python objects, implicit numeric
+conversions, and mutable globals. Errors are reported with the Python source location.
 
 ### 3.3 Numerical contract
 
-- Everything is `f32` / `u32`. Python float literals are typed as `f32` by the front end. The Numba emitter
-  writes them as `np.float32` constants, so no silent float64 promotion occurs. A CI check inspects Numba's
-  type annotations to confirm this.
-- `u32` arithmetic wraps on both backends (the Numba emitter masks where Numba would widen).
-- Fast-math: *allowed* for shading functions; **forbidden** for geometry/robustness functions (`@func(exact=True)`).
-- Builtins (`dot`, `cross`, `normalize`, `length`, `clamp`, `mix`, `fract`, `sqrt`, `exp`, `log`, `pow`,
-  `sin`, `cos`, `atan2`, `select`, `bitcast`, `countOneBits`, `reverseBits`…) are defined in **one table**,
-  `kernels/skl/builtins.py`. Each entry gives the WGSL spelling and the Numba implementation.
+- Everything is `f32` / `u32` unless declared otherwise. Literals are typed `f32` by the front end.
+  - The Numba emitter writes `np.float32` constants.
+  - The CUDA and OpenCL emitters write `1.0f`.
+  - A CI check inspects Numba type annotations for accidental float64.
+- `u32` arithmetic wraps on every target (the Numba emitter masks where Numba would widen).
+- `@func(exact=True)` (geometry, robustness) disables fast-math on every target:
+  - Numba `fastmath=False`;
+  - NVRTC `--fmad=false` for that translation unit;
+  - OpenCL without `-cl-fast-relaxed-math`.
+  Shading functions may use fast-math.
+- Local arrays:
+  - CUDA, OpenCL, WGSL and GLSL emit stack arrays.
+  - Numba hoists them into **per-worker scratch buffers**, allocated once per `prange` chunk and passed as
+    hidden parameters, so there is no heap allocation per pixel.
+- **Film accumulation** uses compensated (Kahan) `f32` on every backend, for consistent precision without
+  `f64` on WGSL.
 
 ### 3.4 Compiler layout (`structura/kernels/skl/`)
 
-| Module | Responsibility | Budget |
-|--------|----------------|--------|
-| `frontend.py` | Python `ast` → SKL IR, with source spans | ≤ 300 lines |
-| `types.py`, `typecheck.py` | Type inference, broadcasting rules, error reporting | ≤ 300 each |
-| `builtins.py` | The builtin table (WGSL name, Numba impl, type signature) | data + ≤ 200 |
-| `modules.py` | Module graph, imports, dead-function elimination | ≤ 200 |
-| `emit_wgsl.py` | IR → WGSL, bind-group generation from kernel signatures | ≤ 300 |
-| `emit_numba.py` | IR → Python source, `prange` dispatch wrappers | ≤ 300 |
-| `layout.py` | std430 layout → numpy dtype and WGSL struct | ≤ 200 |
-| `cache.py` | Content-hash cache of generated code | ≤ 150 |
-
-The total is estimated at about 2.5k lines. Spike **S1** validates this ([19](19-roadmap.md)).
+| Module | Responsibility |
+|--------|----------------|
+| `frontend.py` | Python `ast` → SKL IR with source spans |
+| `types.py`, `typecheck.py` | Type inference, broadcasting, diagnostics |
+| `builtins.py` | **The one builtin table** (per-target spelling + Numba implementation) |
+| `modules.py` | Module graph, imports, dead-function elimination |
+| `emit_numba.py`, `emit_cuda.py`, `emit_opencl.py`, `emit_wgsl.py`, `emit_glsl.py` | One emitter per target, all subclasses of a shared `CLikeEmitter` (the four C-like targets share about 80% of their code) |
+| `preludes/` | `cuda_prelude.cuh` (`v3` operators), `numba_prelude.py` (tuple vector helpers) |
+| `layout.py` | Flat ABI: struct ↔ float/uint offsets, numpy packers, generated accessors |
+| `cache.py` | Content-hash cache of emitted sources and compiled binaries (PTX, CL binaries, WGSL modules) |
 
 ## 4. What is SKL and what is not
 
-| Written in SKL (shared) | Written per backend (thin) | Plain Python/Numba (CPU only, shared by both backends) |
-|-------------------------|----------------------------|--------------------------------------------------------|
-| Ray/primitive intersection, BVH traversal, samplers (Sobol-Owen, Halton), warps, BSDFs, lights, env sampling, cameras, integrators, filters, view transforms, colour conversions | Dispatch & buffer binding (`gpu_wgpu.py`, `cpu_numba.py`), readback, tiling | Scene packing, BVH *build*, light CDF build, film resolve, denoise, output |
+| Written in SKL (shared) | Per-backend (thin runtime adapters) | Host Python/Numba (shared) |
+|-------------------------|-------------------------------------|----------------------------|
+| Intersections, BVH traversal, samplers, warps, BSDFs, lights, environment sampling, cameras, integrators, filters, view transforms, colour conversions | Device discovery, buffer upload, dispatch, readback, timing | Scene packing, BVH build, light CDFs, film resolve, denoise, outputs |
 
-The viewport uses SKL only for its shared modules (camera, colour, view transform). Its raster shaders are
-GPU-only WGSL, with no CPU counterpart needed, because the CPU viewport uses the `preview` integrator
-([08](08-viewport.md) §9).
+The preview engine consumes only the GLSL output of the shared camera, colour and view-transform modules.
+Its raster shaders are hand-written GLSL.
 
-## 5. Backend interface
+## 5. Backend runtime interface
 
 ```python
 class ComputeBackend(Protocol):
-    name: str                                   # "gpu:<adapter>" | "cpu:<n threads>"
-    def upload(self, scene: RenderScene) -> DeviceScene: ...
+    name: str                                   # "cuda:GTX 1660" | "opencl:…" | "wgpu:…" | "cpu:8 threads"
+    def compile(self, module: SklModule) -> KernelSet: ...
+    def upload(self, arrays: Mapping[str, np.ndarray]) -> DeviceBuffers: ...
     def dispatch(self, kernel: KernelHandle, grid: tuple[int, int, int],
-                 bindings: Mapping[str, DeviceBuffer], uniforms: object) -> Fence: ...
-    def readback(self, buf: DeviceBuffer) -> Future[np.ndarray]: ...
+                 bindings: DeviceBuffers, uniforms: np.ndarray) -> Fence: ...
+    def readback(self, buf: str) -> Future[np.ndarray]: ...
     def limits(self) -> BackendLimits: ...
 ```
 
-- **`GpuBackend` (wgpu):**
-  - Adapter selection prefers high-performance. The user can pick any adapter in Preferences.
-  - It requests the adapter's maximum `maxStorageBufferBindingSize` and `maxBufferSize`, and
-    `timestamp-query` if present.
-  - Pipelines are created asynchronously (`create_compute_pipeline_async`) and cached by WGSL hash.
-  - Bind-group layouts are generated from kernel signatures.
-- **`CpuBackend` (Numba):**
-  - `dispatch` calls the generated `prange` wrapper on the compute lane ([04](04-concurrency-model.md) §6).
-  - `readback` is a completed future that wraps the numpy array, with no copy.
-- **`RenderScene` buffers are the same numpy arrays on both backends.** The GPU uploads them; the CPU uses
-  them in place.
+| Backend | Library | Notes |
+|---------|---------|-------|
+| `CudaBackend` | `cuda-python` (driver API) + NVRTC (`nvidia-cuda-nvrtc-cu12`) | Compiles for the device's compute capability (7.5 on the GTX 1660); asynchronous streams; pinned host buffers for readback |
+| `OpenCLBackend` | `pyopencl` (+ `pocl-binary-distribution`, which provides a CPU OpenCL device everywhere) | Prefers GPU devices; the pocl CPU device is used in CI for emitted-code tests |
+| `WgpuBackend` | `wgpu` (offscreen compute only) | Requests the adapter's maximum storage-buffer binding size; buffers are paged beyond it |
+| `CpuBackend` | Numba | `prange` wrappers; runs on the compute lane ([04](04-concurrency-model.md) §6) |
 
-## 6. Device policy
+**Threading.** GPU backends run on the dedicated **device lane** (one QThread that owns the CUDA context,
+CL queue or wgpu device). All calls are asynchronous, and dispatches are budgeted to ≤ 50 ms of GPU time
+to respect OS watchdogs (Windows TDR ≈ 2 s). See [04](04-concurrency-model.md) §5.
+
+## 6. Device policy (Auto)
+
+Priority: **CUDA → OpenCL (GPU) → WGSL/wgpu → CPU (Numba)**. The user can force any available backend in
+Preferences or with `--device`.
 
 | Situation | Behaviour |
 |-----------|-----------|
-| Compatible GPU present | GPU for the viewport and renderer (default "Auto") |
-| No adapter / adapter creation fails | CPU renderer + CPU preview viewport; one-time non-blocking banner |
-| Scene exceeds GPU limits (buffers > max binding size after paging, or VRAM estimate > 80%) | That *render* goes to the CPU with a banner; the viewport keeps running on the GPU with paging |
-| Device lost mid-session | Scheduler emits `device_lost`; recreate once; if that fails, switch to CPU |
-| User forces CPU (Preferences or `--device cpu`) | Respected everywhere |
+| NVIDIA GPU with a driver | CUDA |
+| AMD/Intel GPU with an OpenCL ICD | OpenCL |
+| macOS, or a GPU without OpenCL/CUDA | wgpu (Metal / Vulkan / D3D12) |
+| No usable GPU | CPU (Numba) |
+| The scene exceeds a backend's limits (VRAM estimate > 80%) | That render moves to the next backend or to the CPU, with a banner |
+| Device lost or kernel failure | Retry once, then fall back down the list |
 
-## 7. JIT warm-up & caching
+Every backend runs **the same kernels**, so features are identical everywhere. Only speed differs.
 
-- Numba: `cache=True` into the user cache dir. The installer runs `structura --warmup`, which compiles all
-  kernels, so the first launch is fast. If the cache is stale, the **warm-up Job** recompiles in the
-  background at start-up with a status-bar indicator.
-- Generated WGSL and Python are cached by SKL source hash. WGSL pipelines compile asynchronously on first
-  use; the preview integrator is compiled first.
+## 7. Warm-up & caching
 
-## 8. Parity testing (the guarantee behind "same results on every machine")
+- Numba: `cache=True`. The installer runs `structura warmup`, and a background warm-up Job handles stale caches.
+- CUDA: PTX is cached per (source hash, compute capability). NVRTC compiles in the background on first use.
+- OpenCL: program binaries are cached per (source hash, device).
+- WGSL: shader modules are created asynchronously and cached per source hash.
+
+## 8. Parity testing
 
 | Level | Method | Tolerance |
 |-------|--------|-----------|
-| Integer functions (hashes, Sobol, Owen scrambling, RNG) | Generated probe kernel evaluates 10⁶ inputs on both backends | **Bit-exact** |
-| Float functions (intersection, warps, BSDF eval/pdf/sample) | Probe kernels on 10⁵ random inputs | ≤ 4 ULP (arithmetic); ≤ 1e-5 relative (transcendentals); hit/miss agreement ≥ 99.999% |
-| Integrators | Render 12 canonical scenes at 1024 spp on both | Per-16×16-tile mean difference within 4σ of the tile's standard error; global relative RMSE < 1% |
-| Determinism | Same backend, same inputs, twice | Bit-identical |
+| Integer kernels (hashes, Sobol/Owen, RNG) | Generated probe kernels over 10⁶ inputs on every available backend | **Bit-exact** |
+| Float functions (intersection, warps, BSDF eval/pdf/sample) | Probe kernels over 10⁵ random inputs | ≤ 4 ULP (arithmetic); ≤ 1e-5 relative (transcendentals); hit/miss agreement ≥ 99.999% |
+| Integrators | 12 canonical scenes at 1024 spp | Tile means within 4σ; global relative RMSE < 1% |
+| Determinism | Same backend twice | Bit-identical |
 
-CI runs the GPU side on **Mesa lavapipe** (software Vulkan) on Linux, so shaders are exercised on every PR.
-Nightly jobs run on real NVIDIA, AMD, Intel and Apple GPUs (self-hosted runners).
+CI coverage without GPUs:
 
-## 9. Risk control: the spike & the fallback plan
+- **Numba** runs natively.
+- **OpenCL** runs on **pocl** (CPU).
+- **CUDA** is compile-checked with NVRTC for `compute_75` and `compute_86`.
+- **WGSL** runs through wgpu's OpenGL backend on Mesa llvmpipe (verified available in the planning sandbox).
+- **GLSL** is validated and run on Mesa llvmpipe.
 
-**Spike S1** (3 weeks, first milestone) transpiles:
+Nightly runs on the reference GTX 1660 execute CUDA, OpenCL and wgpu for real.
 
-- box/sphere intersection;
-- BVH traversal;
-- Sobol-Owen;
-- principled BSDF evaluation.
+## 9. Risk control
+
+Spike **S1** validates the front end plus **all five emitters** on: box/sphere intersection, BVH traversal,
+Sobol-Owen and principled BSDF evaluation.
 
 **Exit criteria:**
 
-1. The generated WGSL validates and runs on Vulkan, Metal and D3D12.
-2. Parity tests pass.
-3. The Numba output is within 1.3× of the speed of hand-written Numba.
-4. The WGSL output is within 1.2× of hand-written WGSL on the reference GPU.
+- emitted code compiles on every target;
+- the parity suite passes on Numba + pocl + NVRTC-compile;
+- Numba output is ≤ 1.3× slower than hand-written Numba.
 
-**If S1 fails:** keep the SKL *front end* for layouts and the builtin table, but write kernels twice (WGSL and
-Numba). The parity suite above becomes the hard safety net. This documented DRY exception would be recorded
-by superseding ADR-0004.
+Fallback: keep the front end for layouts and builtins, and hand-write the kernels per target behind the same
+parity suite. That would be recorded by superseding ADR-0004.

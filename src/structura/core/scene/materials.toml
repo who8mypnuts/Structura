@@ -1,0 +1,95 @@
+# Built-in material presets (docs/10 §3.3). Fields are those of structura.core.scene.material.Material.
+# 'base'/'emission' = "state" (the default) take the colour from the EisenScript state; a list fixes it.
+
+[matte]
+roughness = 1.0
+specular = 0.0
+
+[plastic]
+roughness = 0.3
+
+[glossy]
+roughness = 0.08
+
+[clay]
+roughness = 0.85
+specular = 0.2
+
+[ceramic]
+roughness = 0.15
+coat = 0.6
+coat_roughness = 0.02
+
+[rubber]
+roughness = 0.7
+specular = 0.3
+
+[metal]
+metallic = 1.0
+roughness = 0.3
+
+[chrome]
+metallic = 1.0
+roughness = 0.02
+base = [0.95, 0.95, 0.95]
+
+[gold]
+metallic = 1.0
+roughness = 0.15
+base = [1.0, 0.78, 0.34]
+
+[copper]
+metallic = 1.0
+roughness = 0.2
+base = [0.96, 0.64, 0.54]
+
+[brushed-metal]
+metallic = 1.0
+roughness = 0.35
+anisotropy = 0.8
+
+[glass]
+transmission = 1.0
+roughness = 0.0
+ior = 1.5
+base = [1.0, 1.0, 1.0]
+
+[frosted-glass]
+transmission = 1.0
+roughness = 0.35
+ior = 1.5
+base = [1.0, 1.0, 1.0]
+
+[tinted-glass]
+transmission = 1.0
+roughness = 0.0
+ior = 1.5
+
+[mirror]
+metallic = 1.0
+roughness = 0.0
+base = [0.98, 0.98, 0.98]
+
+[emissive]
+emission_strength = 4.0
+
+[neon]
+model = "constant"
+emission_strength = 8.0
+
+[ao]
+model = "ao"
+
+[constant]
+model = "constant"
+
+[wireframe]
+model = "wireframe"
+
+[shiny]
+roughness = 0.5
+coat = 0.5
+coat_roughness = 0.0
+
+[legacy]
+roughness = 0.2

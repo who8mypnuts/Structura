@@ -33,6 +33,13 @@ This reproduces `RenderThread::rayCast` so legacy scenes render as users remembe
 | DOF | The legacy model: focus at fraction `center` between the near (5) and far (60) planes; lens offset = `falloff ×` near-plane extent (an elliptical aperture on non-square images) |
 | AA | N×N stratified jitter (`samples`, default 6 in window / 8 final) |
 
+**Implementation note (M2).** SKL has no recursion, so the original's two recursive branches
+(transparency and reflection) become a stochastic walk. At each hit, the local term
+`(1−r)·α·colour·light` is added, then *one* continuation is chosen with probability proportional to its
+weight (`(1−r)(1−α)` through, `r` reflected) and the path weight is multiplied by their sum. The expected
+value equals the recursive result and converges with the progressive sample count. Secondary rays exclude
+the instance they leave, exactly like 1.5's `excludeThis`.
+
 The classic integrator is not physically based, and that is intended. It is the default only when a script
 uses `set raytracer::*` and the user picks "Render (legacy look)".
 
@@ -57,7 +64,7 @@ color = (1/n) Σ_i  blend(bright, dark, occluded(ray_i, maxdist)),  ray_i ~ cosi
 | Light selection | Power-proportional alias table over all lights and emissive instances; env has its own probability |
 | Depth control | Limits for total, diffuse, glossy and transmission bounces (Sunflow `depths.*` generalised); Russian roulette from bounce 3 |
 | Firefly control | Optional clamp of indirect sample luminance |
-| Caustics | `caustics = on/off/filtered` (roughness regularisation on secondary bounces) |
+| Caustics | `caustics = on/off/filtered` (roughness regularisation on secondary bounces). **M2:** `filtered` (the default) raises the GGX alpha of every lobe to ≥ 0.3 after the first rough bounce (sampled pdf < 2), which removes the sun-caustic fireflies from glossy neighbours |
 | Opacity | Stochastic pass-through, using instance alpha × material opacity |
 | Volumes | Beer–Lambert attenuation inside transmissive materials (`attenuation_color/distance`) |
 | Ground | Optional infinite plane or **shadow catcher** under the scene bounds (`render.ground`) |

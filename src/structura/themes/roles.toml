@@ -1,0 +1,148 @@
+# Theme role catalogue (docs/13 §2). Every role a theme can colour, and how it is derived when a theme
+# omits it. Derivation expressions (themes/expr.py):
+#   mix(a, b, t)     perceptual OKLab mix           alpha(a, t)     a with alpha t
+#   deepen(a, t)     toward black (dark themes) / white (light themes)
+#   chroma(a, k)     scale OKLCH chroma by k        rotate(a, deg)  rotate OKLCH hue
+#   lift(a, dl)      add dl to OKLCH lightness, away from the background (dark: up, light: down)
+# Role names and palette entries can be referenced directly. 'required' roles must come from the theme.
+
+[ui]
+"ui.bg" = { required = true }
+"ui.fg" = { required = true }
+"ui.accent" = { required = true }
+"ui.bg.alt" = "mix(ui.bg, ui.fg, 0.04)"
+"ui.bg.raised" = "mix(ui.bg.alt, ui.fg, 0.06)"
+"ui.bg.sunken" = "deepen(ui.bg, 0.06)"
+"ui.border" = "mix(ui.bg, ui.fg, 0.16)"
+"ui.border.strong" = "mix(ui.bg, ui.fg, 0.30)"
+"ui.shadow" = "alpha(#000000, 0.35)"
+"ui.fg.muted" = "mix(ui.fg, ui.bg, 0.35)"
+"ui.fg.disabled" = "mix(ui.fg, ui.bg, 0.55)"
+"ui.link" = "ui.accent"
+"ui.accent.fg" = "deepen(ui.bg, 0.5)"
+"ui.hover" = "alpha(ui.accent, 0.12)"
+"ui.pressed" = "alpha(ui.accent, 0.22)"
+"ui.focus.ring" = "ui.accent"
+"ui.selection.bg" = "alpha(ui.accent, 0.30)"
+"ui.selection.fg" = "ui.fg"
+
+[status]
+"status.success" = "#3FB950"
+"status.warning" = "#D29922"
+"status.error" = "#F85149"
+"status.info" = "ui.accent"
+"status.progress" = "ui.accent"
+
+[bars]
+"tab.active.bg" = "ui.bg"
+"tab.active.fg" = "ui.fg"
+"tab.inactive.fg" = "ui.fg.muted"
+"tab.modified.dot" = "ui.accent"
+"statusbar.bg" = "ui.bg.alt"
+"statusbar.fg" = "ui.fg.muted"
+"toolbar.bg" = "ui.bg.alt"
+
+[editor]
+"editor.bg" = "ui.bg"
+"editor.fg" = "ui.fg"
+"editor.line.current" = "mix(editor.bg, editor.fg, 0.05)"
+"editor.line.number" = "mix(editor.fg, editor.bg, 0.55)"
+"editor.line.number.active" = "editor.fg"
+"editor.selection" = "ui.selection.bg"
+"editor.selection.inactive" = "alpha(ui.accent, 0.15)"
+"editor.cursor" = "ui.accent"
+"editor.whitespace" = "mix(editor.bg, editor.fg, 0.2)"
+"editor.indent.guide" = "mix(editor.bg, editor.fg, 0.12)"
+"editor.bracket.match" = "alpha(ui.accent, 0.35)"
+"editor.find.match" = "alpha(status.warning, 0.30)"
+"editor.find.current" = "alpha(status.warning, 0.60)"
+"editor.fold.marker" = "editor.line.number"
+"editor.sticky.bg" = "ui.bg.alt"
+"editor.inlay.fg" = "ui.fg.muted"
+"editor.inlay.bg" = "alpha(ui.fg, 0.08)"
+"editor.rainbow.1" = "rotate(ui.accent, 0)"
+"editor.rainbow.2" = "rotate(ui.accent, 60)"
+"editor.rainbow.3" = "rotate(ui.accent, 120)"
+"editor.rainbow.4" = "rotate(ui.accent, 180)"
+"editor.rainbow.5" = "rotate(ui.accent, 240)"
+"editor.rainbow.6" = "rotate(ui.accent, 300)"
+
+[syntax]  # colours of syntax styles (bold/italic/underline come from the theme's [syntax] table)
+"syntax.keyword" = "ui.accent"
+"syntax.operator" = "mix(ui.fg, ui.accent, 0.5)"
+"syntax.modifier" = "rotate(ui.accent, 40)"
+"syntax.number" = "rotate(ui.accent, 200)"
+"syntax.color" = "rotate(ui.accent, 160)"
+"syntax.primitive" = "rotate(ui.accent, 280)"
+"syntax.rule.def" = "rotate(ui.accent, 320)"
+"syntax.rule.ref" = "syntax.rule.def"
+"syntax.rule.undefined" = "status.error"
+"syntax.rule.unused" = "chroma(mix(syntax.rule.ref, editor.bg, 0.35), 0.4)"
+"syntax.tag" = "rotate(ui.accent, 120)"
+"syntax.brace" = "ui.fg.muted"
+"syntax.bracket.arg" = "syntax.number"
+"syntax.comment" = "mix(ui.fg, ui.bg, 0.45)"
+"syntax.preprocessor" = "rotate(ui.accent, 240)"
+"syntax.define" = "syntax.preprocessor"
+"syntax.define.substituted" = "syntax.number"
+"syntax.set.key" = "syntax.keyword"
+"syntax.set.value" = "syntax.number"
+"syntax.string" = "rotate(ui.accent, 100)"
+"syntax.material" = "syntax.tag"
+"syntax.function" = "syntax.operator"
+"syntax.param" = "syntax.define"
+"syntax.block" = "syntax.keyword"
+
+[diag]
+"diag.error" = "status.error"
+"diag.warning" = "status.warning"
+"diag.info" = "status.info"
+"diag.hint" = "ui.fg.muted"
+
+[viewport]
+"viewport.bg.top" = "ui.bg.alt"
+"viewport.bg.bottom" = "deepen(ui.bg, 0.25)"
+"viewport.grid" = "alpha(ui.fg, 0.10)"
+"viewport.grid.major" = "alpha(ui.fg, 0.22)"
+"viewport.axis.x" = "#E5534B"
+"viewport.axis.y" = "#57AB5A"
+"viewport.axis.z" = "#539BF5"
+"viewport.selection" = "ui.accent"
+"viewport.hover" = "alpha(ui.accent, 0.5)"
+"viewport.hud.fg" = "ui.fg"
+"viewport.hud.bg" = "alpha(ui.bg, 0.7)"
+
+[render]
+"render.checker.a" = "mix(ui.bg, ui.fg, 0.10)"
+"render.checker.b" = "mix(ui.bg, ui.fg, 0.18)"
+"render.bucket.active" = "ui.accent"
+"render.bucket.done" = "alpha(ui.accent, 0.35)"
+
+[chart]
+"chart.1" = "rotate(ui.accent, 0)"
+"chart.2" = "rotate(ui.accent, 45)"
+"chart.3" = "rotate(ui.accent, 90)"
+"chart.4" = "rotate(ui.accent, 135)"
+"chart.5" = "rotate(ui.accent, 180)"
+"chart.6" = "rotate(ui.accent, 225)"
+"chart.7" = "rotate(ui.accent, 270)"
+"chart.8" = "rotate(ui.accent, 315)"
+
+# Text-on-surface pairs checked (and fixed) after derivation: [foreground, background, minimum ratio].
+[contrast]
+pairs = [
+  ["ui.fg", "ui.bg", 4.5], ["ui.fg", "ui.bg.alt", 4.5], ["ui.fg", "ui.bg.raised", 4.5],
+  ["ui.fg.muted", "ui.bg", 3.0], ["ui.fg.muted", "ui.bg.alt", 3.0], ["ui.accent.fg", "ui.accent", 4.5],
+  ["tab.active.fg", "tab.active.bg", 4.5], ["tab.inactive.fg", "ui.bg.alt", 3.0],
+  ["statusbar.fg", "statusbar.bg", 3.0], ["editor.fg", "editor.bg", 4.5],
+  ["editor.line.number", "editor.bg", 2.2], ["editor.line.number.active", "editor.bg", 4.5],
+  ["syntax.keyword", "editor.bg", 4.5], ["syntax.operator", "editor.bg", 4.5], ["syntax.modifier", "editor.bg", 4.5],
+  ["syntax.number", "editor.bg", 4.5], ["syntax.color", "editor.bg", 4.5], ["syntax.primitive", "editor.bg", 4.5],
+  ["syntax.rule.def", "editor.bg", 4.5], ["syntax.rule.ref", "editor.bg", 4.5],
+  ["syntax.rule.undefined", "editor.bg", 4.5], ["syntax.tag", "editor.bg", 4.5], ["syntax.string", "editor.bg", 4.5],
+  ["syntax.comment", "editor.bg", 3.0], ["syntax.preprocessor", "editor.bg", 4.5], ["syntax.define", "editor.bg", 4.5],
+  ["syntax.set.key", "editor.bg", 4.5], ["syntax.set.value", "editor.bg", 4.5], ["syntax.brace", "editor.bg", 3.0],
+  ["syntax.material", "editor.bg", 4.5], ["syntax.param", "editor.bg", 4.5], ["syntax.block", "editor.bg", 4.5],
+  ["diag.error", "editor.bg", 3.0], ["diag.warning", "editor.bg", 3.0], ["diag.info", "editor.bg", 3.0],
+  ["viewport.hud.fg", "viewport.bg.top", 4.5],
+]

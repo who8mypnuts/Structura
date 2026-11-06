@@ -45,7 +45,7 @@ class Track:
 for frame in range(start, end+1):            # resumable: skips frames whose output exists (option)
     program = compile(analysis, params_at(frame), frame_vars(frame))
     scene   = build(program, seed_at(frame))          # build lane
-    image   = render(scene, camera_at(frame), ...)    # GPU scheduler or CPU lane
+    image   = render(scene, camera_at(frame), ...)    # device lane (CUDA/OpenCL/wgpu) or CPU lane
     write(image, pattern % frame)                      # io lane
 ```
 

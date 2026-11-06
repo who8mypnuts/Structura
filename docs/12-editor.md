@@ -59,7 +59,7 @@ P0 = required for the first editor milestone (phase U1), P1 = for 1.0, P2 = post
 | Split view (two views of one document); tabs with session restore; drag & drop to open | P0 |
 | Zoom (`Ctrl+wheel`), font and ligature settings | P0 |
 | External change detection and reload prompt; autosave and crash recovery ([07](07-scene-model.md) §8) | P0 |
-| Encoding detection: UTF-8, with a fallback to Windows-1252/Latin-1 for legacy files, plus a status-bar indicator. All 156 corpus scripts are valid UTF-8, but Structure Synth's own `notes.txt`/`changelog.txt` are Latin-1, so user files written on Windows may be too. | P0 |
+| Encoding detection: UTF-8, with a fallback to Windows-1252/Latin-1 for legacy files, plus a status-bar indicator. All 155 corpus scripts are valid UTF-8, but Structure Synth's own `notes.txt`/`changelog.txt` are Latin-1, so user files written on Windows may be too. | P0 |
 | Vim keybindings | P2 |
 
 ### 2.2 Language intelligence

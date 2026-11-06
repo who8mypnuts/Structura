@@ -32,23 +32,22 @@ flowchart TB
     ES[ExportService] --- TS[ThemeService]
     JR[JobRunner] --- ST[SettingsService]
   end
-  subgraph DOMAIN["domain  (pure Python + numpy/numba/wgpu; no Qt)"]
+  subgraph DOMAIN["domain  (pure Python + numpy/numba/GPU libs; no Qt)"]
     LANG[core.lang<br/>preprocess/lex/parse/resolve/compile] --> BUILD[core.build<br/>Numba builder kernel]
     BUILD --> IR[core.scene<br/>SceneIR]
     IR --> GEO[core.geometry<br/>tessellation, bounds]
     IR --> RENDER[render<br/>BVH, integrators, film]
-    IR --> VPORT[viewport<br/>GPU pipelines]
+    IR --> VPORT[preview<br/>GLSL raster + Numba]
     IR --> EXP[export<br/>mesh/usd/gltf/blender/templates]
-    KER[kernels<br/>SKL → Numba / WGSL] --> RENDER
+    KER[kernels<br/>SKL → Numba / CUDA / OpenCL / WGSL / GLSL] --> RENDER
     KER --> VPORT
-    GPU[gpu<br/>wgpu device, buffers] --> RENDER
-    GPU --> VPORT
+    GPU[compute<br/>CUDA / OpenCL / wgpu / CPU] --> RENDER
   end
   UI --> SVC --> DOMAIN
 ```
 
-`viewport` sits in the domain layer because its GPU pipelines are Qt-free. The Qt widget that hosts the
-surface lives in `ui.viewport`.
+`preview` sits in the domain layer because its GL pipelines only need a current context and are Qt-free.
+The `QOpenGLWidget` that hosts them lives in `ui.viewport`.
 
 ## 3. Top-level packages
 
@@ -61,10 +60,10 @@ surface lives in `ui.viewport`.
 | `structura.core.build` | domain | no | Numba builder kernel, resumable slices, streaming chunks |
 | `structura.core.scene` | domain | no | `SceneIR`, materials, lights, camera, render settings, provenance, project (de)serialisation |
 | `structura.core.geometry` | domain | no | Unit-primitive templates, vectorised tessellation, LOD, bounds |
-| `structura.kernels` | domain | no | SKL DSL, WGSL transpiler, shared kernel modules (intersection, sampling, BSDF, colour) |
-| `structura.gpu` | domain | no | wgpu adapter/device selection, buffer pools, pipeline cache, limits, timestamp queries |
+| `structura.kernels` | domain | no | SKL DSL and its emitters (Numba, CUDA C, OpenCL C, WGSL, GLSL); shared kernel modules (intersection, sampling, BSDF, colour) |
+| `structura.compute` | domain | no | Precision-engine backends: CUDA (cuda-python + NVRTC), OpenCL (pyopencl), wgpu, CPU (Numba); device selection, limits, device lane runtime |
 | `structura.render` | domain | no | Render compile (packing), BVH, integrators, samplers, filters, film, denoise, outputs, backends |
-| `structura.viewport` | domain | no | Raster pipelines (instanced), impostors, SSAO, shadows, picking, overlays, CPU fallback |
+| `structura.preview` | domain | no | Preview engine: OpenGL/GLSL raster pipelines (ModernGL), impostors, SSAO, shadows, picking, overlays, Numba fallback |
 | `structura.export` | domain | no | Exporter registry: mesh formats, USD, glTF, X3D, Blender script, templates, images, video |
 | `structura.scripting` | domain + services | QtQml for legacy JS | Python batch API; QJSEngine bridge for `#javascript` |
 | `structura.themes` | domain | no (data + model) | Theme model, loaders (TOML, VS Code JSON, base16), derived palettes |
@@ -79,15 +78,15 @@ The complete file-level tree is in [17](17-code-standards-and-layout.md) §6.
 
 `import-linter` contracts in `pyproject.toml`:
 
-1. **Layers:** `structura.ui` → `structura.services` → {`render`, `viewport`, `export`, `scripting`} →
-   {`core`, `kernels`, `gpu`, `themes`}. No upward imports.
-2. **Qt isolation:** `structura.core`, `structura.kernels`, `structura.render`, `structura.viewport`,
-   `structura.export`, `structura.themes` and `structura.gpu` must not import `PySide6`. The Qt widget that
+1. **Layers:** `structura.ui` → `structura.services` → {`render`, `preview`, `export`, `scripting`} →
+   `compute` → {`core`, `kernels`, `themes`}. No upward imports.
+2. **Qt isolation:** `structura.core`, `structura.kernels`, `structura.render`, `structura.preview`,
+   `structura.export`, `structura.themes` and `structura.compute` must not import `PySide6`. The Qt widget that
    hosts the viewport surface lives in `structura.ui.viewport`.
 3. **Widgets isolation:** only `structura.ui` and `structura.app` may import `PySide6.QtWidgets`.
-4. **One-way render dependency:** `structura.render` must never import `structura.viewport`.
-   `structura.viewport` may import **only `structura.render.api`**, for its CPU fallback, which reuses the
-   `preview` integrator ([08](08-viewport.md) §9). All other shared GPU code lives in `structura.gpu` and
+4. **One-way render dependency:** `structura.render` must never import `structura.preview`.
+   `structura.preview` may import **only `structura.render.api`**, for its CPU fallback, which reuses the
+   `preview` integrator ([08](08-viewport.md) §9). All other shared GPU code lives in `structura.compute` and
    `structura.kernels`.
 5. **Exporters are leaves:** `structura.export.*` modules may import only `core` (and `render.output` for
    images).
@@ -100,8 +99,8 @@ sequenceDiagram
   participant D as DocumentService
   participant L as LanguageService (worker)
   participant B as BuildService (worker)
-  participant V as Viewport (GUI thread, GPU)
-  participant R as RenderService (GPU scheduler / CPU worker)
+  participant V as Preview engine (GUI thread, OpenGL)
+  participant R as RenderService (device lane / CPU lane)
   U->>D: keystroke
   D-->>L: text_changed (debounced 120 ms)
   L-->>D: analysis_ready(diagnostics, symbols, semantic tokens)
@@ -179,10 +178,10 @@ and kernel warm-up are all Jobs.
 
 ### 6.4 ComputeDevice
 
-`structura.gpu.ComputeDevice` hides backend selection:
+`structura.compute.select_backend()` hides backend selection:
 
-- `GpuDevice(wgpu)`;
-- `CpuDevice(numba)`.
+- `CudaBackend`, `OpenCLBackend`, `WgpuBackend`;
+- `CpuBackend` (Numba).
 
 The renderer and viewport ask for a device. They never check "is a GPU available?" themselves
 ([11](11-compute-backends.md)).
@@ -213,7 +212,7 @@ The renderer and viewport ask for a device. They never check "is a GPU available
 |------------|-----|------------------|
 | Parse / lint | ✓ | ✓ (`structura lint`) |
 | Build | ✓ (BuildService) | ✓ (direct call to `core.build.build_scene`) |
-| Render | ✓ | ✓ (offscreen wgpu or CPU) |
+| Render | ✓ | ✓ (CUDA / OpenCL / wgpu offscreen, or CPU) |
 | Export | ✓ | ✓ |
 | Legacy `#javascript` | ✓ | ✓ (runs a `QCoreApplication` + `QJSEngine`, no widgets) |
 

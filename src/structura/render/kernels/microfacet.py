@@ -1,0 +1,108 @@
+"""GGX microfacet and Fresnel building blocks, in the local shading frame (z = normal; docs/10 §3.1).
+
+D uses sin²θ computed from x/y directly, which keeps near-mirror lobes (alpha ≈ 1e-3) accurate in f32.
+Visible normals are sampled with spherical caps (Dupuy & Benyoub 2023).
+"""
+
+from __future__ import annotations
+
+from structura.kernels.skl import PI, clamp, cos, dot, f32, func, max, normalize, sin, sqrt, vec3
+
+ALPHA_MIN = 1.0e-3
+
+
+@func
+def ggx_alpha(roughness: f32) -> f32:
+    return max(roughness * roughness, ALPHA_MIN)
+
+
+@func
+def ggx_d(h: vec3, a: f32) -> f32:
+    """Trowbridge–Reitz normal distribution (h in the upper hemisphere)."""
+    a2 = a * a
+    s2 = h.x * h.x + h.y * h.y
+    t = s2 + h.z * h.z * a2
+    return a2 / (PI * t * t)
+
+
+@func
+def ggx_lambda(w: vec3, a: f32) -> f32:
+    c2 = max(w.z * w.z, 1.0e-12)
+    s2 = w.x * w.x + w.y * w.y
+    return 0.5 * (sqrt(1.0 + a * a * s2 / c2) - 1.0)
+
+
+@func
+def ggx_g1(w: vec3, a: f32) -> f32:
+    return 1.0 / (1.0 + ggx_lambda(w, a))
+
+
+@func
+def ggx_g2(wo: vec3, wi: vec3, a: f32) -> f32:
+    """Height-correlated Smith masking-shadowing."""
+    return 1.0 / (1.0 + ggx_lambda(wo, a) + ggx_lambda(wi, a))
+
+
+@func
+def sample_vndf(wo: vec3, a: f32, u1: f32, u2: f32) -> vec3:
+    """A visible microfacet normal for wo (wo.z > 0)."""
+    v = normalize(vec3(wo.x * a, wo.y * a, wo.z))
+    phi = 2.0 * PI * u1
+    z = (1.0 - u2) * (1.0 + v.z) - v.z
+    st = sqrt(clamp(1.0 - z * z, 0.0, 1.0))
+    hs = vec3(st * cos(phi), st * sin(phi), z) + v
+    return normalize(vec3(hs.x * a, hs.y * a, max(hs.z, 1.0e-7)))
+
+
+@func
+def vndf_reflect_pdf(wo: vec3, h: vec3, a: f32) -> f32:
+    """Solid-angle pdf of wi = reflect(wo, h) when h ~ VNDF(wo): G1(wo)·D(h) / (4·wo.z)."""
+    return ggx_g1(wo, a) * ggx_d(h, a) / (4.0 * max(wo.z, 1.0e-6))
+
+
+@func
+def schlick(f0: vec3, cos_t: f32) -> vec3:
+    m = clamp(1.0 - cos_t, 0.0, 1.0)
+    m2 = m * m
+    return f0 + (vec3(1.0) - f0) * (m2 * m2 * m)
+
+
+@func
+def schlick1(f0: f32, cos_t: f32) -> f32:
+    m = clamp(1.0 - cos_t, 0.0, 1.0)
+    m2 = m * m
+    return f0 + (1.0 - f0) * (m2 * m2 * m)
+
+
+@func
+def fresnel_dielectric(cos_i: f32, eta: f32) -> f32:
+    """Unpolarised Fresnel reflectance; eta = n_t / n_i, cos_i > 0 on the incident side."""
+    c = clamp(cos_i, 0.0, 1.0)
+    s2t = (1.0 - c * c) / (eta * eta)
+    if s2t >= 1.0:
+        return 1.0
+    ct = sqrt(1.0 - s2t)
+    r_par = (eta * c - ct) / (eta * c + ct)
+    r_perp = (c - eta * ct) / (c + eta * ct)
+    return 0.5 * (r_par * r_par + r_perp * r_perp)
+
+
+@func
+def reflect_about(wo: vec3, h: vec3) -> vec3:
+    return h * (2.0 * dot(wo, h)) - wo
+
+
+@func
+def refract_about(wo: vec3, h: vec3, eta: f32) -> vec3:
+    """Refracted direction of wo through the microfacet h (eta = n_t / n_i); zero vector on TIR."""
+    c = dot(wo, h)
+    s2t = max(0.0, 1.0 - c * c) / (eta * eta)
+    if s2t >= 1.0:
+        return vec3(0.0)
+    ct = sqrt(1.0 - s2t)
+    return wo * (-1.0 / eta) + h * (c / eta - ct)
+
+
+@func
+def luminance(c: vec3) -> f32:
+    return 0.2126 * c.x + 0.7152 * c.y + 0.0722 * c.z

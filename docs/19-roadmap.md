@@ -1,191 +1,77 @@
-# 19 — Roadmap & Milestones
+# 19 — Roadmap & Execution Plan
 
-The plan is organised into **phases** with codes used throughout these docs (F, L1, U1, R1, E1, U2, R2, L2,
-A, E2, R3, H) and **spikes** (S1–S6) that retire the biggest technical risks first.
+**Execution model ([ADR-0014](adr/0014-agent-driven-execution.md)).** Structura is built by an AI engineering
+agent working with the project owner. The plan is no longer sized in person-weeks. It is a **dependency-ordered
+sequence of milestones**, and each ends in a **verifiable checkpoint**:
 
-Estimates assume a core team of **4 engineers** (roles below), with part-time design and QA. They are
-planning-grade (±30%) and will be re-baselined after Phase F.
+- tests green;
+- a demonstrable artefact;
+- an entry in [PROGRESS.md](PROGRESS.md).
 
-| Role | Focus |
-|------|-------|
-| Language & engine | `core.lang`, `core.build`, compat suite, scripting |
-| Rendering & GPU | `kernels.skl`, `gpu`, `render`, `viewport` (GPU parts) |
-| Application & editor | `services`, `ui`, editor, themes |
-| Pipeline & export | `core.geometry`, `export`, CLI, packaging |
+The owner reviews at checkpoints and runs the hardware-specific steps the sandbox cannot: the GTX 1660,
+Windows/macOS, and Blender.
 
-## 1. Spikes (inside Phase F)
+Phase codes used elsewhere in the docs map to milestones as follows: F→M0, L1→M1, R1→M2, U1→M3, E1→M4,
+U2→M5, R2→M6, L2/A→M7, E2/R3→M8, H→M9.
 
-| Spike | Question | Exit criteria | Fallback if it fails |
-|-------|----------|---------------|----------------------|
-| **S1 — SKL single-source kernels** | Can one typed-Python kernel source produce both good WGSL and fast Numba? | See [11](11-compute-backends.md) §9: WGSL valid on Vulkan/Metal/D3D12; parity passes; Numba ≤ 1.3× and WGSL ≤ 1.2× of the speed of hand-written code | Hand-written WGSL + Numba with the parity suite; supersede ADR-0004 |
-| **S2 — GPU throughput** | Does compute-shader BVH traversal over instanced analytic primitives meet ≥ 10 spp/s (1080p, 1M boxes, 4 bounces)? | Prototype path tracer on the reference GPU | Reduce the default bounces; wavefront restructuring; BVH4 earlier |
-| **S3 — CPU throughput** | Does the Numba CPU backend reach ≥ 1 spp/s on 8 cores? | Prototype on the reference CPU | Packet traversal; lower default quality on CPU; emphasise AO/preview on CPU |
-| **S4 — Builder performance & exactness** | Numba builder ≥ 1M boxes in < 600 ms, with an RNG-exact match on 10 corpus scripts | Bench + golden diff | Optimise state layout; C extension as last resort (ADR required) |
-| **S5 — Blender instancing path** | Can a generated GN tree apply full per-instance matrices in Blender 4.2 LTS? | A script that instances 100k sheared boxes correctly | TRS attributes with sheared instances baked ([15](15-export.md) §4.3) |
-| **S6 — wgpu in Qt** | Does rendercanvas + PySide6 give a stable, resizable, high-DPI viewport on Windows, macOS and Linux (X11 + Wayland)? | 30-minute soak test with resize/dock/undock/fullscreen on all 3 OSes | Offscreen wgpu rendering → `QImage`/`QOpenGLWidget` texture blit (higher latency, still GPU) |
+## 1. What the sandbox can verify
 
-## 2. Phases
+| Capability | Status in the sandbox | Consequence |
+|------------|-----------------------|-------------|
+| Python 3.12 + all runtime dependencies | ✅ installed with `uv` | Full unit, golden and UI (offscreen) testing |
+| Numba CPU backend | ✅ runs (4 cores) | CPU engines are tested for real |
+| OpenCL | ✅ runs on **pocl** (CPU) | Emitted OpenCL C is compiled *and executed* |
+| CUDA | ⚠️ **NVRTC compile only** (no GPU) | Emitted CUDA is compiled to PTX for `compute_75`; execution happens on the owner's GTX 1660 |
+| WGSL | ✅ wgpu adapter: llvmpipe via GL backend | Emitted WGSL is compiled and executed (software) |
+| GLSL / OpenGL | ✅ ModernGL EGL context on llvmpipe | The preview engine renders headlessly |
+| Qt | ✅ PySide6 offscreen QPA | UI tests, screenshots |
+| Performance budgets | ⚠️ indicative only (software GPU, 4 CPU cores) | The owner runs `tools/bench` on the reference GTX 1660 |
 
-```mermaid
-gantt
-  dateFormat  YYYY-MM-DD
-  axisFormat  %b
-  section Foundations
-  F  Foundations + spikes S1–S6        :f, 2025-01-06, 8w
-  section Core
-  L1 Language core v1 (compat)         :l1, after f, 8w
-  U1 App shell, editor basics, viewport:u1, after f, 10w
-  R1 Renderer v1 (GPU+CPU)             :r1, after f, 12w
-  E1 Export v1                         :e1, after l1, 6w
-  section Pro features
-  U2 Editor pro + all themes           :u2, after u1, 8w
-  R2 Renderer v2                       :r2, after r1, 10w
-  L2 EisenScript v2                    :l2, after e1, 6w
-  A  Animation, scripting, variations  :a, after l2, 6w
-  E2 Export v2 (3MF, X3D, instancing, CSG, Jinja) :e2, after e1, 8w
-  R3 Caustics, fog                     :r3, after r2, 6w
-  section Release
-  H  Hardening, docs, installers, beta :h, after a, 10w
-```
+## 2. Spikes
 
-The dates are illustrative; only the relative sequencing is binding.
+| Spike | Question | Where it runs | Status |
+|-------|----------|---------------|--------|
+| **S1 — SKL, five targets** | Does one typed-Python source emit valid Numba, CUDA C, OpenCL C, WGSL and GLSL with parity? | Sandbox (Numba, pocl, NVRTC, wgpu-llvmpipe, EGL) | Part of M2 |
+| **S2 — GPU throughput** | ≥ 5 spp/s at 1080p, 1M boxes, on the GTX 1660 (CUDA) | Owner's machine (`tools/bench/render_throughput.py`) | After M2 |
+| **S3 — CPU throughput** | ≥ 1 spp/s on 8 cores | Sandbox (scaled) + owner | After M2 |
+| **S4 — Builder** | ≥ 1M boxes in < 600 ms with a golden-exact RNG | Sandbox | Part of M1 |
+| **S5 — Blender GN instancing** | Full-matrix instances in Blender 4.2 LTS | Owner (or CI with Blender) | Before M8 |
+| ~~S6 — wgpu in Qt~~ | Retired: the preview uses `QOpenGLWidget` ([ADR-0013](adr/0013-two-render-engines.md)) | — | — |
 
-- **Critical path:** F → L1 → E1 → L2 → A → H = 8 + 8 + 6 + 6 + 6 + 10 = **44 weeks**.
-- **Near-critical:** the renderer chain F → R1 → R2 → R3 = 36 weeks. R2 (needed by H) finishes at week 30.
-- Total effort is about 175 person-weeks. With 4 engineers the plan spans about **44 weeks (~10 months)**, or
-  **10–14 months** with the ±30% planning margin.
+## 3. Milestones
 
-### Phase F — Foundations (8 weeks)
-
-| Deliverables | Acceptance |
-|--------------|------------|
-| Repository skeleton per [17](17-code-standards-and-layout.md); `pyproject`, lock file, pre-commit | `uv sync && pytest` green on all 3 OSes |
-| CI pipeline with all static gates, lavapipe runner | Gates block PRs |
-| Job framework + lanes + watchdog ([04](04-concurrency-model.md)) | A demo job streams partials; the watchdog catches an injected stall |
-| `Registry` + `ParamSpec` + `param_form` prototype | A form is generated from a spec; ParamSpec ⇄ TOML ⇄ argparse round-trip test |
-| Golden generator (`tools/golden`) + corpus goldens committed | 156 scripts × 4 seeds dumped |
-| Spikes S1–S6 with written reports and ADR updates | Each spike's exit criteria are met or its fallback is adopted |
-
-### Phase L1 — Language core v1 (8 weeks)
-
-| Deliverables | Acceptance |
-|--------------|------------|
-| Legacy preprocessor, lexer, tolerant parser + CST/AST, resolver, linter (v1 catalogue), compiler, Numba builder (BFS/DFS), MT19937, QColorCompat, SceneIR | **100% of the golden corpus passes** ([18](18-testing-and-quality.md) §3), including error scripts |
-| `structura lint/build` CLI; legacy OBJ export | CLI output matches the 1.5 OBJ goldens |
-| Build performance | S4 budgets met in CI perf runs |
-
-### Phase U1 — App shell, editor basics, viewport v1 (10 weeks)
-
-| Deliverables | Acceptance |
-|--------------|------------|
-| Main window, docks, workspaces, command registry, palette, status bar, welcome page | All commands reachable via menu and palette |
-| Editor P0 features ([12](12-editor.md) §2), lexical + semantic highlighting, diagnostics, outline, seed controls, live build, number scrubbing, colour swatches | Typing latency < 16 ms; live build of Default.es < 300 ms |
-| Theme engine + Structura Dark/Light + the 6 Nord variants | Contrast validator green |
-| GPU viewport: instanced pipelines, impostors, SSAO, shadows, OIT, picking → editor jump, camera presets, copy camera to script | [08](08-viewport.md) §1 budgets at 1M boxes |
-| Parameters panel, Examples gallery, Problems, Console, Build Stats | 1.5 parity checklist items for the GUI ticked ([01](01-legacy-analysis.md) §1.5) |
-
-### Phase R1 — Renderer v1 (12 weeks)
-
-| Deliverables | Acceptance |
-|--------------|------------|
-| SKL compiler (production quality), `gpu` device layer, GpuScheduler | Probe-kernel parity suite green |
-| RenderScene compile, TLAS/BLAS build, Sobol-Owen sampler, film, filters, view transforms | TLAS 1M < 400 ms |
-| Integrators `preview`, `classic`, `ao`, `path` (principled: diffuse, dielectric specular, metal, smooth glass) | Furnace + χ² tests green; 1.5 raytracer examples recognisably reproduced with `classic` |
-| Progressive sampler; render view (zoom, AOVs, exposure, progress); outputs + metadata; open-from-render | First frame < 100 ms; metadata round-trip |
-| CPU backend + CPU fallback viewport | Parity suite green on CPU vs lavapipe; fallback viewport ≥ 15 fps at 1M |
-
-### Phase E1 — Export v1 (6 weeks)
-
-| Deliverables | Acceptance |
-|--------------|------------|
-| Tessellation, affine decomposition, `ExportSceneModel` | Property tests green |
-| OBJ/MTL, PLY, STL (+ watertight union), glTF baked, USD PointInstancer (+ UsdPreviewSurface, camera, lights), Blender script (baked) | Validators pass; nightly headless Blender passes |
-| Legacy template engine + export sheet + bundled templates | Byte-identical template goldens |
-| Export presets; `structura export/template` | CLI ≡ GUI options |
-
-### Phase U2 — Editor pro & complete theming (8 weeks)
-
-| Deliverables | Acceptance |
-|--------------|------------|
-| Completion (all contexts), hover, signature help, go-to/references/rename, quick fixes, formatter, inlay hints, multi-cursor, minimap, sticky scroll, snippets | Feature checklist P0+P1 complete |
-| All 40 themes; VS Code / base16 importers; theme editor; follow system appearance | Screenshot + contrast tests for every theme |
-| Preferences (generated), keymaps (Structura / Legacy / VS Code-like) | |
-
-### Phase R2 — Renderer v2 (10 weeks)
-
-| Deliverables | Acceptance |
-|--------------|------------|
-| Full principled BSDF (coat, anisotropy, rough transmission, attenuation), emissive geometry, light set (point/sphere/spot/sun/rect), HDRI + sun-sky environments | Furnace/χ² tests; HDRI MIS convergence test |
-| Cameras: orthographic, spherical, fisheye, polygonal bokeh, click-to-focus | Analytic CoC test |
-| Tiled adaptive sampler with bucket orders, noise threshold; all 9 filters; region render; ground/shadow catcher | Adaptive renders reach the target noise with ≥ 30% fewer samples on the benchmark scenes |
-| OIDN denoising; AOVs; multi-layer EXR | Final-render workflow end-to-end |
-| GPU throughput and CPU fallback meet the [09](09-renderer.md) §1 targets | Perf CI |
-
-### Phase L2 — EisenScript v2 (6 weeks)
-
-| Deliverables | Acceptance |
-|--------------|------------|
-| `#version 2`, whole-word defines, expressions, `#param`, `material`/`light`/`environment`/`camera`/`render` blocks, `mat` operator, new primitives (cylinder, cone, torus, ellipsoid, tube), context-sensitive lexing | Spec examples in [05](05-eisenscript-language.md) §9 all build and render |
-| `structura convert --to v2` | Converted corpus scripts produce identical geometry |
-| Editor catalogues extended (completion, hover, diagnostics E015/E016, W112/W113) | |
-
-### Phase A — Animation, scripting, variations (6 weeks)
-
-| Deliverables | Acceptance |
-|--------------|------------|
-| Timeline + keyframes + playback + frame cache; animation render Job with pipelining; video export | A 240-frame animation renders unattended; resumable |
-| Legacy `#javascript` bridge (Builder, Debug, World, Vector3) | The 3 corpus JS scripts run (reduced frames) |
-| Python API + in-app script runner; `structura animate/run` | API doctests green |
-| Variation Explorer; snapshot history | 6×6 grid of a 100k-object script fills in < 20 s on the reference machine |
-
-### Phase E2 — Export v2 (8 weeks)
-
-| Deliverables | Acceptance |
-|--------------|------------|
-| 3MF (components + colour), X3D/VRML, glTF instanced (EXT_mesh_gpu_instancing), USD flattened + matrix-xform policy, Blender GN instancing (per S5), legacy CSG marker evaluation | Validators; Blender nightly |
-| Jinja exporters: POV-Ray 3.8, Sunflow `.sc`, Mitsuba 3 | Files render in the target renderers (manual nightly smoke) |
-
-### Phase R3 — Caustics & fog (6 weeks)
-
-| Deliverables | Acceptance |
-|--------------|------------|
-| Photon-caustics integrator (CPU, then GPU); homogeneous/height fog | Parity; caustic reference scene within tolerance of a high-spp path-traced reference |
-
-### Phase H — Hardening & 1.0 (10 weeks)
-
-| Deliverables | Acceptance |
-|--------------|------------|
-| Performance tuning to all budgets; memory guard polish; crash reporting (local logs; opt-in upload) | Perf CI green for 2 consecutive weeks |
-| Accessibility audit fixes; i18n infrastructure; user guide, language reference (generated), developer guide | Release checklist ([18](18-testing-and-quality.md) §10) |
-| Installers (MSIX/MSI, notarised DMG, AppImage, Flatpak) + PyPI; `structura warmup` in installers | Clean-machine tests, with and without a GPU |
-| Public beta (6 weeks), then RC and 1.0 | Goals G1–G10 ([00](00-vision-and-scope.md)) verified |
-
-## 3. Dependency graph (what blocks what)
+| # | Milestone | Contents | Checkpoint (definition of done) |
+|---|-----------|----------|----------------------------------|
+| **M0** | Foundations & brand | Repo skeleton per [17](17-code-standards-and-layout.md); `pyproject.toml` (MIT); ruff, mypy, import-linter, `tools/check_sizes.py`; pytest setup; Job framework skeleton; **logo & brand assets** ([21](21-brand-and-logo.md)) | `pytest` green; all gates pass; logo renders at 16–1024 px |
+| **M1** | Language core v1 | Catalogues; legacy preprocessor; lexer; tolerant parser (CST/AST); resolver; linter; compiler; MT19937; QColorCompat; Numba builder; SceneIR; `structura lint/build`; legacy OBJ; **golden generator** (Qt 5.15 headers from Ubuntu packages, user space) | Golden corpus green (155 scripts × 4 seeds); S4 budget met (scaled) |
+| **M2** | SKL + precision engine core | SKL front end + 5 emitters; flat ABI; backends CUDA/OpenCL/wgpu/CPU; RenderScene; BVH; Sobol-Owen; film + filters; integrators `preview`, `classic`, `ao`, `path` (diffuse, dielectric, metal, glass); outputs + metadata; `structura render` | Parity suite green on Numba/pocl/wgpu-llvmpipe; NVRTC compiles; furnace + χ² tests; example renders committed |
+| **M3** | App shell + preview engine + editor basics | Main window, docks, command registry/palette; GLSL preview (instancing, impostors, SSAO, shadows, OIT, picking); Numba fallback; editor P0; live build; Parameters/Examples/Problems/Console/Build Stats; base themes | UI tests + watchdog green; headless screenshots of the viewport and editor |
+| **M4** | Export v1 | Tessellation, affine decomposition, ExportSceneModel; OBJ/PLY/STL(+watertight)/glTF baked/USD instanced/Blender script (baked); legacy template engine | Validators green; template goldens byte-identical |
+| **M5** | Editor pro + all themes | Completion, hover, signatures, navigation, rename, quick fixes, formatter, inlays, multi-cursor, minimap, sticky scroll; 40 themes + importers + theme editor; preferences; keymaps | Feature checklist P0+P1; theme screenshot + contrast tests |
+| **M6** | Precision engine v2 | Full principled BSDF, emissive geometry, all lights, HDRI + sun-sky, all cameras + bokeh, tiled adaptive + noise threshold, all filters, OIDN, AOVs/EXR, region render, ground/shadow catcher; device lane fairness | Correctness suites; owner benchmark on the GTX 1660 |
+| **M7** | EisenScript v2, animation & scripting | v2 dialect; `convert --to v2`; timeline/keyframes; animation render + video; legacy `#javascript` bridge; Python API; Variation Explorer | Spec examples build; the 3 corpus JS scripts run |
+| **M8** | Export v2 + caustics/fog | 3MF, X3D/VRML, glTF instanced, USD flatten/matrix policies, Blender GN (S5), Jinja exporters, CSG markers; photon caustics; fog | Validators; reference scenes |
+| **M9** | Hardening & 1.0 | Performance tuning to budgets on the GTX 1660; accessibility; i18n; user guide and generated reference; installers (Windows, macOS, Linux) + PyPI | Release checklist ([18](18-testing-and-quality.md) §10); goals G1–G10 verified |
 
 ```mermaid
 flowchart LR
-  F --> L1 --> E1 --> L2 --> A --> H
-  F --> U1 --> U2 --> H
-  F --> R1 --> R2 --> R3
-  R2 --> H
-  L1 --> U1
-  E1 --> E2 --> H
-  S1[S1 SKL] -.-> R1
-  S6[S6 wgpu-in-Qt] -.-> U1
-  S4[S4 builder] -.-> L1
-  S5[S5 Blender GN] -.-> E2
+  M0 --> M1 --> M2 --> M3 --> M5 --> M9
+  M1 --> M4 --> M8
+  M2 --> M6 --> M8 --> M9
+  M1 --> M7 --> M9
+  M3 --> M7
 ```
 
-U1 needs L1 for live build. Both start after F and integrate in U1's final weeks (L1 ends at week 16, U1 at
-week 18). The CPU fallback viewport needs the `preview` integrator, so it is an R1 deliverable, not a U1
-one.
+The **order of execution** is M0 → M1 → M2 → M3 → M4 → M5 → M6 → M7 → M8 → M9. Later milestones can start
+earlier where the dependencies above allow.
 
-## 4. First two weeks (immediate next actions)
+## 4. Owner checkpoints (things only the owner can do)
 
-1. Approve these planning docs and ADRs. Confirm licensing (GPL-3.0-or-later) and the reference hardware.
-2. Create the repository skeleton and CI gates (Phase F, item 1–2).
-3. Build the golden generator against Qt 5 and dump the corpus. This de-risks G1 early.
-4. Start spikes S1 (SKL), S6 (wgpu in Qt) and S4 (builder) in parallel. They have the highest information
-   value.
-5. Draft `core/lang/catalog/*.toml` from [05](05-eisenscript-language.md). It unblocks the parser, linter,
-   completion and docs at once.
+1. Run `tools/bench` and `pytest -m gpu` on the GTX 1660 after M2 and M6. Report the numbers and any
+   failures.
+2. Smoke-test installers on Windows and macOS (M9), and test the Blender script in Blender 4.2 LTS (M4, M8).
+3. Approve visual decisions: logo (M0), default theme (M3), look presets (M3/M6).
+
+## 5. Current status
+
+See [PROGRESS.md](PROGRESS.md).

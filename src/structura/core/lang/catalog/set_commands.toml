@@ -1,0 +1,70 @@
+# 'set' commands (docs/05 §6).
+[[set]]
+key = "maxdepth"
+aliases = ["md"]
+value = "int"
+doc = "BFS: generation limit (default 1000). Depth-first: default per-rule depth limit."
+[[set]]
+key = "maxobjects"
+value = "int"
+doc = "Maximum number of objects (default 100000)."
+[[set]]
+key = "minsize"
+value = "float"
+doc = "Cull states whose transformed unit-diagonal is shorter than this."
+[[set]]
+key = "maxsize"
+value = "float"
+doc = "Cull states whose transformed unit-diagonal is longer than this."
+[[set]]
+key = "seed"
+value = "int|initial"
+doc = "Reseed the random streams, or 'initial' to make a subtree replay the same random choices."
+[[set]]
+key = "background"
+value = "color"
+doc = "Background colour."
+[[set]]
+key = "colorpool"
+value = "colorpool"
+doc = "Colour source for 'color random': randomhue, randomrgb, greyscale, image:FILE, list:C1,C2,…"
+[[set]]
+key = "rng"
+value = "old|new"
+doc = "Obsolete: select the old C library random generator."
+[[set]]
+key = "syncrandom"
+value = "bool"
+doc = "All states in a generation share the same random draws."
+[[set]]
+key = "recursion"
+value = "depth"
+doc = "'set recursion depth' switches to depth-first expansion."
+[[set]]
+key = "translation"
+value = "vec3"
+doc = "Camera translation, e.g. [0 0 -20]."
+[[set]]
+key = "rotation"
+value = "mat3"
+doc = "Camera rotation as 9 numbers (row-major)."
+[[set]]
+key = "pivot"
+value = "vec3"
+doc = "Camera pivot point."
+[[set]]
+key = "scale"
+value = "float"
+doc = "Camera zoom."
+[[set]]
+key = "perspective-angle"
+value = "float"
+doc = "Vertical field of view in degrees (default 22)."
+[[set]]
+key = "opengl"
+value = "any"
+doc = "Ignored (accepted for compatibility)."
+[[set]]
+key = "template"
+value = "any"
+doc = "Passed to template exporters."

@@ -1,0 +1,106 @@
+"""Structura scene for Blender 4.2+ — run:  blender --python {{ '{' }}this file{{ '}' }}  (or open it in the Text Editor
+and press Run). Idempotent: it rebuilds the 'Structura' collection. Geometry is read from '{{ sidecar }}' next
+to this script."""
+
+import json
+import os
+
+import bpy
+import mathutils
+import numpy as np
+
+SCENE = json.loads(r'''{{ scene_json }}''')
+def _here():
+    """The folder of this script, whether run with --python or from Blender's Text Editor."""
+    path = globals().get("__file__", "")
+    if not os.path.isfile(path):
+        text = getattr(getattr(bpy.context, "space_data", None), "text", None)
+        path = bpy.path.abspath(text.filepath) if text is not None else path
+    return os.path.dirname(os.path.abspath(path))
+
+
+HERE = _here()
+DATA = np.load(os.path.join(HERE, "{{ sidecar }}"))
+
+
+def collection():
+    old = bpy.data.collections.get("Structura")
+    if old is not None:
+        for obj in list(old.objects):
+            bpy.data.objects.remove(obj, do_unlink=True)
+        bpy.data.collections.remove(old)
+    col = bpy.data.collections.new("Structura")
+    bpy.context.scene.collection.children.link(col)
+    return col
+
+
+def material(spec):
+    mat = bpy.data.materials.new("Structura " + spec["name"])
+    mat.use_nodes = True
+    tree = mat.node_tree
+    bsdf = tree.nodes["Principled BSDF"]
+    attr = tree.nodes.new("ShaderNodeAttribute")
+    attr.attribute_name = "Col"
+    tree.links.new(attr.outputs["Color"], bsdf.inputs["Base Color"])
+    tree.links.new(attr.outputs["Alpha"], bsdf.inputs["Alpha"])
+    for socket, key in (("Metallic", "metallic"), ("Roughness", "roughness"), ("IOR", "ior"),
+                        ("Transmission Weight", "transmission"), ("Coat Weight", "coat"),
+                        ("Coat Roughness", "coat_roughness"), ("Anisotropic", "anisotropy")):
+        if socket in bsdf.inputs:
+            bsdf.inputs[socket].default_value = spec[key]
+    if spec["emission"] > 0 and "Emission Strength" in bsdf.inputs:
+        tree.links.new(attr.outputs["Color"], bsdf.inputs["Emission Color"])
+        bsdf.inputs["Emission Strength"].default_value = spec["emission"]
+    return mat
+
+
+def mesh_object(col, index, spec):
+    points, faces, colors = (DATA[f"m{index}_{k}"] for k in ("points", "faces", "colors"))
+    mesh = bpy.data.meshes.new(f"Structura_{spec['name']}")
+    mesh.vertices.add(len(points))
+    mesh.vertices.foreach_set("co", points.ravel())
+    mesh.loops.add(faces.size)
+    mesh.loops.foreach_set("vertex_index", faces.ravel())
+    mesh.polygons.add(len(faces))
+    mesh.polygons.foreach_set("loop_start", np.arange(0, faces.size, 3, dtype=np.int32))
+    mesh.polygons.foreach_set("loop_total", np.full(len(faces), 3, dtype=np.int32))
+    attribute = mesh.color_attributes.new("Col", "FLOAT_COLOR", "POINT")
+    attribute.data.foreach_set("color", colors.ravel())
+    mesh.update()
+    mesh.validate()
+    obj = bpy.data.objects.new(mesh.name, mesh)
+    obj.data.materials.append(material(spec))
+    col.objects.link(obj)
+
+
+def camera(col):
+    spec = SCENE["camera"]
+    data = bpy.data.cameras.new("Structura Camera")
+    data.lens = spec["lens"]
+    obj = bpy.data.objects.new("Structura Camera", data)
+    obj.location = spec["eye"]
+    direction = mathutils.Vector(spec["target"]) - mathutils.Vector(spec["eye"])
+    obj.rotation_euler = direction.to_track_quat("-Z", "Y").to_euler()
+    col.objects.link(obj)
+    bpy.context.scene.camera = obj
+
+
+def world():
+    w = bpy.context.scene.world or bpy.data.worlds.new("World")
+    bpy.context.scene.world = w
+    w.use_nodes = True
+    w.node_tree.nodes["Background"].inputs["Color"].default_value = (*SCENE["background"], 1.0)
+    bpy.context.scene.render.engine = "CYCLES"
+    bpy.context.scene.cycles.samples = SCENE["samples"]
+
+
+def main():
+    col = collection()
+    for index, spec in enumerate(SCENE["materials"]):
+        if f"m{index}_points" in DATA:
+            mesh_object(col, index, spec)
+    camera(col)
+    world()
+
+
+main()

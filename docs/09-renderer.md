@@ -1,7 +1,14 @@
-# 09 — Renderer Architecture (Structura Render, `structura.render`)
+# 09 — Precision Render Engine (Structura Render, `structura.render`)
 
-Structura Render is a **Sunflow-derived** physically based renderer. It runs on the GPU (WebGPU compute) and
-on the CPU (Numba), from one kernel source ([11](11-compute-backends.md)). It replaces three things:
+Structura Render is the **precision engine**: a **Sunflow-derived** physically based renderer. It runs on
+**CUDA, OpenCL, WGSL (wgpu) and the CPU (Numba)**, all from one SKL kernel source
+([11](11-compute-backends.md)). The interactive viewport is the separate, lower-precision **preview engine**
+([08](08-viewport.md), [ADR-0013](adr/0013-two-render-engines.md)).
+
+Sunflow is MIT-licensed, so its algorithms and code structure may be ported directly, with attribution
+([ADR-0010](adr/0010-licensing.md)).
+
+Structura Render replaces three things:
 
 - Structure Synth's internal Phong/AO raytracer;
 - the need to install Java + Sunflow;
@@ -9,15 +16,16 @@ on the CPU (Numba), from one kernel source ([11](11-compute-backends.md)). It re
 
 ## 1. Goals
 
-| Goal | Target (reference machine, 1920×1080, 1M boxes, path tracing, 4 bounces) |
-|------|-----------------------------------------------------------------------------|
-| Interactive feedback | First progressive frame < 100 ms (quarter-res preview pass) |
-| GPU throughput | ≥ 10 spp/s (to be validated in spike S2, [19](19-roadmap.md)) |
+| Goal | Target (reference GPU **NVIDIA GTX 1660, 6 GiB**; 1920×1080, 1M boxes, path tracing, 4 bounces) |
+|------|------------------------------------------------------------------------------------------------|
+| Interactive feedback | First progressive frame < 150 ms (quarter-res preview pass) |
+| CUDA throughput | ≥ 5 spp/s (to be validated in spike S2, [19](19-roadmap.md)) |
+| OpenCL / wgpu throughput | Within 1.5× of CUDA on the same GPU |
 | CPU fallback throughput | ≥ 1 spp/s on 8 cores (to be validated in spike S3) |
-| Scale | 5M instances on an 8 GB GPU; 20M on the CPU with 32 GB RAM |
+| Scale | 10M instances within 6 GiB VRAM (≈ 1.3 GiB scene + film); larger scenes fall back to the CPU |
 | Fidelity | Sunflow feature set ([01](01-legacy-analysis.md) §2) minus the exclusions listed there, plus the POV-Ray ideas marked *Adopt* |
 | Legacy look | The `classic` integrator reproduces the 1.5 internal raytracer closely enough for side-by-side recognition |
-| Determinism | Same scene + seed + spp + backend → bit-identical image. GPU vs CPU → statistically equivalent (parity suite) |
+| Determinism | Same scene + seed + spp + backend → bit-identical image. Across backends → statistically equivalent (parity suite) |
 
 ## 2. Sunflow → Structura mapping
 
@@ -53,9 +61,13 @@ flowchart LR
   TL --> RSC[RenderScene<br/>immutable, cached]
   LT --> RSC
   RSC --> BE{Backend}
-  BE -->|GPU| G[wgpu compute kernels]
+  BE -->|CUDA| G1[NVRTC kernels]
+  BE -->|OpenCL| G2[CL kernels]
+  BE -->|WGSL| G3[wgpu compute]
   BE -->|CPU| C[Numba prange kernels]
-  G --> FILM[Film<br/>accumulators + AOVs]
+  G1 --> FILM[Film<br/>accumulators + AOVs]
+  G2 --> FILM
+  G3 --> FILM
   C --> FILM
   FILM --> DN[Denoise<br/>OIDN]
   DN --> VT[View transform<br/>exposure, AgX/ACES/sRGB]
@@ -121,8 +133,8 @@ sampling-only changes reuse the compiled scene.
 
 - **Pass 0** is a quarter-resolution, 1-spp preview (the POV-Ray "mosaic preview" idea). Each following pass
   adds k spp at full resolution.
-- The GPU scheduler splits passes into tile dispatches so that each dispatch stays within ≈ 25 ms GPU time
-  ([04](04-concurrency-model.md) §5). The CPU backend renders tile batches in `prange`.
+- The device lane splits passes into tile dispatches so that each dispatch stays within ≈ 25 ms GPU time
+  ([04](04-concurrency-model.md) §5.2). The CPU backend renders tile batches in `prange`.
 - A `FilmSnapshot` is published after each completed pass, at ≤ 10 Hz.
 - It stops at target spp, a time limit, or a noise threshold (§5.3).
 
@@ -217,7 +229,7 @@ structura/render/
   film/
     film.py  filters.py  aov.py  snapshot.py  view_transforms.skl.py
   backends/
-    base.py  gpu_wgpu.py  cpu_numba.py
+    base.py  cuda.py  opencl.py  wgpu.py  cpu_numba.py  select.py
   denoise/
     oidn_ctypes.py  denoise.py
   output/
