@@ -173,7 +173,12 @@ Every backend runs **the same kernels**, so features are identical everywhere. O
 ## 7. Warm-up & caching
 
 - Numba: `cache=True`. The installer runs `structura warmup`, and a background warm-up Job handles stale caches.
-- CUDA: PTX is cached per (source hash, compute capability). NVRTC compiles in the background on first use.
+- CUDA: NVRTC compiles machine code (CUBIN `sm_XY`) for the device's compute capability. If NVRTC does not
+  know the architecture (a newer GPU), it compiles PTX for the newest architecture it knows, and the driver
+  JIT-compiles that. The image is cached on disk (`<user cache>/structura/cuda/<sha1>.bin`). The key covers
+  the emitted source, the capability, the NVRTC version and the options, and writes are atomic. The GUI
+  compiles it in the background at start-up (device-lane warm-up), so the first F9 only loads it. Before
+  this, every session paid about 10 s of NVRTC plus the driver's PTX JIT for the render megakernel.
 - OpenCL: program binaries are cached per (source hash, device).
 - WGSL: shader modules are created asynchronously and cached per source hash.
 

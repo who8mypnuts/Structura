@@ -23,6 +23,7 @@ from ...core.project.model import load as load_project
 from ...core.text_file import read_script
 from ...render.animation import Animation, frame_path, render_frame
 from ...render.output import save_image, to_display
+from ...render.settings import AUTO_PASSES
 from ...render.video import encode_video
 from .common import EXIT_OK, EXIT_SCRIPT_ERROR, EXIT_USAGE, add_script_arguments, parse_params
 
@@ -47,7 +48,7 @@ def register(p: argparse.ArgumentParser) -> None:
 
 
 def _overrides(args: argparse.Namespace) -> dict[str, Any]:
-    out: dict[str, Any] = {"samples": args.samples, "samples_per_pass": max(1, min(8, args.samples))}
+    out: dict[str, Any] = {"samples": args.samples, "samples_per_pass": AUTO_PASSES}
     if args.integrator:
         out["integrator"] = args.integrator
     if args.size:

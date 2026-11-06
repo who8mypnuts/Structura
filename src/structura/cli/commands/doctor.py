@@ -7,6 +7,7 @@ from __future__ import annotations
 import argparse
 import os
 import platform
+import subprocess
 import sys
 
 HELP = "report the Qt platform, OpenGL support and compute devices (for bug reports)"
@@ -16,6 +17,7 @@ SESSION_VARS = ("XDG_SESSION_TYPE", "WAYLAND_DISPLAY", "DISPLAY", "QT_QPA_PLATFO
 
 def register(p: argparse.ArgumentParser) -> None:
     p.add_argument("--no-compute", action="store_true", help="skip probing the compute backends")
+    p.add_argument("--opengl-only", action="store_true", help=argparse.SUPPRESS)  # the XWayland sub-probe
 
 
 def _platform_fallbacks() -> str | None:
@@ -51,14 +53,33 @@ def _opengl() -> list[str]:
     platform_name = QGuiApplication.platformName()
     result = run_probe()
     del app
-    lines = [f"Qt platform: {platform_name}", "OpenGL preview (needs desktop OpenGL 3.3):"]
+    from PySide6.QtGui import QOpenGLContext  # noqa: PLC0415
+
+    lines = [f"Qt platform: {platform_name} (Qt OpenGL module: {QOpenGLContext.openGLModuleType().name})",
+             "OpenGL preview (needs desktop OpenGL 3.3):"]  # fmt: skip
     lines += [f"  {'ok ' if a.ok else 'no '} {a.label}: {a.detail}" for a in result.attempts]
     if platform_name in HEADLESS_PLATFORMS:
         lines.append("  -> probed on Qt's headless platform (no window system reachable); run this command in your")
         lines.append("     desktop session to see what the GUI will use")
     else:
-        lines.append(f"  -> {'GPU preview' if result.ok else 'CPU preview (no usable OpenGL context)'}")
+        lines.append(f"  -> {'GPU preview' if result.ok else 'no usable OpenGL context here'}")
+    if not result.ok and platform_name == "wayland" and os.environ.get("DISPLAY"):
+        lines += _xwayland()
     return lines
+
+
+def _xwayland() -> list[str]:
+    """The same probe on XWayland, in a child process (a process has one Qt platform)."""
+    env = {**os.environ, "QT_QPA_PLATFORM": "xcb"}
+    command = [sys.executable, "-m", "structura", "doctor", "--opengl-only"]
+    try:
+        out = subprocess.run(command, env=env, capture_output=True, text=True, timeout=60, check=False).stdout
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return [f"XWayland: could not be probed ({exc})"]
+    probed = [f"  {line}" for line in out.splitlines() if line.strip()]
+    verdict = "the GUI restarts itself on XWayland (GPU preview)" if "-> GPU preview" in out else \
+        "the viewport uses the compute preview"  # fmt: skip
+    return ["", "XWayland (tried because native Wayland failed):", *probed, f"  => {verdict}"]
 
 
 def _compute() -> list[str]:
@@ -77,6 +98,9 @@ def _compute() -> list[str]:
 
 
 def run(args: argparse.Namespace) -> int:
+    if args.opengl_only:
+        print("\n".join(_opengl()))
+        return 0
     sections = [_environment(), _opengl()] + ([] if args.no_compute else [_compute()])
     print("\n\n".join("\n".join(section) for section in sections))
     return 0

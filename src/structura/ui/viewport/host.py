@@ -1,4 +1,4 @@
-"""ViewportHost: the GL viewport, switching to the CPU preview if OpenGL is unusable (docs/08 §9).
+"""ViewportHost: the GL viewport, or the compute preview (GPU compute or CPU) when OpenGL is unusable (docs/08 §9).
 
 The QOpenGLWidget is only created when the GPU preview is wanted *and* the OpenGL probe (gl_probe) found a
 usable context: a failing GL widget would also stop its whole window from being shown (see gl_probe).
@@ -22,16 +22,26 @@ from ...preview.instances import PreviewScene
 from ...preview.options import PreviewOptions
 from ...services.render import RenderService
 from . import gl_probe
-from .cpu_viewport import CpuViewport
+from .compute_viewport import ComputeViewport
 from .viewport_widget import ViewportWidget
 
 log = logging.getLogger(__name__)
 GL_START_TIMEOUT_MS = 1500
 
 
+def preview_label(mode: str) -> str:
+    """Status-bar text of a preview mode: 'gpu' is OpenGL; the compute preview reports its device."""
+    return {"gpu": "OpenGL", "cpu": "CPU", "off": "off"}.get(mode, mode.upper())
+
+
+def preview_device() -> str:
+    """The compute device of the fallback preview: STRUCTURA_PREVIEW_DEVICE, else the best available."""
+    return os.environ.get("STRUCTURA_PREVIEW_DEVICE", "auto")
+
+
 def preferred_backend() -> str:
     """'gpu', 'cpu' or 'off'. STRUCTURA_PREVIEW overrides (gpu forces the GL widget even if the probe failed);
-    otherwise headless Qt platforms and systems without a usable OpenGL context get the CPU preview."""
+    otherwise headless Qt platforms and systems without a usable OpenGL context get the compute preview."""
     choice = os.environ.get("STRUCTURA_PREVIEW", "auto").lower()
     if choice in ("gpu", "cpu", "off"):
         return choice
@@ -47,7 +57,7 @@ def gpu_preview_usable() -> bool:
     if result.ok:
         log.info("OpenGL preview: %s", result.attempts[-1].detail)
     else:
-        log.warning("OpenGL preview unavailable, using the CPU preview. %s. Run 'structura doctor' for details.",
+        log.warning("OpenGL preview unavailable, using the compute preview. %s. Run 'structura doctor' for details.",
                     result.summary())  # fmt: skip
     return result.ok
 
@@ -60,18 +70,19 @@ class ViewportHost(QStackedWidget):
     def __init__(self, renders: RenderService, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.mode = preferred_backend()
-        self.cpu = CpuViewport(renders)
-        self.cpu.enabled = self.mode != "off"
+        self.compute = ComputeViewport(renders, device=preview_device())
+        self.compute.enabled = self.mode != "off"
         self.gl: ViewportWidget | None = None
         if self.mode == "gpu":
             self.gl = ViewportWidget()
             self.addWidget(self.gl)
-            self.gl.gl_failed.connect(self._use_cpu)
+            self.gl.gl_failed.connect(self._use_compute)
             self.gl.picked.connect(self.picked)
             self.gl.camera_changed.connect(self.camera_changed)
-        self.addWidget(self.cpu)
-        self.cpu.picked.connect(self.picked)
-        self.cpu.camera_changed.connect(self.camera_changed)
+        self.addWidget(self.compute)
+        self.compute.picked.connect(self.picked)
+        self.compute.camera_changed.connect(self.camera_changed)
+        self.compute.device_changed.connect(self._compute_device)
         self._options = PreviewOptions()
         self._watchdog = QTimer(self)  # some platforms never initialise a child QOpenGLWidget
         self._watchdog.setSingleShot(True)
@@ -81,43 +92,48 @@ class ViewportHost(QStackedWidget):
         self.preview: PreviewScene | None = None
 
     @property
-    def cpu_mode(self) -> bool:
-        return self.gl is None or self.currentWidget() is self.cpu
+    def compute_mode(self) -> bool:
+        return self.gl is None or self.currentWidget() is self.compute
 
     def showEvent(self, event: object) -> None:  # noqa: N802
         super().showEvent(event)  # type: ignore[arg-type]
-        if self.gl is not None and self.gl.renderer is None and not self.cpu_mode:
+        if self.gl is not None and self.gl.renderer is None and not self.compute_mode:
             self._watchdog.start()
-        self.mode_changed.emit("cpu" if self.cpu_mode and self.mode != "off" else self.mode)
+        self.mode_changed.emit("cpu" if self.compute_mode and self.mode != "off" else self.mode)
 
     @Slot()
     def _check_gl(self) -> None:
-        if self.gl is not None and self.gl.renderer is None and not self.cpu_mode:
-            self._use_cpu("the OpenGL widget was never initialised on this platform")
+        if self.gl is not None and self.gl.renderer is None and not self.compute_mode:
+            self._use_compute("the OpenGL widget was never initialised on this platform")
 
     @Slot(str)
-    def _use_cpu(self, reason: str) -> None:
-        log.warning("OpenGL preview unavailable (%s); using the CPU preview", reason)
+    def _compute_device(self, device: str) -> None:
+        if self.compute_mode and self.mode != "off":
+            self.mode_changed.emit(self.compute.badge_text().removesuffix(" preview").lower())
+
+    @Slot(str)
+    def _use_compute(self, reason: str) -> None:
+        log.warning("OpenGL preview unavailable (%s); using the compute preview", reason)
         camera = self.camera()
-        self.setCurrentWidget(self.cpu)
-        self.cpu.set_scene(self.scene, camera)
+        self.setCurrentWidget(self.compute)
+        self.compute.set_scene(self.scene, camera)
         self.mode_changed.emit("cpu")
 
     def set_scene(self, scene: SceneIR, preview: PreviewScene, camera: Camera | None) -> None:
         self.scene, self.preview = scene, preview
         if self.gl is not None:
             self.gl.set_scene(preview, camera)
-        if self.cpu_mode:
-            self.cpu.set_scene(scene, camera)
+        if self.compute_mode:
+            self.compute.set_scene(scene, camera)
 
     def camera(self) -> Camera:
-        return self.cpu.camera() if self.cpu_mode or self.gl is None else self.gl.camera()
+        return self.compute.camera() if self.compute_mode or self.gl is None else self.gl.camera()
 
     def set_camera(self, camera: Camera) -> None:
         if self.gl is not None:
             self.gl.set_camera(camera)
-        if self.cpu_mode:
-            self.cpu.set_camera(camera)
+        if self.compute_mode:
+            self.compute.set_camera(camera)
 
     def frame_all(self) -> None:
         if self.preview is None:
@@ -132,7 +148,7 @@ class ViewportHost(QStackedWidget):
 
     def highlight(self, rows: np.ndarray | None, count: int) -> None:
         """Tint these SceneIR rows (provenance hover); the GPU preview only."""
-        if self.gl is not None and not self.cpu_mode:
+        if self.gl is not None and not self.compute_mode:
             self.gl.set_highlight(rows, count)
 
     def set_options(self, options: PreviewOptions) -> None:

@@ -21,7 +21,7 @@ from ...render.denoise.oidn import OidnUnavailableError
 from ...render.denoise.oidn import library as oidn_library
 from ...render.metadata import render_metadata
 from ...render.output import FORMATS, save_image
-from ...render.settings import INTEGRATORS, VIEWS, RenderSettings
+from ...render.settings import AUTO_PASSES, INTEGRATORS, VIEWS, RenderSettings
 from .common import EXIT_OK, EXIT_SCRIPT_ERROR, EXIT_USAGE, add_script_arguments, compile_or_report, parse_params
 
 HELP = "render a script to an image"
@@ -72,7 +72,7 @@ def _overrides(args: argparse.Namespace) -> dict[str, Any]:
 
 def settings_for(scene: Any, args: argparse.Namespace) -> RenderSettings:
     settings = replace(script_settings(scene), **_overrides(args), asset_dir=str(args.script.resolve().parent))
-    return replace(settings, samples_per_pass=max(1, min(8, settings.samples)))
+    return replace(settings, samples_per_pass=AUTO_PASSES)
 
 
 def _usage_error(args: argparse.Namespace) -> str | None:

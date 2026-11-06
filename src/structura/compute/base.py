@@ -123,6 +123,11 @@ class Bound(ABC):
     @abstractmethod
     def read(self, name: str) -> np.ndarray: ...
 
+    def finish(self) -> None:
+        """Block until queued dispatches have run (GPU backends queue them asynchronously); lets callers time
+        real device work and keep each submission short enough for the desktop to stay responsive."""
+        return None  # synchronous backends (CPU) have nothing to wait for
+
 
 class Backend(Protocol):
     name: str

@@ -43,9 +43,15 @@ def steps(backend: Backend) -> list[Step]:
     ]
 
 
-def warm_up(backend: Backend) -> Iterator[tuple[str, float]]:
-    """Run every step; yields (step, seconds) as each one finishes."""
-    for name, step in steps(backend):
+def device_steps(backend: Backend) -> list[Step]:
+    """Compile a GPU backend's render kernels (the path integrator with AOVs loads every module); CUDA keeps
+    the machine code on disk, so later sessions only load it."""
+    return [(f"render kernels ({backend.name})", _render(backend, "path"))]
+
+
+def warm_up(backend: Backend, chosen: list[Step] | None = None) -> Iterator[tuple[str, float]]:
+    """Run every step (or the ``chosen`` ones); yields (step, seconds) as each one finishes."""
+    for name, step in steps(backend) if chosen is None else chosen:
         started = time.perf_counter()
         step()
         yield name, time.perf_counter() - started

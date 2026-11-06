@@ -27,7 +27,11 @@ Profile = QSurfaceFormat.OpenGLContextProfile
 
 
 def requested_format(version: tuple[int, int] | None, profile: Profile) -> QSurfaceFormat:
+    """Always *desktop* OpenGL: with the default renderable type, Qt's EGL code picks an OpenGL ES config on
+    NVIDIA drivers (Wayland, EGLFS), and asking that ES config for a 3.3 core context fails with
+    EGL_BAD_MATCH (Qt's 'Failed to create context: 3009'); the driver default then comes back as ES 3.2."""
     fmt = QSurfaceFormat()
+    fmt.setRenderableType(QSurfaceFormat.RenderableType.OpenGL)
     if version is not None:
         fmt.setVersion(*version)
         fmt.setProfile(profile)

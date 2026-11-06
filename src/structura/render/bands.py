@@ -15,7 +15,7 @@ MAX_GROWTH = 4.0
 
 
 class Bands:
-    """Adapts the band height to the measured dispatch time (asynchronous GPU dispatches grow to one band)."""
+    """Adapts the band height to the measured dispatch time."""
 
     def __init__(self, width: int, height: int, rows: int = 32) -> None:
         self.width, self.height = width, height
@@ -26,16 +26,21 @@ class Bands:
         wanted = max(ROW_STEP, round(rows * scale / ROW_STEP) * ROW_STEP)
         self.rows = min(self.height, wanted)
 
-    def dispatch(self, bound: Bound, between: Callable[[], None] | None = None) -> None:
-        """One pass over the whole image, band by band; ``between`` runs after every band."""
-        y = 0
+    def dispatch(self, bound: Bound, between: Callable[[], None] | None = None) -> float:
+        """One pass over the whole image, band by band; ``between`` runs after every band. Each band is waited
+        for (Bound.finish), so the timing is real device time and no submission monopolises a display GPU.
+        Returns the pass's device seconds."""
+        y, total = 0, 0.0
         while y < self.height:
             rows = min(self.rows, self.height - y)
             bound.update(row0=y)
             bound.set_grid((self.width, rows, 1))
             started = time.perf_counter()
             bound.dispatch()
-            self._adapt(rows, time.perf_counter() - started)
-            y += rows
+            bound.finish()
+            seconds = time.perf_counter() - started
+            self._adapt(rows, seconds)
+            y, total = y + rows, total + seconds
             if between is not None:
                 between()
+        return total

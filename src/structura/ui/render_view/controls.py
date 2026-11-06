@@ -17,7 +17,7 @@ from PySide6.QtWidgets import (
 from ...compute.select import NAMES
 from ...render.aov_display import CHANNELS
 from ...render.denoise import METHODS
-from ...render.settings import INTEGRATORS, VIEWS, RenderSettings
+from ...render.settings import AUTO_PASSES, INTEGRATORS, VIEWS, RenderSettings
 from ..i18n import tr
 
 DENOISE_OFF = "off"
@@ -84,7 +84,7 @@ class RenderControls:
     def settings(self, width: int, height: int) -> RenderSettings:
         n = self.samples.value()
         return RenderSettings(
-            width=width, height=height, samples=n, samples_per_pass=max(1, min(8, n // 16 or 1)),
+            width=width, height=height, samples=n, samples_per_pass=AUTO_PASSES,
             integrator=self.integrator.currentText(), aovs=True,
         )  # fmt: skip
 

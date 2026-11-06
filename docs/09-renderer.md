@@ -154,6 +154,14 @@ This follows Sunflow `BucketRenderer`, with POV-Ray's confidence test added:
 > **As built (M6):** adaptive refinement runs over the whole image progressively (no buckets). Each pass is
 > dispatched in row bands of about 30 ms (`render/bands.py`); the even-sample half of the film
 > (`render/film.py`) gives the error estimate, and a `pixel_mask` buffer switches converged pixels off.
+>
+> **Pass pacing (M9 follow-up).** Each band is waited for (`Bound.finish`), so band timings are real device
+> time and no single submission monopolises a display GPU. `samples_per_pass = 0` ("auto", used by the GUI,
+> the CLI and animations) starts with 1 spp for a fast first image. It then grows each pass by up to 4× until
+> a pass takes about 0.4 s of device time, capped at 64 spp (`render/pacing.py`). This keeps the per-pass
+> read-back and tone mapping small next to the GPU work. Adaptive renders stop exactly at
+> `adaptive_min_samples` before the first noise test. Fixed pass sizes remain for reproducible tests; the
+> image does not depend on the pass partition, because sample indices are global.
 
 ### 5.3 Noise threshold
 

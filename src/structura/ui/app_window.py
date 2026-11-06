@@ -66,7 +66,7 @@ from .session_actions import SessionActions
 from .statusbar import StatusBar
 from .theming import apply_theme
 from .timeline_actions import TimelineActions
-from .viewport.host import ViewportHost
+from .viewport.host import ViewportHost, preview_label
 from .workbench import Workbench
 
 DEFAULT_SIZE = QSize(1440, 900)
@@ -223,7 +223,7 @@ class MainWindow(QMainWindow):
         self.examples.open_example.connect(self.docs.open_file)
         self.variations.adopt.connect(self.adopt_seed)
         self.viewport.picked.connect(self.on_picked)
-        self.viewport.mode_changed.connect(lambda mode: self.status.set("device", f"Preview: {mode.upper()}"))
+        self.viewport.mode_changed.connect(lambda mode: self.status.set("device", f"Preview: {preview_label(mode)}"))
         self.themes.theme_changed.connect(self.apply_theme)
         self.render_view.status.connect(self.show_message)
         self.render_view.request_source = self.render_source

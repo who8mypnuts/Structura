@@ -126,7 +126,7 @@ flowchart LR
 Axis gizmo (clickable), legacy coordinate system, auto-scaled ground grid, bounds, and a HUD with fps,
 instance counts by kind, triangles drawn, GPU memory and build progress.
 
-## 9. Numba CPU fallback (no usable OpenGL 3.3)
+## 9. Compute fallback (no usable OpenGL 3.3)
 
 **The decision is made before any GL widget exists.** A window containing a `QOpenGLWidget` is composited
 through an OpenGL context (Qt's RHI backing store). If that context cannot be created, the window never
@@ -137,22 +137,40 @@ At start-up `ui/viewport/gl_probe.py` creates throw-away contexts in this order:
 2. OpenGL 3.3 compatibility;
 3. the driver's default context, accepted if `GL_VERSION` reports desktop OpenGL ≥ 3.3.
 
-The first that works becomes the application's default `QSurfaceFormat`, which the viewport widget also uses.
-If none works (no driver, GLES-only, remote session, VM), no `QOpenGLWidget` is created and the viewport uses
-the CPU preview. Qt's own context warnings are captured and reported in one log line, and
-`structura doctor` prints every attempt. `STRUCTURA_PREVIEW=gpu|cpu|off` overrides the choice.
+**Every format asks for desktop OpenGL explicitly** (`QSurfaceFormat.RenderableType.OpenGL`). With the
+default renderable type, Qt's EGL code picks an *OpenGL ES* config on NVIDIA drivers (Wayland, EGLFS).
+Asking that ES config for a 3.3 core context fails with `EGL_BAD_MATCH`, which Qt reports as
+"Failed to create context: 3009", and the driver default then comes back as "OpenGL ES 3.2 NVIDIA". This
+was the cause of the CPU preview on the reference machine (GTX 1660, Wayland, Qt 6.12). It is reproduced in
+tests by requesting an ES config from a headless mutter compositor.
 
-A watchdog still covers platforms where the GL widget is created but never initialised. The CPU preview,
-**`CpuPreviewBackend`**, works as follows:
+The first format that works becomes the application's default `QSurfaceFormat`, which the viewport widget
+also uses. If none works:
 
-- It calls **`render.api` with the `preview` integrator on the CPU backend**. That is the same SKL kernel the
-  precision engine uses, emitted for Numba (DRY).
+1. **XWayland retry** (`ui/viewport/xwayland.py`). On a Wayland session with an X display, the app restarts
+   itself once on the `xcb` platform, before any window exists. The same GPU is usually fully usable through
+   GLX there. If OpenGL works on XWayland, the choice is remembered per Qt version, so later starts go there
+   directly; a Qt update re-tests native Wayland. The retry is skipped when the user set `STRUCTURA_PREVIEW`
+   or `QT_QPA_PLATFORM`.
+2. **Compute preview.** No `QOpenGLWidget` is created and the viewport uses `ComputeViewport`.
+
+Qt's own context warnings are captured and reported in one log line. `structura doctor` prints every
+attempt; when native Wayland fails, it also probes XWayland in a child process and prints that result.
+`STRUCTURA_PREVIEW=gpu|cpu|off` overrides the choice.
+
+A watchdog still covers platforms where the GL widget is created but never initialised. The compute preview,
+**`ComputeViewport`**, works as follows:
+
+- It calls **`render.api` with the `preview` integrator on the best compute device**: CUDA, OpenCL or wgpu on
+  a GPU, and Numba otherwise. That is the same SKL kernel the precision engine uses (DRY). It runs through
+  the `RenderService` on the device lane. `STRUCTURA_PREVIEW_DEVICE` selects a device explicitly.
 - It renders at half resolution during motion and refines to full resolution with AA when idle. The image is
   shown via `QImage` in the same widget.
 - Picking is an exact CPU ray cast. Colour-by modes and selection outlines are applied in the same kernel.
-- Target: 1M instances at 960×540, ≥ 15 fps on an 8-core CPU.
+- Target: 1M instances at 960×540, ≥ 15 fps on an 8-core CPU (CPU device).
 
-A "CPU preview" badge is shown; the feature set is otherwise identical.
+A badge names the device ("CUDA preview", "CPU preview"), and the status bar shows it too. The feature set
+is otherwise identical.
 
 ## 10. Screenshots
 

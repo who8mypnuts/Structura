@@ -15,6 +15,7 @@ from ..services.settings import SettingsService
 from ..ui.app_window import MainWindow
 from ..ui.fonts import register_fonts
 from ..ui.i18n import install as install_translators
+from ..ui.viewport import xwayland
 from ..ui.viewport.gl_probe import preferred_format, probe
 from ..ui.viewport.host import preferred_backend
 from ..ui.warmup import WarmUp
@@ -42,8 +43,13 @@ def configure_opengl() -> None:
 def main(argv: Sequence[str] | None = None) -> int:
     args = list(sys.argv if argv is None else argv)
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
-    app = create_app(args)
     settings = SettingsService()
+    xwayland.apply_hint(settings)
+    app = create_app(args)
+    gl_ok = preferred_backend() == "gpu"  # runs the OpenGL probe before any window exists
+    if not gl_ok:
+        xwayland.retry_on_xwayland(QApplication.platformName())  # restarts the process when it can
+    xwayland.remember(settings, gl_ok)
     install_translators(str(settings.value("appearance/language", "system")))
     window = MainWindow(settings)
     window.start([Path(a) for a in args[1:] if not a.startswith("-")])

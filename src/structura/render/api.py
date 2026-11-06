@@ -33,6 +33,7 @@ from .kernels.passes import render_pass
 from .legacy import with_legacy
 from .lights import pack_lights
 from .materials import pack_materials
+from .pacing import Pacing
 from .pack import PackedScene, PackOptions, pack_scene
 from .photons import add_photons
 from .settings import INTEGRATORS, RenderSettings
@@ -157,7 +158,7 @@ def progressive(
     frame: Frame | None = None,
     between: Callable[[], None] | None = None,
 ) -> Iterator[RenderProgress]:
-    """Yield an updated image after every pass of settings.samples_per_pass samples.
+    """Yield an updated image after every pass (render/pacing.py sizes the passes).
 
     Stops at settings.samples, at the time limit, or when adaptive sampling finds every pixel below the
     noise threshold. ``between`` runs between the row bands of each pass (cancellation checks).
@@ -173,11 +174,11 @@ def progressive(
     aovs = render_aovs(args, backend) if settings.aovs else None
     bound = backend.bind(Launch(render_module(), "render_pass", (w, h, 1), args))
     bands, counts, active = Bands(w, h), np.zeros((h, w), np.int32), args["pixel_mask"]
-    done = 0
+    done, pacing = 0, Pacing(settings)
     while done < settings.samples and active.any():
-        spp = min(settings.samples_per_pass, settings.samples - done)
+        spp = pacing.next(done)
         bound.update(sample_base=settings.seed * 1_000_003 + done, spp=spp)
-        bands.dispatch(bound, between)
+        pacing.observe(spp, bands.dispatch(bound, between))
         done += spp
         counts += active.reshape(h, w).astype(np.int32) * spp
         accum = bound.read("accum")

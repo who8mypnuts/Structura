@@ -43,6 +43,9 @@ class OpenCLBound(Bound):
         global_size = tuple(g * w for g, w in zip(self.groups(), wg, strict=True))
         self.kernel(self.backend.queue, global_size, wg, *self.ordered_args(self.device))
 
+    def finish(self) -> None:
+        self.backend.queue.finish()
+
     def read(self, name: str) -> np.ndarray:
         size, dtype = self.shapes[name]
         result = np.empty(size, dtype)

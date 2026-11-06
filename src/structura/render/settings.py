@@ -19,6 +19,7 @@ INTEGRATORS = {
 }
 VIEWS = ("auto", "agx", "standard", "soft", "aces", "filmic")  # render/views.py; auto: agx, classic → standard
 ENV_TYPES = ("gradient", "hdri", "sunsky")
+AUTO_PASSES = 0  # samples_per_pass: size passes by device time (render/pacing.py)
 FILTER_NAMES = ("box", "triangle", "gaussian", "blackman-harris", "mitchell", "catmull-rom", "bspline", "lanczos")
 
 

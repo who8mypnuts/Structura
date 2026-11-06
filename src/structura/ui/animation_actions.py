@@ -9,6 +9,7 @@ from PySide6.QtCore import QObject, Slot
 from PySide6.QtWidgets import QDialog
 
 from ..render.animation import Animation
+from ..render.settings import AUTO_PASSES
 from ..services.animation import AnimationProgress, AnimationRequest, AnimationService
 from ..services.jobs import ErrorInfo
 from .dialogs.animation_dialog import AnimationDialog
@@ -35,7 +36,7 @@ class AnimationActions(QObject):
         _, camera, settings, text = source
         overrides = {**tab.render_overrides, "width": settings.width, "height": settings.height,
                      "integrator": settings.integrator, "samples": samples,
-                     "samples_per_pass": max(1, min(8, samples))}  # fmt: skip
+                     "samples_per_pass": AUTO_PASSES}  # fmt: skip
         folder = tab.path.parent if tab.path else None
         return Animation(text, tab.timeline, tab.seed, dict(tab.params), folder, camera, overrides)
 

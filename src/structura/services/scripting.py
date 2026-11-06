@@ -21,6 +21,7 @@ from ..export.templates.engine import TemplateExport
 from ..export.templates.template_file import bundled_templates, load_template
 from ..render.api import render, script_settings
 from ..render.output import save_image
+from ..render.settings import AUTO_PASSES
 from ..scripting.js_bridge import run_javascript
 from .jobs import FunctionJob, JobContext, JobHandle, Lane
 from .jobs.tracked import TrackedJobs
@@ -47,7 +48,7 @@ class BuilderHost:
             settings = replace(settings, width=w, height=h)
         if self.samples:
             settings = replace(settings, samples=self.samples)
-        result = render(scene, replace(settings, samples_per_pass=max(1, min(8, settings.samples))), self.backend)
+        result = render(scene, replace(settings, samples_per_pass=AUTO_PASSES), self.backend)
         save_image(result.image, path, 0.0, "standard")
         self.report(f"raytraced {path.name}")
 

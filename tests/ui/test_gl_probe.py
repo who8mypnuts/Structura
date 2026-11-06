@@ -109,3 +109,14 @@ def test_doctor_reports_the_probe() -> None:
     assert result.returncode == 0, result.stderr[-2000:]
     assert "OpenGL preview" in result.stdout and "OpenGL 3.3 core" in result.stdout
     assert "Qt platform: offscreen" in result.stdout
+
+
+def test_every_requested_format_is_desktop_opengl() -> None:
+    """The default renderable type lets Qt's EGL code pick an OpenGL ES config on NVIDIA (error 3009)."""
+    for _, version, profile in gl_probe.CANDIDATES:
+        assert gl_probe.requested_format(version, profile).renderableType() == QSurfaceFormat.RenderableType.OpenGL
+
+
+def test_preview_labels_name_the_compute_device() -> None:
+    assert host.preview_label("gpu") == "OpenGL" and host.preview_label("cpu") == "CPU"
+    assert host.preview_label("cuda") == "CUDA"

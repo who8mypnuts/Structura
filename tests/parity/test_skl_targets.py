@@ -5,7 +5,9 @@ from __future__ import annotations
 from typing import Any
 
 import numpy as np
+import pytest
 
+from structura.compute import cuda
 from structura.compute.base import Launch
 from structura.compute.cpu import CpuBackend
 from structura.compute.cuda import compile_ptx
@@ -39,6 +41,21 @@ def test_gpu_targets_match_numba(cpu: CpuBackend, device: Any) -> None:
 def test_cuda_compiles_with_nvrtc() -> None:
     ptx = compile_ptx(_launch().module, "compute_75")
     assert ".entry render_boxes" in ptx
+
+
+def test_cuda_images_are_machine_code_and_cached_on_disk(tmp_path: Any, monkeypatch: Any) -> None:
+    monkeypatch.setattr(cuda, "CACHE", tmp_path)
+    module = _launch().module
+    cubin = cuda.compiled_image(module, 75)  # GTX 1660 (Turing)
+    assert cubin.startswith(b"\x7fELF") and len(list(tmp_path.glob("*.bin"))) == 1
+    monkeypatch.setattr(cuda, "_compile_image", lambda *_: pytest.fail("recompiled despite the cache"))
+    assert cuda.compiled_image(module, 75) == cubin
+
+
+def test_cuda_falls_back_to_ptx_for_architectures_nvrtc_does_not_know(tmp_path: Any, monkeypatch: Any) -> None:
+    monkeypatch.setattr(cuda, "CACHE", tmp_path)
+    image = cuda.compiled_image(_launch().module, 999)  # a future GPU: the driver JIT-compiles the PTX
+    assert b".entry render_boxes" in image and image.endswith(b"\0")
 
 
 def test_bound_launch_keeps_buffers_resident_and_accepts_updates(cpu: CpuBackend, device: Any) -> None:

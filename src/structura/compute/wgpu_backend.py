@@ -73,6 +73,11 @@ class WgpuBound(Bound):
         pass_.end()
         self.device.queue.submit([encoder.finish()])
 
+    def finish(self) -> None:
+        # wgpu-py 0.32's on_submitted_work_done_sync() is broken (callback signature); reading four bytes back
+        # waits for the queue just the same.
+        self.device.queue.read_buffer(self.gpu[self.launch.writable()[0]], 0, 4)
+
     def read(self, name: str) -> np.ndarray:
         size, dtype = self.shapes[name]
         return np.frombuffer(self.device.queue.read_buffer(self.gpu[name]), dtype=dtype)[:size].copy()

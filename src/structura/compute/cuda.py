@@ -5,9 +5,14 @@
 
 from __future__ import annotations
 
+import contextlib
+import hashlib
+import os
+from pathlib import Path
 from typing import Any
 
 import numpy as np
+import platformdirs
 
 try:  # cuda-python is not installed on macOS (CUDA does not exist there)
     from cuda.bindings import driver, nvrtc
@@ -18,6 +23,8 @@ from ..kernels.skl import ir
 from ..kernels.skl.emit.cuda import CudaEmitter
 from .base import BackendBase, BackendUnavailableError, Bound, Launch
 
+CACHE = Path(platformdirs.user_cache_dir("structura")) / "cuda"
+
 
 def _check(result: tuple[Any, ...], what: str) -> Any:
     err, *rest = result
@@ -26,23 +33,68 @@ def _check(result: tuple[Any, ...], what: str) -> Any:
     return rest[0] if len(rest) == 1 else rest
 
 
-def compile_ptx(module: ir.Module, arch: str = "compute_75") -> str:
-    if nvrtc is None:
-        raise BackendUnavailableError("cuda-python/NVRTC is not installed")
-    source = CudaEmitter(module).emit().encode()
+def _program(source: bytes, options: list[bytes]) -> Any:
     prog = _check(nvrtc.nvrtcCreateProgram(source, b"skl.cu", 0, [], []), "nvrtcCreateProgram")
-    exact = any(f.exact for f in module.functions.values())
-    options = [f"--gpu-architecture={arch}".encode(), b"--std=c++17"] + ([b"--fmad=false"] if exact else [])
     (err,) = nvrtc.nvrtcCompileProgram(prog, len(options), options)
     if int(err) != 0:
         size = _check(nvrtc.nvrtcGetProgramLogSize(prog), "log size")
         log = b" " * size
         nvrtc.nvrtcGetProgramLog(prog, log)
         raise RuntimeError("NVRTC compilation failed:\n" + log.decode(errors="replace"))
+    return prog
+
+
+def _options(module: ir.Module, arch: str) -> list[bytes]:
+    exact = any(f.exact for f in module.functions.values())
+    return [f"--gpu-architecture={arch}".encode(), b"--std=c++17"] + ([b"--fmad=false"] if exact else [])
+
+
+def compile_ptx(module: ir.Module, arch: str = "compute_75") -> str:
+    if nvrtc is None:
+        raise BackendUnavailableError("cuda-python/NVRTC is not installed")
+    prog = _program(CudaEmitter(module).emit().encode(), _options(module, arch))
     size = _check(nvrtc.nvrtcGetPTXSize(prog), "nvrtcGetPTXSize")
     ptx = b" " * size
     _check((nvrtc.nvrtcGetPTX(prog, ptx)[0], None), "nvrtcGetPTX")
     return str(ptx.decode(errors="replace").rstrip("\0"))
+
+
+def _supported_archs() -> list[int]:
+    return [int(a) for a in _check(nvrtc.nvrtcGetSupportedArchs(), "nvrtcGetSupportedArchs")]
+
+
+def _compile_image(module: ir.Module, capability: int) -> bytes:
+    """Machine code (CUBIN) for the device when NVRTC knows its architecture; otherwise PTX for the newest
+    architecture NVRTC knows that the device can run (the driver JIT-compiles it, e.g. a brand-new GPU)."""
+    archs = _supported_archs()
+    source = CudaEmitter(module).emit().encode()
+    if capability in archs:
+        prog = _program(source, _options(module, f"sm_{capability}"))
+        size = _check(nvrtc.nvrtcGetCUBINSize(prog), "nvrtcGetCUBINSize")
+        cubin = b" " * size
+        _check((nvrtc.nvrtcGetCUBIN(prog, cubin)[0], None), "nvrtcGetCUBIN")
+        return bytes(cubin)
+    usable = [a for a in archs if a <= capability] or archs[:1]
+    return bytes(compile_ptx(module, f"compute_{max(usable)}").encode()) + b"\0"
+
+
+def compiled_image(module: ir.Module, capability: int) -> bytes:
+    """The loadable image for a module, cached on disk: NVRTC takes seconds to tens of seconds for the render
+    kernel, so only the first run on a machine (or after a kernel change) pays for it."""
+    version = ".".join(map(str, _check(nvrtc.nvrtcVersion(), "nvrtcVersion")))
+    key = hashlib.sha1(
+        CudaEmitter(module).emit().encode() + f"|{capability}|{version}|{_options(module, '')}".encode()
+    ).hexdigest()
+    path = CACHE / f"{key}.bin"
+    with contextlib.suppress(OSError):
+        return path.read_bytes()
+    image = _compile_image(module, capability)
+    with contextlib.suppress(OSError):
+        CACHE.mkdir(parents=True, exist_ok=True)
+        temporary = path.with_suffix(f".{os.getpid()}.tmp")
+        temporary.write_bytes(image)
+        temporary.replace(path)  # atomic: concurrent processes never read half a file
+    return image
 
 
 class CudaBound(Bound):  # pragma: no cover - needs an NVIDIA GPU
@@ -73,6 +125,10 @@ class CudaBound(Bound):  # pragma: no cover - needs an NVIDIA GPU
         wg = self.launch.function.workgroup
         launch = driver.cuLaunchKernel(self.function, *self.groups(), *wg, 0, 0, params.ctypes.data, 0)
         _check((launch[0], None), "cuLaunchKernel")
+
+    def finish(self) -> None:
+        self.backend.activate()
+        _check((driver.cuCtxSynchronize()[0], None), "cuCtxSynchronize")
 
     def read(self, name: str) -> np.ndarray:
         size, dtype = self.shapes[name]
@@ -107,22 +163,24 @@ class CudaBackend(BackendBase):
         self.activate()  # pragma: no cover
         major = _attribute(self.device, "CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR")  # pragma: no cover
         minor = _attribute(self.device, "CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR")  # pragma: no cover
-        self.arch = f"compute_{major}{minor}"  # pragma: no cover
+        self.capability = major * 10 + minor  # pragma: no cover
         name = _check(driver.cuDeviceGetName(128, self.device), "cuDeviceGetName")  # pragma: no cover
         self.device_name = bytes(name).split(b"\0")[0].decode()  # pragma: no cover
-        self._functions: dict[tuple[str, str], Any] = {}  # pragma: no cover
+        self._functions: dict[tuple[int, str], tuple[ir.Module, Any]] = {}  # pragma: no cover
 
     def activate(self) -> None:  # pragma: no cover - needs an NVIDIA GPU
         """Make the primary context current on the calling thread (render workers run off the GUI thread)."""
         _check((driver.cuCtxSetCurrent(self.ctx)[0], None), "cuCtxSetCurrent")
 
     def function(self, launch: Launch) -> Any:  # pragma: no cover - needs an NVIDIA GPU
-        key = (CudaEmitter(launch.module).emit(), launch.kernel)
-        if key not in self._functions:
-            ptx = compile_ptx(launch.module, self.arch).encode() + b"\0"
-            module = _check(driver.cuModuleLoadData(ptx), "cuModuleLoadData")
-            self._functions[key] = _check(driver.cuModuleGetFunction(module, launch.kernel.encode()), "function")
-        return self._functions[key]
+        key = (id(launch.module), launch.kernel)  # the module is kept in the entry, so its id is never reused
+        entry = self._functions.get(key)
+        if entry is None or entry[0] is not launch.module:
+            image = compiled_image(launch.module, self.capability)
+            module = _check(driver.cuModuleLoadData(image), "cuModuleLoadData")
+            entry = (launch.module, _check(driver.cuModuleGetFunction(module, launch.kernel.encode()), "function"))
+            self._functions[key] = entry
+        return entry[1]
 
     def bind(self, launch: Launch) -> Bound:  # pragma: no cover - needs an NVIDIA GPU
         return CudaBound(self, launch)

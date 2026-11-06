@@ -69,13 +69,16 @@ def test_switching_theme_restyles_the_editor(window: MainWindow) -> None:
     assert window.themes.theme.meta.id == "nord-light"
 
 
-def test_cpu_preview_shows_the_built_scene(qtbot: QtBot, window: MainWindow) -> None:
-    assert window.viewport.cpu_mode  # the offscreen platform cannot host a child QOpenGLWidget
+def test_compute_preview_shows_the_built_scene(qtbot: QtBot, window: MainWindow) -> None:
+    assert window.viewport.compute_mode  # the offscreen platform cannot host a child QOpenGLWidget
     tab = window.docs.new_script()
     tab.editor.setPlainText(SCRIPT)
-    qtbot.waitUntil(lambda: window.viewport.cpu.image is not None, timeout=120000)
-    image = window.viewport.cpu.image
-    assert image is not None and image.width() > 8
+    qtbot.waitUntil(lambda: window.viewport.compute.image is not None, timeout=120000)
+    compute = window.viewport.compute
+    assert compute.image is not None and compute.image.width() > 8
+    assert compute.device_label.startswith("cpu") and compute.badge_text() == "CPU preview"  # no GPU here
+    compute.device_label = "cuda NVIDIA GeForce GTX 1660"
+    assert compute.badge_text() == "CUDA preview"
 
 
 def test_go_to_definition_and_insert_snippets(qtbot: QtBot, window: MainWindow) -> None:

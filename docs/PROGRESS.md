@@ -955,3 +955,42 @@ The docs/09 §9 items that were still missing from the Render view:
   image wherever the region render has samples (`render_view/regions.py`).
 - **Progress:** the estimated time left next to spp and elapsed time.
 - **Not done (post-1.0):** pause/resume and a render queue.
+
+## M9 (part 3) — GPU preview on NVIDIA/Wayland, GPU compute preview, faster GPU renders
+
+Owner report: `structura doctor` on Wayland + GTX 1660 showed "Failed to create context: 3009" for 3.3 core
+and compatibility, and "OpenGL ES only" for the driver default. The viewport fell back to the CPU preview,
+and GPU renders were slow.
+
+- **Cause of 3009:** without an explicit renderable type, Qt's EGL config chooser picks an *OpenGL ES*
+  config on NVIDIA. Asking that config for a desktop 3.3 core context fails with `EGL_BAD_MATCH` (0x3009).
+  This was reproduced in the sandbox on a headless mutter Wayland compositor by requesting an ES config at
+  3.3 core.
+- **Fix:** `gl_probe.requested_format` asks for `RenderableType.OpenGL`. This was re-verified on Mesa/Wayland.
+- **XWayland fallback (`ui/viewport/xwayland.py`):** if the probe still fails on native Wayland and an X
+  display exists, the app re-executes once with `QT_QPA_PLATFORM=xcb`. A success is remembered per Qt
+  version. `structura doctor` probes XWayland in a child process and prints the result.
+- **GPU compute preview:** the no-OpenGL fallback (`ComputeViewport`, formerly `CpuViewport`) now renders
+  with the best compute device (CUDA/OpenCL/wgpu, then CPU). Its badge and the status bar name the device
+  ("CUDA preview"); `STRUCTURA_PREVIEW_DEVICE` overrides the choice.
+- **Faster GPU renders:**
+  - **CUDA machine code:** NVRTC now emits CUBIN for the device's architecture, with a PTX fallback for
+    architectures it does not know. The result is cached on disk, so the ~10 s NVRTC compile of the render
+    megakernel and the driver's PTX JIT happen once per machine, not once per session.
+  - **Warm-up:** the GUI warms the render device on the device lane at start-up.
+  - **Device time per band:** `Bound.finish()` (CUDA `cuCtxSynchronize`, OpenCL `queue.finish`, wgpu
+    read-back) makes band timings real device time. Before, asynchronous GPU dispatches grew into one
+    image-sized submission.
+  - **Pacing:** `samples_per_pass = 0` ("auto", `render/pacing.py`) starts at 1 spp and grows passes up
+    to 4× at a time, towards 0.4 s of device time and at most 64 spp. Before, passes were fixed at ≤ 8 spp,
+    so per-pass read-back and tone mapping dominated on a fast GPU. The GUI, the CLI, animations and
+    scripting use it. Results do not depend on the pass partition (checked: max difference 2e-7).
+- **Tests:**
+  - XWayland decisions (hint, restart command, single retry, remember);
+  - desktop-GL renderable type in every probe format;
+  - compute-preview badge;
+  - CUBIN cache and PTX fallback with NVRTC;
+  - pass pacing, including adaptive minimum samples.
+- **Workarounds for the current build:**
+  - `QT_QPA_PLATFORM=xcb structura-gui` for the viewport;
+  - `structura warmup --device cuda` to compile the CUDA kernels once.

@@ -19,6 +19,7 @@ from structura.render.api import prepare, progressive, render
 from structura.render.bands import Bands
 from structura.render.film import active_mask, dilate, initial_mask, pixel_error
 from structura.render.kernels.layout import FILM_F
+from structura.render.pacing import Pacing
 from structura.render.settings import RenderSettings
 
 SCRIPT = "set background #fff\n{ s 0.6 color #888 } sphere\n"
@@ -83,6 +84,9 @@ class _Recorder:
         time.sleep(self.per_row * self.grid[1])
         self.rows.append((self.row0, self.grid[1]))
 
+    def finish(self) -> None:
+        pass
+
 
 def test_bands_cover_every_row_once_and_adapt_to_the_dispatch_time() -> None:
     bands, fake, calls = Bands(16, 200), _Recorder(0.01), []
@@ -93,6 +97,29 @@ def test_bands_cover_every_row_once_and_adapt_to_the_dispatch_time() -> None:
     fast = _Recorder(0.0)
     Bands(16, 1000).dispatch(fast)  # type: ignore[arg-type]
     assert len(fast.rows) <= 4  # instant dispatches grow to the whole image
+
+
+def test_auto_passes_grow_with_the_device_speed_and_fixed_passes_do_not() -> None:
+    auto = Pacing(replace(BASE, samples=1000, samples_per_pass=0))
+    sizes = []
+    for _ in range(5):
+        sizes.append(auto.next(sum(sizes)))
+        auto.observe(sizes[-1], 0.001 * sizes[-1])  # a fast device: 1 ms a sample
+    assert sizes == [1, 4, 16, 64, 64]
+    auto.observe(64, 6.4)  # a heavy scene: 100 ms a sample
+    assert auto.next(0) == 4
+    fixed = Pacing(BASE)
+    fixed.observe(8, 0.001)
+    assert fixed.next(0) == 8 and fixed.next(60) == 4  # the last pass stops at settings.samples
+
+
+def test_auto_adaptive_passes_stop_at_the_minimum_before_the_noise_test() -> None:
+    pacing = Pacing(replace(BASE, samples_per_pass=0, noise_threshold=0.05))
+    pacing.observe(1, 1e-6)
+    pacing.observe(4, 1e-6)
+    assert pacing.next(0) == BASE.adaptive_min_samples and pacing.next(10) == BASE.adaptive_min_samples - 10
+    adaptive = render(prepare(_scene()), replace(BASE, samples_per_pass=0, noise_threshold=0.05), CpuBackend())
+    assert adaptive.sample_map.min() >= BASE.adaptive_min_samples
 
 
 def test_fair_lock_serves_waiting_threads_first() -> None:

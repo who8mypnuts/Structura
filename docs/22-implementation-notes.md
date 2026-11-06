@@ -91,10 +91,14 @@ detail is in [PROGRESS.md](PROGRESS.md).
 2. `python -m tools.bench.render_throughput --device cuda --size 1920x1080` (spike S2: ≥ 5 spp/s at
    1080p).
 3. Launch `structura-gui` on a desktop and check the GPU viewport. It has been verified through a real X
-   server (Xvfb: GLX and EGL on llvmpipe) but not yet on Wayland or an NVIDIA driver.
-4. Run `structura doctor` in the desktop session and keep its output. On the first report (Wayland), the
-   driver rejected the 3.3 core context (`EGL_BAD_MATCH`). The probe now falls back to a compatibility or
-   default context, or to the CPU preview. Which path your system takes is still to be confirmed.
+   server (Xvfb: GLX and EGL on llvmpipe) and on Wayland (headless mutter, Mesa), but not yet with an NVIDIA
+   driver.
+4. Run `structura doctor` in the desktop session and keep its output. The first report (Wayland, GTX 1660,
+   driver 615.71, Qt 6.12) showed "Failed to create context: 3009" and "OpenGL ES only". The cause: Qt's EGL
+   code picks an OpenGL ES config on NVIDIA unless desktop OpenGL is requested explicitly. The probe now
+   requests it. If native Wayland still fails, the app retries on XWayland automatically, and `doctor`
+   prints the XWayland result as well. Expected now: "OpenGL 3.3 core: ok" on Wayland, or at least on
+   XWayland.
 5. `python -m tools.bench.suite` (all budgets of docs/18 §8; writes `bench-results.json`). Send the JSON file.
 6. Run the UI tests with the reference budget: `STRUCTURA_STALL_MS=50 pytest tests/ui`.
 7. Build the installers on each OS with `packaging/build.py` and the platform wrapper (`packaging/README.md`).
