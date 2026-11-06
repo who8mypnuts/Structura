@@ -13,32 +13,27 @@ from PIL import Image
 from PIL.PngImagePlugin import PngInfo
 
 from ..core.color import linear_to_srgb
+from .views import VIEW_TRANSFORMS
 
-LUMA = np.array([0.2126, 0.7152, 0.0722], np.float32)
 DISPLAY_FORMATS = {".png", ".jpg", ".jpeg", ".webp", ".tif", ".tiff"}
 FORMATS = DISPLAY_FORMATS | {".exr"}
 
 
-def _soft(image: np.ndarray) -> np.ndarray:
-    """Gentle highlight roll-off: Reinhard on luminance above 0.8, hue preserved."""
-    lum = image @ LUMA
-    over = np.maximum(lum - 0.8, 0.0)
-    knee = np.where(lum > 0.8, 0.8 + over / (1.0 + over / 0.6), lum)
-    return image * (knee / np.maximum(lum, 1e-8))[..., None]
-
-
 def to_display(image: np.ndarray, exposure: float = 0.0, view: str = "soft") -> np.ndarray:
-    """Linear HDR → sRGB 8-bit. 'standard' clips (the Structure Synth look); 'soft' rolls highlights off."""
+    """Linear HDR → sRGB 8-bit through a view transform (render/views.py)."""
     scaled = image * np.float32(2.0**exposure)
-    mapped = _soft(scaled) if view == "soft" else scaled
-    return (linear_to_srgb(np.clip(mapped, 0.0, 1.0)) * 255.0 + 0.5).astype(np.uint8)
+    mapped = VIEW_TRANSFORMS.get(view, VIEW_TRANSFORMS["standard"])(scaled)
+    return (linear_to_srgb(np.clip(mapped, 0.0, 1.0).astype(np.float32)) * 255.0 + 0.5).astype(np.uint8)
 
 
-def _save_exr(image: np.ndarray, path: Path, metadata: Mapping[str, str]) -> None:
+def _save_exr(image: np.ndarray, path: Path, metadata: Mapping[str, str], layers: Mapping[str, np.ndarray]) -> None:
+    """Float EXR; extra ``layers`` (AOVs) become channels like 'albedo.R' or 'Z'."""
     import OpenEXR  # noqa: PLC0415 - heavy import, only for EXR output
 
     header = {"compression": OpenEXR.ZIP_COMPRESSION, "type": OpenEXR.scanlineimage, **metadata}
-    with OpenEXR.File(header, {"RGB": np.ascontiguousarray(image, np.float32)}) as f:
+    channels = {"RGB": np.ascontiguousarray(image, np.float32)}
+    channels |= {name: np.ascontiguousarray(np.nan_to_num(v, posinf=1e30), np.float32) for name, v in layers.items()}
+    with OpenEXR.File(header, channels) as f:
         f.write(str(path))
 
 
@@ -48,11 +43,13 @@ def save_image(
     exposure: float = 0.0,
     view: str = "soft",
     metadata: Mapping[str, str] | None = None,
+    layers: Mapping[str, np.ndarray] | None = None,
 ) -> None:
+    """Write an image; EXR keeps linear radiance and any AOV ``layers`` (other formats ignore them)."""
     suffix = path.suffix.lower()
     meta = dict(metadata or {})
     if suffix == ".exr":
-        _save_exr(image * np.float32(2.0**exposure), path, meta)
+        _save_exr(image * np.float32(2.0**exposure), path, meta, layers or {})
         return
     if suffix not in DISPLAY_FORMATS:
         raise ValueError(f"unsupported image format '{suffix}' (use one of {sorted(FORMATS)})")

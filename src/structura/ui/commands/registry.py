@@ -9,6 +9,10 @@ from PySide6.QtCore import QObject, Signal
 from PySide6.QtGui import QAction, QKeySequence
 from PySide6.QtWidgets import QWidget
 
+from ..i18n import tr
+
+CONTEXT = "Commands"  # translation context of command titles and tips
+
 
 @dataclass(frozen=True)
 class Command:
@@ -28,6 +32,11 @@ class Command:
     def category(self) -> str:
         return self.id.split(".", 1)[0].title()
 
+    @property
+    def label(self) -> str:
+        """The title in the user's language."""
+        return tr(self.title, CONTEXT)
+
 
 class CommandRegistry(QObject):
     changed = Signal()
@@ -41,12 +50,15 @@ class CommandRegistry(QObject):
     def register(self, command: Command) -> QAction:
         if command.id in self._commands:
             raise ValueError(f"command {command.id!r} registered twice")
-        action = QAction(command.title, self.host)
+        sequence = QKeySequence(command.shortcut)
+        if command.shortcut and not sequence.toString():  # e.g. "Ctrl+K Ctrl+T" (chords need a comma)
+            raise ValueError(f"command {command.id!r}: unparsable shortcut {command.shortcut!r}")
+        action = QAction(tr(command.title, CONTEXT), self.host)
         action.setObjectName(command.id)
         if command.shortcut:
-            action.setShortcut(QKeySequence(command.shortcut))
+            action.setShortcut(sequence)
         action.setCheckable(command.checkable)
-        action.setToolTip(command.tip or command.title)
+        action.setToolTip(tr(command.tip, CONTEXT) if command.tip else action.text())
         action.triggered.connect(lambda _checked=False, c=command: self._run(c))
         self.host.addAction(action)  # shortcuts work even when the command is in no menu
         self._commands[command.id], self._actions[command.id] = command, action

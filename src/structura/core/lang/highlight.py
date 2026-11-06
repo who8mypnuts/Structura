@@ -12,7 +12,8 @@ from dataclasses import dataclass
 from functools import cache
 
 from ..color.names import NAMED_COLORS
-from .catalog import modifiers, operator_names, primitives, set_commands
+from .catalog import all_primitives, modifiers, operator_names, set_commands
+from .signatures import SIGNATURES
 
 Token = tuple[int, int, str]
 IN_BLOCK_COMMENT = 1
@@ -38,7 +39,7 @@ def vocabulary() -> Vocabulary:
     mods = {m.name for m in modifiers()} | {a.name for m in modifiers() for a in m.aliases}
     ops = set(operator_names()) - mods
     keys = {s.key for s in set_commands()} | {a for s in set_commands() for a in s.aliases}
-    prims = {p.name for p in primitives()} | {"triangle"}  # triangle[…] is parsed separately by the resolver
+    prims = {p.name for p in all_primitives()} | {"triangle"}  # triangle[…] is parsed separately by the resolver
     return Vocabulary(frozenset(ops), frozenset(mods), frozenset(prims), frozenset(keys))
 
 
@@ -112,7 +113,8 @@ class _LineLexer:
             self.add(m.end() - pos, "set.value" if self.prev_is_set_key() else "number")
         elif m := _WORD.match(text, pos):
             word = m.group(0)
-            role = self.word_role(word)
+            called = word.lower() in SIGNATURES and text[m.end() :].lstrip().startswith("(")
+            role = "function" if called else self.word_role(word)
             self.add(len(word), role)
             self.block_header = self.block_header or role == "block"
             self.prev = word.lower()

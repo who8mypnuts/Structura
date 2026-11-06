@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Structura
+GenericName=Generative 3D structures
+Comment=Grammar-based 3D structures: edit, render and export (successor of Structure Synth)
+Exec=Structura %F
+Icon=io.github.structura.Structura
+Terminal=false
+Categories=Graphics;3DGraphics;Development;
+MimeType=text/x-eisenscript;application/x-structura-project;
+Keywords=Structure Synth;EisenScript;fractal;generative;render;
+StartupWMClass=Structura

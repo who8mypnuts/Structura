@@ -71,9 +71,11 @@ class NumbaEmitter:
         self.fn, self.lines, self.indent = f, [], 1
         params = [n for n, _ in f.params] + [n for n, _ in self.scratch[f.name]]
         fastmath = "False" if f.exact else "True"
+        # error_model="numpy": IEEE semantics for x / 0 (inf / NaN) like every GPU target, instead of Python's
+        # ZeroDivisionError, which inside a prange region silently abandoned the rest of the chunk.
         self.block(f.body)
         return [
-            f"@njit(nogil=True, cache=True, fastmath={fastmath})",
+            f'@njit(nogil=True, cache=True, fastmath={fastmath}, error_model="numpy")',
             f"def {f.name}({', '.join(params)}):",
             *(self.lines or ["    pass"]),
             "",
@@ -85,7 +87,7 @@ class NumbaEmitter:
         alloc = [f"            {n} = np.empty({t.size}, {dtype_name(t.elem)})" for n, t in scratch]
         call = ", ".join(["(np.uint32(x), np.uint32(y), np.uint32(z))", *params, *(n for n, _ in scratch)])
         return [
-            "@njit(nogil=True, cache=True, parallel=True)",
+            '@njit(nogil=True, cache=True, parallel=True, error_model="numpy")',
             f"def dispatch_{f.name}(gx, gy, gz{''.join(', ' + p for p in params)}):",
             "    total = gx * gy * gz",
             "    chunks = (total + 255) // 256",

@@ -8,6 +8,7 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QTextCharFormat, QTextCursor
 from PySide6.QtWidgets import QCheckBox, QHBoxLayout, QLabel, QLineEdit, QPushButton, QWidget
 
+from ..i18n import tr
 from ..theming import qcolor
 from .code_editor import CodeEditor
 
@@ -21,6 +22,8 @@ class FindBar(QWidget):
         super().__init__(editor.parentWidget())
         self.editor = editor
         self.find_edit, self.replace_edit = QLineEdit(), QLineEdit()
+        self.find_edit.setAccessibleName(tr("Find"))
+        self.replace_edit.setAccessibleName(tr("Replace with"))
         self.find_edit.setPlaceholderText("Find")
         self.replace_edit.setPlaceholderText("Replace")
         self.case, self.regex, self.word = QCheckBox("Aa"), QCheckBox(".*"), QCheckBox("W")

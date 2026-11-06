@@ -17,6 +17,7 @@ from .orbit import OrbitController
 
 DOC = "viewport-cpu"
 IDLE_MS = 250
+DISPLAY = (0.0, "soft")  # made by the render job, so the GUI thread only wraps it in a QImage
 
 
 class CpuViewport(QWidget):
@@ -65,7 +66,8 @@ class CpuViewport(QWidget):
             self.update()
             return
         settings = self._settings(fast)
-        self.renders.request(RenderRequest(DOC, self.scene, settings, device="cpu", camera=self.orbit.camera()))
+        camera = self.orbit.camera()
+        self.renders.request(RenderRequest(DOC, self.scene, settings, device="cpu", camera=camera, display=DISPLAY))
 
     @Slot()
     def _refine(self) -> None:
@@ -75,7 +77,8 @@ class CpuViewport(QWidget):
     def _on_update(self, doc: str, update: object) -> None:
         if doc != DOC or not isinstance(update, RenderUpdate):
             return
-        rgb = np.ascontiguousarray(to_display(update.progress.image, 0.0, "soft"))
+        rgb = update.display if update.display is not None else to_display(update.progress.image, *DISPLAY)
+        rgb = np.ascontiguousarray(rgb)
         h, w, _ = rgb.shape
         self.image = QImage(rgb.data, w, h, 3 * w, QImage.Format.Format_RGB888).copy()
         self.update()

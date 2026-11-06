@@ -151,6 +151,10 @@ This follows Sunflow `BucketRenderer`, with POV-Ray's confidence test added:
 4. Optionally, the whole image is refined in rounds instead of per tile ("progressive final"). This gives a
    better preview, at the same cost.
 
+> **As built (M6):** adaptive refinement runs over the whole image progressively (no buckets). Each pass is
+> dispatched in row bands of about 30 ms (`render/bands.py`); the even-sample half of the film
+> (`render/film.py`) gives the error estimate, and a `pixel_mask` buffer switches converged pixels off.
+
 ### 5.3 Noise threshold
 
 A single user-facing setting, **Noise threshold** (0 = off), drives adaptive stopping in both samplers.
@@ -178,7 +182,7 @@ map as a heatmap AOV.
 
 | Step | Implementation |
 |------|----------------|
-| Denoise | Open Image Denoise 2 (CPU device, via ctypes), with albedo + normal AOVs. Runs on the io lane. Used for final renders automatically when enabled; in progressive mode, it runs when idle for 500 ms. |
+| Denoise | Open Image Denoise 2 (CPU device, via ctypes), with albedo + normal AOVs. Fallback when its library cannot be loaded: an edge-avoiding À-Trous wavelet filter (parallel Numba) that uses the AOVs as guides; it does not demodulate by albedo (see PROGRESS, M6 part 3). Runs on the compute lane after a render finishes; changing the method re-denoises the last result. |
 | Exposure & view transform | SKL shared functions: sRGB standard, **AgX** (default), ACES (fitted), Filmic-like. The same code runs in the viewport. |
 | Glare / bloom | Post-1.0 |
 | Background / alpha | Premultiplied alpha for PNG/EXR when "transparent background" is on |

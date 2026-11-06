@@ -21,6 +21,7 @@ class Scrub:
     value: float
     decimals: int
     origin_x: float
+    changed: bool = False  # the text is only touched once the drag changes the value
 
 
 def number_at(editor: QPlainTextEdit, position: int) -> tuple[int, str] | None:
@@ -55,7 +56,6 @@ class Scrubber:
         start, text = found
         decimals = len(text.split(".")[1]) if "." in text else 0
         self.active = Scrub(start, len(text), float(text), decimals, x)
-        self._replace(text, first=True)
         return True
 
     def move(self, x: float, modifiers: Qt.KeyboardModifier) -> None:
@@ -65,11 +65,17 @@ class Scrubber:
         fine = bool(modifiers & Qt.KeyboardModifier.ShiftModifier) and s.decimals > 0
         decimals = s.decimals + (1 if fine else 0)  # fine steps on decimals show one more digit
         steps = int((x - s.origin_x) / PIXELS_PER_STEP)
+        if steps == 0 and not s.changed:
+            return
         value = s.value + steps * step_size(decimals, modifiers & ~Qt.KeyboardModifier.ShiftModifier)
-        self._replace(format_value(value, decimals))
+        self._replace(format_value(value, decimals), first=not s.changed)
+        s.changed = True
 
-    def end(self) -> None:
+    def end(self) -> bool:
+        """Finish; True when the drag changed the number (False: it was a plain Alt+click)."""
+        changed = self.active is not None and self.active.changed
         self.active = None
+        return changed
 
     def _replace(self, text: str, first: bool = False) -> None:
         s = self.active

@@ -1,5 +1,10 @@
-"""USD export (usd-core, docs/15 §4.1): PointInstancers for boxes and spheres (per material), sheared boxes,
-grids and triangles baked into meshes, lines as BasisCurves, dots as Points."""
+"""USD export (usd-core, docs/15 §4.1).
+
+*instanced* (default): PointInstancers for TRS boxes and spheres (per material); lines as BasisCurves, dots as
+Points; the rest — grids, meshes, triangles, v2 solids and sheared boxes — baked into meshes per material,
+or, with the *matrix* shear policy, placed by `xformOp:transform` on instanceable references of unit
+prototypes (exact, no tessellation per instance). *flattened*: one mesh per material with vertex colours.
+"""
 
 from __future__ import annotations
 
@@ -8,13 +13,16 @@ from pathlib import Path
 import numpy as np
 from pxr import UsdGeom, UsdUtils, Vt
 
-from ...core.geometry.tessellate import TessOptions, TriMesh, iter_tessellate
+from ...core.geometry.tessellate import TessOptions, iter_tessellate
+from ...core.geometry.trimesh import TriMesh
 from ...core.geometry.unit_shapes import unit_box
+from ...core.geometry.v2_shapes import V2_KINDS
 from ...core.params import ParamSpec, ParamType
 from ...core.scene.ir import PrimitiveKind as K
 from ...core.scene.ir import SceneIR
 from ..base import Exporter, ExportJob, ExportReport, register
 from .instancing import InstanceGroup, instance_groups
+from .usd_matrix import matrix_instances
 from .usd_stage import ROOT, bind, camera, display_colors, material, new_stage
 
 SUFFIXES = (".usd", ".usda", ".usdc", ".usdz")
@@ -71,6 +79,8 @@ class UsdExporter(Exporter):
         ParamSpec("up", ParamType.ENUM, "y", "Up axis", choices=("y", "z")),
         ParamSpec("unit_scale", ParamType.FLOAT, 1.0, "Unit scale", range=(1e-6, 1e6)),
         ParamSpec("line_width", ParamType.FLOAT, 0.02, "Line width (world units)", range=(0.0, 1e6)),
+        ParamSpec("mode", ParamType.ENUM, "instanced", "Layout", choices=("instanced", "flattened")),
+        ParamSpec("shear", ParamType.ENUM, "bake", "Sheared and v2 solids", choices=("bake", "matrix")),
     )
 
     def write(self, job: ExportJob, path: Path) -> ExportReport:
@@ -89,15 +99,22 @@ class UsdExporter(Exporter):
         scene, table = job.scene, job.model.materials
         looks = [material(stage, m, i) for i, m in enumerate(table.materials)]
         mat_of_row = table.by_tag[scene.tag] if len(scene) else np.zeros(0, np.int32)
-        groups, baked = instance_groups(job)
+        if job.options["mode"] == "flattened":
+            every = np.ones(len(scene), bool)
+            self._baked(stage, job, every, looks, mat_of_row)
+            return {"instanced": 0, "baked_rows": len(scene)}
+        groups, sheared = instance_groups(job)
         for group in groups:
             inst = _instancer(stage, f"{ROOT}/{group.kind.name.title()}s_{group.material}", group, scene)
             bind(inst.GetPrim(), looks[group.material])
-        counts = {"instanced": sum(len(g.rows) for g in groups), "baked_rows": 0}
         self._curves_points(stage, job)
-        self._baked(stage, job, baked, looks, mat_of_row)
-        counts["baked_rows"] = int(baked.sum())
-        return counts
+        rest = sheared | np.isin(scene.kind, (K.GRID, K.MESH, K.TRIANGLE, *V2_KINDS))
+        placed = np.zeros(len(scene), bool)
+        if job.options["shear"] == "matrix":
+            placed = matrix_instances(stage, job, rest, looks, mat_of_row)
+        self._baked(stage, job, rest & ~placed, looks, mat_of_row)
+        return {"instanced": sum(len(g.rows) for g in groups), "baked_rows": int((rest & ~placed).sum()),
+                "matrix_instances": int(placed.sum())}  # fmt: skip
 
     def _curves_points(self, stage: object, job: ExportJob) -> None:
         scene = job.scene
@@ -122,7 +139,7 @@ class UsdExporter(Exporter):
 
     def _baked(self, stage: object, job: ExportJob, baked: np.ndarray, looks: list, mat_of_row: np.ndarray) -> None:  # type: ignore[type-arg]
         scene = job.scene
-        keep = baked | np.isin(scene.kind, (K.GRID, K.MESH, K.TRIANGLE))
+        keep = baked & (scene.kind != K.TEMPLATE)
         if not keep.any():
             return
         sub = scene.subset(np.nonzero(keep)[0])

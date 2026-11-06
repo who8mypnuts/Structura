@@ -19,10 +19,10 @@ from .core.build.api import build_scene
 from .core.lang.api import compile_script
 from .core.scene.camera import Camera
 from .core.scene.ir import SceneIR
+from .core.text_file import read_script
 from .export.api import export_scene
 from .export.base import ExportReport
-from .render.api import RenderProgress, prepare, progressive, script_settings
-from .render.config import scene_frame
+from .render.api import RenderProgress, prepare_with_frame, progressive, script_settings
 from .render.metadata import render_metadata
 from .render.output import save_image
 
@@ -36,7 +36,7 @@ def build(
 ) -> SceneIR:
     """Build a script (a path, or EisenScript text) into a scene."""
     path = Path(script) if not isinstance(script, str) or ("\n" not in script and Path(script).exists()) else None
-    text = path.read_text(encoding="utf-8") if path else str(script)
+    text = read_script(path) if path else str(script)
     compiled = compile_script(text, seed, params, path.parent if path else None, frame, fps)
     return build_scene(compiled.program, seed).scene
 
@@ -50,10 +50,7 @@ def render(
 ) -> RenderProgress:
     """Render ``scene`` (script settings, then ``settings`` overrides such as samples=, integrator=, width=)."""
     config = replace(script_settings(scene), **settings)
-    prepared = prepare(scene)
-    frame = scene_frame(prepared.scene_settings, config, prepared.lo, prepared.hi, prepared.declarations)
-    if camera is not None:
-        frame = replace(frame, camera=camera)
+    prepared, frame = prepare_with_frame(scene, config, camera=camera)
     *_, result = progressive(prepared, config, select_backend(device), frame)
     if output is not None:
         save_image(result.image, Path(output), 0.0, config.view_transform, render_metadata(config, frame.camera))

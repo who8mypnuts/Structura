@@ -16,12 +16,14 @@ import numpy as np
 
 from ...rng import mt_get_double, mt_new
 from ..diagnostics import Diagnostic, Severity
+from ..source import Span
 
 _DEFINE_FLOAT = re.compile(r"^#define\s([^\s]+)\s(.*)\s\(float:([^\s]*)\)$")
 _DEFINE_INT = re.compile(r"^#define\s([^\s]+)\s(.*)\s\(int:([^\s]*)\)$")
 _DEFINE = re.compile(r"^#define\s([^\s]+)\s(.*)$")
 _RANDOM = re.compile(r"random\[([-+]?[0-9]*\.?[0-9]+),([-+]?[0-9]*\.?[0-9]+)\]")
 _LINE_SPLIT = re.compile(r"\r\n|\r|\n")
+_KNOWN = re.compile(r"\s*#(version|javascript)\b", re.IGNORECASE)
 MAX_SUBSTITUTIONS = 100
 
 
@@ -39,7 +41,8 @@ class GuiParameter:
 class PreprocessResult:
     text: str
     parameters: list[GuiParameter] = field(default_factory=list)
-    diagnostics: list[Diagnostic] = field(default_factory=list)
+    diagnostics: list[Diagnostic] = field(default_factory=list)  # spans are in the *input* text
+    defines: dict[str, str] = field(default_factory=dict)
 
 
 def format_number(value: float) -> str:
@@ -47,15 +50,27 @@ def format_number(value: float) -> str:
     return f"{value:g}"
 
 
-def substitute(text: str, table: dict[str, str], limit: int = MAX_SUBSTITUTIONS) -> tuple[str, bool]:
-    """Raw substring substitution in sorted key order, restarting after every hit. Returns (text, capped)."""
+def _word(name: str) -> re.Pattern[str]:
+    return re.compile(rf"(?<![A-Za-z0-9_]){re.escape(name)}(?![A-Za-z0-9_])")
+
+
+def substitute(
+    text: str, table: dict[str, str], limit: int = MAX_SUBSTITUTIONS, whole_words: bool = False
+) -> tuple[str, bool]:
+    """Substitution in sorted key order, restarting after every hit. Returns (text, capped).
+
+    Structure Synth 1.5 replaces raw substrings ('#define R 5' also rewrites 'R1'); v2 scripts replace whole
+    words only (``whole_words``)."""
     keys = sorted(table)
     hits, k = 0, 0
     while k < len(keys):
         if hits > limit:
             return text, True
-        if keys[k] in text:
-            text = text.replace(keys[k], table[keys[k]])
+        pattern = _word(keys[k]) if whole_words else None
+        found = pattern.search(text) if pattern else keys[k] in text
+        if found:
+            value = table[keys[k]]
+            text = pattern.sub(value.replace("\\", "\\\\"), text) if pattern else text.replace(keys[k], value)
             hits += 1
             k = 0
         else:
@@ -78,17 +93,21 @@ def _to_int(text: str) -> int | None:
 class LegacyPreprocessor:
     """Stateless apart from a single run; create one per build."""
 
-    def __init__(self) -> None:
+    def __init__(self, whole_words: bool = False) -> None:
+        self.whole_words = whole_words  # '#version 2': defines replace whole words, not substrings
         self.result = PreprocessResult("")
         self.substitutions: dict[str, str] = {}
+        self._line = Span(0, 0)  # the line being processed, for diagnostic positions
 
     def warn(self, code: str, message: str) -> None:
-        self.result.diagnostics.append(Diagnostic(code, Severity.WARNING, message))
+        self.result.diagnostics.append(Diagnostic(code, Severity.WARNING, message, self._line))
 
     def process(self, text: str, seed: int = 0) -> PreprocessResult:
         rng = mt_new(seed)
         lines = _LINE_SPLIT.split(text)
+        starts = [0] + [m.end() for m in _LINE_SPLIT.finditer(text)]
         for index, raw in enumerate(lines):
+            self._line = Span(starts[index], starts[index] + len(raw))
             if raw.startswith("#"):
                 self._directive(raw, index)
                 line = raw
@@ -96,15 +115,18 @@ class LegacyPreprocessor:
                 line = self._apply_defines(raw)
             lines[index] = self._replace_random(line, rng)
         self.result.text = "\r\n".join(lines)
+        self.result.defines = dict(self.substitutions)
         return self.result
 
     def _apply_defines(self, line: str) -> str:
-        line, capped = substitute(line, self.substitutions)
+        line, capped = substitute(line, self.substitutions, whole_words=self.whole_words)
         if capped:
             self.warn("W104", "More than 100 recursive preprocessor substitutions... breaking.")
         return line
 
     def _directive(self, line: str, index: int) -> None:
+        if _KNOWN.match(line):
+            return  # '#version 2' (handled by the v2 front end) and '#javascript' (a script, not EisenScript)
         for pattern, kind in ((_DEFINE_FLOAT, "float"), (_DEFINE_INT, "int")):
             match = pattern.match(line)
             if match:

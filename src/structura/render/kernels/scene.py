@@ -8,7 +8,6 @@ from __future__ import annotations
 from structura.kernels.skl import (
     INF,
     Buf,
-    abs,
     clamp,
     cross,
     dot,
@@ -18,17 +17,17 @@ from structura.kernels.skl import (
     max3,
     min3,
     normalize,
-    struct,
     u32,
     vec3,
 )
 
 from .buffers import SceneBufs
+from .hit import NO_HIT, Hit, miss, normal_to_world, safe_inverse, to_object
 from .shapes import box_face_normal, capsule_hit, on_grid_edge, sphere_hit, triangle_hit, unit_box_span
+from .solids import RK_CYLINDER, RK_ELLIPSOID, RK_TORUS, hit_cylinder, hit_ellipsoid, hit_torus
 
 PRIM_F = 24
 PRIM_U = 4
-NO_HIT = 0xFFFFFFFF
 TRACE_ANY = 1  # trace() flags: stop at the first hit (shadow / occlusion rays)
 TRACE_OPAQUE = 2  # ignore primitives whose instance alpha is < 1 (Structure Synth shadow rule)
 RK_BOX = 0
@@ -36,46 +35,6 @@ RK_SPHERE = 1
 RK_CAPSULE = 2
 RK_TRIANGLE = 3
 RK_GRID = 4
-
-
-@struct
-class Hit:
-    t: f32
-    normal: vec3  # unit, facing the incoming ray
-    prim: u32
-    front: u32  # 1: the ray arrived from the outside (geometric normal opposed the ray)
-
-
-@func
-def miss() -> Hit:
-    return Hit(INF, vec3(0.0), u32(NO_HIT), u32(0))
-
-
-@func(exact=True)
-def safe_inverse(d: vec3) -> vec3:
-    """1/d with zero components replaced by a huge finite value (WGSL leaves 1/0 indeterminate)."""
-    x = d.x if abs(d.x) > 1.0e-20 else 1.0e-20
-    y = d.y if abs(d.y) > 1.0e-20 else 1.0e-20
-    z = d.z if abs(d.z) > 1.0e-20 else 1.0e-20
-    return vec3(1.0 / x, 1.0 / y, 1.0 / z)
-
-
-@func(exact=True)
-def to_object(prim_f: Buf[f32], base: u32, p: vec3, w: f32) -> vec3:
-    """Apply the stored inverse affine to a point (w = 1) or a direction (w = 0)."""
-    x = prim_f[base] * p.x + prim_f[base + 1] * p.y + prim_f[base + 2] * p.z + prim_f[base + 3] * w
-    y = prim_f[base + 4] * p.x + prim_f[base + 5] * p.y + prim_f[base + 6] * p.z + prim_f[base + 7] * w
-    z = prim_f[base + 8] * p.x + prim_f[base + 9] * p.y + prim_f[base + 10] * p.z + prim_f[base + 11] * w
-    return vec3(x, y, z)
-
-
-@func(exact=True)
-def normal_to_world(prim_f: Buf[f32], base: u32, n: vec3) -> vec3:
-    """(M⁻¹)ᵀ · n — normals transform with the inverse transpose."""
-    x = prim_f[base] * n.x + prim_f[base + 4] * n.y + prim_f[base + 8] * n.z
-    y = prim_f[base + 1] * n.x + prim_f[base + 5] * n.y + prim_f[base + 9] * n.z
-    z = prim_f[base + 2] * n.x + prim_f[base + 6] * n.y + prim_f[base + 10] * n.z
-    return normalize(vec3(x, y, z))
 
 
 @func(exact=True)
@@ -108,6 +67,12 @@ def hit_prim(
         c = vec3(prim_f[base + 16], prim_f[base + 17], prim_f[base + 18])
         t = sphere_hit(o, d, c, prim_f[base + 19], t_min)
         h = Hit(t, normalize(o + d * t - c), prim, u32(1))
+    elif kind == RK_ELLIPSOID:
+        h = hit_ellipsoid(prim_f, base, o, d, t_min, t_max)
+    elif kind == RK_CYLINDER:
+        h = hit_cylinder(prim_f, base, o, d, t_min, t_max)
+    elif kind == RK_TORUS:
+        h = hit_torus(prim_f, base, o, d, t_min, t_max)
     elif kind == RK_CAPSULE:
         a = vec3(prim_f[base + 16], prim_f[base + 17], prim_f[base + 18])
         b = vec3(prim_f[base + 19], prim_f[base + 20], prim_f[base + 21])
@@ -120,7 +85,10 @@ def hit_prim(
         p0 = vec3(tri_f[tb], tri_f[tb + 1], tri_f[tb + 2])
         p1 = vec3(tri_f[tb + 3], tri_f[tb + 4], tri_f[tb + 5])
         p2 = vec3(tri_f[tb + 6], tri_f[tb + 7], tri_f[tb + 8])
-        h = Hit(triangle_hit(o, d, p0, p1, p2, t_min), normalize(cross(p1 - p0, p2 - p0)), prim, u32(1))
+        t = triangle_hit(o, d, p0, p1, p2, t_min)
+        if t > t_max:  # also degenerate triangles, whose normal would be 0 / 0
+            return miss()
+        h = Hit(t, normalize(cross(p1 - p0, p2 - p0)), prim, u32(1))
     if h.t > t_max:
         return miss()
     outside = dot(h.normal, d) <= 0.0

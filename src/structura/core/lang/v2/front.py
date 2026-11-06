@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 
 from ...scene.declarations import SceneDeclarations
 from ..diagnostics import Diagnostic
-from ..source import detect_dialect
-from .blocks import extract_blocks
+from ..highlight import lex_line
+from ..source import Span, detect_dialect
+from .blocks import HEADER, extract_blocks
 from .expressions import params_to_defines, substitute_expressions
+
+_PARAM = re.compile(r"(?m)^[ \t]*#param\b.*$")
 
 
 @dataclass(frozen=True)
@@ -38,3 +42,28 @@ def timeline_names(frame: int = 0, fps: float = 24.0) -> dict[str, float]:
 def after_preprocessing(source: str, fr: Front, names: dict[str, float] | None = None) -> str:
     """v2: evaluate '( expr )' once the defines and parameters have been substituted."""
     return substitute_expressions(source, names or timeline_names()) if fr.v2 else source
+
+
+def _first_paren(text: str) -> tuple[int, int] | None:
+    """The first '(' in code, skipping comments and preprocessor lines (v1 code never uses parentheses)."""
+    if "(" not in text:
+        return None  # the common case: no need to lex
+    offset, state = 0, 0
+    for line in text.split("\n"):
+        tokens, state_after = lex_line(line, state)
+        skipped = [(s, s + n) for s, n, role in tokens if role in ("comment", "preprocessor")]
+        for column, char in enumerate(line):
+            if char == "(" and not any(a <= column < b for a, b in skipped):
+                return offset + column, offset + column + 1
+        offset, state = offset + len(line) + 1, state_after
+    return None
+
+
+def v2_syntax(text: str) -> Span | None:
+    """The first v2-only construct in a script without '#version 2' (blocks, #param, '( expression )')."""
+    if detect_dialect(text) == 2:
+        return None
+    found = [m.span() for m in (HEADER.search(text), _PARAM.search(text)) if m is not None]
+    paren = _first_paren(text)
+    found += [paren] if paren else []
+    return Span(*min(found)) if found else None

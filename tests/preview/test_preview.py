@@ -96,3 +96,17 @@ def test_empty_scene_draws_the_background(ctx: Any) -> None:
     pixel = _image(fbo)[H // 2, W // 2]
     assert np.abs(pixel.astype(int) - [124, 170, 203]).max() <= 2  # sRGB of the linear backdrop
     renderer.release()
+
+
+def test_highlight_tints_only_the_highlighted_rows(setup: tuple[PreviewRenderer, Any, Camera]) -> None:
+    renderer, fbo, camera = setup
+    options = PreviewOptions(ssao=False, shadows=False)
+    renderer.render(camera, fbo, (W, H), options, accumulate=False)
+    before = _image(fbo).astype(int)
+    renderer.set_highlight(np.array([1]), 6)  # the green sphere
+    renderer.render(camera, fbo, (W, H), options, accumulate=False)
+    after = _image(fbo).astype(int)
+    renderer.set_highlight(None, 0)
+    sphere, box = (H // 2, W // 2), (H // 2, W // 4)
+    assert after[sphere][0] > before[sphere][0] + 30  # pulled towards the orange highlight colour
+    assert np.abs(after[box] - before[box]).max() <= 2  # other rows untouched

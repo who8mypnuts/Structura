@@ -21,6 +21,7 @@ from ...render.api import render
 from ...render.output import to_display
 from ...render.settings import RenderSettings
 from ...services.jobs import FunctionJob, JobContext, JobRunner, Lane
+from ..i18n import tr
 
 GRID = 3
 THUMB = QSize(150, 112)  # rendered size; shown smaller when the dock is narrow
@@ -54,7 +55,7 @@ class VariationExplorer(QWidget):
     def __init__(self, runner: JobRunner, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.runner = runner
-        self.reroll = QPushButton("New variations")
+        self.reroll = QPushButton(tr("New variations"))
         self.cells: list[QToolButton] = []
         grid = QGridLayout()
         for i in range(GRID * GRID):
@@ -63,6 +64,7 @@ class VariationExplorer(QWidget):
             button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
             button.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)  # long labels elide
             button.clicked.connect(lambda _c=False, i=i: self._adopt(i))
+            button.setAccessibleName(tr("Variation {n}").format(n=i + 1))
             grid.addWidget(button, i // GRID, i % GRID)
             self.cells.append(button)
         self.grid = grid

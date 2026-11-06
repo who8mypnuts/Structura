@@ -15,14 +15,16 @@ from .tokenizer import Kind, Token, tokenize
 
 _OPS = {spec.name: spec for spec in operators()}
 _PARSER_ALIASES = {"v": "brightness", "size": "s"}
+_V2_OPS = {name for name, spec in _OPS.items() if spec.v2}
 _ACTION_START = (Kind.LBRACE, Kind.USER, Kind.NUMBER)
 
 
 class LegacyParser:
-    def __init__(self, tokens: list[Token]) -> None:
+    def __init__(self, tokens: list[Token], v2: bool = False) -> None:
         self.tokens = tokens
         self.pos = 0
         self.depth_first = False
+        self.v2 = v2  # '#version 2': also the v2 operators ('mat'), which v1 tokenizes as rule names
 
     # -- token helpers ------------------------------------------------------------------------------------
     @property
@@ -39,10 +41,10 @@ class LegacyParser:
             raise ParseError(f"{message} Found: {self.tok.text}", self.tok.span)
         return self.advance()
 
-    def expect_number(self, message: str, integer: bool = False) -> float:
+    def expect_number(self, message: str, integer: bool = False, code: str = "E001") -> float:
         token = self.tok
         if token.kind is not Kind.NUMBER or (integer and not token.is_integer):
-            raise ParseError(f"{message} Found: {token.text}", token.span)
+            raise ParseError(f"{message} Found: {token.text}", token.span, code)
         self.advance()
         return token.value
 
@@ -79,7 +81,7 @@ class LegacyParser:
         if name == "weight":
             return self.expect_number("Rule modifier 'weight' expected numerical argument."), maxdepth, retire
         if name == "maxdepth":
-            depth = int(self.expect_number("Rule modifier 'maxdepth' expected integer argument.", integer=True))
+            depth = int(self.expect_number("Rule modifier 'maxdepth' expected integer argument.", True, "E008"))
             if self.tok.kind is Kind.GT:
                 self.advance()
                 retire = self.expect(Kind.USER, "After maxdepth retirement operator a rule name is expected.").text
@@ -114,17 +116,20 @@ class LegacyParser:
 
     def counted_loop(self) -> Loop:
         start = self.tok.span.start
-        count = int(self.expect_number("Expected an integer count in the transformation loop.", integer=True))
+        count = int(self.expect_number("Expected an integer count in the transformation loop.", True, "E007"))
         self.expect(Kind.STAR, "Expected a '*' after the transformation count.")
         return self.transform_list(count, start)
 
     def transform_list(self, count: int, start: int) -> Loop:
         self.expect(Kind.LBRACE, "Transformation List: Expected a left bracket.")
         ops: list[TransformOp] = []
-        while self.tok.kind is Kind.OPERATOR or (self.tok.kind is Kind.USER and self.tok.text in _PARSER_ALIASES):
+        while self.tok.kind is Kind.OPERATOR or (self.tok.kind is Kind.USER and self._user_operator(self.tok.text)):
             ops.append(self.transform())
         end = self.expect(Kind.RBRACE, "Transformation List: Expected a right bracket or an operator.").span.end
         return Loop(count, tuple(ops), Span(start, end))
+
+    def _user_operator(self, word: str) -> bool:
+        return word in _PARSER_ALIASES or (self.v2 and word in _V2_OPS)
 
     def transform(self) -> TransformOp:
         token = self.advance()
@@ -140,10 +145,13 @@ class LegacyParser:
         for index, kind in enumerate(kinds):
             if index in arity and self.tok.kind is not Kind.NUMBER and kind != "color":
                 break  # optional trailing arguments ('s x' vs 's x y z')
+            if kind == "material":
+                args.append(self.expect(Kind.USER, f"Transformation '{name}': expected a material name.").text)
+                continue
             args.append(
                 self.color_arg(name)
                 if kind.startswith("color")
-                else self.expect_number(f"Transformation '{name}': expected numerical parameter.")
+                else self.expect_number(f"Transformation '{name}': expected numerical parameter.", code="E006")
             )
         return tuple(args)
 
@@ -156,6 +164,7 @@ class LegacyParser:
         return token.text
 
 
-def parse_legacy(text: str) -> Program:
-    """Tokenize and parse preprocessed v1 text. Raises ParseError on the first error (1.5 behaviour)."""
-    return LegacyParser(tokenize(text)).program()
+def parse_legacy(text: str, v2: bool = False) -> Program:
+    """Tokenize and parse preprocessed text (v1 grammar, plus the v2 operators when ``v2``). Raises ParseError
+    on the first error (1.5 behaviour)."""
+    return LegacyParser(tokenize(text), v2).program()

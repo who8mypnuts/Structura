@@ -40,7 +40,7 @@ class OpenCLBound(Bound):
 
     def dispatch(self) -> None:
         wg = self.launch.function.workgroup
-        global_size = tuple(g * w for g, w in zip(self.launch.groups(), wg, strict=True))
+        global_size = tuple(g * w for g, w in zip(self.groups(), wg, strict=True))
         self.kernel(self.backend.queue, global_size, wg, *self.ordered_args(self.device))
 
     def read(self, name: str) -> np.ndarray:

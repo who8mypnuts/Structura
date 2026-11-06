@@ -3,22 +3,20 @@
 from __future__ import annotations
 
 from dataclasses import replace
+from pathlib import Path
 
 from PySide6.QtCore import QSize, Qt, QTimer, Slot
 from PySide6.QtGui import QCloseEvent, QGuiApplication, QIcon
 from PySide6.QtWidgets import (
     QApplication,
-    QDialog,
     QDockWidget,
     QMainWindow,
-    QMessageBox,
     QSplitter,
     QTabWidget,
     QVBoxLayout,
     QWidget,
 )
 
-from .. import __version__
 from ..core.lang.analysis import Analysis
 from ..core.scene.camera import Camera
 from ..core.scene.ir import SceneIR
@@ -32,16 +30,21 @@ from ..services.settings import SettingsService
 from ..services.theme import ThemeService
 from ..themes.model import Theme
 from ..themes.qss import Fonts
+from .animation_actions import AnimationActions
 from .command_palette import CommandPalette
 from .commands.builtin import register_builtin
+from .commands.keymap import Keymap
 from .commands.registry import CommandRegistry
-from .dialogs.preferences import PreferencesDialog
-from .dialogs.theme_picker import ThemePicker
+from .dialog_actions import DialogActions
 from .document_actions import DocumentActions
 from .documents import DocumentTabs, EditorTab
+from .editor_actions import EditorActions
 from .export_actions import ExportActions
+from .file_drop import FileDropFilter
 from .header import BRAND, HeaderBar
-from .menus import build_menus
+from .help_actions import HelpActions
+from .i18n import tr
+from .menus import add_dynamic_menu, build_menus
 from .panels.build_stats import BuildStatsPanel
 from .panels.console import ConsolePanel
 from .panels.examples import ExamplesPanel
@@ -49,15 +52,25 @@ from .panels.outline import OutlinePanel
 from .panels.parameters import ParametersPanel
 from .panels.problems import ProblemsPanel
 from .panels.render_settings import RenderSettingsPanel
+from .panels.timeline.panel import TimelinePanel
 from .panels.variations import VariationExplorer
+from .parameter_sync import ParameterSync
+from .project_actions import ProjectActions
+from .provenance import ProvenanceHover
+from .quick_open import QuickOpen
 from .render_view.render_view import RenderView
 from .scene_view import describe_pick, viewport_options
+from .script_actions import ScriptActions
+from .search_actions import SearchActions
+from .session_actions import SessionActions
 from .statusbar import StatusBar
 from .theming import apply_theme
+from .timeline_actions import TimelineActions
 from .viewport.host import ViewportHost
 from .workbench import Workbench
 
 DEFAULT_SIZE = QSize(1440, 900)
+EDITOR_SHARE = 0.45  # of the central area, beside the viewport
 SCREEN_FRACTION = 0.92  # leave room for panels and window decorations
 
 
@@ -86,17 +99,33 @@ class MainWindow(QMainWindow):
         self.console, self.problems, self.stats = ConsolePanel(), ProblemsPanel(), BuildStatsPanel()
         self.outline, self.parameters, self.examples = OutlinePanel(), ParametersPanel(), ExamplesPanel()
         self.variations = VariationExplorer(self.runner)
-        self.render_settings = RenderSettingsPanel()
+        self.render_settings, self.timeline_panel = RenderSettingsPanel(), TimelinePanel()
         self.status = StatusBar()
         self.docs = DocumentActions(self)
+        self.editor_actions = EditorActions(self)
+        self.session = SessionActions(self)
+        self.projects = ProjectActions(self)
+        self.help = HelpActions(self)
+        self.dialogs = DialogActions(self)
+        self.scripts = ScriptActions(self)
+        self.provenance = ProvenanceHover(self)
+        self.parameter_sync = ParameterSync(self)
+        self.animations = AnimationActions(self)
+        self.timeline = TimelineActions(self)
+        FileDropFilter(self, self.docs.open_file)
         self.exports = ExportActions(self)
         self.registry = CommandRegistry(self)
         self.command_palette = CommandPalette(self.registry, self)
+        self.quick_open = QuickOpen(self)
         register_builtin(self.registry, self)
+        self.keymap = Keymap(self.registry, self.settings)
+        self.keymap.apply()
         self.header = HeaderBar(self.registry)
         self._layout()
+        self.search = SearchActions(self)
         self._connect()
         build_menus(self.menuBar(), self.registry)
+        add_dynamic_menu(self.menuBar(), "File", "Open Recent", "file.open", self.docs.fill_recent_menu)
         self.console.attach()
         self.apply_settings()
         self.registry.refresh()
@@ -104,10 +133,12 @@ class MainWindow(QMainWindow):
     # -- layout --------------------------------------------------------------------------------------------
     def _layout(self) -> None:
         self.views = QTabWidget()
+        self.views.setAccessibleName(tr("Views"))
+        self.tabs.setAccessibleName(tr("Open scripts"))
         self.views.setDocumentMode(True)
         self.views.addTab(self.viewport, "Viewport")
         self.views.addTab(self.render_view, "Render")
-        split = QSplitter(Qt.Orientation.Horizontal)
+        split = self.split = QSplitter(Qt.Orientation.Horizontal)
         split.addWidget(self.tabs)
         split.addWidget(self.views)
         split.setSizes([520, 760])
@@ -126,13 +157,14 @@ class MainWindow(QMainWindow):
                                                     ("Variations", self.variations),
                                                     ("Render Settings", self.render_settings))),
             (Qt.DockWidgetArea.BottomDockWidgetArea, (("Problems", self.problems), ("Console", self.console),
-                                                      ("Build Stats", self.stats))),
+                                                      ("Build Stats", self.stats), ("Timeline", self.timeline_panel))),
         ):  # fmt: skip
             first = None
             for title, widget in panels:
-                dock = QDockWidget(title, self)
+                dock = QDockWidget(tr(title, "Panels"), self)
                 dock.setObjectName(f"dock-{title.lower().replace(' ', '-')}")
                 dock.setWidget(widget)
+                widget.setAccessibleName(dock.windowTitle())
                 self.addDockWidget(area, dock)
                 if first is not None:
                     self.tabifyDockWidget(first, dock)
@@ -142,21 +174,37 @@ class MainWindow(QMainWindow):
                 first.raise_()
         self.resize(initial_size(self))
         self._sized = False
+        self._split_sized = False  # True once restored from the session or set to the default share
+
+    def start(self, files: list[Path]) -> None:
+        """Open the recovered or previous session and ``files``, and restore the saved window layout."""
+        self.session.startup(files)
+        if self.session.restore_layout():
+            self._sized = True  # the user's layout wins over the default dock sizes
+            self._split_sized = self.session.split_restored
 
     def showEvent(self, event: object) -> None:  # noqa: N802
         super().showEvent(event)  # type: ignore[arg-type]
         if not self._sized:  # dock sizes only apply once the window has its real geometry
             self._sized = True
             QTimer.singleShot(0, self._initial_dock_sizes)
+        if not self._split_sized:
+            self._split_sized = True
+            QTimer.singleShot(0, lambda: QTimer.singleShot(0, self._initial_split))  # after the dock sizes
 
     def _initial_dock_sizes(self) -> None:
         # The first layout pass can run before the header has collapsed its labels, which widens the window;
         # Qt never shrinks it back, so the intended size is applied again now that the minimum is final.
         self.resize(initial_size(self))
-        bottom = [self.docks[t] for t in ("Problems", "Console", "Build Stats")]
+        bottom = [self.docks[t] for t in ("Problems", "Console", "Build Stats", "Timeline")]
         self.resizeDocks(bottom, [170] * len(bottom), Qt.Orientation.Vertical)
         left = [self.docks[t] for t in ("Examples", "Outline", "Parameters")]
         self.resizeDocks(left, [250] * len(left), Qt.Orientation.Horizontal)
+
+    def _initial_split(self) -> None:
+        """Editor and views share the central area 45 : 55 once its width is known."""
+        width = max(1, self.split.width())
+        self.split.setSizes([round(width * EDITOR_SHARE), width - round(width * EDITOR_SHARE)])
 
     def _connect(self) -> None:
         wb = self.workbench
@@ -168,9 +216,10 @@ class MainWindow(QMainWindow):
         wb.builds.failed.connect(lambda *_: self.status.set_busy(False))
         self.header.seed_changed.connect(wb.set_seed)
         self.tabs.current_tab_changed.connect(self.on_tab_changed)
+        self.render_settings.overrides_changed.connect(self._store_render_overrides)
+        self.status.track(self.tabs)
         self.problems.activated_offset.connect(self.docs.go_to)
         self.outline.activated_offset.connect(self.docs.go_to)
-        self.parameters.changed.connect(wb.set_parameter)
         self.examples.open_example.connect(self.docs.open_file)
         self.variations.adopt.connect(self.adopt_seed)
         self.viewport.picked.connect(self.on_picked)
@@ -199,25 +248,12 @@ class MainWindow(QMainWindow):
         scene = tab.outcome.scene if tab and tab.outcome else None
         self.viewport.set_options(viewport_options(self.viewport.options, self.themes.theme, scene))
 
-    def choose_theme(self) -> None:
-        ThemePicker(self.themes, self).exec()
-
-    def toggle_theme(self) -> None:
-        self.themes.toggle_kind()
-
-    def preferences(self) -> None:
-        dialog = PreferencesDialog(self.settings, self)
-        if dialog.exec() == QDialog.DialogCode.Accepted:
-            dialog.apply()
-            self.apply_settings()
-
     def apply_settings(self) -> None:
         """Push stored preferences into the live UI (called at start-up and after Preferences)."""
         self.themes.set_theme(str(self.settings.value("appearance/theme", self.themes.theme.meta.id)))
         self.workbench.live = bool(self.settings.value("editor/live_build", True))
         self.render_view.device.setCurrentText(str(self.settings.value("render/device", "auto")))
-        for tab in self.tabs.tabs():
-            tab.editor.set_font_size(self.fonts().code_size)
+        self.editor_actions.apply()
         self.apply_theme(self.themes.theme)
 
     def toggle_live(self) -> None:
@@ -267,7 +303,8 @@ class MainWindow(QMainWindow):
         settings = self.render_settings.apply(base)  # … the panel's values …
         settings = replace(  # … and the toolbar
             settings, frame=False, width=quick.width, height=quick.height, samples=quick.samples,
-            samples_per_pass=quick.samples_per_pass, integrator=quick.integrator,
+            samples_per_pass=quick.samples_per_pass, integrator=quick.integrator, aovs=quick.aovs,
+            asset_dir=str(tab.path.parent) if tab.path else "",
         )  # fmt: skip
         return tab.outcome.scene, self.viewport.camera(), settings, tab.text()
 
@@ -278,24 +315,23 @@ class MainWindow(QMainWindow):
         if tab is None:
             return
         self.header.set_seed(tab.seed)
-        self.status.set("dialect", f"EisenScript v{tab.dialect}")
-        tab.editor.cursor_moved.connect(self.on_cursor)
+        self.render_settings.set_overrides(tab.render_overrides)
 
-    @Slot(int, int)
-    def on_cursor(self, line: int, column: int) -> None:
-        self.status.set("cursor", f"Ln {line}, Col {column}")
+    @Slot(dict)
+    def _store_render_overrides(self, overrides: dict[str, object]) -> None:
+        tab = self.tabs.current()
+        if tab is not None:
+            tab.render_overrides = overrides
 
     @Slot(object, object)
     def on_analysis(self, tab: EditorTab, analysis: Analysis) -> None:
         if tab is not self.tabs.current():
             return
         self.problems.show_diagnostics(tab.text(), list(analysis.diagnostics))
-        parsed = bool(analysis.rules) or analysis.program is not None
-        defined = frozenset(r.name for r in analysis.rules) if parsed else None
-        unused = frozenset(r.name for r in analysis.rules if r.name not in analysis.references)
-        tab.editor.highlighter.set_symbols(defined, unused)
+        self.status.set("dialect", tab.language_label)
+        tab.editor.highlighter.set_analysis(analysis)
         self.outline.show_analysis(analysis)
-        self.parameters.show_parameters(analysis.parameters, tab.params)
+        self.parameter_sync.show(tab, analysis)
         errors = sum(1 for d in analysis.diagnostics if d.severity.name == "ERROR")
         self.docks["Problems"].setWindowTitle(f"Problems ({len(analysis.diagnostics)})" if errors else "Problems")
 
@@ -342,18 +378,10 @@ class MainWindow(QMainWindow):
         self.status.showMessage(text, 6000)
         self.console.info(text)
 
-    def about(self) -> None:
-        QMessageBox.about(
-            self,
-            "About Structura",
-            f"Structura {__version__}\nA generative structure editor and renderer.\nMIT licence.",
-        )
-
     def closeEvent(self, event: QCloseEvent) -> None:  # noqa: N802
-        for index in reversed(range(self.tabs.count())):
-            if not self.tabs.close_tab(index):
-                event.ignore()
-                return
+        if not self.session.shutdown():
+            event.ignore()
+            return
         self.console.detach()
         self.runner.shutdown()
         event.accept()

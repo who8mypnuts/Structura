@@ -1,0 +1,159 @@
+# The diagnostics catalogue (docs/05 §10): every code the language engine reports. Codes are stable.
+# severity: error | warning | info. 'fix' names the quick fix offered for it (core.lang.fixes), if any.
+
+[[diagnostic]]
+code = "E001"
+severity = "error"
+title = "Unexpected token"
+doc = "The parser expected something else here (Structure Synth 1.5 stops at the first error)."
+[[diagnostic]]
+code = "E002"
+severity = "error"
+title = "Unterminated [ or /* or block"
+doc = "A '[', a '/*' comment or a v2 block is never closed."
+[[diagnostic]]
+code = "E003"
+severity = "error"
+title = "Unknown rule or primitive"
+doc = "A call names no rule, primitive, tagged primitive or triangle."
+fix = "create_rule"
+[[diagnostic]]
+code = "E004"
+severity = "error"
+title = "Invalid number or fraction"
+doc = "A number could not be read (fractions are 'a/b')."
+[[diagnostic]]
+code = "E005"
+severity = "error"
+title = "Invalid colour"
+doc = "Colours are #rgb, #rrggbb, a colour name or 'random' (color only)."
+[[diagnostic]]
+code = "E006"
+severity = "error"
+title = "Wrong argument for an operator"
+doc = "An operator is missing a numeric argument (for example 's' takes one or three numbers)."
+[[diagnostic]]
+code = "E007"
+severity = "error"
+title = "Loop count must be an integer"
+doc = "'N * { … }' needs a whole number N."
+[[diagnostic]]
+code = "E008"
+severity = "error"
+title = "maxdepth requires an integer"
+doc = "'rule R maxdepth N' needs a whole number N."
+[[diagnostic]]
+code = "E009"
+severity = "error"
+title = "Invalid set command or build error"
+doc = "An unknown 'set' command, or a value the builder rejected."
+[[diagnostic]]
+code = "E010"
+severity = "error"
+title = "Redefinition of a primitive"
+doc = "A rule cannot be named like a primitive (box, sphere, …)."
+[[diagnostic]]
+code = "E013"
+severity = "error"
+title = "Tag on a non-primitive"
+doc = "'name::tag' is only allowed on primitives (box::shiny)."
+[[diagnostic]]
+code = "E014"
+severity = "error"
+title = "Malformed triangle or primitive argument"
+doc = "triangle[x,y,z;x,y,z;x,y,z] needs three corners of three numbers; cone[r], torus[r] and tube[r] need one number."
+[[diagnostic]]
+code = "E016"
+severity = "error"
+title = "Expression error (v2)"
+doc = "A '( expression )' uses an unknown name, divides by zero or is malformed."
+[[diagnostic]]
+code = "E017"
+severity = "error"
+title = "Invalid v2 block"
+doc = "A material, light, environment, camera or render block has an unknown key or a bad value."
+[[diagnostic]]
+code = "W101"
+severity = "warning"
+title = "Rule is never referenced"
+doc = "No call, retirement or top-level statement uses this rule."
+fix = "remove_rule"
+[[diagnostic]]
+code = "W102"
+severity = "warning"
+title = "Rule is unreachable"
+doc = "The rule is only called from rules that the top level never reaches."
+[[diagnostic]]
+code = "W103"
+severity = "warning"
+title = "#define replaces text inside other words (v1)"
+doc = "Structure Synth 1.5 substitutes defines inside longer identifiers too; v2 substitutes whole words only."
+[[diagnostic]]
+code = "W104"
+severity = "warning"
+title = "Recursive #define"
+doc = "A define refers to itself; substitution stops after 100 rounds."
+[[diagnostic]]
+code = "W105"
+severity = "warning"
+title = "cylinder draws nothing in v1"
+doc = "Structure Synth 1.5 counts cylinders as objects but never draws them; '#version 2' draws them."
+[[diagnostic]]
+code = "W106"
+severity = "info"
+title = "Alias not valid in Structure Synth 1.5"
+doc = "'size' and 'v' are accepted here but Structure Synth 1.5 rejects them."
+fix = "canonical_alias"
+[[diagnostic]]
+code = "W108"
+severity = "info"
+title = "Recursion bounded only by the default maxdepth"
+doc = "A recursive rule has no maxdepth and the script sets no 'set maxdepth': the default (1000) applies."
+fix = "add_maxdepth"
+[[diagnostic]]
+code = "W109"
+severity = "warning"
+title = "'set rng old' is obsolete"
+doc = "The Mersenne Twister is always used."
+fix = "remove_line"
+[[diagnostic]]
+code = "W110"
+severity = "warning"
+title = "Ambiguous rule with total weight 0"
+doc = "Every alternative of this rule has weight 0, so none can be chosen fairly."
+[[diagnostic]]
+code = "W112"
+severity = "info"
+title = "Tag has no material (v2)"
+doc = "No material block has this tag's name and it is not a built-in preset: the default material is used."
+[[diagnostic]]
+code = "W113"
+severity = "warning"
+title = "Legacy settings overridden by a v2 block"
+doc = "A camera or render block overrides the equivalent 'set' commands."
+[[diagnostic]]
+code = "W114"
+severity = "warning"
+title = "v2 syntax without '#version 2'"
+doc = "Blocks, #param and ( expressions ) need '#version 2' on the first line."
+fix = "add_version"
+[[diagnostic]]
+code = "W120"
+severity = "warning"
+title = "Unknown preprocessor command"
+doc = "A line starting with '#' is not #define, #param, #version or #javascript."
+[[diagnostic]]
+code = "W121"
+severity = "warning"
+title = "Malformed #define slider"
+doc = "A '#define NAME value (float:a-b)' slider could not be parsed."
+[[diagnostic]]
+code = "I204"
+severity = "info"
+title = "JavaScript script"
+doc = "A '#javascript' script drives the Builder API. It is not built live; run it with Build ▸ Run JavaScript (F7)."
+[[diagnostic]]
+code = "I203"
+severity = "info"
+title = "Tag uses a built-in material preset (v2)"
+doc = "The tag has no material block but matches a preset name (glass, mirror, gold …)."

@@ -2,51 +2,27 @@
 
 from __future__ import annotations
 
-from PySide6.QtCore import Qt, Signal
-from PySide6.QtWidgets import QDoubleSpinBox, QFormLayout, QHBoxLayout, QLabel, QSlider, QWidget
+from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QFormLayout, QHBoxLayout, QLabel, QToolButton, QWidget
 
+from ...core.animation.timeline import Timeline
 from ...core.lang.legacy.preprocessor import GuiParameter
+from ..i18n import tr
+from ..widgets.param_slider import ParamSlider
 
-STEPS = 1000
 
-
-class _ParamRow(QWidget):
-    changed = Signal(str, float)
-
-    def __init__(self, param: GuiParameter, value: float) -> None:
-        super().__init__()
-        self.param = param
-        self.slider = QSlider(Qt.Orientation.Horizontal)
-        self.slider.setRange(0, STEPS)
-        self.spin = QDoubleSpinBox()
-        self.spin.setDecimals(0 if param.kind == "int" else 2)
-        self.spin.setRange(param.minimum, param.maximum)
-        self.spin.setValue(value)
-        self.slider.setValue(self._to_slider(value))
-        layout = QHBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(self.slider, 1)
-        layout.addWidget(self.spin)
-        self.slider.valueChanged.connect(lambda v: self.spin.setValue(self._from_slider(v)))
-        self.spin.valueChanged.connect(self._spin_changed)
-
-    def _to_slider(self, value: float) -> int:
-        span = self.param.maximum - self.param.minimum or 1.0
-        return round((value - self.param.minimum) / span * STEPS)
-
-    def _from_slider(self, position: int) -> float:
-        value = self.param.minimum + (self.param.maximum - self.param.minimum) * position / STEPS
-        return float(round(value)) if self.param.kind == "int" else value
-
-    def _spin_changed(self, value: float) -> None:
-        self.slider.blockSignals(True)
-        self.slider.setValue(self._to_slider(value))
-        self.slider.blockSignals(False)
-        self.changed.emit(self.param.name, value)
+def _key_button(name: str) -> QToolButton:
+    button = QToolButton()
+    button.setObjectName(f"key:{name}")
+    button.setCheckable(True)
+    button.setAutoRaise(True)
+    button.setText("◇")
+    button.setToolTip(f"Key '{name}' at the current frame (Timeline)")
+    return button
 
 
 def _empty_label() -> QLabel:
-    label = QLabel("No parameters. Declare one with  #define NAME 1 (float:0-2)")
+    label = QLabel(tr("No parameters. Declare one with  #define NAME 1 (float:0-2)"))
     label.setObjectName("Muted")
     label.setWordWrap(True)  # a long hint must not set the dock's minimum width
     return label
@@ -54,6 +30,7 @@ def _empty_label() -> QLabel:
 
 class ParametersPanel(QWidget):
     changed = Signal(str, float)  # name, value
+    key_toggled = Signal(str)  # name: add or remove its key at the current frame
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -73,6 +50,35 @@ class ParametersPanel(QWidget):
             self.empty = _empty_label()
             self.form.addRow(self.empty)
         for p in params:
-            row = _ParamRow(p, values.get(p.name, p.default))
-            row.changed.connect(self.changed)
-            self.form.addRow(p.name, row)
+            self.form.addRow(p.name, self._row(p, values.get(p.name, p.default)))
+
+    def _row(self, param: GuiParameter, value: float) -> QWidget:
+        slider = ParamSlider(param, value)
+        slider.changed.connect(self.changed)
+        key = _key_button(param.name)
+        key.clicked.connect(lambda _=False, name=param.name: self.key_toggled.emit(name))
+        row = QWidget()
+        layout = QHBoxLayout(row)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(slider, 1)
+        layout.addWidget(key)
+        return row
+
+    def show_keys(self, timeline: Timeline, frame: int) -> None:
+        """◆ where the parameter has a key at ``frame``, ◈ where it is animated, ◇ otherwise."""
+        for button in self.findChildren(QToolButton):
+            if not button.objectName().startswith("key:"):
+                continue
+            name = button.objectName().removeprefix("key:")
+            target = f"param:{name}"
+            keyed, animated = timeline.has_key(target, frame), timeline.track(target) is not None
+            button.blockSignals(True)
+            button.setChecked(keyed)
+            button.setText("◆" if keyed else ("◈" if animated else "◇"))
+            button.blockSignals(False)
+
+    def set_value(self, name: str, value: float) -> None:
+        """Mirror a value changed elsewhere (the editor's inline slider) without emitting."""
+        for row in self.findChildren(ParamSlider):
+            if row.param.name == name:
+                row.set_value(value)

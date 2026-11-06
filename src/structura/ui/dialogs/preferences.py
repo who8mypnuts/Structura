@@ -8,6 +8,9 @@ from ...compute.select import NAMES
 from ...core.params import ParamSpec, ParamType
 from ...services.settings import SettingsService
 from ...themes.loader import theme_ids
+from ..editor.options import option_specs
+from ..i18n import available, tr
+from ..session_actions import SPECS as SESSION_SPECS
 from ..widgets.param_form import ParamForm
 
 
@@ -15,7 +18,9 @@ def preference_specs() -> tuple[ParamSpec, ...]:
     return (
         ParamSpec("appearance/theme", ParamType.ENUM, "structura-dark", "Theme", choices=tuple(theme_ids())),
         ParamSpec("appearance/ui_size", ParamType.INT, 10, "Interface font size", range=(7, 24)),
-        ParamSpec("editor/code_size", ParamType.INT, 11, "Code font size", range=(6, 40)),
+        ParamSpec("appearance/language", ParamType.ENUM, "system", "Language (restart)", choices=tuple(available())),
+        *option_specs(),
+        *SESSION_SPECS,
         ParamSpec("editor/live_build", ParamType.BOOL, True, "Rebuild while typing"),
         ParamSpec("viewport/backend", ParamType.ENUM, "auto", "Viewport (restart)", choices=("auto", "gpu", "cpu")),
         ParamSpec("render/device", ParamType.ENUM, "auto", "Render device", choices=NAMES),
@@ -25,7 +30,7 @@ def preference_specs() -> tuple[ParamSpec, ...]:
 class PreferencesDialog(QDialog):
     def __init__(self, settings: SettingsService, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self.setWindowTitle("Preferences")
+        self.setWindowTitle(tr("Preferences"))
         self.settings = settings
         self.specs = preference_specs()
         values = {s.key: settings.value(s.key, s.default) for s in self.specs}

@@ -27,6 +27,7 @@ ARRAY_FIELDS = (
     "rule_prim",
     "rule_tag",
     "rule_tri",
+    "rule_param",
     "rule_slot",
     "rule_listed",
     "alts",
@@ -41,6 +42,7 @@ ARRAY_FIELDS = (
     "xf_abs",
     "xf_blend",
     "xf_strength",
+    "xf_mat",
     "setop_code",
     "setop_i",
     "setop_f",
@@ -62,9 +64,10 @@ class RuleProgram:
     rule_retire: np.ndarray  # int32[R]  -1 = none
     rule_act: np.ndarray  # int32[R,2] (start, count) into actions
     rule_alt: np.ndarray  # int32[R,2] (start, count) into alts
-    rule_prim: np.ndarray  # int8[R]   primitive kind (PRIMITIVE_NAMES index, 8 = triangle)
+    rule_prim: np.ndarray  # int8[R]   primitive id (catalog 'id'; 8 = triangle)
     rule_tag: np.ndarray  # int32[R]
     rule_tri: np.ndarray  # int32[R]  row in tri_p
+    rule_param: np.ndarray  # float32[R] bracket parameter of cone[r] / torus[r] / tube[r]
     rule_slot: np.ndarray  # int32[R]  depth-map slot (-1 = none)
     rule_listed: np.ndarray  # uint8[R]  1 if the rule is in Structure Synth's rule list (setRulesMaxDepth)
     alts: np.ndarray  # int32[K]
@@ -79,6 +82,7 @@ class RuleProgram:
     xf_abs: np.ndarray  # uint8[X]
     xf_blend: np.ndarray  # float32[X,3]
     xf_strength: np.ndarray  # float64[X]
+    xf_mat: np.ndarray  # int32[X]  material tag set by v2 'mat' (-1: unchanged)
     setop_code: np.ndarray  # int8[S]
     setop_i: np.ndarray  # int64[S]
     setop_f: np.ndarray  # float64[S]
@@ -147,7 +151,8 @@ def _rule_columns(rs: RuleSet) -> dict[str, np.ndarray]:
     alternatives = {a for rule in rs.rules for a in rule.alternatives}
     triangles = [r.triangle for r in rs.rules if r.kind is RuleKind.TRIANGLE]
     tri_index = iter(range(len(triangles)))
-    cols: dict[str, list[float]] = {k: [] for k in ("kind", "weight", "md", "retire", "prim", "tag", "tri", "listed")}
+    keys = ("kind", "weight", "md", "retire", "prim", "tag", "tri", "param", "listed")
+    cols: dict[str, list[float]] = {k: [] for k in keys}
     for i, rule in enumerate(rs.rules):
         alt_ranges[i] = (len(alts), len(rule.alternatives))
         alts.extend(rule.alternatives)
@@ -160,6 +165,7 @@ def _rule_columns(rs: RuleSet) -> dict[str, np.ndarray]:
         "rule_prim": np.asarray(cols["prim"], np.int8),
         "rule_tag": np.asarray(cols["tag"], np.int32),
         "rule_tri": np.asarray(cols["tri"], np.int32),
+        "rule_param": np.asarray(cols["param"], np.float32),
         "rule_listed": np.asarray(cols["listed"], np.uint8),
         "rule_alt": alt_ranges,
         "alts": np.asarray(alts, np.int32),
@@ -177,7 +183,17 @@ def _append_rule(cols: dict[str, list[float]], rs: RuleSet, rule: ResolvedRule, 
     cols["prim"].append(8 if rule.kind is RuleKind.TRIANGLE else rule.primitive)
     cols["tag"].append(rs.tags.index(rule.tag) if rule.tag in rs.tags else 0)
     cols["tri"].append(tri)
+    cols["param"].append(rule.param)
     cols["listed"].append(0 if is_alt or "::" in rule.name or rule.kind is RuleKind.TRIANGLE else 1)
+
+
+def _tag_index(rs: RuleSet, name: str | None) -> int:
+    """The tag index of a 'mat' material name (added to the tag table when new), -1 for no 'mat'."""
+    if name is None:
+        return -1
+    if name not in rs.tags:
+        rs.tags.append(name)
+    return rs.tags.index(name)
 
 
 def compile_rule_set(rs: RuleSet, script_dir: Path | None = None) -> RuleProgram:
@@ -202,6 +218,7 @@ def compile_rule_set(rs: RuleSet, script_dir: Path | None = None) -> RuleProgram
         xf_abs=np.asarray([t.absolute for t in xfs], np.uint8),
         xf_blend=np.asarray([t.blend_hsv for t in xfs], np.float32).reshape(-1, 3),
         xf_strength=np.asarray([t.strength for t in xfs], np.float64),
+        xf_mat=np.asarray([_tag_index(rs, t.material) for t in xfs], np.int32),
         setop_code=np.asarray(b.sets.codes, np.int8),
         setop_i=np.asarray(b.sets.ints, np.int64),
         setop_f=np.asarray(b.sets.floats, np.float64),

@@ -119,6 +119,9 @@ tick():                                    # vsync-driven via QOpenGLWidget.fram
 2. Kernels with `parallel=True` run **only on the compute lane**. Numba's default `workqueue` threading
    layer is not safe for concurrent parallel calls from several threads, and TBB/OpenMP are not uniformly
    available as wheels. Serialising parallel work on one lane is correct on every platform.
+   **As built:** the CPU render backend runs on the device lane, so every parallel call goes through
+   `core.jit.parallel_section()`, a first-come-first-served lock. Calls are kept short (one row band, one
+   filter pass), so lanes interleave fairly and the rule holds on every threading layer.
 3. Non-parallel `nogil` kernels (the builder, single-tile helpers) may run on any lane.
 4. The thread count for `prange` is `numba.set_num_threads(max(1, physical_cores - 1))`, which leaves one
    core for the GUI. Users can change it in Preferences.

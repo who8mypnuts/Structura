@@ -20,6 +20,8 @@ uniform int u_effects;           // bit 0: AO, bit 1: shadows
 uniform float u_exposure;
 uniform uint u_selected;         // id + 1, 0 = none
 uniform vec3 u_select_color;    // linear
+uniform usampler2D u_highlight;  // one texel per SceneIR row, non-zero = highlighted (provenance hover)
+uniform int u_highlight_on;
 uniform sampler2D u_oit_accum;
 uniform sampler2D u_oit_reveal;
 uniform int u_oit;              // 1: blend the transparent layer
@@ -56,6 +58,15 @@ bool outline() {
     return false;
 }
 
+bool highlighted() {
+    if (u_highlight_on == 0) return false;
+    uint id = texelFetch(u_pick, ivec2(gl_FragCoord.xy), 0).r;
+    if (id == 0u) return false;
+    int row = int(id) - 1;
+    int width = textureSize(u_highlight, 0).x;
+    return texelFetch(u_highlight, ivec2(row % width, row / width), 0).r != 0u;
+}
+
 vec3 shade(vec3 albedo, vec3 n, vec3 p) {
     float ao = (u_effects & 1) != 0 ? texture(u_ao, v_uv).r : 1.0;
     if (u_look == 3) return albedo;
@@ -89,6 +100,7 @@ void main() {
         float reveal = texture(u_oit_reveal, v_uv).r;
         if (reveal < 0.999) color = mix(tonemap(accum.rgb / max(accum.a, 1e-5)), color, reveal);
     }
+    if (highlighted()) color = mix(color, u_select_color, 0.45);
     if (outline()) color = u_select_color;
     o_color = vec4(color, 1.0);   // linear, display-referred; present.frag encodes
 }

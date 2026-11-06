@@ -47,6 +47,11 @@ class SourceDocument:
         return cls(text, path, version, detect_dialect(text))
 
 
+def is_javascript(text: str) -> bool:
+    """A Structure Synth '#javascript' script (docs/16 §3): the first line is '#javascript'."""
+    return text.partition("\n")[0].strip().lower() == "#javascript"
+
+
 def detect_dialect(text: str) -> int:
     """2 if the first non-blank line is '#version 2', else 1 (docs/05 §0)."""
     for line in text.splitlines():

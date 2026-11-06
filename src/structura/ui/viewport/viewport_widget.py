@@ -9,6 +9,7 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import Any
 
+import numpy as np
 from PySide6.QtCore import QPoint, Qt, QTimer, Signal
 from PySide6.QtGui import QMouseEvent, QWheelEvent
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
@@ -36,6 +37,7 @@ class ViewportWidget(QOpenGLWidget):
         self.renderer: Any = None
         self._scene: PreviewScene | None = None
         self._scene_dirty = False
+        self._highlight: tuple[np.ndarray | None, int] | None = None
         self._press: QPoint | None = None
         self._last: QPoint | None = None
         self._refine = QTimer(self)
@@ -82,9 +84,16 @@ class ViewportWidget(QOpenGLWidget):
             self.renderer = None
             self.gl_failed.emit(str(exc))
 
+    def set_highlight(self, rows: np.ndarray | None, count: int) -> None:
+        self._highlight = (rows, count)  # applied in paintGL, where the GL context is current
+        self.update()
+
     def paintGL(self) -> None:  # noqa: N802
         if self.renderer is None:
             return
+        if self._highlight is not None:
+            self.renderer.set_highlight(*self._highlight)
+            self._highlight = None
         if self._scene_dirty:
             self.renderer.set_scene(self._scene)
             self._scene_dirty = False

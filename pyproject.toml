@@ -60,6 +60,7 @@ markers = [
   "gpu: needs a real GPU (run on the reference GTX 1660)",
   "slow: long-running tests (golden corpus, benchmarks)",
   "golden: compatibility tests against Structure Synth 1.5 outputs",
+  "allow_stalls: a UI test whose action legitimately blocks the GUI thread (e.g. restyling for a theme)",
 ]
 
 [tool.ruff]

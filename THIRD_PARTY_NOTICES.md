@@ -24,3 +24,31 @@ PySide6 (LGPL-3), numpy (BSD-3), numba/llvmlite (BSD-2), ModernGL (MIT), wgpu-py
 pocl (MIT), cuda-python and NVRTC (NVIDIA licence; redistribution per the CUDA EULA), usd-core (modified
 Apache-2.0), pygltflib (MIT), manifold3d (Apache-2.0), Pillow (MIT-CMU), OpenEXR (BSD-3), imageio (BSD-2),
 imageio-ffmpeg (BSD-2; ffmpeg binaries LGPL), Jinja2 (BSD-3), platformdirs (MIT), tomli-w (MIT), psutil (BSD-3).
+
+## Theme palettes
+
+The 40 built-in themes reproduce published colour palettes (Nord, Dracula, Solarized, Gruvbox, Catppuccin,
+Tokyo Night, One Dark, Ayu, and others). Each theme file in `src/structura/themes/builtin/` records the
+palette's author and licence (`author` and `license` keys in `[meta]`); none of the
+original editor theme files are copied.
+
+## Algorithms implemented from publications (no code copied)
+
+| Algorithm | Source | Where |
+|-----------|--------|-------|
+| Edge-avoiding À-Trous wavelet denoising | Dammertz, Sewtz, Hanika, Lensch (HPG 2010) | `render/denoise/atrous.py` |
+| Preetham daylight model | Preetham, Shirley, Smits (SIGGRAPH 1999) | `render/environment.py` |
+| AgX base view transform | Troy Sobotka (published matrices and fitted curve) | `render/views.py` |
+| ACES fitted RRT + ODT | Stephen Hill (public fit) | `render/views.py` |
+| Filmic curve | John Hable (public) | `render/views.py` |
+| Adaptive sampling with an even-sample half buffer | The approach of Cycles' adaptive sampling (Apache-2.0), re-implemented | `render/film.py` |
+| Filter importance sampling | Ernst, Stamminger, Greiner (2006) | `render/filters.py` |
+| Integer hash for sample sequences ("lowbias32") | Chris Wellons (public domain) | `render/kernels/sampling.py` |
+| Branchless orthonormal basis | Duff et al. (JCGT 2017) | `render/kernels/sampling.py` |
+
+## Optional bundled binaries (installers)
+
+| Component | Licence | Notes |
+|-----------|---------|-------|
+| Intel Open Image Denoise 2.x (`resources/oidn/`) | Apache-2.0 | Shipped by the installers when present; loaded through ctypes. Without it the À-Trous denoiser is used. |
+| ffmpeg (through imageio-ffmpeg) | LGPL-2.1+ | Video encoding for animations |

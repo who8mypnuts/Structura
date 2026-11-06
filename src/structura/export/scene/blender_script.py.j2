@@ -23,24 +23,32 @@ HERE = _here()
 DATA = np.load(os.path.join(HERE, "{{ sidecar }}"))
 
 
+def remove(col):
+    for child in list(col.children):
+        remove(child)
+    for obj in list(col.objects):
+        bpy.data.objects.remove(obj, do_unlink=True)
+    bpy.data.collections.remove(col)
+
+
 def collection():
     old = bpy.data.collections.get("Structura")
     if old is not None:
-        for obj in list(old.objects):
-            bpy.data.objects.remove(obj, do_unlink=True)
-        bpy.data.collections.remove(old)
+        remove(old)
     col = bpy.data.collections.new("Structura")
     bpy.context.scene.collection.children.link(col)
     return col
 
 
-def material(spec):
-    mat = bpy.data.materials.new("Structura " + spec["name"])
+def material(spec, per_instance=False):
+    """Principled BSDF whose base colour is the 'Col' attribute (of the instance, for instanced clouds)."""
+    mat = bpy.data.materials.new("Structura " + spec["name"] + (" (instances)" if per_instance else ""))
     mat.use_nodes = True
     tree = mat.node_tree
     bsdf = tree.nodes["Principled BSDF"]
     attr = tree.nodes.new("ShaderNodeAttribute")
     attr.attribute_name = "Col"
+    attr.attribute_type = "INSTANCER" if per_instance else "GEOMETRY"
     tree.links.new(attr.outputs["Color"], bsdf.inputs["Base Color"])
     tree.links.new(attr.outputs["Alpha"], bsdf.inputs["Alpha"])
     for socket, key in (("Metallic", "metallic"), ("Roughness", "roughness"), ("IOR", "ior"),
@@ -73,6 +81,67 @@ def mesh_object(col, index, spec):
     col.objects.link(obj)
 
 
+def instancer():
+    """The shared Geometry Nodes tree: instance the 'Prototype' object on the points, with the 'rotation'
+    (quaternion) and 'scale' point attributes; point attributes such as 'Col' pass on to the instances."""
+    group = bpy.data.node_groups.get("Structura Instancer")
+    if group is not None:
+        return group
+    group = bpy.data.node_groups.new("Structura Instancer", "GeometryNodeTree")
+    group.interface.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+    group.interface.new_socket("Prototype", in_out="INPUT", socket_type="NodeSocketObject")
+    group.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
+    nodes, links = group.nodes, group.links
+    source, sink = nodes.new("NodeGroupInput"), nodes.new("NodeGroupOutput")
+    info, place = nodes.new("GeometryNodeObjectInfo"), nodes.new("GeometryNodeInstanceOnPoints")
+    rotation, scale = nodes.new("GeometryNodeInputNamedAttribute"), nodes.new("GeometryNodeInputNamedAttribute")
+    rotation.data_type, scale.data_type = "QUATERNION", "FLOAT_VECTOR"
+    rotation.inputs["Name"].default_value, scale.inputs["Name"].default_value = "rotation", "scale"
+    links.new(source.outputs["Geometry"], place.inputs["Points"])
+    links.new(source.outputs["Prototype"], info.inputs["Object"])
+    links.new(info.outputs["Geometry"], place.inputs["Instance"])
+    links.new(rotation.outputs["Attribute"], place.inputs["Rotation"])
+    links.new(scale.outputs["Attribute"], place.inputs["Scale"])
+    links.new(place.outputs["Instances"], sink.inputs["Geometry"])
+    return group
+
+
+def mesh_data(name, points, faces):
+    mesh = bpy.data.meshes.new(name)
+    mesh.vertices.add(len(points))
+    mesh.vertices.foreach_set("co", points.ravel())
+    if len(faces):
+        mesh.loops.add(faces.size)
+        mesh.loops.foreach_set("vertex_index", faces.ravel())
+        mesh.polygons.add(len(faces))
+        mesh.polygons.foreach_set("loop_start", np.arange(0, faces.size, 3, dtype=np.int32))
+        mesh.polygons.foreach_set("loop_total", np.full(len(faces), 3, dtype=np.int32))
+    mesh.update()
+    mesh.validate()
+    return mesh
+
+
+def instanced_cloud(col, prototypes, cloud):
+    key, spec = cloud["key"], SCENE["materials"][cloud["material"]]
+    proto = bpy.data.objects.new(f"Prototype {cloud['prototype']} {spec['name']}",
+                                 mesh_data(f"Prototype_{key}", DATA[f"{key}_proto_points"],
+                                           DATA[f"{key}_proto_faces"]))
+    proto.data.materials.append(material(spec, per_instance=True))
+    prototypes.objects.link(proto)
+    proto.hide_render = True
+    proto.hide_set(True)
+    points = mesh_data(f"Structura_{key}", DATA[f"{key}_location"], np.zeros((0, 3), np.int32))
+    for name, kind, field, values in (("rotation", "QUATERNION", "value", DATA[f"{key}_rotation"]),
+                                      ("scale", "FLOAT_VECTOR", "vector", DATA[f"{key}_scale"]),
+                                      ("Col", "FLOAT_COLOR", "color", DATA[f"{key}_colors"])):
+        points.attributes.new(name, kind, "POINT").data.foreach_set(field, values.ravel())
+    obj = bpy.data.objects.new(f"Structura {cloud['prototype']} ({spec['name']})", points)
+    modifier = obj.modifiers.new("Structura Instancer", "NODES")
+    modifier.node_group = instancer()
+    modifier[modifier.node_group.interface.items_tree["Prototype"].identifier] = proto
+    col.objects.link(obj)
+
+
 def camera(col):
     spec = SCENE["camera"]
     data = bpy.data.cameras.new("Structura Camera")
@@ -94,11 +163,22 @@ def world():
     bpy.context.scene.cycles.samples = SCENE["samples"]
 
 
+def prototypes_collection(col):
+    """Prototype meshes live in a child collection, hidden: they render only through the instances."""
+    protos = bpy.data.collections.new("Structura Prototypes")
+    col.children.link(protos)
+    return protos
+
+
 def main():
     col = collection()
     for index, spec in enumerate(SCENE["materials"]):
         if f"m{index}_points" in DATA:
             mesh_object(col, index, spec)
+    if SCENE["instanced"]:
+        protos = prototypes_collection(col)
+        for cloud in SCENE["instanced"]:
+            instanced_cloud(col, protos, cloud)
     camera(col)
     world()
 

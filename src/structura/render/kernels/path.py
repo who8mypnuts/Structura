@@ -11,9 +11,27 @@ from structura.kernels.skl import INF, dot, f32, func, max3, min, normalize, str
 from .bsdf import Principled, bsdf_eval, bsdf_sample, principled_setup
 from .buffers import SceneBufs
 from .camera import cfg3
-from .layout import BACKDROP_SKY, BACKGROUND, CAUSTIC_ALPHA, EPS, M_MODEL, N_LIGHTS, SUN_COS, SUN_DIR, SUN_IRRADIANCE
-from .lights import light_sample, offset, power_heuristic, sky, sun_pdf, sun_radiance, unoccluded
+from .catcher import MODEL_CATCHER, shadow_ratio
+from .emitters import emitter_pdf, sample_emitter
+from .environment import env_pdf, env_radiance, env_sample
+from .fog import fog_light, fog_transmittance
+from .layout import (
+    BACKDROP_SKY,
+    BACKGROUND,
+    CAUSTIC_ALPHA,
+    ENV_ON,
+    EPS,
+    M_MODEL,
+    N_EMITTERS,
+    N_LIGHTS,
+    PHOTONS_ON,
+    SUN_COS,
+    SUN_DIR,
+    SUN_IRRADIANCE,
+)
+from .lights import light_sample, offset, power_heuristic, sun_pdf, sun_radiance, unoccluded
 from .microfacet import luminance
+from .photons import caustic_light, is_specular
 from .sampling import cone_direction, rand01, to_local, to_world
 from .scene import NO_HIT, PRIM_U, Hit, trace
 from .surface import Surface, surface_at
@@ -53,12 +71,94 @@ def lights_nee(sc: SceneBufs, bs: Principled, wo: vec3, p: vec3, n: vec3, u1: f3
 
 
 @func
-def escaped(sc: SceneBufs, d: vec3, backdrop: bool, last_pdf: f32) -> vec3:
+def env_nee(sc: SceneBufs, bs: Principled, wo: vec3, p: vec3, n: vec3, u1: f32, u2: f32) -> vec3:
+    """Light from the environment map, importance-sampled and weighted against BSDF sampling."""
+    if sc.cfg[ENV_ON] == 0.0:
+        return vec3(0.0)
+    es = env_sample(sc, u1, u2)
+    if es.pdf <= 0.0:
+        return vec3(0.0)
+    wi = to_local(es.d, n)
+    v = bsdf_eval(bs, wo, wi)
+    if luminance(v.f) <= 0.0:
+        return vec3(0.0)
+    side = n if wi.z > 0.0 else n * -1.0
+    if not unoccluded(sc, p, side, es.d, INF):
+        return vec3(0.0)
+    return v.f * es.radiance * (power_heuristic(es.pdf, v.pdf) / es.pdf)
+
+
+@func
+def emitter_nee(sc: SceneBufs, bs: Principled, wo: vec3, p: vec3, n: vec3, u: vec3) -> vec3:
+    """Light from one emissive primitive chosen by power (u: selection, then two sample coordinates)."""
+    if sc.cfg[N_EMITTERS] == 0.0:
+        return vec3(0.0)
+    es = sample_emitter(sc, p, u.x, u.y, u.z)
+    if es.pdf <= 0.0:
+        return vec3(0.0)
+    wi = to_local(es.d, n)
+    v = bsdf_eval(bs, wo, wi)
+    if luminance(v.f) <= 0.0:
+        return vec3(0.0)
+    side = n if wi.z > 0.0 else n * -1.0
+    if not unoccluded(sc, p, side, es.d, es.dist * 0.999):
+        return vec3(0.0)
+    return v.f * es.radiance * (power_heuristic(es.pdf, v.pdf) / es.pdf)
+
+
+@func
+def emission_weight(sc: SceneBufs, h: Hit, origin: vec3, d: vec3, last_pdf: f32) -> f32:
+    """MIS weight of emission reached by BSDF sampling (1 for camera rays and non-emitters)."""
+    if last_pdf <= 0.0 or sc.cfg[N_EMITTERS] == 0.0:
+        return 1.0
+    light_pdf = emitter_pdf(sc, h.prim, origin, d, h.t, h.normal)
+    return power_heuristic(last_pdf, light_pdf) if light_pdf > 0.0 else 1.0
+
+
+@func
+def escaped(sc: SceneBufs, d: vec3, backdrop: bool, last_pdf: f32, photon_mapped: bool) -> vec3:
+    """Sky and sun along an escaped ray; ``photon_mapped``: its sunlight is in the caustic photon map."""
     if backdrop and sc.cfg[BACKDROP_SKY] == 0.0:
         return cfg3(sc.cfg, BACKGROUND)
-    sun = sun_radiance(sc.cfg, d)
+    sun = sun_radiance(sc.cfg, d) * (0.0 if photon_mapped else 1.0)
     weight = power_heuristic(last_pdf, sun_pdf(sc.cfg)) if last_pdf > 0.0 else 1.0
-    return sky(sc.cfg, d) + sun * weight
+    env_weight = 1.0
+    if sc.cfg[ENV_ON] != 0.0 and last_pdf > 0.0:  # the map was also light-sampled at the last vertex
+        env_weight = power_heuristic(last_pdf, env_pdf(sc, d))
+    return env_radiance(sc, d) * env_weight + sun * weight
+
+
+@func
+def caught(sc: SceneBufs, rd: vec3, p: vec3, n: vec3, pixel: u32, sample_index: u32, dim: u32) -> vec3:
+    """What a camera ray sees at a shadow catcher: the backdrop behind it, darkened by the scene's shadows."""
+    return escaped(sc, rd, True, 0.0, False) * shadow_ratio(sc, p, n, pixel, sample_index, dim)
+
+
+@func
+def surface_light(sc: SceneBufs, s: Surface, h: Hit, origin: vec3, d: vec3, last_pdf: f32) -> vec3:
+    """Emission (MIS-weighted), plus the flat colour of the 'constant' model."""
+    unlit = s.base if sc.mat_f[s.mat + M_MODEL] == f32(MODEL_CONSTANT) else vec3(0.0)
+    return s.emission * emission_weight(sc, h, origin, d, last_pdf) + unlit
+
+
+@func
+def caustic_state(sc: SceneBufs, mat: u32, state: f32) -> f32:
+    """0: no photon map or nothing yet; 1: a non-specular bounce happened; 2: leaving a specular surface after
+    one — the sunlight such a path reaches is already in the photon map."""
+    if sc.cfg[PHOTONS_ON] == 0.0:
+        return 0.0
+    if not is_specular(sc.mat_f, mat):
+        return 1.0
+    return 2.0 if state >= 1.0 else 0.0
+
+
+@func
+def roulette(depth: u32, throughput: vec3, u: f32) -> f32:
+    """Russian roulette from the third bounce: 0 ends the path, else the throughput scale 1/q."""
+    if depth < 3:
+        return 1.0
+    q = min(0.95, max3(throughput))
+    return 0.0 if u > q else 1.0 / q
 
 
 @struct
@@ -80,6 +180,13 @@ def scatter(
     u1 = rand01(pixel, sample_index, dim)
     u2 = rand01(pixel, sample_index, dim + 1)
     direct = sun_nee(sc, bs, wo, p, h.normal, u1, u2) + lights_nee(sc, bs, wo, p, h.normal, u1, u2)
+    u_env = rand01(pixel, sample_index, dim + 8)
+    direct = direct + env_nee(sc, bs, wo, p, h.normal, u_env, rand01(pixel, sample_index, dim + 9))
+    u_emit = vec3(rand01(pixel, sample_index, dim + 10), rand01(pixel, sample_index, dim + 11),
+                  rand01(pixel, sample_index, dim + 12))  # fmt: skip
+    direct = direct + emitter_nee(sc, bs, wo, p, h.normal, u_emit)
+    if not is_specular(sc.mat_f, s.mat):
+        direct = direct + caustic_light(sc, bs, wo, p, h.normal)
     u_lobe = rand01(pixel, sample_index, dim + 2)
     wi = bsdf_sample(bs, wo, u_lobe, rand01(pixel, sample_index, dim + 3), rand01(pixel, sample_index, dim + 4))
     v = bsdf_eval(bs, wo, wi)
@@ -100,10 +207,13 @@ def path_radiance(o: vec3, d: vec3, max_bounces: u32, pixel: u32, sample_index: 
     last_pdf = 0.0
     depth = u32(0)
     alpha_floor = 0.0
+    caustic = 0.0  # photon-map state (caustic_state): 2 = in a specular chain after a non-specular bounce
     for step in range(max_bounces + PASS_LIMIT):
         h = trace(ro, rd, 0.0, INF, u32(0), exclude, sc)
+        radiance = radiance + throughput * fog_light(sc.cfg, ro, rd, h.t)
+        throughput = throughput * fog_transmittance(sc.cfg, ro, rd, h.t)
         if h.prim == NO_HIT:
-            radiance = radiance + throughput * escaped(sc, rd, backdrop, last_pdf)
+            radiance = radiance + throughput * escaped(sc, rd, backdrop, last_pdf, caustic == 2.0)
             break
         dim = u32(32) + u32(step) * 16
         s = surface_at(sc, h.prim)
@@ -113,11 +223,11 @@ def path_radiance(o: vec3, d: vec3, max_bounces: u32, pixel: u32, sample_index: 
             exclude = sc.prim_u[h.prim * PRIM_U + 2]
             continue
         exclude = u32(NO_HIT)
-        radiance = radiance + throughput * s.emission
-        if sc.mat_f[s.mat + M_MODEL] == f32(MODEL_CONSTANT):
-            radiance = radiance + throughput * s.base
+        if backdrop and sc.mat_f[s.mat + M_MODEL] == f32(MODEL_CATCHER):  # seen directly: background × shadow
+            radiance = radiance + throughput * caught(sc, rd, p, h.normal, pixel, sample_index, dim + 13)
             break
-        if depth >= max_bounces:
+        radiance = radiance + throughput * surface_light(sc, s, h, ro, rd, last_pdf)
+        if sc.mat_f[s.mat + M_MODEL] == f32(MODEL_CONSTANT) or depth >= max_bounces:
             break
         sca = scatter(sc, h, s, p, rd, alpha_floor, pixel, sample_index, dim)
         radiance = radiance + throughput * sca.direct
@@ -125,15 +235,14 @@ def path_radiance(o: vec3, d: vec3, max_bounces: u32, pixel: u32, sample_index: 
             break
         throughput = throughput * sca.weight
         last_pdf = sca.pdf
-        if sca.pdf < ROUGH_PDF:
-            alpha_floor = sc.cfg[CAUSTIC_ALPHA]
+        alpha_floor = sc.cfg[CAUSTIC_ALPHA] if sca.pdf < ROUGH_PDF else alpha_floor
+        caustic = caustic_state(sc, s.mat, caustic)
         backdrop = backdrop and dot(sca.d, h.normal) < 0.0
         ro = sca.o
         rd = sca.d
         depth += 1
-        if depth >= 3:
-            q = min(0.95, max3(throughput))
-            if rand01(pixel, sample_index, dim + 5) > q:
-                break
-            throughput = throughput * (1.0 / q)
+        keep = roulette(depth, throughput, rand01(pixel, sample_index, dim + 5))
+        if keep == 0.0:
+            break
+        throughput = throughput * keep
     return radiance

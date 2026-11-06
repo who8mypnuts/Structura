@@ -83,6 +83,10 @@ represent **TRS only**. Structure Synth's `matrix` and non-uniform scale compose
 | **3MF** | **Yes** (`components` + build items with transforms) | `basematerials` / `colorgroup` | Core + Materials extension | — | 3D printing with colour; optional watertight union; units in mm |
 | **X3D** (XML) / **VRML97** | DEF/USE per kind + `Transform` (TRS) | `Material diffuseColor` per instance, or per-colour-group `Appearance` | Phong-ish | `IndexedLineSet`, `PointSet` | Satisfies the 1.5 roadmap request ("VRML/OBJ template"); sheared instances are baked |
 
+> **As built (M8):** X3D and VRML97 place instances with exact Transforms (the SVD gives
+> translation, rotation, scale and scaleOrientation), so sheared instances are not baked. 3MF uses
+> `components` of one assembly object. All formats that take a full matrix share `export/affine_instances.py`.
+
 ### 3.1 CSG and watertight output
 
 - **Watertight union** merges all solids into one manifold (manifold3d). The process is chunked, with

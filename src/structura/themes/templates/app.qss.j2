@@ -83,6 +83,7 @@ QScrollBar::add-page, QScrollBar::sub-page { background: transparent; }
 
 /* Structura widgets */
 QPlainTextEdit#CodeEditor { background: {{ c("editor.bg") }}; color: {{ c("editor.fg") }}; border: none; border-radius: 0; padding: 0;
+  font-family: "{{ code_font }}"; font-size: {{ code_size }}pt;
   selection-background-color: {{ c("editor.selection") }}; }
 QWidget#HeaderBar { background: {{ c("toolbar.bg") }}; border-bottom: 1px solid {{ c("ui.border") }}; }
 QLabel#Brand { font-weight: 600; font-size: {{ ui_size + 1 }}pt; background: transparent; }

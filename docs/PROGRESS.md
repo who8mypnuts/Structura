@@ -622,3 +622,336 @@ scripts with QJSEngine (`structura.scripting.js_bridge`). The global `Builder` h
   - the raster window;
   - doctor, and an impossible format, each in a fresh process. The test process has already used standalone EGL contexts, and mixing those with Qt's GLX contexts on one X display is refused by the X server.
   - layout: the screen-bounded size, the minimum ≤ 1280 px, header collapse levels, thumbnail scaling.
+
+## M5 — completion pass (editor, language service, themes, keymaps)
+
+An audit of the docs/12 checklist against the code found most P0 and P1 items missing. They are now done:
+
+- **Editing and view:**
+  - code folding (rules, v2 blocks, comment runs; gutter markers, fold commands);
+  - indent guides, whitespace and word-wrap toggles, rainbow brackets, block comments;
+  - multiple cursors (Alt+click, Ctrl+D, Ctrl+Shift+L, Ctrl+Alt+↑/↓, Alt+Shift column select), minimap, sticky scroll;
+  - split view (one shared document), breadcrumbs, snippet tab stops with mirrors, inline parameter sliders;
+  - the view options live in one `EditorOptions` (Preferences and View ▸ Editor).
+- **Documents:**
+  - session restore with hot exit, crash recovery (snapshots every 60 s), and the window layout restored;
+  - drag and drop to open files;
+  - encoding and line endings detected, kept on save, and shown in the status bar. One `core.text_file` module serves the UI, CLI and API;
+  - `.structura` project files: versioned JSON with migrations, the script embedded or linked, seed, parameters, camera, render overrides and a thumbnail.
+- **Language service:**
+  - `catalog/diagnostics.toml` is the single source of codes and severities;
+  - a semantic linter (W101–W114, W120/W121, I203/I204; resolution errors now have their E-codes);
+  - quick fixes (Ctrl+.), a language reference generated from the catalogues (docs/reference/language.md and the F1 browser), peek definition;
+  - signature help for operators, v2 completion (block keys, functions, blocks);
+  - provenance hover: the instances of a call are highlighted in the viewport;
+  - inlay hints for loop counts and materials.
+- **`#javascript` scripts:** recognised and highlighted, and run from the GUI (Build ▸ Run JavaScript, F7) as a cancellable job. The host is shared with `structura run`.
+- **Themes and keymaps:**
+  - the theme editor: roles by group, a live app-wide preview, "start from accent", the contrast report and automatic fix, duplicate, export and delete;
+  - keymap presets (Structura, Legacy 1.5, VS Code-like) and a keymap editor with conflict marking;
+  - a screenshot test for each of the 40 built-in themes.
+- **Bugs found on the way:**
+  - the editor used the UI font, and theme changes reset its zoom;
+  - Render Settings edits were discarded on every rebuild;
+  - `Ctrl+K Ctrl+T` never parsed;
+  - spans after a v2 expression were shifted;
+  - `#version 2` was reported as an unknown directive;
+  - defines and functions were coloured as undefined rules;
+  - the dialect segment was never updated after edits;
+  - the Render toolbar forced the viewport side to at least 640 px.
+
+## M6 (part 3) — Area lights, environments, emitters, filters, view transforms, AOVs, denoising
+
+- **Rect lights:** `light { type rect size [w h] }`, one-sided, with area-sampled next-event estimation.
+- **Environments** (`render/environment.py`, kernel `kernels/environment.py`):
+  - `environment { type hdri file "x.exr" }` reads `.exr` / `.hdr` (`render/hdr_io.py`);
+  - `environment { type sunsky turbidity T }` is the Preetham model, baked into the same equirect path;
+  - a 2-D CDF drives importance sampling, with MIS between environment NEE and escaped BSDF rays;
+  - tests: the white furnace, an analytic sky cap, and backend parity.
+- **Emissive geometry as lights** (`render/emitters.py`, kernel `kernels/emitters.py`):
+  - emitter records are picked by power: spheres by solid angle, box faces and triangles by area;
+  - NEE plus MIS on BSDF hits;
+  - analytic irradiance tests for spheres and boxes;
+  - v2 scripts that declare lights or an environment no longer get the implicit sun.
+- **Reconstruction filters** (`render/filters.py`) by filter importance sampling: box, triangle,
+  gaussian, Blackman-Harris, Mitchell, Catmull-Rom, B-spline and Lanczos. Negative lobes are signed weights.
+- **Camera and output:**
+  - polygonal bokeh (`blades`, `blade_rotation`);
+  - region render (`region x0 y0 x1 y1`).
+- **View transforms** (`render/views.py`): standard, soft, AgX, ACES (fitted) and Hable filmic.
+  - `auto` picks AgX for physically based integrators and standard for `classic`.
+  - In the Render view, exposure and view transform apply live without re-rendering.
+- **AOVs** (`render/aovs.py`, kernel `render/kernels/aov.py`):
+  - a separate 16-sample first-hit pass, in its own kernel module, produces albedo, world normal, depth, coverage, instance id and material id;
+  - it reuses the beauty pass's scene buffers and `cfg`;
+  - `RenderSettings.aovs`, `structura render --aovs` (EXR layers `albedo.*`, `N.*`, `Z`, `A`, `instance`, `material`).
+- **Denoising** (`render/denoise/`):
+  - `denoise(image, albedo, normal, method)` with methods `auto`, `oidn` and `atrous`;
+  - `auto` uses Open Image Denoise when its library can be loaded (ctypes; `STRUCTURA_OIDN` or a bundled `resources/oidn/`), else the À-Trous filter;
+  - À-Trous is the edge-avoiding wavelet filter (Dammertz 2010): 5 passes, guided by colour, normal and albedo, and a parallel Numba kernel;
+  - CLI: `--denoise auto|oidn|atrous`. `oidn` without the library is a usage error; `auto` falls back.
+- **Render view:**
+  - a Denoise selector; the denoiser runs on the compute lane after the render, and changing it afterwards re-denoises without re-rendering;
+  - a channel selector (beauty or any AOV, false-coloured by `render/aov_display.py`);
+  - saving to EXR writes the AOV layers too.
+- **Deviation:** the À-Trous filter uses the albedo only as an edge-stopping guide and does *not*
+  demodulate (divide colour by albedo). Glossy highlights are not proportional to albedo, and dividing by
+  a saturated albedo such as pure green blew up the other channels: the denoised error was 2.6× the noisy
+  error in the test scene. The test now measures the error inside the silhouettes, where it drops by about
+  half. At the edges the error is dominated by anti-aliasing, not noise.
+
+## M6 (part 4) — Adaptive sampling, banded dispatch, ground and shadow catcher
+
+- **Film** (`render/film.py`): `accum` now has 8 floats per pixel, the RGB and weight sums of all samples
+  and of the even-numbered samples.
+  - The difference between the two means is the per-pixel error estimate (as in Cycles): |all − even| summed over RGB, divided by √brightness.
+  - No squared sums are needed, and it works with signed filter weights.
+- **Adaptive sampling:** `noise_threshold` (0 = off; about 0.01 is a good final value) and
+  `adaptive_min_samples` (16).
+  - After each pass, pixels below the threshold are switched off in a `pixel_mask` buffer that the kernel reads. The mask is dilated by one pixel so that converged areas keep soft borders, and a pixel that is off stays off.
+  - The render stops when no pixel is left, at `samples`, or at `time_limit`.
+  - `RenderProgress` carries the per-pixel `sample_map` and the still-active fraction. The Render view shows the map as the "samples" channel (a heat ramp).
+  - Region render now uses the same mask, so the `REGION` cfg slot and its kernel test are gone.
+  - Test: a white background stops at 16 spp, the sphere takes all 64, and the mean image matches the uniform render within 0.02.
+- **Banded dispatch** (`render/bands.py`, docs/04 §5.2):
+  - every pass is split into bands of rows (the kernel takes `row0`; `Bound.set_grid` narrows the dispatch grid on all four backends);
+  - the band height adapts so that each dispatch takes about 30 ms, and asynchronous GPU dispatches grow to one band;
+  - the render service checks for cancellation between bands, so Stop responds within one band, not one pass.
+- **Parallel Numba is serialised across lanes** (`core.jit.parallel_section`, a FIFO `FairLock`):
+  - CPU render bands, the À-Trous passes and any other parallel region take turns;
+  - a thread that releases and re-acquires at once queues behind waiting threads;
+  - this fixes a latent violation of docs/04 §6, where a CPU render on the device lane could overlap the Variation Explorer's CPU renders on the compute lane.
+- **Ground** (`render/ground.py`):
+  - `render { ground plane|catcher ground_color … ground_offset … }`, the Render Settings panel, or `RenderSettings.ground_plane`;
+  - the ground is one large thin box appended to the packed scene with its own material, so the BVH, lights, AOVs and every integrator handle it. It is excluded from the framing bounds;
+  - the new material model `shadow_catcher` (usable on any geometry) makes camera rays show the backdrop × the lit fraction. That fraction is estimated with one sun, one sky and one sample per light (`kernels/catcher.py`);
+  - reflections and bounces see it as a diffuse ground.
+- **Filter table:** moved into `cfg` (after the 64 header floats). This frees a storage-buffer binding: the render kernel is at exactly 16 (`SceneBufs` 14 + `pixel_mask` + `accum`), the limit that llvmpipe's Vulkan reports.
+- **Deviations:**
+  - adaptive sampling refines the whole image progressively rather than in Hilbert-ordered 64×64 buckets (docs/09 §5.2). The noise test and knobs are the same, and the progressive form gives a better preview at the same cost;
+  - the shadow catcher is evaluated for the `path` integrator only. The other integrators render it as a plain ground.
+
+## M7 (part 3) — v2 primitives and the `mat` operator
+
+- **Primitives** (`#version 2` only; catalog `[[v2_primitive]]` with explicit builder ids 9–13):
+  - `cylinder` (v1's cylinder still draws nothing), `cone[r]`, `torus[r]`, `ellipsoid` and `tube[r]`;
+  - a bracket argument is stored in the instance's aux row (`SceneIR.params(rows)`);
+  - tags work on bracket forms (`cone[0.5]::gold`, and now also `triangle[…]::glass`). The tokenizer keeps `]::` in one word, which was an error in 1.5, so nothing changes for legacy scripts;
+  - v1 scripts may still use these names for their own rules.
+- **Precision engine** (`render/kernels/solids.py`):
+  - ellipsoid, cylinder/cone and torus are intersected in object space through the stored inverse affine, so non-uniform scales and shears are exact;
+  - ellipsoid and cylinder/cone are analytic; the torus is sphere-traced inside its bounding cube;
+  - tubes are capsules with the world radius taken from the parameter;
+  - the shared hit helpers moved to `kernels/hit.py`.
+- **Tessellation** (`core/geometry/v2_shapes.py`, shared by every exporter and the GPU preview):
+  - shapes with a parameter are grouped by value, so each distinct mesh is built once;
+  - `unit_torus` is new;
+  - tubes are a cylinder plus two end spheres, matching the renderer's capsule;
+  - `TriMesh`, `instanced` and `beams` moved to `core/geometry/trimesh.py`.
+- **Preview:** the v2 shapes join the triangle soup with smooth normals.
+- **`mat NAME`** (v2 state operator):
+  - the material tag is inherited by the subtree, and an explicit tag wins;
+  - it is a new int state column `I_MAT` and a transform column `xf_mat`. The 943 golden builds are still bit-exact;
+  - `mat` names get the same I203/W112 checks as tags.
+- **Tests:**
+  - analytic silhouettes match the finest tessellation (AOV coverage within 1%);
+  - a uniform ellipsoid equals a sphere;
+  - backend parity for the solids (OpenCL, WGSL, GLSL);
+  - build, tag, inheritance and tessellation checks.
+- **Bug fixed on the way:** the Numba kernels used Python's division semantics. A degenerate
+  triangle (`normalize` of a zero normal) raised `ZeroDivisionError` inside a `prange` chunk, which silently
+  skipped the rest of that chunk (half a sphere was missing). Emitted kernels now use `error_model="numpy"`
+  (IEEE, like every GPU target), and the triangle hit no longer normalises before checking for a miss.
+
+## M7 (part 4) — Whole-word defines in v2, `structura convert --to v2`
+
+- **Whole-word substitution:** in `#version 2` scripts, `#define` and `#param`/GUI parameters now replace
+  whole words only (`#define R 3` no longer rewrites `R1`). This was documented but not implemented: v2 went
+  through the v1 substring preprocessor. v1 keeps 1.5's substring rules.
+- **Converter** (`core/lang/convert.py`): `convert_to_v2(text) → Conversion(text, notes)`. It keeps what a v1
+  script builds:
+  - adds `#version 2`;
+  - lines where substring and whole-word substitution differ get the v1 result written out;
+  - rules named like v2 keywords (`cone`, `torus`, `ellipsoid`, `tube`, `mat`) are renamed with every reference (case-insensitive, tags untouched);
+  - `cylinder` calls are kept and reported: they now draw, and dropping them would change `maxobjects` counting.
+- **CLI:** `structura convert FILE --to v2 [-o OUT] [--quiet]` prints the notes and a unified diff.
+- **GUI:** Edit ▸ Convert to EisenScript v2 rewrites the open script as one undo step; the notes go to the Console.
+- **Test:** every bundled v1 example builds to identical kinds, matrices and colours after conversion,
+  apart from the v1 cylinders.
+
+## M7 (part 5) — Timeline and keyframes, Render Animation
+
+- **Model** (`core/animation/`, Qt-free):
+  - `Timeline(fps, start, end, tracks)` of `Track(target, keys)`;
+  - targets are `param:NAME`, `camera:eye.x` … `camera:target.z`, `camera:fov`, and `seed` (stepped);
+  - keys hold, interpolate linearly, or ease (smoothstep); the key on the left decides;
+  - `params_at`, `camera_at`, `key_camera`, `set_interp`, and a tolerant JSON form;
+  - the timeline is saved in `.structura` projects (the section that was reserved).
+- **Analysis** takes the frame (`analyze(…, frame, fps)`), so v2 `frame` / `time` expressions follow the
+  timeline in the GUI too, not only in `structura animate`.
+- **Timeline dock** (`ui/panels/timeline/`):
+  - transport (first, play/pause, last), frame, start, end and fps;
+  - "◆ Camera", "◆ Parameters" and "Render Animation…";
+  - a keyframe strip with a ruler and one row per parameter (the seven camera tracks share a row). Click or drag to scrub; right-click a key for its interpolation or Delete.
+- **Parameters panel:** each slider has a key button: ◇ not animated, ◈ animated, ◆ key here. Clicking adds or removes the key at the current frame.
+- **Scrubbing and playback** (`ui/timeline_actions.py`):
+  - a frame change applies keyed parameters, the seed and the camera, then re-analyses;
+  - the workbench rebuilds only if the program changed (`follow_frame`), so camera-only animation never rebuilds, even with live build off;
+  - playback is a QTimer at the timeline fps, and latest-wins builds drop frames that cannot keep up.
+  - Commands: Play/Pause (Ctrl+Alt+Space), Next/Previous Frame (Alt+. / Alt+,), Key Camera.
+- **Render Animation** (Render menu and the dock):
+  - a dialog for the frame files, range, samples and video (MP4, WebM, GIF);
+  - `AnimationService` runs on the device lane, sharing `DeviceBackends` with the Render view;
+  - each frame appears in the Render view as it finishes, and Stop Animation cancels within one row band.
+- **One frame pipeline** (`render/animation.py`): `Animation` plus `build_frame` / `render_frame` are shared
+  by the GUI job and `structura animate`. The command now also accepts a `.structura` project: its timeline
+  gives the frame range and fps, and its parameters, seed, camera and render overrides apply. `render/video.py`
+  holds the encoder.
+
+## M8 (part 3) — Instanced 3MF / X3D / VRML, USD policies, scene writers, CSG, Blender Geometry Nodes, fog
+
+- **Affine prototypes** (`export/affine_instances.py`): unit prototypes (box, round sphere, ellipsoid,
+  cylinder, cone[r], torus[r]) placed by full 3×4 matrices, for every format whose instances take a matrix.
+  Shear needs no special case.
+- **3MF**, instanced by default:
+  - one prototype object per (shape, colour), placed by the `components` of a single assembly object, so a slicer sees one object;
+  - the remaining kinds are baked into one colour mesh;
+  - `instancing false` keeps the previous single-mesh layout;
+  - the build-plate offset moved into the build item's transform;
+  - test: the flattened instanced package equals the baked one (triangle count and bounds).
+- **X3D and VRML97**, instanced by default (`export/mesh/placed.py`):
+  - DEF/USE geometry per prototype and an Appearance per colour;
+  - each instance is a `Transform` whose translation, rotation, scale and **scaleOrientation** come from an SVD (`core.geometry.affine.scaled_transforms`), so sheared instances are exact rather than baked (docs/15 §3 expected baking);
+  - test: the world points of the scene graph match the baked export.
+- **USD:**
+  - `mode flattened` writes one mesh per material;
+  - `shear matrix` places sheared boxes and the v2 solids as instanceable references of unit prototypes (under `/StructuraPrototypes`) with one `xformOp:transform`, a constant displayColor and a bound material;
+  - **fix:** the v2 solids were missing from USD exports.
+- **Text scene writers** (`export/scene/text_scene.py` + Jinja2 templates in `export/scene/text/`):
+  - **POV-Ray 3.8** (`.pov`): native box, sphere, cylinder, cone and torus with `matrix`, materials from the closest classic finish, a radiosity option, and `mesh2` with vertex colours for the rest;
+  - **Sunflow** (`.sc`): generic-mesh prototypes plus `instance … transform row …`, sunsky;
+  - **Mitsuba 3** (`.xml`): shapegroups per (prototype, BSDF), instances with `to_world` matrices, principled BSDFs, and PLY meshes in `<name>_meshes/`;
+  - the legacy template exporter is no longer the default for `.pov`, `.sc` and `.xml`; it stays available as `template`;
+  - **verified:** the Sunflow export renders in Sunflow 0.07.3 (built from `sample_source`).
+- **CSG markers** (`export/csg.py`, `export/solids.py`):
+  - `template::union|difference|intersection-begin … -end` form a tree in emission order, evaluated with manifold3d. Colours ride along as vertex properties;
+  - `csg` option on STL, PLY and 3MF; unbalanced markers produce warnings in the export report;
+  - the legacy "CSG test" example now exports as a printable solid;
+  - the STL watertight union shares the same solids code.
+- **Blender Geometry Nodes** (`geometry instanced`):
+  - one point cloud per (prototype, material), with `rotation` (quaternion), `scale` and `Col` point attributes;
+  - a shared "Structura Instancer" node tree (Instance on Points + Object Info);
+  - prototypes live in a hidden child collection, and the material reads `Col` with an INSTANCER attribute node;
+  - sheared instances and the other kinds stay baked;
+  - **not verified in Blender** (no Blender in the sandbox; spike S5, owner check).
+- **Fog** (`render/kernels/fog.py`):
+  - density with optional exponential height falloff (`fog_density`, `fog_falloff`, `fog_base`, `fog_color` in `render {}` and the Render Settings panel);
+  - the optical depth of every path segment is integrated analytically, so fog adds no noise;
+  - like POV-Ray's fog it changes what rays see, not the light reaching surfaces;
+  - path integrator only.
+- **Deferred: photon-mapped caustics** (docs/10 §2.5, phase R3).
+  - Photons need a storage buffer the render kernel does not have: it is at the 16-binding limit.
+  - The path tracer would also have to exclude the same caustic paths, otherwise light is counted twice.
+  - `caustics on` (unbiased path-traced caustics) remains the way to render them.
+
+## M9 (part 1) — Warm-up, i18n, accessibility, packaging, user guide, benchmarks
+
+- **Kernel warm-up:**
+  - `structura warmup [--device …]` compiles the builder, every integrator, the AOV pass and the denoiser (`render/warmup.py`);
+  - the GUI runs the same steps as a compute-lane job at start-up (`ui/warmup.py`, from `app/main.py` only, so tests are unaffected);
+  - installers call `warmup`;
+  - frozen app bundles keep Numba's cache in the user cache folder (`structura/__init__.py`).
+- **Internationalisation** (`ui/i18n.py`):
+  - `tr(text, context)` and Qt translators for Structura and qtbase;
+  - command titles and tips, menus, submenus and dock titles are translated where they are shown, so the tables that define them stay English;
+  - `tools/update_translations.py` extracts every string (AST: `Command(...)` titles and tips, literal `tr()` calls, menus and docks) into Qt Linguist `.ts` catalogues. It keeps existing translations, regenerates the accented **pseudo-locale**, and compiles `.qm` files with `pyside6-lrelease`. `--check` is a CI gate;
+  - Preferences ▸ Language (restart);
+  - a UI test runs the whole window in the pseudo-locale.
+- **Accessibility:**
+  - every focusable widget has an accessible name: the editor, panels, search fields, lists, spin boxes, variation cells, the timeline;
+  - `tests/ui/test_accessibility.py` scans the main window and the Preferences and Render Animation dialogs, skipping Qt's own sub-widgets.
+- **Packaging** (`packaging/`, see its README):
+  - a PyInstaller one-folder spec with the GUI and CLI, all package data and OIDN if present;
+  - `build.py` builds, warms up and smoke-tests;
+  - an AppImage script, a Flatpak manifest, an Inno Setup script with file associations, and a macOS DMG script with signing, notarisation and entitlements;
+  - GitHub workflows for CI (gates + 3 OS × 2 Pythons) and releases;
+  - **none of these can run in the sandbox** (no PyInstaller, Windows or macOS): owner check.
+- **User guide** (`docs/user-guide/`): getting started, writing scripts, the editor, rendering, animation,
+  exporting, command line, troubleshooting.
+- **THIRD_PARTY_NOTICES:** theme palettes; algorithms implemented from publications (À-Trous, Preetham,
+  AgX, ACES fit, Hable, adaptive sampling, filter importance sampling, the integer hash); optional OIDN and ffmpeg.
+- **Benchmarks** (`tools/bench/suite.py`, JSON for the owner):
+  - covers analysis, build, pack + BVH, render throughput per device, USD/GLB/OBJ export, viewport fps (headless GL) and UI import time.
+  - **Sandbox, 100k boxes:** build 0.23 s; pack + BVH 0.4 s; USD 0.9 s; GLB 8.5 → 4.6 s; OBJ 16 → 5 s.
+  - **Optimisations made:**
+    - batched `matmul` instead of `einsum` in tessellation;
+    - adjugate inverses and column-sum bounds in packing;
+    - one-material glTF primitives skip re-indexing;
+    - a 16-bit sRGB lookup table;
+    - per-row (not per-triangle) colour group names;
+    - **a Numba ASCII formatter for OBJ** (`export/mesh/ascii.py`);
+    - the v2-syntax hint no longer lexes scripts without parentheses;
+    - a cheaper tokenizer inner loop (runs of plain characters, tuple tokens). The 943 golden builds are unchanged.
+  - **Still over budget in the sandbox:**
+    - analysis of a 1,000-line script takes about 190 ms against 15 ms (it runs debounced on the analysis lane, so typing is unaffected);
+    - GLB and OBJ at 1M are projected at about 45 s and 35 s against 12 s and 20 s.
+  - The owner's numbers on the GTX 1660 machine decide whether more work is needed.
+
+## M8 (part 4) — Photon-mapped caustics
+
+The deferral noted in part 3 is resolved.
+
+- **Freeing storage bindings:** the environment CDFs now follow the texels in `env_f`, and the emitter CDF
+  follows the records in `emit_f`. The render kernel dropped from 16 bindings to 14, and the photon map takes one.
+- **Photon pass** (`render/kernels/photons.py`, its own module, on every backend):
+  - sun photons leave a disc that covers the scene's bounding sphere;
+  - they pass through *specular* surfaces (`is_specular`: transmission, polished metal, roughness < 0.05) by sampling the principled BSDF;
+  - they are stored at the first other surface after at least one specular bounce.
+- **Photon map** (`render/photons.py`): a hash grid with cells twice the gather radius. Buckets hold
+  (start, count), followed by the photons sorted by bucket. The host hash mirrors the kernel's `hash_u32`.
+- **Gather:** at every non-specular path vertex, `caustic_light` visits the up to eight overlapping cells,
+  each bucket once, and weights photons with a cone filter and the BSDF (`f / cos θ × Φ`).
+- **No double counting:**
+  - a three-state `caustic` variable in `path_radiance` marks "leaving a specular surface after a non-specular bounce";
+  - the sun reached by such a path is dropped (`escaped(…, photon_mapped)`). The sky and emitters are kept, because only sun photons are traced;
+  - sun NEE through glass is already occluded.
+- **Settings:** `caustics photons`, `photon_count` (300k) and `photon_radius` (0 = 0.6 % of the bounding
+  radius); also in the Render Settings panel and `render {}` blocks.
+- **Tests:**
+  - the stored flux matches the sphere's cross-section × sun irradiance (minus reflection);
+  - every photon is found through its own cell;
+  - a focused spot appears inside the shadow;
+  - backend parity.
+- **Fix found on the way:** wgpu pipelines used `layout="auto"`, which keeps only the bindings a shader uses.
+  Kernels that bind the whole scene buffer set but use part of it (the AOV pass, the photon pass) failed to
+  bind on wgpu. Pipelines now get an explicit layout from the declared parameters, and AOV parity is tested.
+
+## M9 (part 2) — UI-stall watchdog (G9)
+
+- **`ui/watchdog.py`:** a 10 ms heartbeat QTimer on the GUI thread and a sampling thread.
+  - A gap between beats longer than the budget is a stall.
+  - While it is going on, the sampler records the GUI thread's stack, so a stall names the code that blocked.
+  - A first version used the event dispatcher's `awake`/`aboutToBlock` signals. The GLib dispatcher runs timers before `awake`, so that version missed stalls.
+- **UI tests:** the `window` fixture runs the watchdog for every test and fails a test whose stall shows
+  Structura code running inside qtbot's event loop.
+  - Not counted: work the test does itself outside the loop; closing the window (lane shutdown); time spent only inside Qt's C++.
+  - The budget is `STRUCTURA_STALL_MS`: 500 ms by default for shared CI and software rendering, 50 ms on the reference machine. `@pytest.mark.allow_stalls` marks the deliberate case, restyling the app for a theme preview.
+- **In the app:** `STRUCTURA_WATCHDOG=50 structura-gui` logs every stall over 50 ms, with its stack, at exit.
+- **Stalls found and fixed:**
+  - the CPU viewport and the Render view tone-mapped every progressive pass on the GUI thread (0.3 s for a viewport-sized image in the sandbox). Render jobs now also make the 8-bit display image (`RenderRequest.display`), and the views only wrap it in a QImage. The GUI thread tone-maps again only when the user changes exposure, view or channel;
+  - re-applying the theme re-set the Fusion style (0.14 s of re-polishing for nothing).
+- **Known remaining stalls in the sandbox** (under 500 ms, none in Structura's own code): first paints (glyph caches), the first editor layout, and restyling on a theme change (0.4–0.6 s of `setStyleSheet`).
+
+## M6 (addendum) — Render view: zoom, inspector, A/B, region re-render, ETA
+
+The docs/09 §9 items that were still missing from the Render view:
+
+- **Zoom and pan:** the wheel zooms about the cursor, dragging pans, and a double-click toggles between fit
+  and 1:1.
+- **Pixel inspector:** the linear (HDR) value of the pixel under the cursor, in the tool bar.
+- **A/B compare:** the "A/B" button keeps a snapshot of the current image; the next render shows beside it,
+  split by a draggable line.
+- **Region re-render:** Shift+drag a rectangle to render just that region again. It is pasted into the last
+  image wherever the region render has samples (`render_view/regions.py`).
+- **Progress:** the estimated time left next to spp and elapsed time.
+- **Not done (post-1.0):** pause/resume and a render queue.

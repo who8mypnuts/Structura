@@ -6,10 +6,11 @@ from __future__ import annotations
 class StructuraError(Exception):
     """Base class for all user-facing domain errors."""
 
-    def __init__(self, message: str, hint: str = "") -> None:
+    def __init__(self, message: str, hint: str = "", code: str = "E009") -> None:
         super().__init__(message)
         self.message = message
         self.hint = hint
+        self.code = code  # diagnostics catalogue (core/lang/catalog/diagnostics.toml)
 
 
 class BuildError(StructuraError):
@@ -20,9 +21,8 @@ class UnresolvedRuleError(BuildError):
     """A call names no rule or primitive (diagnostic E003)."""
 
     def __init__(self, message: str, name: str) -> None:
-        super().__init__(message)
+        super().__init__(message, code="E003")
         self.name = name
-        self.code = "E003"
 
 
 class ColorError(StructuraError):

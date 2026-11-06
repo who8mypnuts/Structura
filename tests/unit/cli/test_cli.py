@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import OpenEXR
 import pytest
 from PIL import Image
 
@@ -42,3 +43,26 @@ def test_render_exr_keeps_linear_floats(script: Path, tmp_path: Path) -> None:
     assert main([*argv, "--no-embed-script"]) == 0
     meta = read_metadata(out)
     assert "script" not in meta and len(meta["script_sha256"]) == 64
+
+
+def test_render_denoise_writes_aov_layers_only_when_asked(script: Path, tmp_path: Path) -> None:
+    out = tmp_path / "den.exr"
+    argv = ["render", str(script), "-o", str(out), "--size", "16x12", "--samples", "2", "--device", "cpu"]
+    assert main([*argv, "--denoise", "atrous"]) == 0
+    with OpenEXR.File(str(out)) as f:
+        assert "albedo" not in f.channels()
+    assert main([*argv, "--denoise", "atrous", "--aovs"]) == 0
+    with OpenEXR.File(str(out)) as f:
+        assert {"albedo", "N", "Z"} <= set(f.channels())
+
+
+def test_convert_prints_notes_and_a_diff_and_writes_the_output(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    source = tmp_path / "old.es"
+    source.write_text("rule tube { box }\ntube\n")
+    out = tmp_path / "new.es"
+    assert main(["convert", str(source), "--to", "v2", "-o", str(out)]) == 0
+    captured = capsys.readouterr()
+    assert "+#version 2" in captured.out and "renamed" in captured.err
+    assert out.read_text().startswith("#version 2\nrule tube_rule")

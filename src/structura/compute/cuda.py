@@ -71,7 +71,7 @@ class CudaBound(Bound):  # pragma: no cover - needs an NVIDIA GPU
         values = [v if isinstance(v, np.ndarray) else np.array([v]) for v in self.ordered_args(pointers)]
         params = np.array([v.ctypes.data for v in values], dtype=np.uint64)
         wg = self.launch.function.workgroup
-        launch = driver.cuLaunchKernel(self.function, *self.launch.groups(), *wg, 0, 0, params.ctypes.data, 0)
+        launch = driver.cuLaunchKernel(self.function, *self.groups(), *wg, 0, 0, params.ctypes.data, 0)
         _check((launch[0], None), "cuLaunchKernel")
 
     def read(self, name: str) -> np.ndarray:

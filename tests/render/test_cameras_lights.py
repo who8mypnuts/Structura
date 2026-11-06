@@ -40,3 +40,15 @@ def test_point_and_spot_lights_illuminate_an_otherwise_black_scene() -> None:
 def test_alternative_cameras_see_the_scene(camera: str) -> None:
     image = _image(f"camera {{ type {camera} position [0 3 6] target [0 0 0] }}\n", integrator="preview")
     assert np.isfinite(image).all() and float((image > 0.05).mean()) > 0.005
+
+
+def test_rect_light_is_one_sided_and_matches_a_point_light_far_away() -> None:
+    camera = "camera { position [0 3 6] target [0 0 0] fov 50 }\n"
+    down = _image(camera + "light r { type rect position [0 4 0] target [0 0 0] size [1 1] power 400 }\n")
+    up = _image(camera + "light r { type rect position [0 4 0] target [0 8 0] size [1 1] power 400 }\n")
+    assert float(down.mean()) > 0.005 and float(up.max()) < 1e-3  # it only emits towards its target
+    # A small rect light radiates like a Lambertian emitter: its on-axis irradiance is P/(π d²), i.e. 4× the
+    # isotropic point light's P/(4π d²) – so the rect lights the floor under it more than the point light.
+    point = _image(camera + "light l { type point position [0 4 0] power 400 }\n")
+    centre = (slice(14, 18), slice(22, 26))
+    assert float(down[centre].mean()) > 2.0 * float(point[centre].mean())

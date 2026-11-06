@@ -130,6 +130,11 @@ class ViewportHost(QStackedWidget):
     def options(self) -> PreviewOptions:
         return self._options
 
+    def highlight(self, rows: np.ndarray | None, count: int) -> None:
+        """Tint these SceneIR rows (provenance hover); the GPU preview only."""
+        if self.gl is not None and not self.cpu_mode:
+            self.gl.set_highlight(rows, count)
+
     def set_options(self, options: PreviewOptions) -> None:
         self._options = options
         if self.gl is not None:

@@ -4,8 +4,11 @@ Structura is a full rewrite of **Structure Synth** (Mikael Hvidtfeldt Christense
 It keeps the EisenScript grammar language and adds a GPU-accelerated, Sunflow-derived renderer with a CPU fallback.
 It also adds a modern code editor, app-wide theming, and export to mesh, USD, glTF and Blender formats.
 
-This folder is the **planning set**. No production code exists yet. These documents define what will be built,
-how it will be built, and in what order.
+This folder started as the **planning set**: what would be built, how, and in what order. The plan has since
+been implemented milestone by milestone. [PROGRESS.md](PROGRESS.md) records what was built and every deviation,
+and [22-implementation-notes.md](22-implementation-notes.md) gives the status of each milestone. The
+[user guide](user-guide/README.md) describes the finished program, and [reference/language.md](reference/language.md)
+is the generated language reference.
 
 ---
 

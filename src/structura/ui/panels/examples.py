@@ -7,6 +7,8 @@ from pathlib import Path
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QLineEdit, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QWidget
 
+from ..i18n import tr
+
 RESOURCES = Path(__file__).resolve().parents[2] / "resources"
 SOURCES = (  # (group, folder, sub-folders become their own groups)
     ("Classic", RESOURCES / "legacy" / "examples", True),
@@ -29,8 +31,10 @@ class ExamplesPanel(QWidget):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.search = QLineEdit()
-        self.search.setPlaceholderText("Search examples")
+        self.search.setAccessibleName(tr("Search examples"))
+        self.search.setPlaceholderText(tr("Search examples"))
         self.tree = QTreeWidget()
+        self.tree.setAccessibleName(tr("Examples"))
         self.tree.setHeaderHidden(True)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(4, 4, 4, 4)

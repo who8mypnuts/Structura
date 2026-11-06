@@ -1,7 +1,7 @@
 """Kernel: state copies, transformation application and colour-pool draws (docs/05 §4.2–4.4, §6.2).
 
 States are packed rows (see layout.py): ``states.f[j]`` floats (matrix, hsv, alpha, previous frame) and
-``states.i[j]`` integers (rule, source, generation, has-previous, seed, depth slots).
+``states.i[j]`` integers (rule, source, generation, has-previous, seed, material tag, depth slots).
 """
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ from structura.core.jit import kernel
 
 from ..rng.mt19937 import mt_get_int_n
 from .kmath import F0, F1, F360, rgb8_to_hsv_ints
-from .layout import F_ALPHA, F_HSV
+from .layout import F_ALPHA, F_HSV, I_MAT
 
 POOL_RANDOM_HUE, POOL_GREY, POOL_RGB, POOL_IMAGE, POOL_LIST = 0, 1, 2, 3, 4
 F255 = 255.0
@@ -118,3 +118,5 @@ def apply_xf(tables, x: int, states, j: int, col_rng: np.ndarray, pool: int, tmp
         _relative_color(tables, x, f, j)
     if tables.xf_strength[x] != 0.0:
         _blend(tables, x, f, j)
+    if tables.xf_mat[x] >= 0:
+        states.i[j, I_MAT] = tables.xf_mat[x]

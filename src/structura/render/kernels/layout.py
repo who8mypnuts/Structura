@@ -11,16 +11,40 @@ CAUSTIC_ALPHA = 40  # path: GGX alpha floor after a rough bounce (0 = full caust
 BACKDROP_SKY = 41  # 1: camera rays that miss see the environment instead of the background colour
 N_LIGHTS = 42  # number of records in light_f (path: next-event estimation for each)
 CAM_TYPE, ORTHO_HALF, FISHEYE_FOV = 43, 44, 45  # 0 perspective, 1 orthographic, 2 spherical, 3 fisheye
-CFG_SIZE = 48
+ENV_ON, ENV_W, ENV_H, ENV_ROT, ENV_SCALE = 46, 47, 48, 49, 50  # environment map (render/environment.py)
+N_EMITTERS = 51  # emissive primitives sampled as lights (render/emitters.py)
+FILTER_ON, FILTER_RADIUS = 52, 53  # filter importance sampling (render/filters.py); 0 = box jitter
+BLADES, BLADE_ROT = 54, 55  # polygonal aperture (bokeh): blade count (< 3: a round disc), rotation in radians
+FOG_DENSITY, FOG_FALLOFF, FOG_BASE, FOG_COLOR = 56, 57, 58, 59  # kernels/fog.py; density 0 = no fog
+PHOTONS_ON, PHOTON_RADIUS, PHOTON_TABLE = 62, 63, 64  # caustic photon map (kernels/photons.py); 0 = off
+PHOTON_CENTRE, PHOTON_EXTENT, PHOTON_COUNT = 65, 68, 69  # photon emission: scene bounding sphere, photon count
+CFG_SIZE = 80
+FILTER_BASE = CFG_SIZE  # cfg[FILTER_BASE:] holds the filter table when FILTER_ON (render/filters.py)
+FILTER_TABLE, FILTER_SIGNS = 256, 256  # FILTER_TABLE + 1 inverse-CDF offsets, then the signs
+
+# The film 'accum' (float32 × FILM_F per pixel): RGB sum, weight sum, then the same for the even-numbered
+# samples only. The two halves give the adaptive sampler its per-pixel error estimate (render/film.py).
+FILM_F = 8
+
+# Photons: the tracing pass writes PHOTON_OUT floats per photon (position, flux, direction towards where it
+# came from, 1 = stored); the photon map 'photon_f' is a hash table of (start, count) pairs, PHOTON_TABLE of
+# them, followed by the photons sorted by cell, PHOTON_F floats each (position, flux, direction).
+PHOTON_OUT, PHOTON_F = 10, 9
 
 CAMERA_TYPES = {"perspective": 0, "orthographic": 1, "spherical": 2, "fisheye": 3}
 
 # Light records 'light_f' (float32 × LIGHT_F per light; packed by render/lights.py)
 LIGHT_F = 16
 L_TYPE, L_POS, L_RADIUS, L_INTENSITY, L_DIR, L_COS_OUTER, L_COS_INNER = 0, 1, 4, 5, 8, 11, 12
-LIGHT_TYPES = {"point": 0, "sphere": 1, "spot": 2}
+L_EDGE_V = 13  # rect: second half-edge (the first is stored at L_DIR); L_RADIUS holds the area
+LIGHT_TYPES = {"point": 0, "sphere": 1, "spot": 2, "rect": 3}
 
 INTEGRATOR_PREVIEW, INTEGRATOR_AO, INTEGRATOR_PATH, INTEGRATOR_CLASSIC = 0, 1, 2, 3
+
+# Emitter records 'emit_f' (float32 × EMIT_F per emissive primitive; packed by render/emitters.py)
+EMIT_F = 24
+NO_EMITTER = 0xFFFFFFFF
+E_KIND, E_PRIM, E_RADIANCE, E_AREA, E_SELECT, E_GEO = 0, 1, 2, 5, 6, 8  # kinds: 0 sphere, 1 box, 2 triangle
 
 # Material records 'mat_f' (float32 × MAT_F per material; packed by render/materials.py)
 MAT_F = 32

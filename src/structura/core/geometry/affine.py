@@ -74,3 +74,38 @@ def compose(trs: TRS) -> np.ndarray:
     )
     linear = r * trs.scale[:, None, :].astype(np.float64)
     return np.concatenate([linear, trs.translation[:, :, None]], axis=2).astype(np.float32)
+
+
+@dataclass(frozen=True)
+class ScaledTransform:
+    """X3D / VRML97 'Transform' fields that reproduce any affine exactly: L = R · (SR · diag(s) · SRᵀ)."""
+
+    translation: np.ndarray  # float64[N, 3]
+    rotation: np.ndarray  # float64[N, 4] axis (x, y, z), angle (radians)
+    scale: np.ndarray  # float64[N, 3] (one negative entry for mirrored instances)
+    scale_orientation: np.ndarray  # float64[N, 4] axis, angle
+
+
+def axis_angles(q: np.ndarray) -> np.ndarray:
+    """(N,4) quaternions (x, y, z, w) → (N,4) axis-angle (x, y, z, radians), angle in [0, π]."""
+    q = np.where(q[:, 3:4] < 0, -q, q).astype(np.float64)
+    s = np.linalg.norm(q[:, :3], axis=1)
+    angle = 2 * np.arctan2(s, q[:, 3])
+    axis = np.where(s[:, None] > 1e-12, q[:, :3] / np.maximum(s, 1e-12)[:, None], np.array([0.0, 0.0, 1.0]))
+    return np.concatenate([axis, angle[:, None]], axis=1)
+
+
+def scaled_transforms(xform: np.ndarray) -> ScaledTransform:
+    """SVD L = U Σ Vᵀ = (U Vᵀ)(V Σ Vᵀ), with U and V made proper rotations (a reflection goes into Σ)."""
+    linear = xform[:, :, :3].astype(np.float64)
+    u, sigma, vt = np.linalg.svd(linear)
+    v = np.transpose(vt, (0, 2, 1))
+    flip = np.linalg.det(v) < 0
+    v[flip, :, 2] *= -1  # flipping a singular pair (u_k, v_k) changes neither L nor V diag(σ) Vᵀ
+    u[flip, :, 2] *= -1
+    rot = u @ np.transpose(v, (0, 2, 1))
+    mirrored = np.linalg.det(rot) < 0
+    sigma[mirrored, 2] *= -1  # R·V·diag(σ)·Vᵀ with the reflection moved into the scale
+    rot[mirrored] = rot[mirrored] @ (v[mirrored] @ np.diag([1.0, 1.0, -1.0]) @ np.transpose(v[mirrored], (0, 2, 1)))
+    return ScaledTransform(xform[:, :, 3].astype(np.float64), axis_angles(quaternions(rot).astype(np.float64)),
+                           sigma, axis_angles(quaternions(v).astype(np.float64)))  # fmt: skip

@@ -22,6 +22,8 @@ class AnalysisRequest:
     seed: int = 0
     params: tuple[tuple[str, float], ...] = ()
     script_dir: Path | None = None
+    frame: int = 0  # the timeline frame (v2 'frame' / 'time' variables)
+    fps: float = 24.0
 
 
 class LanguageService(QObject):
@@ -71,6 +73,8 @@ class LanguageService(QObject):
 def _runner_for(req: AnalysisRequest) -> Callable[[JobContext], tuple[str, Analysis]]:
     def run(ctx: JobContext) -> tuple[str, Analysis]:
         ctx.check_cancelled()
-        return req.doc_id, analyze(req.text, req.seed, dict(req.params), req.script_dir, req.version)
+        return req.doc_id, analyze(
+            req.text, req.seed, dict(req.params), req.script_dir, req.version, req.frame, req.fps
+        )
 
     return run

@@ -47,6 +47,7 @@ def _vec(v: np.ndarray) -> tuple[float, float, float]:
 class TemplateExporter(Exporter):
     name = "template"
     title = "Render template (.rendertemplate)"
+    preferred = False  # .pov / .sc / .xml default to the modern scene writers
     extensions: tuple[str, ...] = (".pov", ".sc", ".rib", ".xml", ".txt")
     params: tuple[ParamSpec, ...] = (
         ParamSpec("template", ParamType.ENUM, "Sunflow-Colored", "Template", choices=tuple(bundled_templates())),

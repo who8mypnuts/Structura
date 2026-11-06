@@ -11,7 +11,10 @@ from PySide6.QtGui import QKeyEvent, QTextCursor
 from PySide6.QtWidgets import QFrame, QLabel, QListWidget, QListWidgetItem, QToolTip, QVBoxLayout
 
 from ...core.lang.assist import CompletionItem, Completions, complete, hover
+from ...core.lang.snippet_syntax import has_stops
+from ..i18n import tr
 from .code_editor import CodeEditor
+from .snippet_session import insert_snippet
 
 ICONS = {"keyword": "⌘", "operator": "↻", "modifier": "≡", "primitive": "◼", "rule": "ƒ", "color": "●",
          "set": "⚙", "raytracer": "☀", "snippet": "✂", "preprocessor": "#"}  # fmt: skip
@@ -29,6 +32,7 @@ class CompletionPopup(QFrame):
         super().__init__(editor)
         self.setObjectName("CommandPalette")
         self.list, self.doc = QListWidget(), QLabel()
+        self.list.setAccessibleName(tr("Completions"))
         self.doc.setWordWrap(True)
         self.doc.setObjectName("Muted")
         layout = QVBoxLayout(self)
@@ -120,6 +124,9 @@ class CompletionController(QObject):
         item, result = self.popup.current(), self.completions
         self.popup.hide()
         if item is None or result is None:
+            return
+        if has_stops(item.text):
+            insert_snippet(self.editor, item.text, result.start, self.editor.textCursor().position())
             return
         cursor = self.editor.textCursor()
         cursor.setPosition(result.start, QTextCursor.MoveMode.KeepAnchor)

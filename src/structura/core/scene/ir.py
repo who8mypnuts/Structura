@@ -33,7 +33,7 @@ class PrimitiveKind(IntEnum):
     TEMPLATE = 12  # no geometry: a template::id marker kept in emission order
 
 
-# legacy primitive index (core.lang.resolve.PRIMITIVE_NAMES order, 8 = triangle) → PrimitiveKind
+# builder primitive id (catalog: 0–7 the v1 primitives, 8 triangle[…], 9–13 the v2 ones) → PrimitiveKind
 LEGACY_KIND = np.array(
     [
         PrimitiveKind.BOX,
@@ -45,6 +45,11 @@ LEGACY_KIND = np.array(
         PrimitiveKind.GRID,
         PrimitiveKind.TEMPLATE,
         PrimitiveKind.TRIANGLE,
+        PrimitiveKind.CYLINDER,
+        PrimitiveKind.CONE,
+        PrimitiveKind.TORUS,
+        PrimitiveKind.ELLIPSOID,
+        PrimitiveKind.TUBE,
     ],
     dtype=np.uint8,
 )
@@ -103,6 +108,13 @@ class SceneIR:
             self.tags,
             declarations=self.declarations,
         )  # fmt: skip
+
+    def params(self, rows: np.ndarray) -> np.ndarray:
+        """float32[N]: the bracket parameter of cone[r] / torus[r] / tube[r] rows (0 for rows without one)."""
+        aux = self.aux[rows]
+        out = np.zeros(len(rows), np.float32)
+        out[aux >= 0] = self.aux_data[aux[aux >= 0], 0]
+        return out
 
     def count(self, kind: PrimitiveKind) -> int:
         return int(np.count_nonzero(self.kind == kind))

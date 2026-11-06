@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+from functools import partial
 from typing import Any
 
-from PySide6.QtWidgets import QCheckBox, QComboBox, QDoubleSpinBox, QFormLayout, QLineEdit, QSpinBox, QWidget
+from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QCheckBox, QComboBox, QDoubleSpinBox, QFormLayout, QLabel, QLineEdit, QSpinBox, QWidget
 
 from ...core.params import ParamSpec, ParamType
 
@@ -43,16 +46,65 @@ def _value(spec: ParamSpec, widget: QWidget) -> Any:
 
 
 class ParamForm(QWidget):
+    changed = Signal(str, object)  # key, new value (user edits and set_values alike)
+
     def __init__(self, specs: tuple[ParamSpec, ...], values: dict[str, Any] | None = None) -> None:
         super().__init__()
         self.specs = specs
-        layout = QFormLayout(self)
+        self.form = QFormLayout(self)
         self.widgets: dict[str, QWidget] = {}
         for spec in specs:
             widget = _editor(spec, (values or {}).get(spec.key, spec.default))
             widget.setToolTip(spec.doc or spec.title)
-            layout.addRow(spec.title, widget)
+            self.form.addRow(spec.title, widget)
             self.widgets[spec.key] = widget
+            _on_change(widget, partial(self._emit, spec.key))
+
+    def _emit(self, key: str, *_signal_args: object) -> None:  # the widget signal's own value is ignored
+        self.changed.emit(key, self.value(key))
+
+    def value(self, key: str) -> Any:
+        spec = next(s for s in self.specs if s.key == key)
+        return _value(spec, self.widgets[key])
 
     def values(self) -> dict[str, Any]:
         return {s.key: _value(s, self.widgets[s.key]) for s in self.specs}
+
+    def set_values(self, values: dict[str, Any]) -> None:
+        """Show new values without emitting ``changed`` (e.g. the script's settings after a build)."""
+        for spec in self.specs:
+            if spec.key in values:
+                widget = self.widgets[spec.key]
+                widget.blockSignals(True)
+                _set(widget, values[spec.key])
+                widget.blockSignals(False)
+
+    def mark(self, key: str, marked: bool, note: str = "") -> None:
+        """Flag a row (e.g. 'overridden'): a dot after its label and a note in the tooltip."""
+        spec = next(s for s in self.specs if s.key == key)
+        label = self.form.labelForField(self.widgets[key])
+        if isinstance(label, QLabel):
+            label.setText(f"{spec.title} •" if marked else spec.title)
+            label.setToolTip(note if marked else "")
+
+
+def _on_change(widget: QWidget, emit: Callable[[], None]) -> None:
+    if isinstance(widget, QCheckBox):
+        widget.toggled.connect(emit)
+    elif isinstance(widget, QComboBox):
+        widget.currentTextChanged.connect(emit)
+    elif isinstance(widget, QSpinBox | QDoubleSpinBox):
+        widget.valueChanged.connect(emit)
+    elif isinstance(widget, QLineEdit):
+        widget.editingFinished.connect(emit)
+
+
+def _set(widget: QWidget, value: Any) -> None:
+    if isinstance(widget, QCheckBox):
+        widget.setChecked(bool(value))
+    elif isinstance(widget, QComboBox):
+        widget.setCurrentText(str(value))
+    elif isinstance(widget, QSpinBox | QDoubleSpinBox):
+        widget.setValue(value)
+    elif isinstance(widget, QLineEdit):
+        widget.setText(str(value))

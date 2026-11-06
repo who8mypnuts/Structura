@@ -66,3 +66,15 @@ def test_build_then_render(qtbot: QtBot, runner: JobRunner) -> None:
     update = sink.items[1][1]
     assert isinstance(update, RenderUpdate) and update.progress.samples == 2 and update.fraction == 1.0
     assert update.progress.image.shape == (16, 24, 3)
+
+
+def test_render_with_denoise_finishes_with_the_denoised_image(qtbot: QtBot, runner: JobRunner) -> None:
+    renders, sink = RenderService(runner), Sink()
+    renders.finished.connect(sink.take)
+    scene = build_scene(analyze("sphere").program).scene  # type: ignore[arg-type]
+    settings = RenderSettings(width=16, height=12, samples=2, samples_per_pass=2, frame=True, aovs=True)
+    renders.request(RenderRequest("doc", scene, settings, device="cpu", denoise="atrous"))
+    qtbot.waitUntil(lambda: len(sink.items) == 1, timeout=60000)
+    update = sink.items[0][1]
+    assert isinstance(update, RenderUpdate) and update.denoiser == "atrous"
+    assert update.denoised is not None and update.denoised.shape == (12, 16, 3)

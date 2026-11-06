@@ -30,6 +30,14 @@ def role_names() -> list[str]:
     return list(catalogue()[0])
 
 
+@cache
+def role_groups() -> dict[str, list[str]]:
+    """The roles grouped as in roles.toml (ui, status, bars, editor, syntax, diag, viewport, render, chart)."""
+    data = tomllib.loads(ROLES_FILE.read_text(encoding="utf-8"))
+    data.pop("contrast", None)
+    return {group: list(roles) for group, roles in data.items()}
+
+
 def _author_values(data: dict[str, Any]) -> tuple[dict[str, str], dict[str, dict[str, bool]]]:
     """Colour expressions and syntax flags from the theme's [roles], [syntax] and [viewport] tables."""
     values: dict[str, str] = {}

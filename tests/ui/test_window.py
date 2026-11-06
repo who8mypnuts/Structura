@@ -65,7 +65,7 @@ def test_switching_theme_restyles_the_editor(window: MainWindow) -> None:
     assert window.themes.theme.meta.id == "nord"
     keyword = tab.editor.highlighter._format("keyword")
     assert keyword.foreground().color().name().upper() == window.themes.theme["syntax.keyword"][:7].upper()
-    window.toggle_theme()
+    window.dialogs.toggle_theme()
     assert window.themes.theme.meta.id == "nord-light"
 
 
@@ -139,3 +139,12 @@ def test_variation_explorer_fills_cells_and_adopts_a_seed(qtbot: QtBot, window: 
 def test_export_menu_offers_every_registered_exporter_once(window: MainWindow) -> None:
     names = [e.name for e in window.exports.exporters()]
     assert sorted(names) == sorted(EXPORTERS) and names[:3] == ["obj", "ply", "stl"]
+
+
+def test_convert_to_v2_rewrites_the_script_in_one_undo_step(window: MainWindow) -> None:
+    tab = window.docs.new_script()
+    tab.editor.setPlainText("rule tube { box }\ntube\n")
+    window.registry.trigger("edit.convert_v2")
+    assert tab.text().startswith("#version 2\nrule tube_rule")
+    tab.editor.undo()
+    assert tab.text() == "rule tube { box }\ntube\n"

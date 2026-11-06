@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import IntEnum
 
+from .catalog import diagnostic_specs
 from .source import Span
 
 
@@ -34,3 +35,11 @@ class ParseError(Exception):
 
     def diagnostic(self) -> Diagnostic:
         return Diagnostic(self.code, Severity.ERROR, self.message, self.span)
+
+
+SEVERITIES = {"error": Severity.ERROR, "warning": Severity.WARNING, "info": Severity.INFO}
+
+
+def diagnostic(code: str, message: str, span: Span | None = None) -> Diagnostic:
+    """A diagnostic whose severity comes from the catalogue (catalog/diagnostics.toml)."""
+    return Diagnostic(code, SEVERITIES[diagnostic_specs()[code].severity], message, span)

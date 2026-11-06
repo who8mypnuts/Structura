@@ -15,6 +15,9 @@ from typing import Any, Protocol
 from PySide6.QtCore import QObject, Slot
 from PySide6.QtQml import QJSEngine
 
+from ..core.lang.source import is_javascript
+from ..core.text_file import read_script
+
 log = logging.getLogger(__name__)
 
 
@@ -27,8 +30,11 @@ class JsHost(Protocol):
 
     def allow_execute(self, command: str, arguments: str) -> bool: ...
 
+    def cancelled(self) -> bool: ...
+
 
 STOP = "structura: output limit reached"
+CANCELLED = "structura: cancelled"
 
 
 def js_string(value: Any) -> str:
@@ -52,6 +58,10 @@ class BuilderApi(QObject):
 
     def _guard(self, action: Any) -> None:
         """Run host work; Python errors become JavaScript exceptions that end the script."""
+        if self.host.cancelled():
+            self.stopped = True
+            self.engine.throwError(CANCELLED)
+            return
         try:
             action()
         except Exception as exc:
@@ -63,7 +73,7 @@ class BuilderApi(QObject):
     @Slot(str)
     def load(self, name: str) -> None:
         def read() -> None:
-            self.loaded = self.original = self._path(name).read_text(encoding="utf-8")
+            self.loaded = self.original = read_script(self._path(name))
 
         self._guard(read)
 
@@ -130,8 +140,7 @@ class BuilderApi(QObject):
 
 def javascript_body(text: str) -> str | None:
     """The JavaScript of a '#javascript' script (None for EisenScript)."""
-    first, _, rest = text.partition("\n")
-    return rest if first.strip().lower() == "#javascript" else None
+    return text.partition("\n")[2] if is_javascript(text) else None
 
 
 def run_javascript(text: str, script_dir: Path, host: JsHost, limit: int | None = None) -> int:

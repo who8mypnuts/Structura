@@ -13,11 +13,11 @@ detail is in [PROGRESS.md](PROGRESS.md).
 | M2 SKL + precision engine | ✅ done | Five SKL targets, four compute backends, χ² and furnace tests, example renders |
 | M3 App shell + preview + editor basics | ✅ done | The GPU viewport is verified headless (EGL); the CPU preview is used on headless Qt platforms |
 | M4 Export v1 | ✅ done | 252/252 template and 75/75 OBJ goldens byte-identical; 8 exporters (11 with M8's 3MF, X3D and VRML97) |
-| M5 Editor pro + themes | 🟡 mostly | Done: completion, hover (including expression functions), signature help, inlays, rename, references, format, the 40 themes, importers, picker, preferences. Open: minimap, sticky scroll, multi-cursor, keymap and theme editors |
-| M6 Precision engine v2 | 🟡 started | Done: point/sphere/spot lights, orthographic/spherical/fisheye cameras, the Render Settings panel, BVH speedups. Open: rect and emissive-geometry lights, HDRI and sun-sky, bokeh, adaptive sampling, filters, denoising, AOVs / EXR layers |
-| M7 v2, animation, scripting | 🟡 mostly | Done: v2 blocks, expressions, `#param`, animation variables + `structura animate`, Python API, the `#javascript` bridge, the Variation Explorer. Open: `mat` operator, v2 primitives, timeline panel, `convert --to v2` |
-| M8 Export v2 | 🟡 started | Done: 3MF (per-triangle colour, mm, build plate), X3D 4.0 and VRML97 (vertex colours, script camera, background), glTF `EXT_mesh_gpu_instancing` (opt-in), one instancing module for USD and glTF. Open: instanced 3MF `components` and X3D DEF/USE, USD matrix policy, Blender Geometry Nodes, Jinja scene writers |
-| M9 Hardening & 1.0 | ⬜ not started | Owner benchmarks on the GTX 1660, installers, i18n, user guide |
+| M5 Editor pro + themes | ✅ done | The docs/12 checklist P0+P1: folding, multi-cursor, minimap, sticky scroll, split view, session/recovery, project files, linter + quick fixes, generated reference (F1), peek, breadcrumbs, provenance hover, snippets with tab stops, theme editor, keymaps, per-theme screenshot tests. Not done: Find in Files, Quick Open (Ctrl+P), Vim keybindings (P2) |
+| M6 Precision engine v2 | ✅ done | Done: point/sphere/spot/rect lights, emissive-geometry NEE, HDRI + Preetham sun-sky with importance sampling, orthographic/spherical/fisheye cameras, polygonal bokeh, region render, 8 reconstruction filters, view transforms (AgX default), AOVs + multi-layer EXR, denoising (OIDN or À-Trous), adaptive sampling with a noise threshold and sample map, time limit, banded dispatch (cancellable within ~30 ms) with a fair parallel-Numba lock, ground plane and shadow catcher, the Render Settings panel, BVH speedups. Open: owner benchmark on the GTX 1660 |
+| M7 v2, animation, scripting | ✅ done | Done: v2 blocks, expressions, `#param`, animation variables + `structura animate`, Python API, the `#javascript` bridge, the Variation Explorer. Done too: `mat` operator, v2 primitives (cylinder, cone, torus, ellipsoid, tube), whole-word v2 defines, `convert --to v2` (CLI + Edit menu), the timeline (keyed parameters, seed and camera; scrub, play, Render Animation; saved in projects; `animate` reads projects) |
+| M8 Export v2 | ✅ done | Done: 3MF (instanced components or baked), X3D / VRML97 (DEF/USE with exact affine Transforms), glTF `EXT_mesh_gpu_instancing`, USD (PointInstancers, flattened mode, matrix shear policy), POV-Ray 3.8 / Sunflow / Mitsuba 3 scene writers (Jinja2), CSG markers evaluated with manifold3d, Blender Geometry Nodes instancing (owner to verify in Blender), fog, photon-mapped sun caustics |
+| M9 Hardening & 1.0 | 🟡 started | Done: kernel warm-up (CLI + start-up job), i18n infrastructure (tr, catalogues, pseudo-locale, language preference), accessible names + scan test, packaging scripts (PyInstaller, AppImage, Flatpak, Inno Setup, DMG) and CI workflows, user guide, benchmark suite and first optimisations. Open: owner benchmarks and installer runs, real translations, screen-reader pass |
 
 ## 2. Refinements and deviations
 
@@ -95,3 +95,11 @@ detail is in [PROGRESS.md](PROGRESS.md).
 4. Run `structura doctor` in the desktop session and keep its output. On the first report (Wayland), the
    driver rejected the 3.3 core context (`EGL_BAD_MATCH`). The probe now falls back to a compatibility or
    default context, or to the CPU preview. Which path your system takes is still to be confirmed.
+5. `python -m tools.bench.suite` (all budgets of docs/18 §8; writes `bench-results.json`). Send the JSON file.
+6. Run the UI tests with the reference budget: `STRUCTURA_STALL_MS=50 pytest tests/ui`.
+7. Build the installers on each OS with `packaging/build.py` and the platform wrapper (`packaging/README.md`).
+   None of them could run in the sandbox. Put the OIDN 2.x libraries in `src/structura/resources/oidn/`
+   first, so the installers denoise with Open Image Denoise.
+8. Blender 4.2 LTS: run an exported `.py` in both geometry modes (`baked`, `instanced`). The Geometry Nodes
+   path (spike S5) is written against the 4.2 API but has not been executed.
+9. Screen-reader pass (NVDA, VoiceOver) and a review of the German translation by a native speaker.

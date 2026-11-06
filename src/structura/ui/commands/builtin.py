@@ -6,6 +6,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 from ...core.lang.catalog import snippets
+from ..editor.options import LABELS, TOGGLES
 from .registry import Command, CommandRegistry
 
 if TYPE_CHECKING:
@@ -14,17 +15,32 @@ if TYPE_CHECKING:
 Predicate = Callable[[], bool]
 
 
-def _file_edit(w: MainWindow, has_tab: Predicate) -> list[Command]:
+def _file(w: MainWindow, has_tab: Predicate) -> list[Command]:
     d = w.docs
     return [
         Command("file.new", "New Script", d.new_script, "Ctrl+N", "File", 0),
         Command("file.open", "Open…", d.open_dialog, "Ctrl+O", "File", 0),
+        Command("file.quick_open", "Quick Open…", w.quick_open.open, "Ctrl+P", "File", 0,
+                tip="Open tabs, recent files and examples · @ rules · : line"),
         Command("file.save", "Save", d.save, "Ctrl+S", "File", 1, enabled=has_tab),
         Command("file.save_as", "Save As…", d.save_as, "Ctrl+Shift+S", "File", 1, enabled=has_tab),
+        Command("file.revert", "Revert File", d.revert, "", "File", 1, enabled=has_tab,
+                tip="Reload from disk, discarding unsaved edits"),
+        Command("file.save_project", "Save Project As…", w.projects.save_as, "", "File", 1, enabled=has_tab,
+                tip="Save the script with its seed, parameters, camera and render settings (.structura)"),
         Command("file.close", "Close Tab", d.close_tab, "Ctrl+W", "File", 1, enabled=has_tab),
-        Command("file.preferences", "Preferences…", w.preferences, "Ctrl+,", "File", 8),
+        Command("file.preferences", "Preferences…", w.dialogs.preferences, "Ctrl+,", "File", 8),
+        Command("file.keymap", "Keyboard Shortcuts…", w.dialogs.edit_keymap, "Ctrl+K, Ctrl+S", "File", 8),
         Command("file.quit", "Quit", w.close, "Ctrl+Q", "File", 9),
+    ]  # fmt: skip
+
+
+def _edit(w: MainWindow, has_tab: Predicate) -> list[Command]:
+    d = w.docs
+    return [
         Command("edit.find", "Find…", lambda: d.open_find(False), "Ctrl+F", "Edit", 0, enabled=has_tab),
+        Command("edit.find_in_files", "Find in Files…", lambda: w.search.show(), "Ctrl+Shift+F", "Edit", 0,  # noqa: PLW0108 - created after the commands
+                tip="Search the open scripts and the current folder"),
         Command("edit.replace", "Replace…", lambda: d.open_find(True), "Ctrl+H", "Edit", 0, enabled=has_tab),
         Command("edit.comment", "Toggle Line Comment", d.toggle_comment, "", "Edit", 1, enabled=has_tab),
         Command("edit.definition", "Go to Definition", d.definition_under_cursor, "F12", "Edit", 1, enabled=has_tab),
@@ -33,25 +49,46 @@ def _file_edit(w: MainWindow, has_tab: Predicate) -> list[Command]:
         Command("edit.format", "Format Document", d.format_document, "Shift+Alt+F", "Edit", 1, enabled=has_tab),
         Command("edit.zoom_in", "Zoom In", lambda: d.zoom(1), "Ctrl+=", "Edit", 2, enabled=has_tab),
         Command("edit.zoom_out", "Zoom Out", lambda: d.zoom(-1), "Ctrl+-", "Edit", 2, enabled=has_tab),
-    ]
+    ]  # fmt: skip
 
 
-def _view_build_render(w: MainWindow, has_tab: Predicate) -> list[Command]:
+def _canceller(w: MainWindow) -> Callable[[], None]:
+    def cancel() -> None:
+        w.workbench.cancel_build()
+        w.scripts.cancel()
+
+    return cancel
+
+
+def _view_help(w: MainWindow, has_tab: Predicate) -> list[Command]:
+    return [
+        Command("view.palette", "Command Palette", w.command_palette.open, "Ctrl+Shift+P", "View", 0),
+        Command("view.frame_all", "Frame All", w.viewport.frame_all, "", "View", 1, tip="Frame the structure"),
+        Command("view.fullscreen", "Full Screen", w.dialogs.toggle_fullscreen, "F11", "View", 1),
+        Command("view.look_studio", "Look: Studio", lambda: w.set_look("studio"), "", "View", 2),
+        Command("view.look_legacy", "Look: Legacy", lambda: w.set_look("legacy"), "", "View", 2),
+        Command("view.look_clay", "Look: Clay", lambda: w.set_look("clay"), "", "View", 2),
+        Command("view.theme", "Choose Theme…", w.dialogs.choose_theme, "Ctrl+K, Ctrl+T", "View", 3),
+        Command("view.theme_edit", "Edit Theme…", w.dialogs.edit_theme, "", "View", 3,
+                tip="Colours, contrast and syntax styles of the current theme"),
+        Command("view.theme_toggle", "Toggle Light/Dark Theme", w.dialogs.toggle_theme, "", "View", 3),
+        Command("help.reference", "Language Reference", w.help.reference, "F1", "Help", 0,
+                tip="The EisenScript reference at the symbol under the cursor"),
+        Command("help.about", "About Structura", w.dialogs.about, "", "Help", 1),
+    ]  # fmt: skip
+
+
+def _build_render(w: MainWindow, has_tab: Predicate) -> list[Command]:
     live = Command(
         "build.live", "Live Build", w.toggle_live, menu="Build", checkable=True,
         checked=lambda: w.workbench.live, tip="Rebuild while typing",
     )  # fmt: skip
     return [
-        Command("view.palette", "Command Palette", w.command_palette.open, "Ctrl+Shift+P", "View", 0),
-        Command("view.frame_all", "Frame All", w.viewport.frame_all, "", "View", 1, tip="Frame the structure"),
-        Command("view.look_studio", "Look: Studio", lambda: w.set_look("studio"), "", "View", 2),
-        Command("view.look_legacy", "Look: Legacy", lambda: w.set_look("legacy"), "", "View", 2),
-        Command("view.look_clay", "Look: Clay", lambda: w.set_look("clay"), "", "View", 2),
-        Command("view.theme", "Choose Theme…", w.choose_theme, "Ctrl+K Ctrl+T", "View", 3),
-        Command("view.theme_toggle", "Toggle Light/Dark Theme", w.toggle_theme, "", "View", 3),
         Command("build.run", "Build", w.workbench.build, "F5", "Build", 0, enabled=has_tab, tip="Build (F5)"),
         live,
-        Command("build.cancel", "Cancel Build", w.workbench.cancel_build, "", "Build", 0),
+        Command("build.cancel", "Cancel Build", _canceller(w), "", "Build", 0, tip="Stop the build or script"),
+        Command("build.run_js", "Run JavaScript", w.scripts.run, "F7", "Build", 0, enabled=w.scripts.can_run,
+                tip="Run this '#javascript' script (Builder API); files go next to the script"),
         Command("build.seed_random", "Randomise Seed", w.random_seed, "Ctrl+Shift+R", "Build", 1, tip="Random seed"),
         Command("build.seed_next", "Seed +1", w.next_seed, "Alt+Right", "Build", 1, tip="Next seed"),
         Command("build.seed_prev", "Seed −1", w.previous_seed, "Alt+Left", "Build", 1),
@@ -59,8 +96,65 @@ def _view_build_render(w: MainWindow, has_tab: Predicate) -> list[Command]:
         Command("render.start", "Render", w.start_render, "F9", "Render", 0, tip="Render the current view (F9)"),
         Command("render.stop", "Stop Render", w.render_view.stop, "", "Render", 0),
         Command("render.save", "Save Render…", w.render_view.save_dialog, "", "Render", 1),
-        Command("help.about", "About Structura", w.about, "", "Help", 0),
-    ]
+        Command("render.animation", "Render Animation…", w.animations.render, "", "Render", 2, enabled=has_tab,
+                tip="Render the timeline's frames (and a video) with the precision engine"),
+        Command("render.animation_stop", "Stop Animation", w.animations.cancel, "", "Render", 2),
+        Command("timeline.play", "Play / Pause Timeline", _play(w), "Ctrl+Alt+Space", "View", 5, enabled=has_tab),
+        Command("timeline.next", "Next Frame", lambda: w.timeline.step(1), "Alt+.", "View", 5, enabled=has_tab),
+        Command("timeline.previous", "Previous Frame", lambda: w.timeline.step(-1), "Alt+,", "View", 5,
+                enabled=has_tab),
+        Command("timeline.key_camera", "Key Camera", w.timeline.key_camera, "", "View", 5, enabled=has_tab,
+                tip="Key the viewport camera at the current frame"),
+    ]  # fmt: skip
+
+
+def _play(w: MainWindow) -> Callable[[], None]:
+    return lambda: w.timeline.play(not w.timeline.timer.isActive())
+
+
+def _toggler(w: MainWindow, name: str) -> tuple[Callable[[], None], Callable[[], bool]]:
+    return (lambda: w.editor_actions.toggle(name)), (lambda: bool(getattr(w.editor_actions.options(), name)))
+
+
+STANDARD_EDITS = (
+    ("undo", "Undo", "Ctrl+Z"), ("redo", "Redo", "Ctrl+Shift+Z"), ("cut", "Cut", "Ctrl+X"),
+    ("copy", "Copy", "Ctrl+C"), ("paste", "Paste", "Ctrl+V"), ("selectAll", "Select All", "Ctrl+A"),
+)  # fmt: skip
+
+
+def _standard(w: MainWindow, name: str) -> Callable[[], None]:
+    return lambda: w.editor_actions.standard(name)
+
+
+def _editor(w: MainWindow, has_tab: Predicate) -> list[Command]:
+    e = w.editor_actions
+    commands = [
+        *(Command(f"edit.{name.lower()}", title, _standard(w, name), "", "Edit", -1, enabled=has_tab,
+                  tip=f"{title} ({shortcut})") for name, title, shortcut in STANDARD_EDITS),
+        Command("edit.peek", "Peek Definition", e.peek, "Alt+F12", "Edit", 1, enabled=has_tab,
+                tip="Show the rule's definition in place"),
+        Command("edit.quick_fix", "Quick Fix…", e.quick_fix, "Ctrl+.", "Edit", 1, enabled=has_tab,
+                tip="Fixes for the problem at the cursor"),
+        Command("edit.block_comment", "Toggle Block Comment", e.block_comment, "Shift+Alt+A", "Edit", 1,
+                enabled=has_tab),
+        Command("edit.convert_v2", "Convert to EisenScript v2", e.convert_to_v2, "", "Edit", 2, enabled=has_tab,
+                tip="Migrate a Structure Synth 1.5 script; it builds the same (notes in the console)"),
+        Command("edit.fold", "Fold", e.fold, "Ctrl+Shift+[", "Edit", 3, enabled=has_tab, submenu="Folding"),
+        Command("edit.unfold", "Unfold", e.unfold, "Ctrl+Shift+]", "Edit", 3, enabled=has_tab, submenu="Folding"),
+        Command("edit.fold_all", "Fold All", e.fold_all, "Ctrl+K, Ctrl+0", "Edit", 3, enabled=has_tab,
+                submenu="Folding"),
+        Command("view.split", "Split Editor", e.split, "Ctrl+\\", "View", 4, enabled=has_tab,
+                tip="A second view of the script beside the first"),
+        Command("edit.unfold_all", "Unfold All", e.unfold_all, "Ctrl+K, Ctrl+J", "Edit", 3, enabled=has_tab,
+                submenu="Folding"),
+    ]  # fmt: skip
+    for name in TOGGLES:
+        handler, checked = _toggler(w, name)
+        title = LABELS[name].split(" (")[0]
+        shortcut = "Alt+Z" if name == "word_wrap" else ""
+        commands.append(Command(f"view.{name}", title, handler, shortcut, "View", 4, checkable=True,
+                                checked=checked, submenu="Editor"))  # fmt: skip
+    return commands
 
 
 def _inserter(w: MainWindow, text: str) -> Callable[[], None]:
@@ -91,6 +185,6 @@ def register_builtin(registry: CommandRegistry, w: MainWindow) -> None:
     def has_tab() -> bool:
         return w.tabs.current() is not None
 
-    for group in (_file_edit, _view_build_render, _exports, _snippets):
+    for group in (_file, _edit, _editor, _view_help, _build_render, _exports, _snippets):
         for command in group(w, has_tab):
             registry.register(command)

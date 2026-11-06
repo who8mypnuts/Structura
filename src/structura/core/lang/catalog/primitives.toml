@@ -25,3 +25,29 @@ doc = "Wireframe of the unit cube (12 edges)."
 name = "template"
 emits = false
 doc = "Emits a template snippet (template::id) without geometry – used for CSG markers in templates."
+
+# EisenScript v2 primitives (docs/05 §9.6), only in '#version 2' scripts. 'id' is the builder's primitive id
+# (0–7 are the rows above, 8 is triangle[…]); 'param' is the default of the optional bracket argument.
+[[v2_primitive]]
+name = "cylinder"
+id = 9
+doc = "Capped cylinder along the local x axis, from (0,.5,.5) to (1,.5,.5), radius 0.5 in y and z."
+[[v2_primitive]]
+name = "cone"
+id = 10
+param = 0.0
+doc = "cone[r]: like cylinder, with the top radius r × the base radius (default 0: a point)."
+[[v2_primitive]]
+name = "torus"
+id = 11
+param = 0.2
+doc = "torus[r]: ring in the local xy plane around the cube centre; major radius 0.5 − r/2, minor radius r/2."
+[[v2_primitive]]
+name = "ellipsoid"
+id = 12
+doc = "The sphere inscribed in the unit cube, transformed like a box (non-uniform scale gives an ellipsoid)."
+[[v2_primitive]]
+name = "tube"
+id = 13
+param = 0.1
+doc = "tube[r]: a line with a real thickness (diameter) r in object-space units, with rounded ends (default 0.1)."

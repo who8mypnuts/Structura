@@ -162,6 +162,8 @@ Structura/
 
 1. Code meets §1–§5; CI is green (lint, types, contracts, sizes, tests, parity where relevant).
 2. Unit tests and, where applicable, golden, parity, UI or perf tests have been added.
-3. User-visible strings are translatable, and docs and catalogues are updated (generated docs regenerated).
+3. User-visible strings are translatable, and docs and catalogues are updated (generated docs regenerated:
+   `tools/gen_reference.py` for the language reference, `tools/update_translations.py` for the translation
+   catalogues; both have a `--check` mode that CI runs).
 4. No GUI-thread stall > 50 ms in the feature's UI test (watchdog).
 5. Both GPU and CPU paths are exercised (if the feature touches rendering or the viewport).

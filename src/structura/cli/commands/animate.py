@@ -1,7 +1,9 @@
-"""`structura animate FILE -o frames/out.png --frames 0:48 [--fps 24] [--video out.mp4]` (docs/16 §2, §5).
+"""`structura animate FILE -o frames/out.png [--frames 0:48] [--fps 24] [--video out.mp4]` (docs/16 §2, §5).
 
-v2 scripts read 'frame', 'time' and 'fps' in '( … )' expressions; every frame is rebuilt and rendered.
-Frames are written as out_0000.png …; --video also encodes them (MP4/WebM/GIF via imageio-ffmpeg).
+FILE is a script or a .structura project. A project brings its timeline (keyed parameters, seed and camera;
+the default frame range and fps), parameter values, seed and camera. v2 scripts can also read 'frame', 'time'
+and 'fps' in '( … )' expressions. Frames are written as out_0000.png …; --video also encodes them (MP4, WebM
+or GIF through imageio-ffmpeg).
 """
 
 from __future__ import annotations
@@ -12,21 +14,19 @@ from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
-import imageio.v3 as iio
-import numpy as np
-
-from ...compute.base import Backend
 from ...compute.select import NAMES, select_backend
-from ...core.build.api import build_scene
+from ...core.animation.timeline import Timeline
 from ...core.errors import StructuraError
-from ...core.lang.api import compile_script
 from ...core.lang.diagnostics import ParseError
-from ...render.api import prepare, progressive, script_settings
-from ...render.config import scene_frame
+from ...core.project.model import SUFFIX
+from ...core.project.model import load as load_project
+from ...core.text_file import read_script
+from ...render.animation import Animation, frame_path, render_frame
 from ...render.output import save_image, to_display
-from .common import EXIT_OK, EXIT_SCRIPT_ERROR, EXIT_USAGE, add_script_arguments, parse_params, read_script
+from ...render.video import encode_video
+from .common import EXIT_OK, EXIT_SCRIPT_ERROR, EXIT_USAGE, add_script_arguments, parse_params
 
-HELP = "render an animation (v2 scripts: 'frame', 'time', 'fps' in expressions)"
+HELP = "render an animation (a project's timeline; v2 'frame', 'time', 'fps' in expressions)"
 
 
 def _range(text: str) -> range:
@@ -37,8 +37,8 @@ def _range(text: str) -> range:
 def register(p: argparse.ArgumentParser) -> None:
     add_script_arguments(p)
     p.add_argument("-o", "--output", type=Path, required=True, help="frame name pattern, e.g. frames/out.png")
-    p.add_argument("--frames", type=_range, default=range(0, 24), help="START:STOP (default 0:24)")
-    p.add_argument("--fps", type=float, default=24.0)
+    p.add_argument("--frames", type=_range, help="START:STOP (default: the project's timeline, else 0:24)")
+    p.add_argument("--fps", type=float, help="frames per second (default: the timeline's, else 24)")
     p.add_argument("--size", default=None, help="WIDTHxHEIGHT (default: the script's)")
     p.add_argument("--samples", type=int, default=16)
     p.add_argument("--integrator", default=None)
@@ -46,44 +46,50 @@ def register(p: argparse.ArgumentParser) -> None:
     p.add_argument("--video", type=Path, help="also encode the frames (.mp4 .webm .gif)")
 
 
-def _frame_image(text: str, args: argparse.Namespace, frame: int, backend: Backend) -> tuple[np.ndarray, str]:
-    compiled = compile_script(text, args.seed, parse_params(args.param), args.script.parent, frame, args.fps)
-    scene = build_scene(compiled.program, args.seed).scene
-    overrides: dict[str, Any] = {"samples": args.samples, "samples_per_pass": max(1, min(8, args.samples))}
+def _overrides(args: argparse.Namespace) -> dict[str, Any]:
+    out: dict[str, Any] = {"samples": args.samples, "samples_per_pass": max(1, min(8, args.samples))}
     if args.integrator:
-        overrides["integrator"] = args.integrator
+        out["integrator"] = args.integrator
     if args.size:
         width, _, height = args.size.lower().partition("x")
-        overrides |= {"width": int(width), "height": int(height)}
-    settings = replace(script_settings(scene), **overrides)
-    prepared = prepare(scene)
-    view = scene_frame(prepared.scene_settings, settings, prepared.lo, prepared.hi, prepared.declarations)
-    *_, result = progressive(prepared, settings, backend, view)
-    return result.image, settings.view_transform
+        out |= {"width": int(width), "height": int(height)}
+    return out
+
+
+def animation_for(args: argparse.Namespace) -> Animation:
+    """The animation of a script, or of a project (its timeline, seed, parameters and camera)."""
+    overrides, params = _overrides(args), parse_params(args.param)
+    if args.script.suffix.lower() == SUFFIX:
+        project = load_project(args.script)
+        timeline = project.timeline or Timeline()
+        timeline = replace(timeline, fps=args.fps or timeline.fps)
+        return Animation(project.text, timeline, project.seed or args.seed, {**project.params, **params},
+                         args.script.parent, project.camera, {**project.render, **overrides})  # fmt: skip
+    timeline = Timeline(fps=args.fps or 24.0, start=0, end=23)
+    return Animation(read_script(args.script), timeline, args.seed, params, args.script.parent, None, overrides)
 
 
 def run(args: argparse.Namespace) -> int:
-    if not args.frames:
+    anim = animation_for(args)
+    frames = args.frames if args.frames is not None else anim.frames()
+    if not frames:
         print("animate: --frames must contain at least one frame", file=sys.stderr)
         return EXIT_USAGE
-    text, backend = read_script(args.script), select_backend(args.device)
+    backend = select_backend(args.device)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    frames = []
-    for frame in args.frames:
+    images = []
+    for frame in frames:
         try:
-            image, view = _frame_image(text, args, frame, backend)
+            result, settings = render_frame(anim, frame, backend)
         except (ParseError, StructuraError) as exc:
             print(f"{args.script}: frame {frame}: {getattr(exc, 'message', exc)}", file=sys.stderr)
             return EXIT_SCRIPT_ERROR
-        path = args.output.with_name(f"{args.output.stem}_{frame:04d}{args.output.suffix}")
-        save_image(image, path, 0.0, view)
-        frames.append(to_display(image, 0.0, view))
+        path = frame_path(args.output, frame)
+        save_image(result.image, path, 0.0, settings.view_transform)
+        images.append(to_display(result.image, 0.0, settings.view_transform))
         print(f"\r  frame {frame} → {path.name}", end="", file=sys.stderr)
     print(file=sys.stderr)
     if args.video is not None:
-        if args.video.suffix.lower() == ".gif":
-            iio.imwrite(args.video, frames, duration=1000 / args.fps, loop=0)
-        else:
-            iio.imwrite(args.video, frames, fps=args.fps, macro_block_size=1)
+        encode_video(args.video, images, anim.timeline.fps)
         print(f"wrote {args.video}")
     return EXIT_OK

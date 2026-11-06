@@ -28,6 +28,7 @@ class MaterialModel(IntEnum):
     DEBUG_UV = 6
     DEBUG_GENERATION = 7
     DEBUG_GRAY = 8
+    SHADOW_CATCHER = 9  # the ground of a render shows the background, darkened where shadows fall
 
 
 STATE = "state"  # base / opacity taken from the instance's rgba

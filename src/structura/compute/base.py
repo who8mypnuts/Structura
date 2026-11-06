@@ -69,10 +69,10 @@ class Launch:
     def writable(self) -> list[str]:
         return [n for n, t in self.buffers() if t.writable]
 
-    def groups(self) -> tuple[int, int, int]:
-        """Workgroup counts covering the grid."""
+    def groups(self, grid: tuple[int, int, int] | None = None) -> tuple[int, int, int]:
+        """Workgroup counts covering ``grid`` (default: the launch grid)."""
         wx, wy, wz = self.function.workgroup
-        gx, gy, gz = self.grid
+        gx, gy, gz = grid or self.grid
         return -(-gx // wx), -(-gy // wy), -(-gz // wz)
 
 
@@ -81,6 +81,7 @@ class Bound(ABC):
 
     def __init__(self, launch: Launch) -> None:
         self.launch = launch
+        self.grid = launch.grid  # the next dispatch's grid; set_grid() narrows it (banded dispatches)
         self.scalars = {n: launch.scalar(n) for n in launch.scalars()}
         self.shapes: dict[str, tuple[int, np.dtype[Any]]] = {}
         for name, _ in launch.buffers():
@@ -97,6 +98,12 @@ class Bound(ABC):
                 self._upload(name, host)
             else:
                 self.scalars[name] = self.launch.coerce_scalar(name, value)
+
+    def set_grid(self, grid: tuple[int, int, int]) -> None:
+        self.grid = grid
+
+    def groups(self) -> tuple[int, int, int]:
+        return self.launch.groups(self.grid)
 
     def run(self) -> dict[str, np.ndarray]:
         """Dispatch and read back every writable buffer."""

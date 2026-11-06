@@ -36,9 +36,9 @@ def compile_script(
     ``frame`` and ``fps`` bind the v2 animation variables 'frame', 'time' and 'fps'.
     """
     fr = front(text)
-    pre = LegacyPreprocessor().process(fr.text, seed)
+    pre = LegacyPreprocessor(fr.v2).process(fr.text, seed)
     names = timeline_names(frame, fps)
-    source = after_preprocessing(apply_gui_parameters(pre.text, pre.parameters, params), fr, names)
-    program = compile_rule_set(build_rule_set(parse_legacy(source)), script_dir)
+    source = after_preprocessing(apply_gui_parameters(pre.text, pre.parameters, params, fr.v2), fr, names)
+    program = compile_rule_set(build_rule_set(parse_legacy(source, fr.v2), fr.v2), script_dir)
     program = replace(program, declarations=fr.declarations)
     return CompiledScript(program, tuple(pre.parameters), (*fr.diagnostics, *pre.diagnostics), source)

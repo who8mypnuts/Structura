@@ -27,15 +27,16 @@ RUNNING, DONE, NEED_STATE, NEED_OUT, ERROR = 0, 1, 2, 3, 4
 
 # Packed state rows (docs/06 §10.2). Float row: matrix (16), hsv (3), alpha, then — only when the program
 # uses 'mesh' — the previous frame's matrix (16), hsv (3) and alpha. Int row: rule, source action,
-# generation, has-previous flag, seed, then one depth slot per depth-limited rule.
+# generation, has-previous flag, seed, inherited material tag (v2 'mat'; 0 = none), then one depth slot per
+# depth-limited rule.
 F_M, F_HSV, F_ALPHA, F_PM, F_PHSV, F_PALPHA = 0, 16, 19, 20, 36, 39
 F_WIDTH, F_WIDTH_MESH = 20, 40
-I_RULE, I_SRC, I_GEN, I_HASPREV, I_SEED, I_DEPTH = 0, 1, 2, 3, 4, 5
+I_RULE, I_SRC, I_GEN, I_HASPREV, I_SEED, I_MAT, I_DEPTH = 0, 1, 2, 3, 4, 5, 6
 
 
 class StateBuf(NamedTuple):
     f: np.ndarray  # float32[C, 20 or 40]
-    i: np.ndarray  # int64[C, 5 + slots]
+    i: np.ndarray  # int64[C, I_DEPTH + slots]
 
 
 class OutBuf(NamedTuple):
@@ -46,7 +47,8 @@ class OutBuf(NamedTuple):
     src: np.ndarray  # int32[N]
     gen: np.ndarray  # int32[N]
     aux: np.ndarray  # int32[N] row in aux_f or -1
-    aux_f: np.ndarray  # float32[M,13] mesh: prev base,d1,d2 (9) + prev rgba (4); triangle: p1,p2,p3 (9)
+    aux_f: np.ndarray  # float32[M,13] mesh: prev base,d1,d2 (9) + prev rgba (4); triangle: p1,p2,p3 (9);
+    #                    cone / torus / tube: the bracket parameter (1)
     events: np.ndarray  # int32[E,3] (event index, generation, primitives emitted before it)
 
 

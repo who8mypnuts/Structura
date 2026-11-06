@@ -126,3 +126,39 @@ def newline_with_indent(editor: QPlainTextEdit) -> None:
         cursor.insertText("\n" + pad + (INDENT if opens else ""))
     cursor.endEditBlock()
     editor.setTextCursor(cursor)
+
+
+def toggle_block_comment(editor: QPlainTextEdit) -> None:
+    """Ctrl+Shift+/: wrap the selection (or the current line) in /* */, or unwrap it if already wrapped."""
+    cursor = editor.textCursor()
+    if not cursor.hasSelection():  # the current line, after its indentation
+        block = cursor.block()
+        cursor.setPosition(block.position() + len(leading_indent(block.text())))
+        cursor.movePosition(QTextCursor.MoveOperation.EndOfBlock, QTextCursor.MoveMode.KeepAnchor)
+    start = cursor.selectionStart()
+    text = cursor.selection().toPlainText()
+    stripped = text.strip()
+    if stripped.startswith("/*") and stripped.endswith("*/") and len(stripped) >= 4:
+        lead = text[: len(text) - len(text.lstrip())]
+        trail = text[len(text.rstrip()) :]
+        new = lead + stripped[2:-2].removeprefix(" ").removesuffix(" ") + trail
+    else:
+        new = f"/* {text} */"
+    cursor.beginEditBlock()
+    cursor.insertText(new)
+    cursor.endEditBlock()
+    cursor.setPosition(start)
+    cursor.setPosition(start + len(new), QTextCursor.MoveMode.KeepAnchor)
+    editor.setTextCursor(cursor)
+
+
+def replace_document(editor: QPlainTextEdit, text: str) -> None:
+    """Replace the whole text as one undo step, keeping the cursor's line where possible."""
+    line = editor.textCursor().blockNumber()
+    cursor = QTextCursor(editor.document())
+    cursor.beginEditBlock()
+    cursor.select(QTextCursor.SelectionType.Document)
+    cursor.insertText(text)
+    cursor.endEditBlock()
+    block = editor.document().findBlockByNumber(min(line, editor.document().blockCount() - 1))
+    editor.setTextCursor(QTextCursor(block))

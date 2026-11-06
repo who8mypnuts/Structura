@@ -14,6 +14,7 @@ from PySide6.QtWidgets import QHBoxLayout, QLabel, QSpinBox, QToolButton, QWidge
 
 from ..themes.model import Theme
 from .commands.registry import CommandRegistry
+from .i18n import tr
 from .icons import icon
 
 BRAND = Path(__file__).resolve().parents[1] / "resources" / "brand"
@@ -35,6 +36,7 @@ class HeaderBar(QWidget):
         if logo.exists():
             self.logo.setPixmap(QPixmap(str(logo)).scaledToHeight(22))
         self.seed = QSpinBox()
+        self.seed.setAccessibleName(tr("Seed"))
         self.seed.setRange(0, MAX_SEED)
         self.seed.setPrefix("Seed ")
         self.seed.setToolTip("Random seed (Alt+← / Alt+→)")

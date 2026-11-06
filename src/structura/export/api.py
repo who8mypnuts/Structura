@@ -19,6 +19,7 @@ from .mesh import vrml as _vrml  # noqa: F401
 from .mesh import x3d as _x3d  # noqa: F401
 from .scene import blender as _blender  # noqa: F401
 from .scene import gltf as _gltf  # noqa: F401
+from .scene import text_exporters as _text  # noqa: F401
 from .scene import usd as _usd  # noqa: F401
 from .scene_model import scene_model
 

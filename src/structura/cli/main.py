@@ -7,7 +7,7 @@ import sys
 from collections.abc import Sequence
 
 from .. import __version__
-from .commands import animate, build, doctor, export, lint, render, run
+from .commands import animate, build, convert, doctor, export, lint, render, run, warmup
 
 COMMANDS = {
     "lint": lint,
@@ -16,7 +16,9 @@ COMMANDS = {
     "export": export,
     "animate": animate,
     "run": run,
+    "convert": convert,
     "doctor": doctor,
+    "warmup": warmup,
 }
 
 

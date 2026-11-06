@@ -1,0 +1,19 @@
+# Keymap presets (docs/14 §4.2). Each preset overrides the registry's default shortcuts; "" removes one.
+# The effective shortcut is: the user's own binding, else the preset's, else the command's default.
+
+[structura]
+# The defaults, as registered (docs/14 §4.2).
+
+[legacy]
+# Structure Synth 1.5: Ctrl+F was full screen; F5 builds and F6 exports templates (the defaults already).
+"view.fullscreen" = "Ctrl+F"
+"edit.find" = ""
+
+[vscode]
+"build.run" = "Ctrl+Shift+B"
+"render.start" = "Ctrl+F5"
+"view.split" = "Ctrl+\\"
+"edit.format" = "Shift+Alt+F"
+"edit.references" = "Shift+F12"
+"view.theme" = "Ctrl+K, Ctrl+T"
+"build.seed_random" = "Ctrl+Alt+R"

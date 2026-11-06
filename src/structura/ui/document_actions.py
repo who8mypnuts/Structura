@@ -7,18 +7,23 @@ from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QObject, Slot
 from PySide6.QtGui import QTextCharFormat, QTextCursor
-from PySide6.QtWidgets import QColorDialog, QFileDialog, QInputDialog, QMessageBox
+from PySide6.QtWidgets import QColorDialog, QFileDialog, QInputDialog, QMenu, QMessageBox
 
 from ..core.lang.refactor import format_script, rename_rule, rule_occurrences
-from .documents import EditorTab, read_text
+from ..core.project.model import SUFFIX
+from ..core.text_file import read_script
+from ..services.recent import RecentFiles
+from .documents import EditorTab
 from .editor.editing import toggle_comment
+from .editor.snippet_session import insert_snippet
 from .editor.swatches import color_of
 from .theming import qcolor
 
 if TYPE_CHECKING:
     from .app_window import MainWindow
 
-SCRIPT_FILTER = "EisenScript (*.es);;All files (*)"
+SCRIPT_FILTER = f"EisenScript (*.es);;Structura project (*{SUFFIX});;All files (*)"
+OPEN_FILTER = f"Scripts and projects (*.es *{SUFFIX});;{SCRIPT_FILTER}"
 
 
 class DocumentActions(QObject):
@@ -26,6 +31,7 @@ class DocumentActions(QObject):
         super().__init__(window)
         self.w = window
         window.tabs.tab_added.connect(self.on_tab_added)
+        self.recent = RecentFiles(window.settings)
         window.tabs.external_change.connect(self.on_external_change)
 
     def current(self) -> EditorTab | None:
@@ -36,21 +42,39 @@ class DocumentActions(QObject):
         return self.w.tabs.new_document()
 
     def open_dialog(self) -> None:
-        name, _ = QFileDialog.getOpenFileName(self.w, "Open script", "", SCRIPT_FILTER)
+        name, _ = QFileDialog.getOpenFileName(self.w, "Open script", "", OPEN_FILTER)
         if name:
             self.open_file(Path(name))
 
     @Slot(Path)
-    def open_file(self, path: Path) -> EditorTab:
+    def open_file(self, path: Path) -> EditorTab | None:
+        if path.suffix == SUFFIX:
+            return self.w.projects.open(path)
         tab = self.w.tabs.open_file(path)
-        self.w.settings.set_value("files/last", str(path))
+        self.recent.add(path)
         return tab
+
+    def fill_recent_menu(self, menu: QMenu) -> None:
+        """File ▸ Open Recent, rebuilt each time it opens."""
+        menu.clear()
+        paths = self.recent.paths()
+        for path in paths:
+            menu.addAction(f"{path.name}    {path.parent}").triggered.connect(
+                lambda _c=False, p=path: self.open_file(p)
+            )
+        if not paths:
+            menu.addAction("No recent files").setEnabled(False)
+        else:
+            menu.addSeparator()
+            menu.addAction("Clear Recent Files").triggered.connect(self.recent.clear)
 
     def save(self) -> None:
         tab = self.current()
         if tab is None:
             return
-        if tab.path is None:
+        if tab.project_path is not None:
+            self.w.projects.save(tab)
+        elif tab.path is None:
             self.save_as()
         else:
             tab.save()
@@ -66,6 +90,17 @@ class DocumentActions(QObject):
             self.w.tabs.watch(tab)
             self.w.tabs.setTabText(self.w.tabs.currentIndex(), tab.title)
 
+    def revert(self) -> None:
+        """Reload the file from disk, discarding unsaved edits (after asking)."""
+        tab = self.current()
+        if tab is None or tab.path is None or not tab.path.exists():
+            return
+        if tab.modified:
+            question = f"Discard your changes to {tab.path.name} and reload it from disk?"
+            if QMessageBox.question(self.w, "Revert", question) != QMessageBox.StandardButton.Yes:
+                return
+        tab.reload(read_script(tab.path))
+
     def close_tab(self) -> None:
         self.w.tabs.close_tab(self.w.tabs.currentIndex())
 
@@ -75,7 +110,7 @@ class DocumentActions(QObject):
         question = f"{name} changed on disk. Discard your edits and reload it?"
         answer = QMessageBox.question(self.w, "File changed on disk", question)
         if answer == QMessageBox.StandardButton.Yes and tab.path is not None:
-            tab.reload(read_text(tab.path))
+            tab.reload(read_script(tab.path))
 
     # -- editing -------------------------------------------------------------------------------------------
     def open_find(self, replace_mode: bool) -> None:
@@ -86,7 +121,7 @@ class DocumentActions(QObject):
     def insert_text(self, text: str) -> None:
         tab = self.current()
         if tab is not None:
-            tab.editor.textCursor().insertText(text)
+            insert_snippet(tab.editor, text)  # plain text, or a snippet with tab stops
             tab.editor.setFocus()
 
     def toggle_comment(self) -> None:
@@ -152,7 +187,6 @@ class DocumentActions(QObject):
 
     @Slot(object)
     def on_tab_added(self, tab: EditorTab) -> None:
-        tab.editor.set_font_size(self.w.fonts().code_size)
         tab.editor.definition_requested.connect(self.go_to_definition)
         tab.editor.color_requested.connect(self.pick_color)
 

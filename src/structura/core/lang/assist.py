@@ -12,8 +12,21 @@ from dataclasses import dataclass
 
 from ..color.names import NAMED_COLORS
 from .analysis import Analysis
-from .catalog import modifiers, operators, primitives, raytracer_keys, set_commands, snippets
-from .signatures import SIGNATURES
+from .catalog import (
+    PrimitiveSpec,
+    all_primitives,
+    modifiers,
+    operators,
+    raytracer_keys,
+    set_commands,
+    snippets,
+    v2_blocks,
+)
+from .highlight import lex_line
+from .signatures import CONSTANTS, SIGNATURES
+from .snippet_syntax import plain
+from .source import detect_dialect
+from .v2.blocks import enclosing_block
 
 WORD = re.compile(r"[A-Za-z0-9_:#.\-]*$")
 HEAD = re.compile(r"^[A-Za-z0-9_:#.\-]*")
@@ -44,14 +57,18 @@ def _ops() -> list[CompletionItem]:
     return [CompletionItem(o.name, "operator", " ".join(f"‹{a}›" for a in o.args), o.doc) for o in operators()]
 
 
+def _prim_signature(p: PrimitiveSpec) -> str:
+    return f"{p.name}[{p.param:g}] (v2)" if p.param is not None else ("primitive (v2)" if p.v2 else "primitive")
+
+
 def _statements(analysis: Analysis | None) -> list[CompletionItem]:
     items = [
         CompletionItem("rule", "keyword", "rule NAME { … }", "Define a rule.", "rule "),
         CompletionItem("set", "keyword", "set KEY VALUE", "Change a build or render setting.", "set "),
     ]
-    items += [CompletionItem(p.name, "primitive", "primitive", p.doc) for p in primitives()]
+    items += [CompletionItem(p.name, "primitive", _prim_signature(p), p.doc) for p in all_primitives()]
     items.append(CompletionItem("triangle", "primitive", "triangle[x,y,z;x,y,z;x,y,z]", "A triangle.", "triangle["))
-    items += [CompletionItem(s.text.split("\n")[0], "snippet", s.group, s.text, s.text) for s in snippets()
+    items += [CompletionItem(s.title, "snippet", s.group, plain(s.text), s.text) for s in snippets()
               if s.group == "Patterns"]  # fmt: skip
     return items + _rules(analysis)
 
@@ -97,7 +114,26 @@ def _raytracer() -> list[CompletionItem]:
     return [CompletionItem(f"raytracer::{k.name}", "raytracer", k.value, k.doc) for k in raytracer_keys()]
 
 
+def _block_keys(block: str) -> list[CompletionItem]:
+    spec = v2_blocks().get(block)
+    return [CompletionItem(k.name, "set", k.value, k.doc, k.name + " ") for k in spec.keys] if spec else []
+
+
+def _functions() -> list[CompletionItem]:
+    items = [CompletionItem(n, "function", f"{n}({', '.join(p)})", d, n + "(") for n, (p, d) in SIGNATURES.items()]
+    return [*items, *(CompletionItem(n, "constant", "constant", d) for n, d in CONSTANTS.items())]
+
+
+def _v2_statements(analysis: Analysis | None) -> list[CompletionItem]:
+    blocks = [CompletionItem(b.name, "keyword", f"{b.name} {{ … }}", b.doc,
+                             f"{b.name} {'name ' if b.name in ('material', 'light') else ''}{{\n  \n}}")
+              for b in v2_blocks().values()]  # fmt: skip
+    return blocks + _statements(analysis)
+
+
 def _candidates(context: str, analysis: Analysis | None) -> list[CompletionItem]:
+    if context.startswith("block:"):
+        return _block_keys(context.removeprefix("block:"))
     table: dict[str, Callable[[], list[CompletionItem]]] = {
         "set": _set_keys,
         "raytracer": _raytracer,
@@ -106,8 +142,31 @@ def _candidates(context: str, analysis: Analysis | None) -> list[CompletionItem]
         "rule": lambda: _rules(analysis),
         "color": _colors,
         "preprocessor": lambda: [CompletionItem(w, "preprocessor", "", d, w + " ") for w, d in PREPROCESSOR],
+        "function": _functions,
+        "v2-statement": lambda: _v2_statements(analysis),
     }
     return table.get(context, lambda: _statements(analysis))()
+
+
+def _v2_context(text: str, pos: int, line: str) -> str | None:
+    """Block keys inside a v2 block, functions inside '( … )', block names at the top level of v2 scripts."""
+    block = enclosing_block(text, pos)
+    if block is not None:
+        return f"block:{block}"
+    if line.count("(") > line.count(")"):
+        return "function"
+    if detect_dialect(text) == 2 and not line.strip() and _brace_depth(text[:pos]) == 0:
+        return "v2-statement"
+    return None
+
+
+def _brace_depth(text: str) -> int:
+    """Open braces before the cursor, from the lexer (braces in comments do not count)."""
+    depth, state = 0, 0
+    for line in text.split("\n"):
+        tokens, state = lex_line(line, state)
+        depth += sum(1 if line[s] == "{" else -1 for s, _, role in tokens if role == "brace")
+    return depth
 
 
 def complete(text: str, pos: int, analysis: Analysis | None = None) -> Completions:
@@ -120,7 +179,7 @@ def complete(text: str, pos: int, analysis: Analysis | None = None) -> Completio
     elif prefix.lower().startswith("raytracer::") and line.rstrip().lower().endswith("set"):
         context, needle = "raytracer", prefix.lower()
     else:
-        context, needle = _context(line), prefix.lower()
+        context, needle = _v2_context(text, pos, line) or _context(line), prefix.lower()
     items = [i for i in _candidates(context, analysis) if i.label.lower().startswith(needle)]
     start = pos - (len(needle) if context == "preprocessor" else len(prefix))
     return Completions(tuple(items), start, prefix)
@@ -128,8 +187,9 @@ def complete(text: str, pos: int, analysis: Analysis | None = None) -> Completio
 
 PREPROCESSOR = (
     ("define", "#define NAME VALUE — text substitution; add (float:A-B) or (int:A-B) for a slider."),
-    ("include", '#include "file.es" — insert another script.'),
-    ("version", "#version 2 — enable EisenScript v2 extensions."),
+    ("version", "#version 2 — enable EisenScript v2 extensions (first line)."),
+    ("param", "#param NAME TYPE = VALUE range A..B — (v2) a typed parameter with a slider."),
+    ("javascript", "#javascript — the script is JavaScript driving the Builder API (Build ▸ Run JavaScript)."),
 )
 
 
@@ -157,9 +217,9 @@ def _word_hover(lower: str, analysis: Analysis | None) -> str | None:
     for o in (*operators(), *modifiers()):
         if lower == o.name or lower in {a.name for a in o.aliases}:
             return f"**{o.name}** {' '.join(f'‹{a}›' for a in o.args)}\n\n{o.doc}"
-    for p in primitives():
+    for p in all_primitives():
         if lower == p.name:
-            return f"**{p.name}** (primitive)\n\n{p.doc}"
+            return f"**{p.name}** (primitive{', v2' if p.v2 else ''})\n\n{p.doc}"
     for s in set_commands():
         if lower == s.key:
             return f"**set {s.key}** ‹{s.value}›\n\n{s.doc}"

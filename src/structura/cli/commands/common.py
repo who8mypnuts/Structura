@@ -10,6 +10,7 @@ from ...core.errors import StructuraError
 from ...core.lang.api import CompiledScript, compile_script
 from ...core.lang.diagnostics import Diagnostic, ParseError
 from ...core.lang.source import LineIndex
+from ...core.text_file import read_script
 
 EXIT_OK, EXIT_SCRIPT_ERROR, EXIT_USAGE = 0, 1, 2
 
@@ -26,14 +27,6 @@ def parse_params(items: list[str]) -> dict[str, float]:
         name, _, value = item.partition("=")
         values[name.strip()] = float(value)
     return values
-
-
-def read_script(path: Path) -> str:
-    data = path.read_bytes()
-    try:
-        return data.decode("utf-8")
-    except UnicodeDecodeError:
-        return data.decode("cp1252", errors="replace")  # legacy Windows files (docs/12 §2.1)
 
 
 def report(path: Path, text: str, diagnostic: Diagnostic) -> None:

@@ -57,6 +57,19 @@ def _key_dir(m: Matrices, options: PreviewOptions) -> tuple[float, float, float]
     return (float(v[0]), float(v[1]), float(v[2]))
 
 
+MASK_WIDTH = 4096  # the highlight mask is a 2-D texture: rows wrap at this width
+HIGHLIGHT_UNIT = 12
+
+
+def _mask_texture(ctx: moderngl.Context, mask: np.ndarray, width: int) -> Any:
+    height = -(-len(mask) // width)
+    data = np.zeros(width * height, np.uint8)
+    data[: len(mask)] = mask
+    texture = ctx.texture((width, height), 1, data.tobytes(), dtype="u1")
+    texture.filter = (moderngl.NEAREST, moderngl.NEAREST)
+    return texture
+
+
 class PreviewRenderer:
     def __init__(self, ctx: moderngl.Context) -> None:
         self.ctx = ctx
@@ -69,12 +82,26 @@ class PreviewRenderer:
         self.last: Matrices | None = None
         self.samples = 0
         self._key: tuple[object, ...] | None = None
+        self._no_highlight = _mask_texture(ctx, np.zeros(1, np.uint8), 1)
+        self.highlight: Any = None  # provenance hover: one texel per SceneIR row
+        self._highlight_version = 0
 
     # -- scene -----------------------------------------------------------------------------------------
     def set_scene(self, scene: PreviewScene | None) -> None:
         if self.gpu is not None:
             self.gpu.release()
         self.gpu = GpuScene(self.ctx, self.programs, scene) if scene is not None else None
+
+    def set_highlight(self, rows: np.ndarray | None, count: int) -> None:
+        """Tint the instances of ``rows`` (SceneIR rows, e.g. everything one call site produced)."""
+        if self.highlight is not None:
+            self.highlight.release()
+        self.highlight = None
+        if rows is not None and len(rows) and count:
+            mask = np.zeros(count, np.uint8)
+            mask[rows[rows < count]] = 1
+            self.highlight = _mask_texture(self.ctx, mask, min(count, MASK_WIDTH))
+        self._highlight_version += 1
 
     @property
     def scene(self) -> PreviewScene | None:
@@ -91,7 +118,7 @@ class PreviewRenderer:
                 self.targets.release()
             self.targets = Targets(self.ctx, w, h)
         scene = self.scene
-        key = (camera, (w, h), options, id(self.gpu))
+        key = (camera, (w, h), options, id(self.gpu), self._highlight_version)
         if not accumulate or key != self._key or self.samples >= ACCUMULATE:
             self.samples = 0 if (not accumulate or key != self._key) else self.samples
         self._key = key
@@ -248,6 +275,8 @@ class PreviewRenderer:
         ):  # fmt: skip
             tex.use(unit)
             prog[name].value = unit
+        (self.highlight or self._no_highlight).use(HIGHLIGHT_UNIT)
+        prog["u_highlight"].value, prog["u_highlight_on"].value = HIGHLIGHT_UNIT, int(self.highlight is not None)
         inv_view = m.inv_view
         values = {
             "u_inv_proj": gl(m.inv_proj),
@@ -284,6 +313,8 @@ class PreviewRenderer:
 
     def release(self) -> None:
         self.set_scene(None)
+        self.set_highlight(None, 0)
+        self._no_highlight.release()
         if self.targets is not None:
             self.targets.release()
         self.shadow.release()

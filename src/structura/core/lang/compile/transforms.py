@@ -24,6 +24,7 @@ class Transform:
     absolute: bool = False
     blend_hsv: tuple[float, float, float] = (0.0, 0.0, 0.0)
     strength: float = 0.0
+    material: str | None = None  # v2 'mat NAME': the material tag inherited by the subtree
 
     def append(self, t: Transform) -> Transform:
         matrix = lm.matmul(self.matrix, t.matrix)
@@ -35,7 +36,8 @@ class Transform:
         else:
             dh, ks, kv, ka, absolute = t.dh, t.ks, t.kv, t.ka, True
         blend, strength = (t.blend_hsv, t.strength) if t.strength != 0 else (self.blend_hsv, self.strength)
-        return Transform(matrix, dh, ks, kv, ka, absolute, blend, strength)
+        material = t.material if t.material is not None else self.material
+        return Transform(matrix, dh, ks, kv, ka, absolute, blend, strength, material)
 
 
 def _color_hsv(text: str) -> tuple[float, float, float, float]:
@@ -70,7 +72,7 @@ def _f32(x: float) -> float:
 
 def single(op: TransformOp) -> Transform:
     """The Transform of one operator."""
-    n = _numbers(op) if op.name not in ("color", "blend") else []
+    n = _numbers(op) if op.name not in ("color", "blend", "mat") else []
     builders: dict[str, Callable[[], Transform]] = {
         "x": lambda: Transform(lm.translation(n[0], 0, 0)),
         "y": lambda: Transform(lm.translation(0, n[0], 0)),
@@ -90,6 +92,7 @@ def single(op: TransformOp) -> Transform:
         "alpha": lambda: Transform(lm.identity(), ka=_f32(n[0])),
         "color": lambda: _color(op),
         "blend": lambda: _blend(op),
+        "mat": lambda: Transform(lm.identity(), material=str(op.args[0])),
     }
     return builders[op.name]()
 

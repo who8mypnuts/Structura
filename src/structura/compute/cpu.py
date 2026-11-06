@@ -12,6 +12,7 @@ from types import ModuleType
 import numpy as np
 import platformdirs
 
+from ..core.jit import parallel_section
 from ..kernels.skl import ir
 from ..kernels.skl.emit.numba_emit import NumbaEmitter
 from .base import BackendBase, Bound, Launch
@@ -49,7 +50,8 @@ class CpuBound(Bound):
         self.arrays[name] = host.copy()
 
     def dispatch(self) -> None:
-        self.entry(*self.launch.grid, *self.ordered_args(self.arrays))
+        with parallel_section():  # one parallel Numba call at a time, whatever the lane (docs/04 §6)
+            self.entry(*self.grid, *self.ordered_args(self.arrays))
 
     def read(self, name: str) -> np.ndarray:
         return self.arrays[name].copy()

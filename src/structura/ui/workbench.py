@@ -46,6 +46,7 @@ class Workbench(QObject):
         self.builds = BuildService(runner)
         self.live = True
         self._build_after_analysis: set[str] = set()
+        self._build_if_changed: set[str] = set()  # timeline frames: rebuild only when the program changed
         tabs.tab_edited.connect(self.on_edited)
         tabs.current_tab_changed.connect(self.on_current)
         self.language.analysis_ready.connect(self.on_analysis)
@@ -61,7 +62,8 @@ class Workbench(QObject):
     def analyze(self, tab: EditorTab, immediate: bool = False) -> None:
         script_dir = tab.path.parent if tab.path else None
         params = tuple(sorted(tab.params.items()))
-        req = AnalysisRequest(tab.doc_id, tab.text(), tab.version, tab.seed, params, script_dir)
+        tl = tab.timeline
+        req = AnalysisRequest(tab.doc_id, tab.text(), tab.version, tab.seed, params, script_dir, tab.frame, tl.fps)
         self.language.request(req, immediate)
 
     @Slot(object)
@@ -84,12 +86,15 @@ class Workbench(QObject):
             return  # closed, or an older version of the text
         tab.analysis = analysis
         if analysis.rules or analysis.program is not None:
-            tab.editor.analysis = analysis  # keep the last parsed symbols while the text has errors
+            tab.editor.set_analysis(analysis)  # keep the last parsed symbols while the text has errors
         tab.editor.set_diagnostics(list(analysis.diagnostics))
         self.analysis_shown.emit(tab, analysis)
         wanted = doc_id in self._build_after_analysis
+        changed = analysis.digest != tab.built_digest
+        follow = doc_id in self._build_if_changed and changed
         self._build_after_analysis.discard(doc_id)
-        if analysis.ok and (wanted or (self.live and analysis.digest != tab.built_digest)):
+        self._build_if_changed.discard(doc_id)
+        if analysis.ok and (wanted or follow or (self.live and changed)):
             self._start_build(tab, analysis)
 
     # -- building ------------------------------------------------------------------------------------------
@@ -142,9 +147,9 @@ class Workbench(QObject):
             return
         tab.outcome = ready.outcome
         camera, frame = None, False
-        if not tab.camera_applied:  # first build: the script camera, or frame the structure
+        if not tab.camera_applied:  # first build: a project's camera, the script camera, or frame the structure
             view = settings_from_events(ready.outcome.scene.events)
-            camera = view.view.camera() if view.has_view else None
+            camera = tab.initial_camera or (view.view.camera() if view.has_view else None)
             frame, tab.camera_applied = camera is None, True
         self.scene_ready.emit(tab, ready.outcome, ready.preview, camera, frame)
 
@@ -171,6 +176,11 @@ class Workbench(QObject):
         seed = random.randint(0, MAX_SEED)
         self.set_seed(seed)
         return seed
+
+    def follow_frame(self, tab: EditorTab) -> None:
+        """The timeline moved: re-analyse now and rebuild if the program changed (even without live mode)."""
+        self._build_if_changed.add(tab.doc_id)
+        self.analyze(tab, immediate=True)
 
     def set_parameter(self, name: str, value: float) -> None:
         tab = self.tabs.current()

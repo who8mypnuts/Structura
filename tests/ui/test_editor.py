@@ -7,11 +7,13 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QTextCursor
 from pytestqt.qtbot import QtBot
 
+from structura.core.lang.analysis import analyze
 from structura.themes.loader import load_theme
 from structura.ui.editor import editing
 from structura.ui.editor.code_editor import CodeEditor
 from structura.ui.editor.find_bar import FindBar
 from structura.ui.editor.signature import SignatureHelp
+from structura.ui.editor.snippet_session import insert_snippet
 
 
 @pytest.fixture
@@ -134,13 +136,12 @@ def test_typing_opens_completions_and_enter_accepts(qtbot: QtBot) -> None:
     assert editor.toPlainText() == "set maxobjects" and not completion.popup.isVisible()
 
 
-def test_ambiguous_rules_get_probability_hints() -> None:
-    from structura.core.lang.analysis import analyze  # noqa: PLC0415
-    from structura.ui.editor.inlays import rule_hints  # noqa: PLC0415
-
-    text = "R\nrule R w 3 { box }\nrule R { sphere }\nrule Q { box }\n"
-    hints = rule_hints(analyze(text))
-    assert sorted(hints.values()) == ["⟶ 25.0%", "⟶ 75.0%"]
+def test_inlay_hints_show_probabilities_loop_counts_and_materials() -> None:
+    text = "R\nrule R w 3 { box }\nrule R w 1 { sphere }\n3 * { x 1 } 4 * { y 1 } box\n"
+    assert [h.text for h in analyze(text).hints if h.kind == "probability"] == ["⟶ 75.0%", "⟶ 25.0%"]
+    assert [h.text for h in analyze(text).hints if h.kind == "loops"] == ["×12 (3 × 4)"]
+    v2 = "#version 2\nmaterial shiny { roughness 0.1 }\nbox::shiny\nbox::gold\n"
+    assert [h.text for h in analyze(v2).hints] == ["◆ shiny", "◆ gold (preset)"]
 
 
 def test_signature_help_appears_in_calls_and_hides_after(qtbot: QtBot, editor: CodeEditor) -> None:
@@ -160,3 +161,15 @@ def test_signature_help_follows_typing(qtbot: QtBot, editor: CodeEditor) -> None
     _put(editor, "{ x ", 4)
     qtbot.keyClicks(editor, "(pow(2,")
     qtbot.waitUntil(lambda: help_.label.isVisible() and "<b>exponent</b>" in help_.label.text(), timeout=2000)
+
+
+def test_snippet_session_visits_stops_and_mirrors(qtbot: QtBot, editor: CodeEditor) -> None:
+    editor.setPlainText("")
+    insert_snippet(editor, "rule ${1:spiral} {\n  { x ${2:1} } ${1:spiral}\n}$0")
+    assert editor.textCursor().selectedText() == "spiral"
+    qtbot.keyClicks(editor, "coil")  # replaces the selected placeholder
+    qtbot.keyClick(editor, Qt.Key.Key_Tab)
+    assert editor.toPlainText() == "rule coil {\n  { x 1 } coil\n}"  # the mirror followed
+    assert editor.textCursor().selectedText() == "1"
+    qtbot.keyClick(editor, Qt.Key.Key_Tab)  # to $0: the session ends at the final position
+    assert not editor.snippets.active and editor.textCursor().position() == len(editor.toPlainText())

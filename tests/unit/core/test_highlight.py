@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from structura.core.lang.analysis import analyze
+from structura.core.lang.assist import complete, hover
 from structura.core.lang.highlight import IN_BLOCK_COMMENT, lex_line
 
 
@@ -34,9 +36,6 @@ def test_comments_and_preprocessor() -> None:
 
 
 def test_completion_contexts() -> None:
-    from structura.core.lang.analysis import analyze  # noqa: PLC0415
-    from structura.core.lang.assist import complete, hover  # noqa: PLC0415
-
     text = "rule R w 2 { box }\nrule R w 1 { sphere }\nR\n"
     analysis = analyze(text)
 
@@ -49,6 +48,15 @@ def test_completion_contexts() -> None:
     assert labels("{ r")[:3] == ["rx", "ry", "rz"]
     assert labels("rule Q ") == ["weight", "maxdepth"]
     assert labels("3 * { x 1 } ")[:2] == ["rule", "set"] and "r" in labels("3 * { x 1 } ")
-    assert labels("#inc") == ["include"]
+    assert labels("#inc") == [] and labels("#jav") == ["javascript"]  # no #include in EisenScript
     assert "66.7%" in (hover(text, 6, analysis) or "")
     assert "Rotate" in (hover("{ rz 5 }", 3) or "")
+
+
+def test_defines_and_functions_are_not_undefined_rules() -> None:
+    text = "#version 2\n#define angle 20 (float:0-90)\n#define step 2\n{ rz angle x step s (sin(30)) } box\n"
+    defined, _, defines = analyze(text).semantic_symbols()
+    assert defined is not None and {"angle", "step"} <= defines
+    line = "{ rz angle x step s (sin(30)) } box"
+    roles = {line[s : s + n]: r for s, n, r in lex_line(line)[0]}
+    assert roles["sin"] == "function"

@@ -12,6 +12,8 @@ from ..core.scene.camera import Camera, framed
 from ..core.scene.declarations import SceneDeclarations
 from ..core.scene.settings import SceneSettings
 from .declarations import declared_camera
+from .environment import settings_environment
+from .filters import filter_table
 from .kernels import layout as lay
 from .legacy import default_light, legacy_lens
 from .lights import light_count
@@ -30,6 +32,7 @@ class Frame:
     radius: float
     world_per_view: float  # legacy view units → world (1/scale), for the default light
     declarations: SceneDeclarations | None = None
+    bottom: float = 0.0  # the structure's lowest y (fog base default)
 
 
 def scene_frame(
@@ -43,7 +46,7 @@ def scene_frame(
     declared = declared_camera(declarations, camera)
     if declared is not None and not settings.frame:  # a v2 'camera' block overrides the legacy view
         radius = float(np.linalg.norm(np.asarray(hi) - np.asarray(lo))) / 2 or 1.0
-        return Frame(declared, settings, scene, radius, declared.focus / 20.0, declarations)
+        return Frame(declared, settings, scene, radius, declared.focus / 20.0, declarations, float(lo[1]))
     world_per_view = 1.0 / scene.view.scale
     if settings.legacy_dof is not None and settings.aperture == 0.0:
         aperture, focus = legacy_lens(scene.view, settings.legacy_dof)
@@ -52,12 +55,20 @@ def scene_frame(
         camera = framed(camera, lo, hi, settings.aspect)
         world_per_view = camera.focus / 20.0  # |translation z| of the default legacy view
     radius = float(np.linalg.norm(np.asarray(hi) - np.asarray(lo))) / 2 or 1.0
-    return Frame(camera, settings, scene, radius, world_per_view, declarations)
+    return Frame(camera, settings, scene, radius, world_per_view, declarations, float(lo[1]))
 
 
 def _put(cfg: np.ndarray, at: int, values: object) -> None:
     v = np.asarray(values, np.float32).ravel()
     cfg[at : at + v.size] = v
+
+
+def _fog(cfg: np.ndarray, frame: Frame) -> None:
+    st = frame.settings
+    if st.fog_density > 0:
+        cfg[lay.FOG_DENSITY], cfg[lay.FOG_FALLOFF] = st.fog_density, st.fog_falloff
+        cfg[lay.FOG_BASE] = frame.bottom if st.fog_base is None else st.fog_base
+        _put(cfg, lay.FOG_COLOR, srgb_to_linear(np.asarray(st.fog_color, np.float32)))
 
 
 def config(frame: Frame) -> np.ndarray:
@@ -80,9 +91,19 @@ def config(frame: Frame) -> np.ndarray:
     cfg[lay.CLAMP] = st.clamp
     _put(cfg, lay.LIGHT_POS, st.light_position or default_light(cam, st.aspect, frame.world_per_view))
     cfg[lay.SHADOWS] = 1.0 if st.shadows else 0.0
-    cfg[lay.CAUSTIC_ALPHA] = CAUSTIC_FLOOR if st.caustics == "filtered" else 0.0
+    cfg[lay.CAUSTIC_ALPHA] = CAUSTIC_FLOOR if st.caustics in ("filtered", "photons") else 0.0
     cfg[lay.BACKDROP_SKY] = 1.0 if st.backdrop_sky else 0.0
     cfg[lay.N_LIGHTS] = light_count(frame.declarations)
     cfg[lay.CAM_TYPE] = lay.CAMERA_TYPES.get(st.camera_type, 0)
     cfg[lay.ORTHO_HALF], cfg[lay.FISHEYE_FOV] = st.ortho_height / 2, math.radians(st.fisheye_fov)
-    return cfg
+    table = None
+    if st.filter != "box":
+        table, radius = filter_table(st.filter)
+        cfg[lay.FILTER_ON], cfg[lay.FILTER_RADIUS] = 1.0, radius
+    cfg[lay.BLADES], cfg[lay.BLADE_ROT] = st.blades, math.radians(st.blade_rotation_deg)
+    _fog(cfg, frame)
+    env = settings_environment(st)
+    if env is not None:
+        cfg[lay.ENV_ON], cfg[lay.ENV_W], cfg[lay.ENV_H] = 1.0, env.width, env.height
+        cfg[lay.ENV_ROT], cfg[lay.ENV_SCALE] = math.radians(st.env_rotation_deg), st.env_intensity
+    return cfg if table is None else np.concatenate([cfg, table]).astype(np.float32)

@@ -28,6 +28,7 @@ from .layout import (
     I_DEPTH,
     I_GEN,
     I_HASPREV,
+    I_MAT,
     I_RULE,
     I_SEED,
     I_SRC,
@@ -50,7 +51,8 @@ from .layout import (
 )
 
 RULE_CUSTOM, RULE_AMBIGUOUS = 0, 1
-PRIM_CYLINDER, PRIM_MESH, PRIM_TEMPLATE, PRIM_TRIANGLE = 2, 3, 7, 8
+PRIM_CYLINDER, PRIM_MESH, PRIM_TEMPLATE, PRIM_TRIANGLE = 2, 3, 7, 8  # PRIM_CYLINDER: v1's, draws nothing
+PRIM_CONE, PRIM_TORUS, PRIM_TUBE = 10, 11, 13  # v2 primitives with a bracket parameter (catalog ids)
 OP_EVENT, OP_ERROR, OP_MAXDEPTH, OP_MAXOBJECTS, OP_MINSIZE, OP_MAXSIZE = 1, 2, 3, 4, 5, 6
 OP_SEED_INT, OP_SEED_INITIAL, OP_SYNCRANDOM, OP_COLORPOOL = 7, 8, 9, 10
 MAX_RETIREMENT_CHAIN = 100000
@@ -136,9 +138,18 @@ def _matrix(f: np.ndarray, off: int, out: np.ndarray, n: int) -> None:
 
 
 @kernel
+def has_param(prim: int) -> bool:
+    return prim == PRIM_CONE or prim == PRIM_TORUS or prim == PRIM_TUBE
+
+
+@kernel
 def _aux_row(tables, r: int, work, outbuf, row: int) -> None:  # type: ignore[no-untyped-def]
-    """Mesh: previous frame (base, d1, d2) + previous colour. Triangle: world corners."""
+    """Mesh: previous frame (base, d1, d2) + previous colour. Triangle: world corners. Cone, torus, tube: the
+    bracket parameter."""
     f = work.f
+    if has_param(tables.rule_prim[r]):
+        outbuf.aux_f[row, 0] = tables.rule_param[r]
+        return
     if tables.rule_prim[r] == PRIM_MESH:
         _vectors(f, F_PM, outbuf.aux_f, row, 2)
         pr, pg, pb = hsv_to_rgb32(f[0, F_PHSV], f[0, F_PHSV + 1], f[0, F_PHSV + 2])
@@ -163,9 +174,10 @@ def emit(tables, r: int, work, outbuf, ctl) -> int:  # type: ignore[no-untyped-d
         if prim == PRIM_CYLINDER or (prim == PRIM_MESH and work.i[0, I_HASPREV] == 0):
             return RUNNING  # counted, but Structure Synth 1.5 draws nothing
     n, f = ctl[ST_NOUT], work.f
+    tag = tables.rule_tag[r]
     outbuf.kind[n], outbuf.tag[n], outbuf.src[n], outbuf.gen[n], outbuf.aux[n] = (
         prim,
-        tables.rule_tag[r],
+        tag if tag != 0 else work.i[0, I_MAT],  # an explicit tag beats the inherited v2 'mat'
         work.i[0, I_SRC],
         work.i[0, I_GEN],
         -1,
@@ -173,7 +185,7 @@ def emit(tables, r: int, work, outbuf, ctl) -> int:  # type: ignore[no-untyped-d
     _matrix(f, F_M, outbuf.xf, n)
     red, green, blue = hsv_to_rgb32(f[0, F_HSV], f[0, F_HSV + 1], f[0, F_HSV + 2])
     outbuf.rgba[n, 0], outbuf.rgba[n, 1], outbuf.rgba[n, 2], outbuf.rgba[n, 3] = red, green, blue, f[0, F_ALPHA]
-    if prim == PRIM_MESH or prim == PRIM_TRIANGLE:
+    if prim == PRIM_MESH or prim == PRIM_TRIANGLE or has_param(prim):
         _aux_row(tables, r, work, outbuf, ctl[ST_NAUX])
         outbuf.aux[n] = ctl[ST_NAUX]
         ctl[ST_NAUX] += 1

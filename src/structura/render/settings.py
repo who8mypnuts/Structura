@@ -6,6 +6,8 @@ import math
 from dataclasses import dataclass
 
 from ..core.params import ParamSpec, ParamType
+from .ground import MODES as GROUND_MODES
+from .ground import Ground
 from .kernels import layout as lay
 from .kernels.layout import CAMERA_TYPES
 
@@ -15,7 +17,9 @@ INTEGRATORS = {
     "path": lay.INTEGRATOR_PATH,
     "classic": lay.INTEGRATOR_CLASSIC,
 }
-VIEWS = ("auto", "standard", "soft")  # standard: plain sRGB clip; soft: highlight roll-off
+VIEWS = ("auto", "agx", "standard", "soft", "aces", "filmic")  # render/views.py; auto: agx, classic → standard
+ENV_TYPES = ("gradient", "hdri", "sunsky")
+FILTER_NAMES = ("box", "triangle", "gaussian", "blackman-harris", "mitchell", "catmull-rom", "bspline", "lanczos")
 
 
 @dataclass(frozen=True)
@@ -42,13 +46,37 @@ class RenderSettings:
     light_position: tuple[float, float, float] | None = None  # classic point light; None: the 1.5 default
     shadows: bool = True
     backdrop_sky: bool = False  # camera rays that miss show the environment (v2 'environment' without background)
-    caustics: str = "filtered"  # filtered: glossy lobes are blurred after a rough bounce; "on": unbiased
+    caustics: str = "filtered"  # filtered: glossy lobes blurred after a rough bounce; on: unbiased; photons
+    photon_count: int = 300_000  # caustics "photons": sun photons traced per render
+    photon_radius: float = 0.0  # gather radius in world units (0: 0.6 % of the scene's bounding radius)
     view: str = "auto"
     camera_type: str = "perspective"  # perspective | orthographic | spherical | fisheye
     ortho_height: float = 10.0  # orthographic: visible height in world units
     fisheye_fov: float = 180.0  # fisheye: field of view across the image height, degrees
     frame: bool = False  # ignore the script camera and fit the structure
     seed: int = 0
+    env_type: str = "gradient"  # gradient (sky_top/bottom) | hdri (env_file) | sunsky (Preetham, lit by the sun)
+    env_file: str = ""  # .exr / .hdr; relative paths are resolved against asset_dir
+    env_rotation_deg: float = 0.0
+    env_intensity: float = 1.0
+    turbidity: float = 3.0
+    ground: tuple[float, float, float] = (0.06, 0.055, 0.05)  # sunsky: the ground below the horizon (linear)
+    asset_dir: str = ""  # the script's folder (for relative file names)
+    filter: str = "box"  # pixel reconstruction filter (render/filters.py); box = uniform jitter in the pixel
+    blades: int = 0  # aperture blades for polygonal bokeh (< 3: a round aperture)
+    blade_rotation_deg: float = 0.0
+    region: tuple[int, int, int, int] | None = None  # x0, y0, x1, y1 (pixels): render only this rectangle
+    aovs: bool = False  # also compute first-hit albedo / normal / depth / ids (EXR layers, denoising)
+    noise_threshold: float = 0.0  # adaptive sampling: pixels stop once their relative error is below (0 = off)
+    adaptive_min_samples: int = 16  # samples every pixel gets before the noise test starts
+    time_limit: float = 0.0  # seconds; stop after the pass that crosses it (0 = no limit)
+    ground_plane: str = "off"  # off | plane | catcher (render/ground.py)
+    ground_color: tuple[float, float, float] = (0.8, 0.8, 0.8)  # sRGB
+    ground_offset: float = 0.0  # below the scene's lowest point, world units
+    fog_density: float = 0.0  # per world unit at the fog base (0 = no fog; kernels/fog.py)
+    fog_falloff: float = 0.0  # height over which the density falls by e (0 = homogeneous)
+    fog_base: float | None = None  # height of full density (None: the structure's lowest point)
+    fog_color: tuple[float, float, float] = (0.8, 0.85, 0.9)  # sRGB
 
     @property
     def sun_direction(self) -> tuple[float, float, float]:
@@ -61,7 +89,13 @@ class RenderSettings:
     def view_transform(self) -> str:
         if self.view != "auto":
             return self.view
-        return "standard" if self.integrator == "classic" else "soft"
+        return "standard" if self.integrator == "classic" else "agx"
+
+    @property
+    def ground_spec(self) -> Ground | None:
+        if self.ground_plane not in ("plane", "catcher"):
+            return None
+        return Ground(self.ground_plane == "catcher", self.ground_color, self.ground_offset)
 
     @property
     def aspect(self) -> float:
@@ -77,9 +111,25 @@ def render_param_specs() -> tuple[ParamSpec, ...]:
         ParamSpec("sun_azimuth_deg", ParamType.FLOAT, 35.0, "Sun azimuth °", range=(-360.0, 360.0)),
         ParamSpec("sun_angle_deg", ParamType.FLOAT, 2.0, "Sun size °", range=(0.01, 45.0)),
         ParamSpec("clamp", ParamType.FLOAT, 20.0, "Sample clamp", range=(0.1, 1e6)),
+        ParamSpec("noise_threshold", ParamType.FLOAT, 0.0, "Noise threshold (0 = off)", range=(0.0, 1.0)),
+        ParamSpec("time_limit", ParamType.FLOAT, 0.0, "Time limit, s (0 = none)", range=(0.0, 1e6)),
         ParamSpec("aperture", ParamType.FLOAT, 0.0, "Aperture radius", range=(0.0, 100.0)),
         ParamSpec("camera_type", ParamType.ENUM, "perspective", "Camera", choices=tuple(CAMERA_TYPES)),
-        ParamSpec("caustics", ParamType.ENUM, "filtered", "Caustics", choices=("filtered", "on")),
+        ParamSpec("caustics", ParamType.ENUM, "filtered", "Caustics", choices=("filtered", "on", "photons")),
+        ParamSpec("photon_count", ParamType.INT, 300_000, "Caustic photons", range=(1000, 100_000_000)),
+        ParamSpec("photon_radius", ParamType.FLOAT, 0.0, "Photon radius (0 = auto)", range=(0.0, 1e6)),
         ParamSpec("view", ParamType.ENUM, "auto", "View transform", choices=VIEWS),
+        ParamSpec("filter", ParamType.ENUM, "box", "Pixel filter", choices=FILTER_NAMES),
+        ParamSpec("blades", ParamType.INT, 0, "Aperture blades (bokeh)", range=(0, 16)),
+        ParamSpec("blade_rotation_deg", ParamType.FLOAT, 0.0, "Blade rotation °", range=(-360.0, 360.0)),
+        ParamSpec("env_type", ParamType.ENUM, "gradient", "Environment", choices=ENV_TYPES),
+        ParamSpec("env_file", ParamType.STRING, "", "HDRI file (.exr / .hdr)"),
+        ParamSpec("env_rotation_deg", ParamType.FLOAT, 0.0, "Environment rotation °", range=(-360.0, 360.0)),
+        ParamSpec("env_intensity", ParamType.FLOAT, 1.0, "Environment intensity", range=(0.0, 1000.0)),
+        ParamSpec("turbidity", ParamType.FLOAT, 3.0, "Sky turbidity", range=(1.7, 10.0)),
+        ParamSpec("fog_density", ParamType.FLOAT, 0.0, "Fog density", range=(0.0, 1e3)),
+        ParamSpec("fog_falloff", ParamType.FLOAT, 0.0, "Fog falloff height (0 = even)", range=(0.0, 1e6)),
+        ParamSpec("ground_plane", ParamType.ENUM, "off", "Ground", choices=GROUND_MODES),
+        ParamSpec("ground_offset", ParamType.FLOAT, 0.0, "Ground offset", range=(-1e6, 1e6)),
         ParamSpec("shadows", ParamType.BOOL, True, "Shadows (classic)"),
     )

@@ -1,0 +1,42 @@
+# Release builds (docs/18 §10): app folder + installer per platform, smoke-tested by packaging/build.py.
+name: Release
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  installers:
+    strategy:
+      matrix:
+        include:
+          - { os: ubuntu-22.04, wrap: "packaging/linux/build_appimage.sh" }
+          - { os: windows-2022, wrap: "iscc packaging/windows/structura.iss" }
+          - { os: macos-14, wrap: "packaging/macos/build_dmg.sh" }
+    runs-on: ${{ matrix.os }}
+    env:
+      QT_QPA_PLATFORM: offscreen
+      STRUCTURA_SIGN_IDENTITY: ${{ secrets.STRUCTURA_SIGN_IDENTITY }}
+      STRUCTURA_NOTARY_PROFILE: ${{ secrets.STRUCTURA_NOTARY_PROFILE }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv venv --python 3.12 && uv pip install -e . "pyinstaller>=6.10"
+      - run: uv run python packaging/build.py
+      - run: ${{ matrix.wrap }}
+        shell: bash
+      - uses: actions/upload-artifact@v4
+        with:
+          name: structura-${{ matrix.os }}
+          path: dist/Structura*
+
+  wheel:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheel
+          path: dist/*.whl

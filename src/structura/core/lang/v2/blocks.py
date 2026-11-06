@@ -13,14 +13,13 @@ from typing import Any
 from ...color import parse_color
 from ...scene.declarations import LightSpec, SceneDeclarations
 from ...scene.material import STATE, Material, material_from_dict, presets
+from ..catalog import v2_blocks
 from ..diagnostics import Diagnostic, ParseError, Severity
 from ..source import Span
 
 HEADER = re.compile(r"(?m)^[ \t]*(material|light|environment|camera|render)\b[ \t]*([A-Za-z_][\w-]*)?[ \t]*\{")
 VALUE = re.compile(r'"[^"]*"|\[[^\]]*\]|#[0-9A-Fa-f]+|[^\s]+')
-MATERIAL_KEYS = {"base", "metallic", "roughness", "specular", "ior", "transmission", "emission", "opacity",
-                 "coat", "coat_roughness", "anisotropy", "attenuation_color", "attenuation_distance",
-                 "thin_walled", "transmission_roughness", "preset", "model"}  # fmt: skip
+MATERIAL_KEYS = frozenset(k.name for k in v2_blocks()["material"].keys)  # catalog/v2_blocks.toml
 
 
 @dataclass
@@ -122,3 +121,13 @@ def extract_blocks(text: str) -> Extracted:
     declarations = SceneDeclarations(materials, tuple(lights), singles["environment"], singles["camera"],
                                      singles["render"])  # fmt: skip
     return Extracted(out, declarations, diagnostics)
+
+
+def enclosing_block(text: str, pos: int) -> str | None:
+    """The kind of v2 block ('material', 'camera' …) whose body contains ``pos``, if any."""
+    header = None
+    for match in HEADER.finditer(text, 0, pos):
+        header = match
+    if header is None or "}" in text[header.end() : pos]:
+        return None
+    return header.group(1)

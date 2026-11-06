@@ -17,8 +17,9 @@ if TYPE_CHECKING:
 
 
 def signature_html(sig: Signature) -> str:
-    params = [f"<b>{html.escape(p)}</b>" if i == sig.active else html.escape(p) for i, p in enumerate(sig.params)]
-    return f"<code>{sig.name}({', '.join(params)})</code><br/>{html.escape(sig.doc)}"
+    parts = [f"<b>{html.escape(p)}</b>" if i == sig.active else html.escape(p) for i, p in enumerate(sig.parts())]
+    code = f"{sig.name}({', '.join(parts)})" if sig.kind == "function" else " ".join([sig.name, *parts])
+    return f"<code>{code}</code><br/>{html.escape(sig.doc)}"
 
 
 class SignatureHelp(QObject):

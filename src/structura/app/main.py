@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import sys
 from collections.abc import Sequence
 from pathlib import Path
@@ -10,10 +11,14 @@ from pathlib import Path
 from PySide6.QtGui import QSurfaceFormat
 from PySide6.QtWidgets import QApplication
 
+from ..services.settings import SettingsService
 from ..ui.app_window import MainWindow
 from ..ui.fonts import register_fonts
+from ..ui.i18n import install as install_translators
 from ..ui.viewport.gl_probe import preferred_format, probe
 from ..ui.viewport.host import preferred_backend
+from ..ui.warmup import WarmUp
+from ..ui.watchdog import StallWatchdog
 
 
 def create_app(argv: Sequence[str]) -> QApplication:
@@ -38,14 +43,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = list(sys.argv if argv is None else argv)
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     app = create_app(args)
-    window = MainWindow()
-    files = [Path(a) for a in args[1:] if not a.startswith("-")]
-    for path in files:
-        window.docs.open_file(path)
-    if not files:
-        window.docs.new_script()
+    settings = SettingsService()
+    install_translators(str(settings.value("appearance/language", "system")))
+    window = MainWindow(settings)
+    window.start([Path(a) for a in args[1:] if not a.startswith("-")])
     window.show()
-    return int(app.exec())
+    WarmUp(window).start()
+    watchdog = StallWatchdog(float(os.environ["STRUCTURA_WATCHDOG"])) if "STRUCTURA_WATCHDOG" in os.environ else None
+    code = int(app.exec())
+    for stall in watchdog.stop() if watchdog else ():  # STRUCTURA_WATCHDOG=50: report GUI stalls over 50 ms
+        logging.getLogger("structura.watchdog").warning("GUI stall of %.0f ms\n%s", stall.milliseconds, stall.stack)
+    return code
 
 
 if __name__ == "__main__":

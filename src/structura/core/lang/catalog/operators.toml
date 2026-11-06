@@ -80,3 +80,8 @@ doc = "Set an absolute colour (name, #rgb, #rrggbb, …) or 'random' to draw fro
 name = "blend"
 args = ["color", "float"]
 doc = "Blend towards a colour in HSV space with the given strength."
+[[operator]]
+name = "mat"
+args = ["material"]
+v2 = true
+doc = "v2: the material inherited by the subtree (a declared 'material' block or a preset name); a tag (box::glass) overrides it."

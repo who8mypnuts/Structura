@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from PySide6.QtCore import QObject, QSettings, Signal
+from PySide6.QtCore import QObject, QSettings, QStandardPaths, Signal
 
 
 class SettingsService(QObject):
@@ -13,10 +13,18 @@ class SettingsService(QObject):
 
     def __init__(self, path: Path | None = None) -> None:
         super().__init__()
+        self._path = path
         if path is None:
             self._qs = QSettings("Structura", "Structura")
         else:
             self._qs = QSettings(str(path), QSettings.Format.IniFormat)
+
+    def directory(self) -> Path:
+        """Where per-user files live (session, recovery): next to an explicit settings file, otherwise the
+        platform's application-data folder."""
+        if self._path is not None:
+            return self._path.parent
+        return Path(QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppDataLocation))
 
     def value(self, key: str, default: Any = None) -> Any:
         value = self._qs.value(key, default)

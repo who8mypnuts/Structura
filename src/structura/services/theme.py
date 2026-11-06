@@ -30,6 +30,19 @@ class ThemeService(QObject):
         self.settings.set_value(KEY, theme.meta.id)
         self.theme_changed.emit(theme)
 
+    def preview(self, theme: Theme) -> None:
+        """Show an unsaved theme everywhere (the theme editor's live preview); revert() undoes it."""
+        self.theme_changed.emit(theme)
+
+    def revert(self) -> None:
+        self.theme_changed.emit(self.theme)
+
+    def reload(self, theme_id: str) -> None:
+        """Apply a theme that was just saved (its file may be new or changed)."""
+        self.theme = load_theme(theme_id)
+        self.settings.set_value(KEY, theme_id)
+        self.theme_changed.emit(self.theme)
+
     def toggle_kind(self) -> None:
         """Switch to the paired light/dark counterpart."""
         if self.theme.meta.pair:

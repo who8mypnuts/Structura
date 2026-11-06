@@ -125,6 +125,8 @@ A failure prints a **first-divergence report**: the primitive index, the emittin
   5. Render → cancel → re-render.
 - **Watchdog:** all UI tests run with the UI-stall watchdog ([04](04-concurrency-model.md) §8). Any stall
   > 50 ms fails the test and attaches thread stacks.
+  *As built:* `ui/watchdog.py` (heartbeat + stack sampler); the budget is `STRUCTURA_STALL_MS` (50 ms on the
+  reference machine, 500 ms by default on shared CI), and only stalls in Structura code inside the event loop fail.
 - **Accessibility:** every focusable widget has an accessible name; tab order covers every panel.
 
 ## 8. Performance benchmarks

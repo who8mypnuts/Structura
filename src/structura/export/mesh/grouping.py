@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from ...core.geometry.tessellate import TriMesh
+from ...core.geometry.trimesh import TriMesh
 from ...core.scene.ir import SceneIR
 from ...core.scene.material_library import MaterialTable
 
@@ -23,9 +23,12 @@ def group_keys(mesh: TriMesh, scene: SceneIR, materials: MaterialTable, grouping
         by_material: np.ndarray = mats[materials.by_tag[scene.tag[owners]]]
         return by_material
     if grouping == "color":
-        rgb = np.clip(np.rint(scene.rgba[owners, :3] * 255), 0, 255).astype(np.int64)
-        packed = (rgb[:, 0] << 16) | (rgb[:, 1] << 8) | rgb[:, 2]
-        return np.array([f"c{v:06x}" for v in packed], dtype=object)
+        rgb = np.clip(np.rint(scene.rgba[:, :3] * 255), 0, 255).astype(np.int64)
+        packed = (rgb[:, 0] << 16) | (rgb[:, 1] << 8) | rgb[:, 2]  # per row, not per triangle
+        unique, inverse = np.unique(packed, return_inverse=True)
+        names = np.array([f"c{v:06x}" for v in unique.tolist()], dtype=object)
+        by_colour: np.ndarray = names[inverse][owners]
+        return by_colour
     return np.full(len(owners), "default", dtype=object)
 
 

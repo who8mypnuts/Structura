@@ -16,12 +16,19 @@
 - Two render engines:
   - the **preview engine** (GLSL: instancing, sphere impostors, SSAO, shadows, order-independent
     transparency, picking with jump-to-source, accumulation AA), with a CPU fallback;
-  - the **precision engine** (Sunflow-derived path tracing: principled BSDF, MIS sun, point/sphere/spot
-    lights, Structure Synth's classic look). One kernel source runs on **CUDA, OpenCL, WGSL and the CPU
-    (Numba)**.
-- Exports: OBJ (+MTL), PLY, STL (with a watertight union), 3MF (colour printing), glTF/GLB (optionally
-  `EXT_mesh_gpu_instancing`), USD/USDZ (instanced), X3D, VRML97, a Blender script, and every Structure
-  Synth render template (byte-identical to 1.5).
+  - the **precision engine** (Sunflow-derived path tracing with a principled BSDF, MIS, sun/point/sphere/
+    spot/rect lights, emissive geometry, HDRI and sun-sky, depth of field and bokeh, adaptive sampling,
+    AOVs, denoising, ground/shadow catcher, fog, and Structure Synth's classic look). One kernel source
+    runs on **CUDA, OpenCL, WGSL and the CPU (Numba)**.
+- Animation: a timeline with keyed parameters, seed and camera, v2 `time` expressions, and frame/video
+  rendering.
+- Exports: OBJ (+MTL), PLY, STL (watertight union, CSG markers), 3MF (instanced, colour), glTF/GLB
+  (optionally `EXT_mesh_gpu_instancing`), USD/USDZ (instanced), X3D and VRML97 (DEF/USE), a Blender script
+  (meshes or Geometry Nodes), POV-Ray 3.8, Sunflow and Mitsuba 3 scenes, and every Structure Synth render
+  template (byte-identical to 1.5).
+
+The [user guide](docs/user-guide/README.md) explains everything; the planning and progress documents are in
+[docs/](docs/README.md).
 
 ![Structura](docs/screenshots/window-nord.png)
 

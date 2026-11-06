@@ -6,9 +6,10 @@ from pathlib import Path
 
 import numpy as np
 
-from ...core.geometry.tessellate import TessOptions, TriMesh, tessellate
+from ...core.geometry.trimesh import TriMesh
 from ...core.params import ParamSpec
 from ..base import Exporter, ExportJob, ExportReport, register
+from ..csg import CSG_OPTION, export_mesh
 from .obj import COMMON
 
 VERTEX = np.dtype([("p", "<f4", 3), ("n", "<f4", 3), ("c", "u1", 4)])
@@ -43,13 +44,14 @@ class PlyExporter(Exporter):
     name = "ply"
     title = "PLY (binary)"
     extensions: tuple[str, ...] = (".ply",)
-    params: tuple[ParamSpec, ...] = COMMON
+    params: tuple[ParamSpec, ...] = (*COMMON, CSG_OPTION)
 
     def write(self, job: ExportJob, path: Path) -> ExportReport:
-        mesh = tessellate(job.scene, TessOptions(lod=job.options["lod"]))
+        mesh, warnings = export_mesh(job)
         job.check()
         path.write_bytes(ply_bytes(mesh, job.model.points(mesh.positions), job.model.directions(mesh.normals)))
-        return ExportReport(path, (path,), {"vertices": len(mesh.positions), "triangles": mesh.triangles})
+        counts = {"vertices": len(mesh.positions), "triangles": mesh.triangles}
+        return ExportReport(path, (path,), counts, warnings)
 
 
 register(PlyExporter())

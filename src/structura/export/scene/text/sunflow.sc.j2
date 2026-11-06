@@ -1,0 +1,86 @@
+% Structura export — Sunflow scene (docs/15 §4.4). Render with: sunflow scene.sc
+image {
+  resolution {{ width }} {{ height }}
+  aa 0 2
+  filter gaussian
+}
+trace-depths {
+  diff 1
+  refl 4
+  refr 4
+}
+background {
+  color { "sRGB nonlinear" {{ background | vec }} }
+}
+camera {
+  type pinhole
+  eye {{ camera.eye | vec }}
+  target {{ camera.target | vec }}
+  up {{ camera.up | vec }}
+  fov {{ camera.fov_x | num }}
+  aspect {{ camera.aspect | num }}
+}
+light {
+  type sunsky
+  up {{ up | vec }}
+  east {{ east | vec }}
+  sundir {{ sun | vec }}
+  turbidity 4
+  samples 16
+  ground.extendsky true
+}
+{% for s in shaders %}
+shader {
+  name "{{ s.name }}"
+{% if s.kind == "glass" %}
+  type glass
+  eta {{ s.material.ior | num }}
+  color { "sRGB nonlinear" {{ s.rgba[:3] | vec }} }
+{% elif s.kind == "mirror" %}
+  type mirror
+  refl { "sRGB nonlinear" {{ s.rgba[:3] | vec }} }
+{% elif s.kind == "shiny" %}
+  type shiny
+  diff { "sRGB nonlinear" {{ s.rgba[:3] | vec }} }
+  refl 0.3
+{% elif s.kind == "emissive" %}
+  type constant
+  color { "sRGB nonlinear" {{ s.rgba[:3] | vec }} }
+{% else %}
+  type diffuse
+  diff { "sRGB nonlinear" {{ s.rgba[:3] | vec }} }
+{% endif %}
+}
+{% endfor %}
+{% for p in prototypes %}
+object {
+  noinstance
+  type generic-mesh
+  name "P_{{ p.key | ident }}"
+  points {{ p.mesh.positions | length }} {{ p.mesh.positions | vec }}
+  triangles {{ p.mesh.indices | length }} {{ p.mesh.indices | vec }}
+  normals vertex {{ p.mesh.normals | vec }}
+  uvs none
+}
+{% endfor %}
+{% for i in placed %}
+instance {
+  name "i{{ loop.index0 }}"
+  geometry "P_{{ i.proto.key | ident }}"
+  transform row {{ i.rows4 | vec }}
+  shader "{{ i.shader }}"
+}
+{% endfor %}
+{% if rest %}
+object {
+  shaders {{ rest.shader_names | length }}{% for n in rest.shader_names %} "{{ n }}"{% endfor %}
+
+  type generic-mesh
+  name "baked"
+  points {{ rest.points | length }} {{ rest.points | vec }}
+  triangles {{ rest.triangles | length }} {{ rest.triangles | vec }}
+  normals vertex {{ rest.normals | vec }}
+  uvs none
+  face_shaders {{ rest.face_shaders | vec }}
+}
+{% endif %}

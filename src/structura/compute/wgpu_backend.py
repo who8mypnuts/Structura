@@ -37,7 +37,7 @@ def _entry(binding: int, buf: Any) -> dict[str, Any]:
 class WgpuBound(Bound):
     def __init__(self, backend: WgpuBackend, launch: Launch) -> None:
         self.device = backend.device
-        self.pipeline = backend.pipeline(WGSLEmitter(launch.module).emit(), launch.kernel)
+        self.pipeline = backend.pipeline(WGSLEmitter(launch.module).emit(), launch)
         self.gpu: dict[str, Any] = {}
         self.bind_group: Any = None
         super().__init__(launch)
@@ -69,7 +69,7 @@ class WgpuBound(Bound):
         pass_ = encoder.begin_compute_pass()
         pass_.set_pipeline(self.pipeline)
         pass_.set_bind_group(0, self._bind_group())
-        pass_.dispatch_workgroups(*self.launch.groups())
+        pass_.dispatch_workgroups(*self.groups())
         pass_.end()
         self.device.queue.submit([encoder.finish()])
 
@@ -87,14 +87,26 @@ class WgpuBackend(BackendBase):
         self.is_gpu = str(info.get("adapter_type", "")).lower() not in ("cpu", "unknown")
         self._pipelines: dict[tuple[str, str], Any] = {}
 
-    def pipeline(self, source: str, entry: str) -> Any:
-        key = (source, entry)
+    def pipeline(self, source: str, launch: Launch) -> Any:
+        key = (source, launch.kernel)
         if key not in self._pipelines:
             shader = self.device.create_shader_module(code=source)
             self._pipelines[key] = self.device.create_compute_pipeline(
-                layout="auto", compute={"module": shader, "entry_point": entry}
+                layout=self._layout(launch), compute={"module": shader, "entry_point": launch.kernel}
             )
         return self._pipelines[key]
+
+    def _layout(self, launch: Launch) -> Any:
+        """The layout of every declared binding. ('auto' would keep only the bindings the shader uses, so a
+        kernel that ignores part of a buffer set could not be bound with the whole set.)"""
+        compute, types = wgpu.ShaderStage.COMPUTE, wgpu.BufferBindingType
+        entries = [{"binding": i, "visibility": compute,
+                    "buffer": {"type": types.storage if t.writable else types.read_only_storage}}
+                   for i, (_, t) in enumerate(launch.buffers())]  # fmt: skip
+        if launch.scalars():
+            entries.append({"binding": len(entries), "visibility": compute, "buffer": {"type": types.uniform}})
+        group = self.device.create_bind_group_layout(entries=entries)
+        return self.device.create_pipeline_layout(bind_group_layouts=[group])
 
     def bind(self, launch: Launch) -> Bound:
         return WgpuBound(self, launch)

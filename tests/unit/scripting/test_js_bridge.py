@@ -29,6 +29,11 @@ class Host:
     def allow_execute(self, command: str, arguments: str) -> bool:
         return False
 
+    def cancelled(self) -> bool:
+        return len(self.rendered) >= self.stop_after
+
+    stop_after = 10**9
+
 
 @pytest.fixture(autouse=True)
 def app() -> Any:
@@ -53,3 +58,12 @@ def test_limit_stops_the_loop_and_errors_report_lines(tmp_path: Path) -> None:
     with pytest.raises(RuntimeError, match="line"):
         run_javascript("#javascript\nBuilder.load('missing.es');\n", tmp_path, host)
     assert js_string(36.0) == "36" and js_string(0.25) == "0.25"
+
+
+def test_cancellation_ends_the_script_between_actions(tmp_path: Path) -> None:
+    host = Host()
+    host.stop_after = 2
+    loop = "for (var i = 0; i < 100; i++) { Builder.build(); Builder.raytraceToFile('f' + i + '.png', true); }"
+    script = f"#javascript\n{loop}\n"
+    written = run_javascript(script, tmp_path, host)
+    assert written == 2 and len(host.rendered) == 2  # stopped cleanly, not an error

@@ -10,8 +10,9 @@ from typing import Any
 import numpy as np
 import pygltflib as g
 
-from ...core.color import srgb_to_linear
-from ...core.geometry.tessellate import TessOptions, TriMesh, tessellate
+from ...core.color import srgb_to_linear_16
+from ...core.geometry.tessellate import TessOptions, tessellate
+from ...core.geometry.trimesh import TriMesh
 from ...core.params import ParamSpec, ParamType
 from ...core.scene.material import Material
 from ..base import Exporter, ExportJob, ExportReport, register
@@ -75,10 +76,13 @@ def _camera(job: ExportJob) -> tuple[g.Camera, g.Node]:
 
 def _primitive(blob: _Blob, mesh: TriMesh, job: ExportJob, mask: np.ndarray, material: int) -> g.Primitive:
     tri = mesh.indices[mask]
-    used, remap = np.unique(tri, return_inverse=True)
+    if mask.all():  # one material: every vertex, no re-indexing
+        used, remap = np.arange(len(mesh.positions)), tri
+    else:
+        used, remap = np.unique(tri, return_inverse=True)
     pos = job.model.points(mesh.positions[used])
     nrm = job.model.directions(mesh.normals[used])
-    col = np.hstack([srgb_to_linear(mesh.colors[used, :3]), mesh.colors[used, 3:]]).astype(np.float32)
+    col = np.hstack([srgb_to_linear_16(mesh.colors[used, :3]), mesh.colors[used, 3:]]).astype(np.float32)
     attrs = g.Attributes(
         POSITION=blob.accessor(pos, g.FLOAT, "VEC3", g.ARRAY_BUFFER, bounds=True),
         NORMAL=blob.accessor(nrm, g.FLOAT, "VEC3", g.ARRAY_BUFFER),

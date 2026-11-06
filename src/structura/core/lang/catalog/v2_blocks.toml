@@ -1,0 +1,282 @@
+# EisenScript v2 blocks (docs/05 §9.3–9.5): the keys each block accepts, as implemented. The language
+# reference and the block parser both read this file.
+
+[[block]]
+name = "material"
+doc = "A named material: 'material NAME { … }', selected by tags (box::NAME) or the 'mat' state."
+[[block.key]]
+name = "preset"
+value = "name"
+doc = "Starting point: glass, mirror, metal, gold, chrome, matte, plastic, emissive, clay, ceramic."
+[[block.key]]
+name = "model"
+value = "principled | constant | wireframe | ao | debug_normal | debug_id | debug_uv | debug_generation | debug_gray | shadow_catcher"
+doc = "Shading model: principled (the default), flat constant colour, wireframe, ambient occlusion, a debug view, or shadow_catcher (shows the background, darkened by the shadows falling on it)."
+[[block.key]]
+name = "base"
+value = "state | colour"
+doc = "Base colour; 'state' (the default) uses the structure's colour."
+[[block.key]]
+name = "metallic"
+value = "0..1"
+doc = "Metalness."
+[[block.key]]
+name = "roughness"
+value = "0..1"
+doc = "Microfacet roughness."
+[[block.key]]
+name = "specular"
+value = "0..1"
+doc = "Dielectric specular level (0.5 = IOR 1.5)."
+[[block.key]]
+name = "ior"
+value = "number"
+doc = "Index of refraction."
+[[block.key]]
+name = "transmission"
+value = "0..1"
+doc = "Glass-like transmission."
+[[block.key]]
+name = "transmission_roughness"
+value = "0..1"
+doc = "Roughness of the transmitted lobe."
+[[block.key]]
+name = "emission"
+value = "colour strength"
+doc = "Emitted light: a colour and a strength."
+[[block.key]]
+name = "opacity"
+value = "state | 0..1"
+doc = "Alpha; 'state' (the default) uses the structure's alpha."
+[[block.key]]
+name = "coat"
+value = "0..1"
+doc = "Clear-coat layer weight."
+[[block.key]]
+name = "coat_roughness"
+value = "0..1"
+doc = "Clear-coat roughness."
+[[block.key]]
+name = "anisotropy"
+value = "-1..1"
+doc = "Anisotropic stretch of the highlight."
+[[block.key]]
+name = "attenuation_color"
+value = "colour"
+doc = "Volume absorption colour of transmissive materials."
+[[block.key]]
+name = "attenuation_distance"
+value = "number"
+doc = "Distance at which the absorption reaches the attenuation colour."
+[[block.key]]
+name = "thin_walled"
+value = "bool"
+doc = "Treat transmissive surfaces as thin shells (no refraction offset)."
+
+[[block]]
+name = "light"
+doc = "A named light: 'light NAME { type … }'. The first sun light also drives the sky."
+[[block.key]]
+name = "type"
+value = "sun | point | sphere | spot | rect"
+doc = "Kind of light. rect: a one-sided rectangle facing its target (soft, area-sampled shadows)."
+[[block.key]]
+name = "direction"
+value = "[x y z]"
+doc = "sun: the direction the light travels."
+[[block.key]]
+name = "intensity"
+value = "number"
+doc = "sun: irradiance multiplier."
+[[block.key]]
+name = "angle"
+value = "degrees"
+doc = "sun: angular diameter (soft shadows)."
+[[block.key]]
+name = "position"
+value = "[x y z]"
+doc = "point, sphere, spot, rect: position (rect: its centre)."
+[[block.key]]
+name = "radius"
+value = "number"
+doc = "sphere: radius of the emitting sphere."
+[[block.key]]
+name = "power"
+value = "number"
+doc = "point, sphere, spot, rect: emitted power (comparable across types)."
+[[block.key]]
+name = "target"
+value = "[x y z]"
+doc = "spot, rect: the point the light faces."
+[[block.key]]
+name = "size"
+value = "[w h]"
+doc = "rect: width and height of the rectangle."
+[[block.key]]
+name = "cone"
+value = "degrees"
+doc = "spot: half-angle of the cone."
+[[block.key]]
+name = "blend"
+value = "0..1"
+doc = "spot: fraction of the cone used for the soft edge."
+[[block.key]]
+name = "color"
+value = "colour"
+doc = "Light colour."
+
+[[block]]
+name = "environment"
+doc = "What camera rays and indirect light see when they miss the structure."
+[[block.key]]
+name = "type"
+value = "sunsky | hdri | color | gradient"
+doc = "sunsky: the Preetham clear sky for the first sun light; hdri: an image (importance-sampled); color: uniform; gradient: top to bottom."
+[[block.key]]
+name = "file"
+value = "\"path.exr\""
+doc = "hdri: an equirectangular .exr or .hdr image (relative to the script)."
+[[block.key]]
+name = "rotation"
+value = "degrees"
+doc = "hdri, sunsky: turn the environment about the vertical axis."
+[[block.key]]
+name = "intensity"
+value = "number"
+doc = "hdri, sunsky: brightness multiplier."
+[[block.key]]
+name = "turbidity"
+value = "1.7..10"
+doc = "sunsky: haze (2 = very clear, 3 = clear, 6+ = hazy)."
+[[block.key]]
+name = "ground"
+value = "colour"
+doc = "sunsky: the ground colour below the horizon."
+[[block.key]]
+name = "color"
+value = "colour"
+doc = "color: the uniform colour (#fff gives the white-studio look)."
+[[block.key]]
+name = "top"
+value = "colour"
+doc = "gradient: zenith colour."
+[[block.key]]
+name = "bottom"
+value = "colour"
+doc = "gradient: nadir colour."
+
+[[block]]
+name = "camera"
+doc = "The view; overrides the legacy 'set translation/rotation/pivot/scale' lines (W113)."
+[[block.key]]
+name = "type"
+value = "perspective | orthographic | spherical | fisheye"
+doc = "Projection."
+[[block.key]]
+name = "position"
+value = "[x y z]"
+doc = "Eye position."
+[[block.key]]
+name = "target"
+value = "[x y z]"
+doc = "Point looked at."
+[[block.key]]
+name = "up"
+value = "[x y z]"
+doc = "Up vector."
+[[block.key]]
+name = "fov"
+value = "degrees"
+doc = "Vertical field of view (fisheye: across the image height)."
+[[block.key]]
+name = "height"
+value = "number"
+doc = "orthographic: visible height in world units."
+[[block.key]]
+name = "aperture"
+value = "number"
+doc = "Lens radius for depth of field; 0 is a pinhole."
+[[block.key]]
+name = "focus"
+value = "auto | number"
+doc = "Focus distance; auto focuses on the target."
+[[block.key]]
+name = "blades"
+value = "int"
+doc = "Aperture blades: 3 or more give polygonal bokeh (0: round)."
+[[block.key]]
+name = "blade_rotation"
+value = "degrees"
+doc = "Rotation of the aperture polygon (also written blade-rotation)."
+
+[[block]]
+name = "render"
+doc = "Render settings; override 'set raytracer::…' lines (W113)."
+[[block.key]]
+name = "integrator"
+value = "path | ao | classic | preview"
+doc = "path: physically based; ao: ambient occlusion; classic: Structure Synth 1.5's look; preview: fast."
+[[block.key]]
+name = "samples"
+value = "int"
+doc = "Samples per pixel."
+[[block.key]]
+name = "size"
+value = "WxH"
+doc = "Output size in pixels, e.g. 1920x1080."
+[[block.key]]
+name = "filter"
+value = "box | triangle | gaussian | blackman-harris | mitchell | catmull-rom | bspline | lanczos"
+doc = "Pixel reconstruction filter (importance-sampled; box is a plain jitter inside the pixel)."
+[[block.key]]
+name = "max_bounces"
+value = "int"
+doc = "Maximum path length (also written max-bounces)."
+[[block.key]]
+name = "noise_threshold"
+value = "float"
+doc = "Adaptive sampling: a pixel stops once its relative noise is below this (e.g. 0.01; 0 = off)."
+[[block.key]]
+name = "time_limit"
+value = "float"
+doc = "Stop rendering after this many seconds (0 = no limit)."
+[[block.key]]
+name = "ground"
+value = "off | plane | catcher"
+doc = "A ground under the structure: a diffuse plane, or a shadow catcher that shows the background darkened by the shadows (path integrator)."
+[[block.key]]
+name = "ground_color"
+value = "color"
+doc = "Colour of the ground plane."
+[[block.key]]
+name = "ground_offset"
+value = "float"
+doc = "How far below the structure's lowest point the ground lies (world units)."
+[[block.key]]
+name = "fog_density"
+value = "float"
+doc = "Fog: density per world unit at the fog base (0 = no fog). Rays fade towards the fog colour with distance."
+[[block.key]]
+name = "fog_falloff"
+value = "float"
+doc = "Fog: the height over which the density falls by a factor e (0 = even fog everywhere)."
+[[block.key]]
+name = "fog_base"
+value = "float"
+doc = "Fog: the height of full density (default: the structure's lowest point)."
+[[block.key]]
+name = "fog_color"
+value = "color"
+doc = "Fog: its colour."
+[[block.key]]
+name = "caustics"
+value = "filtered | on | photons"
+doc = "Light focused by glass and mirrors: filtered (smooth, the default), on (unbiased, noisy) or photons (sharp sun caustics from a photon map)."
+[[block.key]]
+name = "photon_count"
+value = "int"
+doc = "Caustic photons traced per render (caustics photons; default 300000)."
+[[block.key]]
+name = "photon_radius"
+value = "float"
+doc = "Photon gather radius in world units (0 = automatic: 0.6 % of the scene's size)."

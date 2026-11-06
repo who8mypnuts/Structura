@@ -111,3 +111,21 @@ def unit_cylinder(segments: int = 32, top_scale: float = 1.0) -> Mesh:
             a, b = centre + 1 + k, centre + 1 + (k + 1) % segments
             indices.append((centre, b, a) if sign < 0 else (centre, a, b))
     return _frozen(Mesh(np.array(positions, np.float32), np.array(normals, np.float32), np.array(indices, np.uint32)))
+
+
+@cache
+def unit_torus(minor: float = 0.1, rings: int = 16, segments: int = 32) -> Mesh:
+    """Torus in the xy plane around the cube centre: major radius 0.5 − minor, tube radius ``minor``."""
+    major = 0.5 - minor
+    u = np.linspace(0, 2 * np.pi, segments + 1)  # around the z axis
+    v = np.linspace(0, 2 * np.pi, rings + 1)  # around the tube
+    uu, vv = np.meshgrid(u, v, indexing="ij")
+    ring = np.stack([np.cos(uu), np.sin(uu), np.zeros_like(uu)], -1)
+    n = ring * np.cos(vv)[..., None] + np.array([0, 0, 1.0]) * np.sin(vv)[..., None]
+    p = 0.5 + ring * major + n * minor
+    row = rings + 1
+    quads = [(a * row + b, (a + 1) * row + b, (a + 1) * row + b + 1, a * row + b + 1)
+             for a in range(segments) for b in range(rings)]  # fmt: skip
+    tris = [tri for a, b, c, d in quads for tri in ((a, b, c), (a, c, d))]
+    mesh = Mesh(p.reshape(-1, 3).astype(np.float32), n.reshape(-1, 3).astype(np.float32), np.array(tris, np.uint32))
+    return _frozen(mesh)

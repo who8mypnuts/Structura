@@ -14,8 +14,8 @@ Scanning rules (Structure Synth 1.5 behaviour):
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
 from enum import Enum
+from typing import NamedTuple
 
 from ..diagnostics import ParseError
 from ..source import Span
@@ -67,8 +67,7 @@ class Kind(Enum):
     END = "end"
 
 
-@dataclass(frozen=True, slots=True)
-class Token:
+class Token(NamedTuple):  # a tuple: created once per word, so it must be cheap
     kind: Kind
     text: str  # lower-cased user string / canonical operator name / raw number text
     span: Span
@@ -115,6 +114,10 @@ def classify(text: str, span: Span) -> Token:
     return Token(Kind.USER, lower, span)
 
 
+_PLAIN = re.compile(r"[^\r\n#/*\[{} ]+")  # word characters: none can start a comment, bracket or split
+_QUIET = re.compile(r"[^\r*/#]+")  # comment text: none can end or start a comment
+
+
 class _Scanner:
     def __init__(self, text: str) -> None:
         self.src = text + " "
@@ -125,8 +128,10 @@ class _Scanner:
         self.in_block = False
 
     def flush(self, end: int, strip: bool = True) -> None:
+        if not self.current:
+            return
         raw = "".join(self.current)
-        text = "".join(ch for ch in raw if not ch.isspace()) if strip else raw
+        text = "".join(raw.split()) if strip else raw  # split() drops every whitespace character
         if text:
             self.pieces.append((text, Span(self.start, end)))
         self.current = []
@@ -161,10 +166,12 @@ class _Scanner:
         if i >= len(src):
             raise ParseError("No matching ']' found for '['", Span(self.start, i), "E002")
         self.add(i, "]")
-        self.flush(i + 1, strip=False)
+        if src[i + 1 : i + 3] != "::":  # 'cone[0.5]::gold' stays one word (an error in 1.5, so no conflict)
+            self.flush(i + 1, strip=False)
         return i + 1
 
     def run(self) -> list[tuple[str, Span]]:
+        """Character rules as in 1.5; runs of characters that cannot change the state are taken at once."""
         i, src = 0, self.src
         while i < len(src):
             ch = src[i]
@@ -175,7 +182,8 @@ class _Scanner:
                 i += consumed
                 continue
             if self.in_line or self.in_block:
-                i += 1
+                quiet = _QUIET.match(src, i + 1)  # inside a comment only \r, '*', '/' and '#' matter
+                i = quiet.end() if quiet else i + 1
             elif ch == "[":
                 i = self.bracket(i)
             elif ch in "{} \r\n":
@@ -184,8 +192,12 @@ class _Scanner:
                     self.pieces.append((ch, Span(i, i + 1)))
                 i += 1
             else:
-                self.add(i, ch)
-                i += 1
+                plain = _PLAIN.match(src, i)
+                if not self.current:
+                    self.start = i
+                end = plain.end() if plain else i + 1
+                self.current.append(src[i:end])
+                i = end
         return self.pieces
 
 

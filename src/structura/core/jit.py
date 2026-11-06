@@ -11,7 +11,8 @@ from __future__ import annotations
 
 import contextlib
 import hashlib
-from collections.abc import Callable
+import threading
+from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import Any, cast
 
@@ -50,3 +51,41 @@ def kernel[F: Callable[..., Any]](fn: F) -> F:
 def host_kernel[F: Callable[..., Any]](fn: F) -> F:
     """Compile a host-side algorithm that may allocate (BVH build, packing): nopython, nogil, cached, with NRT."""
     return cast(F, njit(cache=True, nogil=True)(fn))
+
+
+def parallel_kernel[F: Callable[..., Any]](fn: F) -> F:
+    """A host algorithm parallelised over CPU cores with ``numba.prange`` (image filters)."""
+    return cast(F, njit(cache=True, nogil=True, parallel=True)(fn))
+
+
+class FairLock:
+    """A first-come, first-served lock: a thread that releases and immediately re-acquires (a render loop
+    between bands) goes to the back of the queue instead of starving the other lanes."""
+
+    def __init__(self) -> None:
+        self._cond = threading.Condition()
+        self._next_ticket = 0
+        self._serving = 0
+
+    def __enter__(self) -> None:
+        with self._cond:
+            ticket = self._next_ticket
+            self._next_ticket += 1
+            self._cond.wait_for(lambda: self._serving == ticket)
+
+    def __exit__(self, *exc: object) -> None:
+        with self._cond:
+            self._serving += 1
+            self._cond.notify_all()
+
+
+_PARALLEL = FairLock()
+
+
+@contextlib.contextmanager
+def parallel_section() -> Iterator[None]:
+    """Serialise parallel Numba calls across threads: Numba's portable ``workqueue`` threading layer is not
+    safe for concurrent parallel regions (docs/04 §6). Callers keep each section short (one render band, one
+    filter pass) so that lanes interleave fairly."""
+    with _PARALLEL:
+        yield

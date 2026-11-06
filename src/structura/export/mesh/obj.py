@@ -7,10 +7,12 @@ from pathlib import Path
 
 import numpy as np
 
-from ...core.geometry.tessellate import TessOptions, TriMesh, iter_tessellate
+from ...core.geometry.tessellate import TessOptions, iter_tessellate
+from ...core.geometry.trimesh import TriMesh
 from ...core.params import ParamSpec, ParamType
 from ...core.scene.material import Material
 from ..base import Exporter, ExportJob, ExportReport, register
+from .ascii import face_rows, float_rows
 from .grouping import GROUPINGS, group_keys, hex_color
 
 COMMON = (
@@ -18,21 +20,6 @@ COMMON = (
     ParamSpec("up", ParamType.ENUM, "y", "Up axis", choices=("y", "z")),
     ParamSpec("unit_scale", ParamType.FLOAT, 1.0, "Unit scale", range=(1e-6, 1e6)),
 )
-
-
-def _rows(prefix: str, data: np.ndarray, fmt: str) -> str:
-    """One formatted line per row, formatted in a single C-level '%' operation (much faster than savetxt)."""
-    if not len(data):
-        return ""
-    return (f"{prefix} {fmt}\n" * len(data)) % tuple(data.ravel().tolist())
-
-
-def _faces(indices: np.ndarray, base: int, normals: bool) -> str:
-    idx = indices.astype(np.int64) + base + 1
-    if normals:
-        pairs = np.repeat(idx, 2, axis=1)
-        return _rows("f", pairs, "%d//%d %d//%d %d//%d")
-    return _rows("f", idx, "%d %d %d")
 
 
 def _mtl(name: str, material: Material | None) -> str:
@@ -70,8 +57,8 @@ class ObjExporter(Exporter):
         mtl_path = path.with_suffix(".mtl")
         groups: dict[str, Material | None] = {}
         counts = {"vertices": 0, "triangles": 0}
-        with path.open("w", encoding="utf-8", newline="\n") as out:
-            out.write(f"# Structura OBJ export\nmtllib {mtl_path.name}\n")
+        with path.open("wb") as out:
+            out.write(f"# Structura OBJ export\nmtllib {mtl_path.name}\n".encode())
             for chunk in iter_tessellate(job.scene, TessOptions(lod=o["lod"])):
                 job.check()
                 self._chunk(out, chunk, job, groups, counts)
@@ -80,23 +67,23 @@ class ObjExporter(Exporter):
         mtl_path.write_text("".join(_mtl(g, by_name.get(g)) for g in groups), encoding="utf-8")
         return ExportReport(path, (path, mtl_path), counts)
 
-    def _chunk(self, out: io.TextIOBase, chunk: TriMesh, job: ExportJob, groups: dict, counts: dict) -> None:  # type: ignore[type-arg]
+    def _chunk(self, out: io.BufferedIOBase, chunk: TriMesh, job: ExportJob, groups: dict, counts: dict) -> None:  # type: ignore[type-arg]
         if not chunk.triangles:
             return
         o, model = job.options, job.model
         pos = model.points(chunk.positions)
         if o["vertex_colors"]:
-            out.write(_rows("v", np.hstack([pos, chunk.colors[:, :3]]), "%.6g %.6g %.6g %.4g %.4g %.4g"))
+            out.write(float_rows("v", np.hstack([pos, chunk.colors[:, :3]]), (6, 6, 6, 4, 4, 4)))
         else:
-            out.write(_rows("v", pos, "%.6g %.6g %.6g"))
+            out.write(float_rows("v", pos, (6, 6, 6)))
         if o["normals"]:
-            out.write(_rows("vn", model.directions(chunk.normals), "%.4g %.4g %.4g"))
+            out.write(float_rows("vn", model.directions(chunk.normals), (4, 4, 4)))
         keys = group_keys(chunk, job.scene, model.materials, o["grouping"])
         order = np.argsort(keys, kind="stable")
         for key in dict.fromkeys(keys[order]):
             groups.setdefault(str(key), None)
-            out.write(f"g {key}\nusemtl {key}\n")
-            out.write(_faces(chunk.indices[keys == key], counts["vertices"], o["normals"]))
+            out.write(f"g {key}\nusemtl {key}\n".encode())
+            out.write(face_rows(chunk.indices[keys == key], counts["vertices"], o["normals"]))
         counts["vertices"] += len(pos)
         counts["triangles"] += chunk.triangles
 

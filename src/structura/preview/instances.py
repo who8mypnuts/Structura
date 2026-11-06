@@ -11,8 +11,11 @@ from dataclasses import dataclass
 import numpy as np
 
 from ..core.geometry.triangles import scene_triangles
+from ..core.geometry.v2_shapes import V2_KINDS, v2_kind_mesh
 from ..core.scene.ir import PrimitiveKind as K
 from ..core.scene.ir import SceneIR
+
+PREVIEW_SEGMENTS = 24  # around round v2 shapes
 
 
 @dataclass(frozen=True)
@@ -95,13 +98,21 @@ def _oriented_boxes(scene: SceneIR) -> tuple[Batch, Batch, Batch]:
 
 
 def _triangles(scene: SceneIR) -> TriangleSoup:
+    """Mesh sweeps and triangle[…] (flat normals), plus the tessellated v2 shapes (smooth normals)."""
     corners, owners = scene_triangles(scene)
     p = corners.reshape(-1, 3, 3)
     n = np.cross(p[:, 1] - p[:, 0], p[:, 2] - p[:, 0])
     n /= np.maximum(np.linalg.norm(n, axis=1, keepdims=True), 1e-20)
     vertices = np.concatenate([p, np.repeat(n[:, None], 3, axis=1)], axis=2).reshape(-1, 6).astype(np.float32)
     owner3 = np.repeat(owners, 3)
-    return TriangleSoup(vertices, _colors(scene, owner3), (owner3 + 1).astype(np.uint32))
+    for kind in V2_KINDS:
+        rows = np.nonzero(scene.kind == kind)[0]
+        if rows.size:
+            mesh = v2_kind_mesh(scene, kind, rows, PREVIEW_SEGMENTS)
+            corner = mesh.indices.ravel()
+            vertices = np.concatenate([vertices, np.hstack([mesh.positions[corner], mesh.normals[corner]])])
+            owner3 = np.concatenate([owner3, np.repeat(mesh.owners, 3)])
+    return TriangleSoup(vertices.astype(np.float32), _colors(scene, owner3), (owner3 + 1).astype(np.uint32))
 
 
 def _bounds(scene: SceneIR) -> tuple[np.ndarray, np.ndarray, float]:

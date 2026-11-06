@@ -46,7 +46,8 @@ def palette(theme: Theme) -> QPalette:
 
 
 def apply_theme(app: QApplication, theme: Theme, fonts: Fonts | None = None) -> None:
-    app.setStyle("Fusion")
+    if app.style().name().lower() != "fusion":  # setting it again re-polishes every widget for nothing
+        app.setStyle("Fusion")
     app.setPalette(palette(theme))
     assets = {"close": icon_file("x", split_alpha(theme["ui.fg.muted"])[0])}
     app.setStyleSheet(render_qss(theme, fonts, assets=assets))

@@ -10,7 +10,7 @@ import math
 import numpy as np
 
 from ..core.color import parse_color, srgb_to_linear
-from ..core.scene.declarations import LightSpec, SceneDeclarations
+from ..core.scene.declarations import LightSpec, SceneDeclarations, Values
 from .kernels import layout as lay
 
 
@@ -26,6 +26,31 @@ def _colour(value: object) -> np.ndarray:
     return srgb_to_linear(rgb)
 
 
+def _rect(r: np.ndarray, v: Values, position: np.ndarray) -> None:
+    """One-sided rectangle facing 'target': centre, half-edges, area and radiance L = P·colour / (π·A)."""
+    target = _vec(v.get("target"), tuple(position - np.array([0.0, 1.0, 0.0], np.float32)))
+    normal = target - position
+    normal = normal / (np.linalg.norm(normal) or 1.0)
+    hint = np.array([0.0, 1.0, 0.0] if abs(normal[1]) < 0.9 else [1.0, 0.0, 0.0], np.float32)
+    u = np.cross(normal, hint)
+    u /= np.linalg.norm(u)
+    w, h = _size(v.get("size"))
+    eu, ev = u * (w / 2), np.cross(normal, u) * (h / 2)  # cross(eu, ev) points along the normal
+    area = w * h
+    r[lay.L_DIR : lay.L_DIR + 3], r[lay.L_EDGE_V : lay.L_EDGE_V + 3], r[lay.L_RADIUS] = eu, ev, area
+    r[lay.L_INTENSITY : lay.L_INTENSITY + 3] = (
+        _colour(v.get("color")) * float(v.get("power", 100.0)) / (math.pi * max(area, 1e-9))
+    )
+
+
+def _size(value: object) -> tuple[float, float]:
+    if isinstance(value, tuple) and len(value) >= 2:
+        return float(value[0]), float(value[1])
+    if isinstance(value, float):
+        return value, value
+    return 1.0, 1.0
+
+
 def pack_light(light: LightSpec) -> np.ndarray:
     r = np.zeros(lay.LIGHT_F, np.float32)
     v = light.values
@@ -34,6 +59,8 @@ def pack_light(light: LightSpec) -> np.ndarray:
     r[lay.L_POS : lay.L_POS + 3] = position
     r[lay.L_RADIUS] = float(v.get("radius", 0.0)) if light.type == "sphere" else 0.0
     r[lay.L_INTENSITY : lay.L_INTENSITY + 3] = _colour(v.get("color")) * float(v.get("power", 100.0)) / (4 * math.pi)
+    if light.type == "rect":
+        _rect(r, v, position)
     if light.type == "spot":
         axis = _vec(v.get("target"), (0.0, 0.0, 0.0)) - position
         r[lay.L_DIR : lay.L_DIR + 3] = axis / (np.linalg.norm(axis) or 1.0)

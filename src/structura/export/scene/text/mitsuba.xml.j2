@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Structura export — Mitsuba 3 scene (docs/15 §4.4). Render with: mitsuba scene.xml -->
+<scene version="3.0.0">
+  <integrator type="path"><integer name="max_depth" value="8"/></integrator>
+  <sensor type="perspective">
+    <float name="fov" value="{{ camera.fov_y | num }}"/>
+    <string name="fov_axis" value="y"/>
+    <transform name="to_world"><lookat origin="{{ camera.eye | csv }}" target="{{ camera.target | csv }}" up="{{ camera.up | csv }}"/></transform>
+    <sampler type="independent"><integer name="sample_count" value="{{ samples }}"/></sampler>
+    <film type="hdrfilm"><integer name="width" value="{{ width }}"/><integer name="height" value="{{ height }}"/></film>
+  </sensor>
+  <emitter type="constant"><rgb name="radiance" value="{{ background_linear | csv }}"/></emitter>
+  <emitter type="directional">
+    <vector name="direction" value="{{ (-sun) | csv }}"/>
+    <rgb name="irradiance" value="3, 3, 3"/>
+  </emitter>
+{% for s in shaders %}
+  <bsdf type="principled" id="{{ s.name }}">
+    <rgb name="base_color" value="{{ s.linear | csv }}"/>
+    <float name="metallic" value="{{ s.material.metallic | num }}"/>
+    <float name="roughness" value="{{ s.material.roughness | num }}"/>
+    <float name="spec_trans" value="{{ s.material.transmission | num }}"/>
+    <float name="eta" value="{{ s.material.ior | num }}"/>
+    <float name="clearcoat" value="{{ s.material.coat | num }}"/>
+  </bsdf>
+{% endfor %}
+{% for g in groups %}
+  <shape type="shapegroup" id="{{ g.id }}">
+    <shape type="ply"><string name="filename" value="{{ mesh_dir }}/{{ g.ply }}"/><ref id="{{ g.shader }}"/></shape>
+  </shape>
+{% endfor %}
+{% for i in placed %}
+  <shape type="instance"><ref id="G_{{ i.proto.key | ident }}_{{ i.shader }}"/><transform name="to_world"><matrix value="{{ i.rows4 | vec }}"/></transform></shape>
+{% endfor %}
+{% if rest %}
+  <shape type="ply">
+    <string name="filename" value="{{ mesh_dir }}/baked.ply"/>
+    <bsdf type="principled"><texture type="mesh_attribute" name="base_color"><string name="name" value="vertex_color"/></texture></bsdf>
+  </shape>
+{% endif %}
+</scene>

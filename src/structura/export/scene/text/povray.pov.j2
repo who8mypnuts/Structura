@@ -1,0 +1,77 @@
+// Structura export — POV-Ray 3.8 scene (docs/15 §4.4). Render with: povray +W{{ width }} +H{{ height }} +A0.3 scene.pov
+#version 3.8;
+global_settings { assumed_gamma 1.0 max_trace_level 8
+  {% if radiosity %}radiosity { pretrace_start 0.08 pretrace_end 0.01 count 120 recursion_limit 2 nearest_count 10 error_bound 0.6 }{% endif %}
+}
+background { color srgb <{{ background | csv }}> }
+// Structura's world is right-handed: the negative 'right' vector makes POV-Ray's camera right-handed too.
+camera {
+  perspective
+  location <{{ camera.eye | csv }}>
+  sky <{{ camera.up | csv }}>
+  up <0, 1, 0>
+  right <{{ -camera.aspect | num }}, 0, 0>
+  angle {{ camera.fov_x | num }}
+  look_at <{{ camera.target | csv }}>
+}
+light_source { <{{ (sun * 1000.0) | csv }}> color rgb <1, 1, 1> parallel point_at <0, 0, 0> }
+{% if ambient_sky %}
+sky_sphere { pigment { gradient <{{ up | csv }}> color_map { [0 srgb <{{ background | csv }}>] [1 srgb <{{ background | csv }}>] } } }
+{% endif %}
+
+// Materials: one per (material, colour)
+{% for s in shaders %}
+#declare {{ s.name }} = material {
+  texture {
+    pigment { srgbt <{{ s.rgba[:3] | csv }}, {{ (1.0 - s.rgba[3]) | num }}> }
+{% if s.kind == "glass" %}
+    finish { diffuse 0.05 specular 0.8 roughness 0.002 reflection { 0.05, 1 fresnel on } conserve_energy }
+  }
+  interior { ior {{ s.material.ior | num }} }
+{% elif s.kind == "mirror" %}
+    finish { diffuse 0.05 reflection { 0.85 metallic } specular 0.6 roughness 0.005 }
+  }
+{% elif s.kind == "shiny" %}
+    finish { diffuse 0.75 specular 0.5 roughness 0.01 reflection { 0.08 } }
+  }
+{% elif s.kind == "emissive" %}
+    finish { emission {{ s.material.emission_strength | num }} diffuse 0 }
+  }
+{% else %}
+    finish { diffuse 0.8 specular 0.05 }
+  }
+{% endif %}
+}
+{% endfor %}
+
+// Unit prototypes (the Structure Synth unit cube conventions)
+{% for p in prototypes %}
+{% set name = "P_" ~ (p.key | ident) %}
+{% if p.kind.name == "BOX" %}
+#declare {{ name }} = box { <0, 0, 0>, <1, 1, 1> }
+{% elif p.kind.name in ("SPHERE", "ELLIPSOID") %}
+#declare {{ name }} = sphere { <0.5, 0.5, 0.5>, 0.5 }
+{% elif p.kind.name == "CYLINDER" %}
+#declare {{ name }} = cylinder { <0, 0.5, 0.5>, <1, 0.5, 0.5>, 0.5 }
+{% elif p.kind.name == "CONE" %}
+#declare {{ name }} = cone { <0, 0.5, 0.5>, 0.5, <1, 0.5, 0.5>, {{ (0.5 * ([p.param, 0.0] | max)) | num }} }
+{% elif p.kind.name == "TORUS" %}
+{% set minor = ([[p.param, 0.001] | max, 1.0] | min) / 2 %}
+#declare {{ name }} = torus { {{ (0.5 - minor) | num }}, {{ minor | num }} rotate x*90 translate <0.5, 0.5, 0.5> }
+{% endif %}
+{% endfor %}
+
+// Instances
+{% for i in placed %}
+object { P_{{ i.proto.key | ident }} matrix <{{ i.pov | csv }}> material { {{ i.shader }} } }
+{% endfor %}
+{% if rest %}
+
+// Lines, dots, grids, meshes and triangles, baked (vertex colours)
+mesh2 {
+  vertex_vectors { {{ rest.points | length }}, {% for p in rest.points %}<{{ p | csv }}>{{ ", " if not loop.last }}{% endfor %} }
+  normal_vectors { {{ rest.normals | length }}, {% for n in rest.normals %}<{{ n | csv }}>{{ ", " if not loop.last }}{% endfor %} }
+  texture_list { {{ rest.colors | length }}, {% for c in rest.colors %}texture { pigment { srgbt <{{ c[:3] | csv }}, {{ (1.0 - c[3]) | num }}> } finish { diffuse 0.8 } }{{ ", " if not loop.last }}{% endfor %} }
+  face_indices { {{ rest.triangles | length }}, {% for t in rest.triangles %}<{{ t | csv }}>, {{ t | csv }}{{ ", " if not loop.last }}{% endfor %} }
+}
+{% endif %}

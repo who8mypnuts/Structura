@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 from PySide6.QtWidgets import QApplication
+from pytestqt.qtbot import QtBot
 
 from structura.ui.app_window import MainWindow, initial_size
+from structura.ui.header import HeaderBar
 from structura.ui.panels.variations import MIN_THUMB_WIDTH, THUMB
 
 LAPTOP_WIDTH = 1280
@@ -48,8 +50,10 @@ def test_variation_thumbnails_scale_with_the_dock(window: MainWindow) -> None:
     assert MIN_THUMB_WIDTH <= small < large == THUMB.width()
 
 
-def test_header_drops_secondary_labels_before_primary_ones(window: MainWindow) -> None:
-    header = window.header
+def test_header_drops_secondary_labels_before_primary_ones(qtbot: QtBot, window: MainWindow) -> None:
+    header = HeaderBar(window.registry)  # standalone: inside the window the layout decides its width
+    qtbot.addWidget(header)
+    header.show()
     header.resize(header._width(1), header.height())  # room for the primary labels only
     QApplication.processEvents()
     assert header.level == 1
