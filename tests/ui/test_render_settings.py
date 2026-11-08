@@ -109,3 +109,15 @@ def test_render_presets_set_samples_size_and_noise_threshold(window: MainWindow)
     controls.samples.setValue(77)
     assert controls.preset.currentText() == "Custom" and controls.settings(64, 48).noise_threshold == 0.0
     assert controls.image_size((2000, 1000)) == (1280, 640)  # Custom: the viewport, capped
+
+
+def test_tiled_renders_mark_the_next_bucket_and_count_buckets(window: MainWindow) -> None:
+    view = window.render_view
+    image = np.full((16, 16, 3), 0.2, np.float32)
+    progress = RenderProgress(image, 8, 2.0, tile=(8, 0, 16, 8), completed=0.5)
+    view._on_update("render-view", RenderUpdate(progress, "cpu", 8))
+    assert view.view.bucket == (8, 0, 16, 8) and view.controls.progress.value() == 50
+    assert "50% of the buckets" in view.controls.info.text() and "2 s left" in view.controls.info.text()
+    view.view.grab()  # paints the corner marks
+    view._on_update("render-view", RenderUpdate(replace(progress, tile=None, completed=1.0), "cpu", 8))
+    assert view.view.bucket is None

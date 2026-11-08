@@ -14,13 +14,12 @@ from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
+from ...api import open as open_document
 from ...compute.select import NAMES, select_backend
 from ...core.animation.timeline import Timeline
 from ...core.errors import StructuraError
 from ...core.lang.diagnostics import ParseError
 from ...core.project.model import SUFFIX
-from ...core.project.model import load as load_project
-from ...core.text_file import read_script
 from ...render.animation import Animation, frame_path, render_frame
 from ...render.output import save_image, to_display
 from ...render.settings import AUTO_PASSES
@@ -60,14 +59,13 @@ def _overrides(args: argparse.Namespace) -> dict[str, Any]:
 def animation_for(args: argparse.Namespace) -> Animation:
     """The animation of a script, or of a project (its timeline, seed, parameters and camera)."""
     overrides, params = _overrides(args), parse_params(args.param)
-    if args.script.suffix.lower() == SUFFIX:
-        project = load_project(args.script)
-        timeline = project.timeline or Timeline()
-        timeline = replace(timeline, fps=args.fps or timeline.fps)
-        return Animation(project.text, timeline, project.seed or args.seed, {**project.params, **params},
-                         args.script.parent, project.camera, {**project.render, **overrides})  # fmt: skip
-    timeline = Timeline(fps=args.fps or 24.0, start=0, end=23)
-    return Animation(read_script(args.script), timeline, args.seed, params, args.script.parent, None, overrides)
+    doc = open_document(args.script)
+    project = args.script.suffix.lower() == SUFFIX
+    timeline = doc.timeline if project else Timeline(start=0, end=23)
+    timeline = replace(timeline, fps=args.fps or timeline.fps)
+    seed = (doc.seed or args.seed) if project else args.seed
+    return Animation(doc.text, timeline, seed, {**doc.params, **params}, args.script.parent, doc.camera,
+                     {**doc.render_overrides, **overrides})  # fmt: skip
 
 
 def run(args: argparse.Namespace) -> int:

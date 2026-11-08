@@ -56,6 +56,9 @@ class CpuBound(Bound):
     def read(self, name: str) -> np.ndarray:
         return self.arrays[name].copy()
 
+    def read_range(self, name: str, start: int, stop: int) -> np.ndarray:
+        return self.arrays[name][start:stop].copy()
+
 
 class CpuBackend(BackendBase):
     name = "cpu"

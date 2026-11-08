@@ -20,7 +20,11 @@ INTEGRATORS = {
 VIEWS = ("auto", "agx", "standard", "soft", "aces", "filmic")  # render/views.py; auto: agx, classic → standard
 ENV_TYPES = ("gradient", "hdri", "sunsky")
 AUTO_PASSES = 0  # samples_per_pass: size passes by device time (render/pacing.py)
-FILTER_NAMES = ("box", "triangle", "gaussian", "blackman-harris", "mitchell", "catmull-rom", "bspline", "lanczos")
+FILTER_NAMES = ("box", "triangle", "gaussian", "blackman-harris", "mitchell", "catmull-rom", "bspline", "lanczos",
+                "sinc")  # fmt: skip
+SAMPLERS = ("progressive", "tiled")  # docs/09 §5: whole-image passes, or buckets refined one at a time
+BUCKET_ORDERS = ("hilbert", "spiral", "rows", "columns", "diagonal", "random")
+SEQUENCES = ("random", "halton")  # hashed per-pixel random numbers, or Halton (Sunflow's QMC, for comparison)
 
 
 @dataclass(frozen=True)
@@ -78,6 +82,15 @@ class RenderSettings:
     fog_falloff: float = 0.0  # height over which the density falls by e (0 = homogeneous)
     fog_base: float | None = None  # height of full density (None: the structure's lowest point)
     fog_color: tuple[float, float, float] = (0.8, 0.85, 0.9)  # sRGB
+    sampler: str = "progressive"  # SAMPLERS
+    bucket_size: int = 64  # tiled: bucket edge in pixels
+    bucket_order: str = "hilbert"  # tiled: BUCKET_ORDERS
+    sequence: str = "random"  # SEQUENCES
+    diffuse_bounces: int = -1  # path: per-lobe limits within max_bounces (-1 = no separate limit)
+    glossy_bounces: int = -1
+    transmission_bounces: int = -1
+    ao_direct: bool = False  # ao: add direct light from the sun and the declared lights
+    mosaic: bool = False  # progressive: a quarter-resolution first image before the first full pass (the GUI)
 
     @property
     def sun_direction(self) -> tuple[float, float, float]:
@@ -106,8 +119,16 @@ class RenderSettings:
 def render_param_specs() -> tuple[ParamSpec, ...]:
     """The user-adjustable render settings (the Render Settings panel; docs/14 §3)."""
     return (
+        ParamSpec("sampler", ParamType.ENUM, "progressive", "Image sampler", choices=SAMPLERS),
+        ParamSpec("bucket_size", ParamType.INT, 64, "Bucket size (tiled)", range=(8, 512)),
+        ParamSpec("bucket_order", ParamType.ENUM, "hilbert", "Bucket order (tiled)", choices=BUCKET_ORDERS),
+        ParamSpec("sequence", ParamType.ENUM, "random", "Sample sequence", choices=SEQUENCES),
         ParamSpec("max_bounces", ParamType.INT, 4, "Max bounces", range=(0, 64)),
+        ParamSpec("diffuse_bounces", ParamType.INT, -1, "Diffuse bounces (-1 = max)", range=(-1, 64)),
+        ParamSpec("glossy_bounces", ParamType.INT, -1, "Glossy bounces (-1 = max)", range=(-1, 64)),
+        ParamSpec("transmission_bounces", ParamType.INT, -1, "Transmission bounces (-1 = max)", range=(-1, 64)),
         ParamSpec("ao_samples", ParamType.INT, 8, "AO samples", range=(0, 256)),
+        ParamSpec("ao_direct", ParamType.BOOL, False, "AO: add direct light"),
         ParamSpec("sun_elevation_deg", ParamType.FLOAT, 50.0, "Sun elevation °", range=(-90.0, 90.0)),
         ParamSpec("sun_azimuth_deg", ParamType.FLOAT, 35.0, "Sun azimuth °", range=(-360.0, 360.0)),
         ParamSpec("sun_angle_deg", ParamType.FLOAT, 2.0, "Sun size °", range=(0.01, 45.0)),

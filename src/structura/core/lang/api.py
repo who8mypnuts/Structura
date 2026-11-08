@@ -8,6 +8,7 @@ from pathlib import Path
 
 from .compile.program import RuleProgram, compile_rule_set
 from .diagnostics import Diagnostic
+from .includes import expand_includes
 from .legacy.gui_params import apply_gui_parameters
 from .legacy.parser import parse_legacy
 from .legacy.preprocessor import GuiParameter, LegacyPreprocessor
@@ -35,7 +36,7 @@ def compile_script(
 
     ``frame`` and ``fps`` bind the v2 animation variables 'frame', 'time' and 'fps'.
     """
-    fr = front(text)
+    fr = front(expand_includes(text, script_dir).text)
     pre = LegacyPreprocessor(fr.v2).process(fr.text, seed)
     names = timeline_names(frame, fps)
     source = after_preprocessing(apply_gui_parameters(pre.text, pre.parameters, params, fr.v2), fr, names)

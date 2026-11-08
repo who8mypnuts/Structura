@@ -258,4 +258,6 @@ Each primitive records:
 - `analyze` results are cached per `(doc.version)`.
 - `RuleProgram` is cached by a content hash of (AST, param values, dialect), so comment-only edits are free.
 - A `SceneIR` is cached by `(program hash, seed, limits)`. An LRU of 3 lets undo and redo of a parameter
-  change display instantly.
+  change display instantly. *(As built, M11: `services/build.SceneCache` — the analysis digest, seed and build
+  limits; 8 entries and at most 4M objects; partial builds are never reused. It serves timeline scrubbing
+  too.)*

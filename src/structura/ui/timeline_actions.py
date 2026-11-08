@@ -129,7 +129,7 @@ class TimelineActions(QObject):
         if tab is None or tab.analysis is None:
             return
         timeline = tab.timeline
-        for p in tab.analysis.parameters:
+        for p in (p for p in tab.analysis.parameters if p.numeric):  # colours and choices do not interpolate
             timeline = timeline.set_key(f"param:{p.name}", tab.frame, tab.params.get(p.name, p.default))
         self._edit(tab, timeline)
 

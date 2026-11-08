@@ -10,13 +10,24 @@ The **export sheet** that follows shows:
 - **Contents:** the objects by kind;
 - **Preset:** saved option sets for this format — **Save Preset…** keeps the current options under a name
   (`structura export --preset NAME` uses the same presets);
+- **Estimated size:** the file size, estimated from two small trial exports (updated as you change options);
 - the format's **options** (the same options the command line takes with `--option KEY=VALUE`).
 
-Exports run in the background; a toast says when the file is written, with **Show in Folder**.
+Exports run in the background and are listed in the **Render Queue** panel (progress, Cancel); a toast says
+when the file is written, with **Show in Folder**. After a **Blender script** export the toast offers **Open
+in Blender** (the Blender set in Preferences ▸ Paths, else the one on your PATH or in the usual place).
 
-**Render templates** (Structure Synth's `.rendertemplate` files) can name a program to run on the exported file
-(Sunflow-Colored runs Sunflow through `%SUNFLOW%`). Structura shows the command, with any environment variable
-that is not set, and runs it only if you agree (once per command and session). Its output goes to the Console.
+**Render templates** (Structure Synth's `.rendertemplate` files) get three tabs in the sheet:
+
+- **Options:** the template, its description, the output size, and **Autosave the script with its seed and
+  camera** — a `.es` file next to the export that rebuilds exactly this view;
+- **Template:** the template's XML, highlighted; edit it and **Save as My Template…** to keep your version
+  (it joins the template list);
+- **Preview:** the first 64 KB of what will be written.
+
+A template can name a program to run on the exported file (Sunflow-Colored runs Sunflow through `%SUNFLOW%`).
+Structura shows the command, with any environment variable that is not set, and runs it only if you agree
+(once per command and session). Its output goes to the Console.
 
 ## Formats
 

@@ -7,6 +7,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from xml.dom import minidom
 
+import platformdirs
+
 log = logging.getLogger(__name__)
 LEGACY_DIR = Path(__file__).resolve().parents[2] / "resources" / "legacy" / "templates"
 
@@ -83,3 +85,27 @@ def load_template(path: Path) -> LegacyTemplate:
 
 def bundled_templates() -> dict[str, Path]:
     return {p.stem: p for p in sorted(LEGACY_DIR.glob("*.rendertemplate"))}
+
+
+def user_template_dir() -> Path:
+    return Path(platformdirs.user_data_dir("structura")) / "templates"
+
+
+def all_templates() -> dict[str, Path]:
+    """The bundled templates and the user's own (edited copies; a user template shadows a bundled name)."""
+    folder = user_template_dir()
+    user = {p.stem: p for p in sorted(folder.glob("*.rendertemplate"))} if folder.is_dir() else {}
+    return {**bundled_templates(), **user}
+
+
+def save_user_template(name: str, xml: str) -> Path:
+    """Validate ``xml`` (raises ValueError on a malformed template) and store it as the user template ``name``."""
+    try:
+        parse_template(xml)
+    except Exception as exc:  # minidom raises ExpatError and friends
+        raise ValueError(f"not a valid template: {exc}") from exc
+    safe = "".join(ch if ch.isalnum() or ch in " -_." else "_" for ch in name).strip() or "template"
+    path = user_template_dir() / f"{safe}.rendertemplate"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(xml, encoding="utf-8")
+    return path

@@ -7,8 +7,9 @@ from pathlib import Path
 import pytest
 from pytestqt.qtbot import QtBot
 
+from structura.ui import render_actions
 from structura.ui.app_window import MainWindow
-from structura.ui.save_paths import SavePaths
+from structura.ui.dialogs.render_output import RenderOutput
 
 
 def test_queued_renders_run_in_order_and_save_with_reports(
@@ -18,9 +19,9 @@ def test_queued_renders_run_in_order_and_save_with_reports(
     tab.editor.setPlainText("{ color #f80 } sphere\n{ x 1.2 } box\n")
     qtbot.waitUntil(lambda: tab.outcome is not None, timeout=30000)
     window.render_view.samples.setValue(2)
-    targets = iter([tmp_path / "first.png", tmp_path / "second.png"])
-    monkeypatch.setattr(SavePaths, "ask", lambda *a, **k: (next(targets), a[5][0]))
-    window.queue_panel.reports.setChecked(True)
+    outputs = iter([RenderOutput(tmp_path / "first.png", None),
+                    RenderOutput(tmp_path / "second.png", tmp_path / "second-report.pdf")])  # fmt: skip
+    monkeypatch.setattr(render_actions, "choose_output", lambda *a, **k: next(outputs))
     window.registry.trigger("render.queue")
     window.render_actions.queue_render()
     queue = window.render_queue

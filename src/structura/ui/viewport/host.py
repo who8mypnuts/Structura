@@ -267,5 +267,7 @@ class ViewportHost(QStackedWidget):
             self.gl.set_options(options)
 
     def select(self, row: int | None) -> None:
-
         self.set_options(replace(self._options, selected=row))
+        inside = self.scene is not None and row is not None and 0 <= row < len(self.scene)
+        outline = self.compute_mode and inside  # the GPU viewport outlines the selection itself
+        self.overlay.set_selected(self.scene.xform[row] if outline else None)  # type: ignore[union-attr]

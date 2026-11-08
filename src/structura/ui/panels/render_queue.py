@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from PySide6.QtCore import Qt, Signal, Slot
 from PySide6.QtWidgets import (
-    QCheckBox,
     QHBoxLayout,
     QPushButton,
     QTreeWidget,
@@ -29,7 +28,6 @@ class RenderQueuePanel(QWidget):
         self.tree.setRootIsDecorated(False)
         self.tree.setHeaderLabels([tr("Render"), tr("State"), tr("Progress"), tr("Time"), tr("Output")])
         self.tree.setColumnWidth(0, 200)
-        self.reports = QCheckBox(tr("Write a PDF report with each render"))
         buttons = QHBoxLayout()
         for text, slot in ((tr("Add Current View…"), self.add_requested.emit), (tr("Cancel"), self._cancel),
                            (tr("Remove"), self._remove), (tr("Show in Folder"), self._reveal),
@@ -38,7 +36,6 @@ class RenderQueuePanel(QWidget):
             button.clicked.connect(slot)
             buttons.addWidget(button)
         buttons.addStretch(1)
-        buttons.addWidget(self.reports)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(4, 4, 4, 4)
         layout.addWidget(self.tree, 1)
@@ -47,8 +44,9 @@ class RenderQueuePanel(QWidget):
 
     @Slot(object)
     def refresh(self, _entry: object = None) -> None:
-        states = {"queued": tr("queued"), "rendering": tr("rendering"), "saving": tr("saving"), "done": tr("done"),
-                  "failed": tr("failed"), "cancelled": tr("cancelled")}  # fmt: skip
+        states = {"queued": tr("queued"), "rendering": tr("rendering"), "exporting": tr("exporting"),
+                  "saving": tr("saving"), "done": tr("done"), "failed": tr("failed"),
+                  "cancelled": tr("cancelled")}  # fmt: skip
         selected = self.selected()
         self.tree.clear()
         for entry in self.queue.entries:

@@ -13,7 +13,7 @@ from ..scene.material import presets
 from .ast import Action, CallAction, Program, SetAction
 from .catalog import operator_names
 from .diagnostics import Diagnostic, diagnostic
-from .graph import call_graph, reachable, recursive_groups
+from .graph import TOP, call_graph, reachable, recursive_groups
 from .highlight import lex_line
 from .position_map import PositionMap
 from .source import Span
@@ -56,8 +56,13 @@ def _sets(program: Program) -> Iterator[SetAction]:
     return (a for a in _actions(program) if isinstance(a, SetAction))
 
 
+ENUM_CHOICES = re.compile(r"^\s*#param\s+\w+\s+enum\b.*?\sof\s+(\S+)", re.MULTILINE)
+
+
 def unused_and_unreachable(inp: LintInput) -> list[Diagnostic]:
     graph = call_graph(inp.program)
+    choices = {c.lower() for m in ENUM_CHOICES.finditer(inp.text) for c in m.group(1).split("|")}
+    graph[TOP] = {*graph.get(TOP, ()), *choices}  # a v2 enum parameter may name any of its rules
     referenced = {t for targets in graph.values() for t in targets}
     live = reachable(graph)
     out, seen = [], set()

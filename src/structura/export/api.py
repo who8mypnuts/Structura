@@ -9,7 +9,7 @@ from typing import Any
 from ..core.params import resolve
 from ..core.scene.camera import Camera
 from ..core.scene.ir import SceneIR
-from . import legacy as _legacy  # noqa: F401 - last: '.obj' defaults to the modern exporter
+from . import legacy as _legacy
 from .base import EXPORTERS, Exporter, ExportJob, ExportReport, exporter_for
 from .mesh import obj as _obj  # noqa: F401 - registers exporters
 from .mesh import ply as _ply  # noqa: F401
@@ -22,6 +22,8 @@ from .scene import gltf as _gltf  # noqa: F401
 from .scene import text_exporters as _text  # noqa: F401
 from .scene import usd as _usd  # noqa: F401
 from .scene_model import scene_model
+
+PREVIEW_LIMIT = 64 * 1024
 
 
 def find_exporter(path: Path, name: str | None = None) -> Exporter:
@@ -42,11 +44,31 @@ def export_scene(
     cancelled: Callable[[], bool] | None = None,
 ) -> ExportReport:
     exporter = find_exporter(path, name)
-    values = resolve(exporter.params, options)
-    model = scene_model(scene, camera, values.get("up", "y"), values.get("unit_scale", 1.0))
-    job = ExportJob(scene, model, values, progress or (lambda _f, _t: None), cancelled or (lambda: False))
+    job = _job(exporter, scene, options, camera, progress, cancelled)
     path.parent.mkdir(parents=True, exist_ok=True)
     return exporter.write(job, path)
 
 
-__all__ = ["EXPORTERS", "ExportReport", "Exporter", "export_scene", "find_exporter"]
+def _job(
+    exporter: Exporter,
+    scene: SceneIR,
+    options: dict[str, Any] | None,
+    camera: Camera | None,
+    progress: Callable[[float, str], None] | None = None,
+    cancelled: Callable[[], bool] | None = None,
+) -> ExportJob:
+    values = resolve(exporter.params, options)
+    model = scene_model(scene, camera, values.get("up", "y"), values.get("unit_scale", 1.0))
+    return ExportJob(scene, model, values, progress or (lambda _f, _t: None), cancelled or (lambda: False))
+
+
+def template_preview(
+    scene: SceneIR, options: dict[str, Any], camera: Camera | None = None, limit: int = PREVIEW_LIMIT
+) -> str:
+    """The start of a template export (the first 64 KB), without writing a file."""
+    exporter = EXPORTERS["template"]
+    assert isinstance(exporter, _legacy.TemplateExporter)
+    return exporter.preview(_job(exporter, scene, options, camera), limit)
+
+
+__all__ = ["EXPORTERS", "ExportReport", "Exporter", "export_scene", "find_exporter", "template_preview"]

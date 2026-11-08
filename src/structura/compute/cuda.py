@@ -138,6 +138,15 @@ class CudaBound(Bound):  # pragma: no cover - needs an NVIDIA GPU
             _check((driver.cuMemcpyDtoH(result.ctypes.data, self.device[name][0], result.nbytes)[0], None), "DtoH")
         return result
 
+    def read_range(self, name: str, start: int, stop: int) -> np.ndarray:
+        _, dtype = self.shapes[name]
+        result = np.empty(max(0, stop - start), dtype)
+        self.backend.activate()
+        if result.nbytes:
+            source = driver.CUdeviceptr(int(self.device[name][0]) + start * result.itemsize)
+            _check((driver.cuMemcpyDtoH(result.ctypes.data, source, result.nbytes)[0], None), "DtoH")
+        return result
+
     def __del__(self) -> None:
         for ptr, _ in getattr(self, "device", {}).values():
             driver.cuMemFree(ptr)

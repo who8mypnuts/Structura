@@ -12,6 +12,7 @@ from ..core.scene.camera import Camera
 from ..core.scene.camera_script import with_camera
 from .i18n import tr
 from .panels.history import Snapshot
+from .workbench import script_camera
 
 if TYPE_CHECKING:
     from .app_window import MainWindow
@@ -30,11 +31,24 @@ class CameraActions(QObject):
         panel.bookmark_requested.connect(self.save_view)
         panel.bookmark_chosen.connect(window.viewport.move_camera)
         panel.bookmark_deleted.connect(self.delete_view)
+        panel.lock_toggled.connect(self.lock_to_script)
         window.tabs.current_tab_changed.connect(self._tab_changed)
 
     @Slot(object)
     def _tab_changed(self, tab: EditorTab | None) -> None:
         self.w.camera_panel.set_bookmarks(tab.bookmarks if tab is not None else {})
+        self.w.camera_panel.set_locked(tab is not None and tab.camera_locked)
+
+    @Slot(bool)
+    def lock_to_script(self, locked: bool) -> None:
+        """Camera ▸ Lock to Script: every build (and now) shows the script's camera."""
+        tab = self.w.tabs.current()
+        if tab is None:
+            return
+        tab.camera_locked = locked
+        camera = script_camera(tab.outcome.scene) if locked and tab.outcome is not None else None
+        if camera is not None:
+            self.w.viewport.move_camera(camera)
 
     @Slot(str)
     def standard_view(self, name: str) -> None:

@@ -67,6 +67,7 @@ class ProjectActions(QObject):
         tab.project_path = path
         tab.seed, tab.params, tab.render_overrides = project.seed, dict(project.params), dict(project.render)
         tab.initial_camera, tab.bookmarks = project.camera, dict(project.bookmarks)
+        tab.camera_locked = project.camera_lock_to_script
         tab.timeline, tab.frame = project.timeline or Timeline(), (project.timeline or Timeline()).start
         tab.retitle()
         self.w.on_tab_changed(tab)
@@ -80,6 +81,7 @@ class ProjectActions(QObject):
             camera=self.w.viewport.camera() if tab.outcome is not None else tab.initial_camera,
             render=dict(tab.render_overrides), thumbnail_png_b64=self._thumbnail(),
             timeline=tab.timeline if tab.timeline != Timeline() else None, bookmarks=dict(tab.bookmarks),
+            camera_lock_to_script=tab.camera_locked,
         )  # fmt: skip
 
     def save(self, tab: EditorTab, path: Path | None = None) -> bool:

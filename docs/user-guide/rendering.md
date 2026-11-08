@@ -27,6 +27,10 @@ Structura has two engines:
   refining while the camera rests — like Blender's rendered view.
 - **Alt+click** a surface to focus the camera there (depth of field in renders); **Shift+F** frames the
   clicked object.
+- **Lock to script** (Camera panel) shows the script's own camera after every build.
+- **Build ▸ Show Ancestry** (or the Inspector's button) lists how the clicked object was made: the chain of
+  rule calls from the top level, each line jumping to its call in the script.
+- On a slow GPU the viewport drops ambient occlusion while you move the camera and brings it back when you stop.
 - If OpenGL 3.3 is not available, the viewport draws with the render kernels instead (on the GPU when CUDA,
   OpenCL or wgpu is there): the badge says "CUDA preview" or "CPU preview" and a banner explains why once.
 
@@ -46,7 +50,13 @@ progressively; exposure and view transform apply to the finished image without r
 **Stop** pauses a render; **Resume** continues it from the samples it had (the result is the same as an
 uninterrupted render). The image keeps the viewport's aspect. Changing the samples by hand switches to **Custom** (the viewport's
 size, at most 1280 px). Opening a Structure Synth script with raytracer settings offers, once, to render it
-with the **legacy look** (the `classic` integrator) or the modern path tracer.
+with the **legacy look** (the `classic` integrator) or the modern path tracer; **Render ▸ Render (Legacy
+Look)** does it any time. The first picture of a render is a quick blocky preview; it is refined at once.
+
+- **Render ▸ Render Region**, or Shift+drag over the image: only that rectangle renders again.
+- **Render ▸ Denoise** denoises the finished render now.
+- Renders that would need more than the **memory guard**'s share of the free memory (Preferences ▸
+  Rendering) are refused with a message — lower the size or raise the guard.
 
 | Integrator | Use |
 |------------|-----|
@@ -60,7 +70,14 @@ overrides the script for this tab until **Reset to script**. Highlights:
 
 - **Noise threshold** (adaptive sampling): pixels stop once their noise is below it (0.01 is a good final
   value); the **samples** channel shows where the samples went. **Time limit** stops a render after N s.
-- **Pixel filter** (box, gaussian, Mitchell, Lanczos, …), **aperture** and **blades** for depth of field and
+- **Image sampler:** `progressive` (the whole image gets better pass by pass) or `tiled` — square **buckets**
+  rendered one after another, like Sunflow, in the chosen **bucket order** (hilbert, spiral from the centre,
+  rows, columns, diagonal, random); the bucket being rendered is marked in the image. Both give the same
+  picture.
+- **Sample sequence:** `random` (default) or `halton` (Sunflow's quasi-random numbers, for comparisons).
+- **Bounces:** `max_bounces`, and separate limits for diffuse, glossy and transmission bounces (−1 = only the
+  maximum). **AO: add direct light** lights the `ao` integrator by the sun and the lights too.
+- **Pixel filter** (box, gaussian, Mitchell, Lanczos, sinc, …), **aperture** and **blades** for depth of field and
   polygonal bokeh, **camera** type (perspective, orthographic, spherical 360°, fisheye).
 - **Environment:** gradient sky, **HDRI** (`.exr` / `.hdr`) with rotation and intensity, or the Preetham
   **sun-sky**.
@@ -105,9 +122,24 @@ Structure Synth (v1) script to v2 first; it builds the same.
 
 ## Saving
 
-**Save…** (Ctrl+Alt+S) opens a Save As dialog and writes PNG, JPEG, WebP, TIFF (display-referred, with the
-current exposure and view transform) or EXR (linear, with the channels). PNG and EXR files carry the script,
-seed, camera and settings, so a render can be reproduced — **File ▸ Open from Render…** reopens them.
+**Save…** (Ctrl+Alt+S) asks for two things in one dialog:
+
+- **Image:** where the image goes (type a path or **Browse…**): PNG, JPEG, WebP, TIFF (display-referred, with
+  the current exposure and view transform) or EXR (linear, with the channels);
+- **Report:** the render report written **beside the image** — PDF, HTML, Markdown, plain text, JSON, CSV,
+  OpenDocument, or no report. It is named after the image (`tree.png` → `tree-report.pdf`); the dialog shows
+  the name. Your choice is remembered.
+
+PNG and EXR files carry the script, seed, camera and settings, so a render can be reproduced — **File ▸ Open
+from Render…** reopens them.
+
+## Final renders
+
+**Render ▸ Final Render…** (Shift+F9) — and **Render** (F9) whenever the preset is **Final** or **Print 4K** —
+opens the same dialog before anything is rendered: pick the **quality** (Final, Print 4K, the other presets, or
+Custom for the tool bar's own settings), **where the image is saved**, and the **report** to write beside it.
+**Render** starts; when the render (and its denoising) finishes, the image and the report are saved there and
+a notice offers **Show in Folder**. **Render Only** renders without saving (use Save… later).
 
 ## Render reports
 
@@ -132,12 +164,12 @@ client, or a forum post:
 
 Formats: **PDF**, **HTML** (one file, images inlined, light and dark), **Markdown** (with a preview image
 beside it), **plain text**, **JSON** (every value, machine-readable), **CSV** (one row per value) and
-**OpenDocument** (`.odt`). `structura render … --report report.pdf` writes the same report from the command
-line.
+**OpenDocument** (`.odt`). Reports are usually written with the image (Save…, Final Render, the queue);
+**Report…** writes one on its own, starting beside the image you saved last. `structura render … --report
+report.pdf` writes the same report from the command line.
 
 ## The render queue
 
-**Render ▸ Add to Render Queue…** (Ctrl+Shift+F9) asks for a file and queues the current view with the tool
-bar's settings. Queued renders run one after another while you keep working, and each is saved when it
-finishes — with a PDF report next to it if **Write a PDF report with each render** is ticked in the **Render
-Queue** panel. The panel shows progress and time; cancel, remove or show a render in its folder.
+**Render ▸ Add to Render Queue…** (Ctrl+Shift+F9) asks for the image file and the report (the same dialog as
+Save…) and queues the current view with the tool bar's settings. Queued renders run one after another while
+you keep working, and each is saved when it finishes, with its report beside it. The panel shows progress and time; cancel, remove or show a render in its folder.

@@ -1,4 +1,6 @@
-"""Saving renders and render reports (docs/09 §8): Save As dialogs, then the work on the io lane."""
+"""Saving renders and render reports (docs/09 §8): where the image goes and which report is written beside it
+(dialogs/render_output.py), then the work on the io lane. Final renders ask first and save themselves when
+they finish."""
 
 from __future__ import annotations
 
@@ -11,22 +13,21 @@ from PySide6.QtCore import QObject, Slot, qVersion
 
 from ..core.build.driver import BuildStats
 from ..render.api import script_settings
+from ..render.memory import available_bytes, guard_message, render_bytes
 from ..render.metadata import render_metadata
 from ..render.output import save_image
 from ..render.report.collect import ReportInputs, build_report
 from ..render.report.writers import FORMATS, report_filters
 from ..services.jobs import ErrorInfo, FunctionJob, JobContext, Lane
 from ..services.report_documents import write_report
+from .dialogs.render_output import FINAL_PRESETS, REPORT_DEFAULT, REPORT_KEY, RenderOutput, choose_output, report_beside
 from .i18n import tr
-from .render_queue import report_path
+from .render_view.presets import CUSTOM, PRESETS
 from .render_view.render_view import RenderInput
 from .save_paths import SavePaths, stem_for, with_extension
 
 if TYPE_CHECKING:
     from .app_window import MainWindow
-
-IMAGE_FILTERS = ["PNG image (*.png)", "OpenEXR, with AOV layers (*.exr)", "JPEG image (*.jpg)", "WebP image (*.webp)",
-                 "TIFF image (*.tif)"]  # fmt: skip
 
 
 @dataclass(frozen=True)
@@ -54,7 +55,12 @@ class RenderActions(QObject):
         self.paths = SavePaths(window.settings)
         self.context = RenderContext()
         self.saved: tuple[Path, ...] = ()  # image files written for the current render (listed in reports)
+        self._done_texts: list[str] = []  # messages of the io jobs in flight, in order (one io lane)
+        self._final_next: RenderOutput | None = None  # a final render about to start
+        self.pending: RenderOutput | None = None  # where the running final render is saved when it finishes
         view = window.render_view
+        view.render_requested.connect(self.start_render)
+        view.finished.connect(self._finished)
         view.started.connect(self._started)
         view.controls.save_button.clicked.connect(self.save_render)
         view.controls.report_button.clicked.connect(self.save_report)
@@ -66,10 +72,65 @@ class RenderActions(QObject):
             build = tab.outcome.stats if tab.outcome is not None else None
             self.context = RenderContext(tab.path, tab.seed, dict(tab.params), build)
         self.saved = ()
+        self.pending, self._final_next = self._final_next, None
 
+    @Slot()
     def start_render(self) -> None:
+        """Render (F9). With a final preset (Final, Print 4K) it asks where the image goes first."""
+        if self.w.render_view.controls.preset.currentText() in FINAL_PRESETS:
+            self.final_render()
+            return
+        self._start()
+
+    def _start(self) -> None:
         self.w.views.setCurrentWidget(self.w.render_view)
         self.w.render_view.start()
+
+    def final_render(self) -> None:
+        """Render ▸ Final Render…: choose the quality, the image file and the report, render, save both."""
+        if self.guarded_source() is None:
+            return
+        controls = self.w.render_view.controls
+        current = controls.preset.currentText()
+        presets = (*FINAL_PRESETS, *(p.name for p in PRESETS if p.name not in FINAL_PRESETS), CUSTOM)
+        if current in (*FINAL_PRESETS, CUSTOM):  # offered first: a final preset, or the tool bar's own settings
+            presets = (current, *(p for p in presets if p != current))
+        out = choose_output(self.w, self.paths, self._image_suggestion(), tr("Final Render"), tr("Render"), presets)
+        if out is None:
+            return
+        controls.preset.setCurrentText(out.preset)
+        self._final_next = out if out.save else None
+        self._start()
+
+    @Slot()
+    def _finished(self) -> None:
+        """A render (and its denoising) finished: a final render saves its image and report now."""
+        out, self.pending = self.pending, None
+        last = self.w.render_view.last
+        if out is not None and last is not None and last.fraction >= 1.0:
+            self.write_outputs(out)
+
+    def render_legacy(self) -> None:
+        """Render ▸ Render (Legacy Look): the 'classic' integrator, Structure Synth 1.5's raytracer look."""
+        self.w.render_view.controls.integrator.setCurrentText("classic")
+        self.start_render()
+
+    def render_region(self) -> None:
+        view = self.w.render_view
+        if view.last is None:
+            self.w.show_message(tr("Render first (F9), then pick a region to render again."))
+            return
+        self.w.views.setCurrentWidget(view)
+        view.view.pick_region()
+        self.w.show_message(tr("Drag over the image: that region renders again."))
+
+    def denoise(self) -> None:
+        """Render ▸ Denoise: denoise the finished render now (Open Image Denoise, else À-Trous)."""
+        controls = self.w.render_view.controls
+        if controls.denoise_method() is None:
+            controls.denoise.setCurrentText("auto")  # the view denoises a finished render when this changes
+        else:
+            self.w.render_view.denoise_changed()
 
     def render_source(self) -> RenderInput | None:
         tab = self.w.tabs.current()
@@ -83,29 +144,57 @@ class RenderActions(QObject):
         settings = replace(  # … and the toolbar
             settings, frame=False, width=quick.width, height=quick.height, samples=quick.samples,
             samples_per_pass=quick.samples_per_pass, integrator=quick.integrator, aovs=quick.aovs,
-            noise_threshold=noise, asset_dir=str(tab.path.parent) if tab.path else "",
+            noise_threshold=noise, asset_dir=str(tab.path.parent) if tab.path else "", mosaic=True,
         )  # fmt: skip
         return tab.outcome.scene, self.w.viewport.camera(), settings, tab.text()
 
+    def guarded_source(self) -> RenderInput | None:
+        """render_source, refused (with a message) when there is nothing built or it would not fit in memory."""
+        source = self.render_source()
+        if source is None:
+            self.w.show_message(tr("Nothing to render yet: build the script first (F5)."))
+            return None
+        percent = int(self.w.settings.value("render/memory_guard", 80))
+        refusal = guard_message(render_bytes(source[0], source[2]), available_bytes(), percent)
+        if refusal is not None:
+            self.w.show_message(refusal)
+            return None
+        return source
+
     # -- images ------------------------------------------------------------------------------------------------
+    def _image_suggestion(self) -> Path:
+        script = self.context.script_path if self.w.render_view.last is not None else None
+        tab = self.w.tabs.current()
+        script = script or (tab.path if tab is not None else None)
+        return self.paths.suggest("render", stem_for(script, "render") + ".png", script)
+
     def save_render(self) -> None:
+        """Save… (Ctrl+S in the Render view): the image, and the chosen report beside it."""
+        if self.w.render_view.shown_image() is None or self.w.render_view.source is None:
+            self.w.show_message(tr("Render first (F9), then save."))
+            return
+        out = choose_output(self.w, self.paths, self._image_suggestion(), tr("Save Render"), tr("Save"))
+        if out is not None:
+            self.write_outputs(out)
+
+    def write_outputs(self, out: RenderOutput) -> None:
+        """Write the shown image to ``out.image``, then the report beside it (it lists the image)."""
+        self._save_image(out.image)
+        if out.report is not None:
+            self._write_report(out.report)
+
+    def _save_image(self, path: Path) -> None:
         view = self.w.render_view
         image, last, source = view.shown_image(), view.last, view.source
         if image is None or last is None or source is None:
-            self.w.show_message(tr("Render first (F9), then save."))
             return
-        suggestion = self.paths.suggest("render", stem_for(self.context.script_path, "render") + ".png",
-                                        self.context.script_path)  # fmt: skip
-        answer = self.paths.ask(self.w, "render", tr("Save Render"), suggestion, IMAGE_FILTERS, IMAGE_FILTERS[0])
-        if answer is None:
-            return
-        path = _suffix(answer[0], IMAGE_FILTERS, answer[1], ".png")
         _, camera, settings, script = source
         meta = render_metadata(settings, camera, script, self.context.params)
         layers = last.progress.aovs.layers() if last.progress.aovs is not None else None
         exposure, view_name = view.controls.exposure.value(), view.controls.view_transform()
 
         def run(ctx: JobContext) -> Path:
+            path.parent.mkdir(parents=True, exist_ok=True)
             save_image(image, path, exposure, view_name, meta, layers)
             return path
 
@@ -115,20 +204,17 @@ class RenderActions(QObject):
     # -- the queue ---------------------------------------------------------------------------------------------
     def queue_render(self) -> None:
         """Render ▸ Add to Render Queue: the current view, with the tool bar's settings, into a chosen file."""
-        source = self.render_source()
+        source = self.guarded_source()
         tab = self.w.tabs.current()
         if source is None or tab is None:
-            self.w.show_message(tr("Build the script first (F5), then queue a render."))
             return
         settings, stem = source[2], stem_for(tab.path, "render")
         suggestion = self.paths.suggest("render", f"{stem}-{settings.width}x{settings.height}.png", tab.path)
-        answer = self.paths.ask(self.w, "render", tr("Queue Render As"), suggestion, IMAGE_FILTERS, IMAGE_FILTERS[0])
-        if answer is None:
+        out = choose_output(self.w, self.paths, suggestion, tr("Queue Render As"), tr("Add to Queue"))
+        if out is None:
             return
-        path = _suffix(answer[0], IMAGE_FILTERS, answer[1], ".png")
-        report = report_path(path, ".pdf") if self.w.queue_panel.reports.isChecked() else None
         name = f"{stem} · {settings.width}×{settings.height} · {settings.samples} spp"
-        self.w.render_queue.add(name, self.w.render_view.make_request(source), path, source[3], report)
+        self.w.render_queue.add(name, self.w.render_view.make_request(source), out.image, source[3], out.report)
         self.w.panels.show("Render Queue")
 
     # -- reports -----------------------------------------------------------------------------------------------
@@ -148,21 +234,34 @@ class RenderActions(QObject):
         )  # fmt: skip
 
     def save_report(self) -> None:
-        inputs = self.report_inputs()
-        if inputs is None:
+        """Report…: a report on its own (beside the last saved image by default), in the chosen format."""
+        if self.report_inputs() is None:
             self.w.show_message(tr("Render first (F9), then save a report."))
             return
         filters = report_filters()
-        stem = stem_for(self.context.script_path, "render") + "-report"
-        suggestion = self.paths.suggest("report", stem + ".pdf", self.context.script_path)
-        answer = self.paths.ask(self.w, "report", tr("Save Render Report"), suggestion, filters, filters[0])
+        remembered = str(self.w.settings.value(REPORT_KEY, REPORT_DEFAULT)) or REPORT_DEFAULT
+        selected = next((f for f in filters if f"*{remembered})" in f), filters[0])
+        if self.saved:  # beside the image just saved
+            suggestion = report_beside(self.saved[-1], remembered) or self.saved[-1]
+        else:
+            stem = stem_for(self.context.script_path, "render") + "-report"
+            suggestion = self.paths.suggest("report", stem + remembered, self.context.script_path)
+        answer = self.paths.ask(self.w, "report", tr("Save Render Report"), suggestion, filters, selected)
         if answer is None:
             return
         path = _suffix(answer[0], filters, answer[1], ".pdf")
         if path.suffix.lower() not in FORMATS:
             path = with_extension(path, (".pdf",))
+        self.w.settings.set_value(REPORT_KEY, path.suffix.lower())
+        self._write_report(path)
+
+    def _write_report(self, path: Path) -> None:
+        inputs = self.report_inputs()
+        if inputs is None:
+            return
 
         def run(ctx: JobContext) -> Path:
+            path.parent.mkdir(parents=True, exist_ok=True)
             write_report(build_report(inputs), path)
             return path
 
@@ -170,10 +269,19 @@ class RenderActions(QObject):
 
     def _io(self, name: str, fn: Callable[[JobContext], Path], done: str) -> None:
         handle = self.w.runner.submit(FunctionJob(name, Lane.IO, fn))
-        handle.finished.connect(lambda result: self.w.notify_file(done.format(name=Path(result).name), Path(result)))
+        self._done_texts.append(done)
+        handle.finished.connect(self._written)  # bound slots: handle signals come from the io thread
         handle.failed.connect(self._failed)
 
     @Slot(object)
+    def _written(self, result: object) -> None:
+        done = self._done_texts.pop(0) if self._done_texts else "{name}"
+        path = Path(str(result))
+        self.w.notify_file(done.format(name=path.name), path)
+
+    @Slot(object)
     def _failed(self, info: object) -> None:
+        if self._done_texts:
+            self._done_texts.pop(0)
         message = info.message if isinstance(info, ErrorInfo) else str(info)
         self.w.show_message(tr("Saving failed: {error}").format(error=message))

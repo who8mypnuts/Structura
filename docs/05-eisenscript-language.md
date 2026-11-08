@@ -68,6 +68,12 @@ stream seeded with the build seed (same algorithm as the geometry stream, §7).
 - Each file is included at most once, so there are no cycles (`E012` on a cycle).
 - Line mapping is preserved, so diagnostics point into the included file.
 
+> **As built (M11):** `core/lang/includes.py` expands includes before everything else (analysis, build, CLI).
+> Paths resolve against the script's folder, then the library folders (Preferences ▸ Paths, separated by the
+> system's path separator). Each file is included once; a file that is not found, or that includes itself, is
+> an E012 error on the `#include` line. The editor's spans stay in the edited file: diagnostics, symbols and
+> provenance that come from an included file point at the `#include` line that brought it in.
+
 ---
 
 ## 3. Grammar (v1, EBNF)
@@ -352,6 +358,12 @@ Expressions are evaluated **once at compile time**, not per state. Per-state exp
 Parameters appear in the Parameters panel, can be keyframed ([16](16-animation-scripting-cli.md)), are type
 checked (`E015` on a type mismatch at the use site), and can be used in expressions.
 
+> **As built (M11):** float and int parameters are sliders (and keyframable); `color` is a colour button that
+> substitutes `#rrggbb`; `bool` a switch that substitutes `1` / `0` (for expressions); `enum` a choice list
+> that substitutes the chosen name — typically a rule, so `style` above calls `spiral`, `grid` or `tree` (the
+> choices count as references for the unused-rule warnings). E015 reports a default that does not fit its
+> type or range, and a colour used where a number is needed (or the other way round).
+
 ### 9.3 Materials
 
 ```
@@ -437,8 +449,10 @@ Codes are stable. Messages live in `catalog/diagnostics.toml`, and this table is
 | E008 | error | maxdepth requires an integer |
 | E009 | error | Invalid set command or build error |
 | E010 | error | Redefinition of a primitive |
+| E012 | error | Include error |
 | E013 | error | Tag on a non-primitive |
 | E014 | error | Malformed triangle or primitive argument |
+| E015 | error | Parameter type mismatch (v2) |
 | E016 | error | Expression error (v2) |
 | E017 | error | Invalid v2 block |
 | W101 | warning | Rule is never referenced |
@@ -463,9 +477,8 @@ Codes planned earlier but not reported yet:
 
 - **E011** (retirement cycle): deliberately allowed. Structure Synth 1.5 accepts `A > B` with `B > A`, and such
   scripts build.
-- **E012** (include): Structure Synth 1.5 has no `#include`, and neither does Structura yet.
-- **E015** (parameter type mismatch): not reported yet.
-- **W107** (object estimate): not reported yet.
+- **W107** (object estimate): shown as an inlay hint after each top-level call (`core/lang/estimate.py`)
+  rather than a diagnostic.
 - **W111** (build cap): not reported yet; the Build Stats panel shows the cap instead.
 - **I201** (rule probabilities): shown as inlay hints rather than a diagnostic.
 

@@ -57,6 +57,12 @@ def camera_section(d: RenderDetails) -> Section:
     return Section("camera", "Camera", tuple(rows))
 
 
+def _bounces(s: RenderSettings) -> str:
+    limits = [(name, v) for name, v in (("diffuse", s.diffuse_bounces), ("glossy", s.glossy_bounces),
+                                        ("transmission", s.transmission_bounces)) if v >= 0]  # fmt: skip
+    return f"{s.max_bounces}" + (" (" + ", ".join(f"{n} {v}" for n, v in limits) + ")" if limits else "")
+
+
 def settings_section(s: RenderSettings) -> Section:
     passes = "auto (time-paced)" if s.samples_per_pass <= 0 else f"{s.samples_per_pass}"
     rows = (
@@ -64,7 +70,10 @@ def settings_section(s: RenderSettings) -> Section:
         row("Integrator", s.integrator),
         row("Target samples per pixel", s.samples, f"{s.samples:,}"),
         row("Samples per pass", s.samples_per_pass, passes),
-        row("Max bounces", s.max_bounces),
+        row("Image sampler", s.sampler,
+            f"tiled, {s.bucket_size} px buckets, {s.bucket_order} order" if s.sampler == "tiled" else "progressive"),
+        row("Sample sequence", s.sequence),
+        row("Max bounces", s.max_bounces, _bounces(s)),
         row("Sample clamp", s.clamp, f"{s.clamp:g}", "caps single-sample radiance to tame fireflies"),
         row("Pixel filter", s.filter),
         row("View transform", s.view_transform),

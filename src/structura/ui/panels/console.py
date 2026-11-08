@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import contextlib
+import html
 import logging
 import time
 from collections import deque
@@ -57,6 +58,7 @@ class ConsolePanel(QWidget):
         layout.addLayout(bar)
         layout.addWidget(self.text, 1)
         self.records: deque[tuple[str, int]] = deque(maxlen=MAX_RECORDS)
+        self.colors: dict[int, str] = {}
         self.bridge = LogBridge()
         self.bridge.setFormatter(logging.Formatter("%(levelname)s %(name)s: %(message)s"))
         self.bridge.record.connect(self.append_record)
@@ -76,15 +78,29 @@ class ConsolePanel(QWidget):
         needle = self.search.text().lower()
         return level >= self._minimum() and (not needle or needle in line.lower())
 
+    def set_colors(self, warning: str, error: str) -> None:
+        """Severity colours from the theme (diag.warning, diag.error)."""
+        self.colors = {logging.WARNING: warning, logging.ERROR: error}
+        self._refilter()
+
+    def _html(self, line: str, level: int) -> str:
+        colour = self.colors.get(logging.ERROR if level >= logging.ERROR else level)
+        mark = "⛔ " if level >= logging.ERROR else "⚠ " if level >= logging.WARNING else ""
+        text = html.escape(mark + line)
+        return f'<span style="color:{colour}">{text}</span>' if colour else text
+
     @Slot(str, int)
     def append_record(self, text: str, level: int) -> None:
         line = f"{time.strftime('%H:%M:%S')}  {text}"
         self.records.append((line, level))
         if self._shown(line, level):
-            self.text.appendPlainText(line)
+            self.text.appendHtml(self._html(line, level))
 
     def _refilter(self) -> None:
-        self.text.setPlainText("\n".join(line for line, level in self.records if self._shown(line, level)))
+        self.text.clear()
+        shown = [self._html(line, level) for line, level in self.records if self._shown(line, level)]
+        if shown:
+            self.text.appendHtml("<br>".join(shown))  # one call: thousands of records stay instant
 
     def clear(self) -> None:
         self.records.clear()

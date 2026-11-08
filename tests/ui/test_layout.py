@@ -5,9 +5,10 @@ from __future__ import annotations
 from PySide6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
-from structura.ui.app_window import MainWindow, initial_size
+from structura.ui.app_window import MainWindow
 from structura.ui.header import HeaderBar
 from structura.ui.panels.variations import MIN_THUMB_WIDTH, THUMB, VariationExplorer
+from structura.ui.window_geometry import initial_size
 
 LAPTOP_WIDTH = 1280
 
@@ -102,3 +103,23 @@ def test_tabified_bottom_panels_are_named_by_their_tabs_only(window: MainWindow)
     QApplication.processEvents()
     assert console.titleBarWidget() is None  # a floating panel needs its title bar to be moved
     console.setFloating(False)
+
+
+def test_tall_panels_scroll_instead_of_growing_the_window(window: MainWindow) -> None:
+    """Showing Render Settings (a long form) used to raise the dock's minimum height past the screen, and
+    QMainWindow grew the window to match."""
+    size = window.size()
+    for title in ("Render Settings", "Camera", "Materials", "Inspector", "Render Queue", "Timeline"):
+        window.panels.show(title)
+        QApplication.processEvents()
+        assert window.size() == size, title
+        assert window.docks[title].minimumSizeHint().height() < 200
+
+
+def test_a_window_taller_than_the_screen_is_brought_back(window: MainWindow) -> None:
+    screen = window.screen()
+    assert screen is not None
+    room = screen.availableGeometry()
+    window.resize(window.width(), room.height() + 600)  # e.g. a geometry saved while a panel had grown it
+    window.fit_to_screen()
+    assert window.frameGeometry().height() <= max(room.height(), window.minimumSizeHint().height())

@@ -12,7 +12,7 @@ from .expr import split_alpha
 from .model import Theme
 
 TEMPLATES = Path(__file__).resolve().parent / "templates"
-DENSITY_PAD = {"comfortable": 4, "compact": 3}
+DENSITY_PAD = {"comfortable": 4, "compact": 2}
 
 
 @dataclass(frozen=True)

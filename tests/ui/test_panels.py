@@ -47,3 +47,15 @@ def test_build_stats_explain_the_stop_and_chart_generations(qtbot: QtBot, window
     assert "maxdepth" in stats.labels["Stopped because"].text()
     assert stats.chart.counts.sum() == len(tab.outcome.scene)
     assert generation_histogram(np.arange(1000) % 500, 100).shape == (100,)
+
+
+def test_outline_lists_sliders_materials_and_lights(qtbot: QtBot, window: MainWindow) -> None:
+    tab = window.docs.new_script()
+    text = "#version 2\n#define s 1 (float:0-2)\nmaterial gilded { preset gold }\nlight key { type sun }\nbox::gilded\n"
+    tab.editor.setPlainText(text)
+    tree = window.outline.tree
+    qtbot.waitUntil(lambda: tree.topLevelItemCount() >= 3, timeout=20000)
+    groups = {tree.topLevelItem(i).text(0): tree.topLevelItem(i) for i in range(tree.topLevelItemCount())}
+    assert {"Parameters (1)", "Materials (1)", "Lights (1)"} <= set(groups)
+    window.outline.tree.itemClicked.emit(groups["Lights (1)"].child(0), 0)
+    assert tab.editor.textCursor().position() == text.index("light key")

@@ -30,6 +30,8 @@ RenderSource = Callable[[], RenderInput | None]
 class RenderView(QWidget):
     status = Signal(str)
     started = Signal()  # a render (or region render) was requested; ``source`` holds what it renders
+    render_requested = Signal()  # the Render button (the window decides: final presets ask where to save first)
+    finished = Signal()  # the render (and its denoising) is complete; ``last`` holds it
 
     def __init__(self, renders: RenderService, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -50,15 +52,16 @@ class RenderView(QWidget):
 
     def _connect(self) -> None:
         c = self.controls
-        c.render_button.clicked.connect(self.start)
+        c.render_button.clicked.connect(self.render_requested)
         c.stop_button.clicked.connect(self.stop)
         c.resume_button.clicked.connect(self.resume)
         c.exposure.valueChanged.connect(self._redisplay)
         c.view_box.currentTextChanged.connect(self._redisplay)
         c.channel.currentTextChanged.connect(self._redisplay)
-        c.denoise.currentTextChanged.connect(self._denoise_changed)
+        c.denoise.currentTextChanged.connect(self.denoise_changed)
         self.renders.progress.connect(self._on_update)
         self.renders.finished.connect(self._on_update)
+        self.renders.finished.connect(self._on_finished)
         self.renders.failed.connect(self._on_failed)
         self.view.region_selected.connect(self.render_region)
         self.view.hovered.connect(self.inspect)
@@ -69,9 +72,11 @@ class RenderView(QWidget):
 
     @Slot()
     def start(self, region: tuple[int, int, int, int] | None = None) -> None:
-        source = self.request_source() if self.request_source else None
-        if source is None:
+        if self.request_source is None:
             self.status.emit("Nothing to render yet: build the script first (F5).")
+            return
+        source = self.request_source()  # the provider explains a refusal itself
+        if source is None:
             return
         self._base = merge_base(self.last, source[2], region)
         self.controls.resume_button.setEnabled(False)
@@ -111,6 +116,7 @@ class RenderView(QWidget):
     @Slot()
     def stop(self) -> None:
         self.renders.cancel(DOC)
+        self.view.set_bucket(None)
         last = self.last
         resumable = last is not None and last.fraction < 1.0 and last.progress.film is not None
         self.controls.resume_button.setEnabled(resumable and self._base is None)  # not region renders
@@ -133,7 +139,13 @@ class RenderView(QWidget):
         self._redisplay()
         self.controls.progress.setValue(round(100 * update.fraction))
         p = update.progress
-        text = f"{p.samples}/{update.total_samples} spp · {p.seconds:.1f} s{eta(update)} · {update.device}"
+        self.view.set_bucket(p.tile)
+        done = (
+            f"{p.completed:.0%} of the buckets"
+            if p.completed is not None
+            else f"{p.samples}/{update.total_samples} spp"
+        )
+        text = f"{done} · {p.seconds:.1f} s{eta(update)} · {update.device}"
         if 0.0 < p.active < 1.0:
             text += f" · {p.active:.0%} still sampling"
         if update.denoiser:
@@ -149,7 +161,7 @@ class RenderView(QWidget):
         self.controls.info.setToolTip(text)
 
     @Slot()
-    def _denoise_changed(self) -> None:
+    def denoise_changed(self) -> None:
         """Denoise a finished render after the fact (on the compute lane); 'off' shows the raw image again."""
         method, last = self.controls.denoise_method(), self.last
         if method and last is not None and last.fraction >= 1.0:
@@ -189,6 +201,11 @@ class RenderView(QWidget):
         rgb = np.ascontiguousarray(rgb)
         h, w, _ = rgb.shape
         self.view.set_image(QImage(rgb.data, w, h, 3 * w, QImage.Format.Format_RGB888).copy())
+
+    @Slot(str, object)
+    def _on_finished(self, doc: str, update: object) -> None:
+        if doc == DOC and isinstance(update, RenderUpdate):
+            self.finished.emit()
 
     @Slot(str, object)
     def _on_failed(self, doc: str, info: object) -> None:

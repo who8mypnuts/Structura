@@ -27,7 +27,7 @@ from ...render.metadata import render_metadata
 from ...render.output import FORMATS, save_image
 from ...render.report.collect import ReportInputs, build_report
 from ...render.report.writers import FORMATS as REPORT_FORMATS
-from ...render.settings import AUTO_PASSES, INTEGRATORS, VIEWS, RenderSettings
+from ...render.settings import AUTO_PASSES, BUCKET_ORDERS, INTEGRATORS, SAMPLERS, SEQUENCES, VIEWS, RenderSettings
 from ...services.report_documents import write_report
 from .common import EXIT_OK, EXIT_SCRIPT_ERROR, EXIT_USAGE, add_script_arguments, compile_or_report, parse_params
 
@@ -54,6 +54,9 @@ def register(p: argparse.ArgumentParser) -> None:
     p.add_argument("--view", choices=VIEWS, default="auto", help="view transform (auto: standard for classic)")
     p.add_argument("--aovs", action="store_true", help="EXR: add albedo, normal (N), depth (Z), alpha and id layers")
     p.add_argument("--noise-threshold", type=float, help="adaptive sampling: stop pixels below this error (0.01)")
+    p.add_argument("--sampler", choices=SAMPLERS, help="progressive (whole image in passes) or tiled (buckets)")
+    p.add_argument("--bucket-order", choices=BUCKET_ORDERS, help="tiled: the order of the buckets (hilbert)")
+    p.add_argument("--sequence", choices=SEQUENCES, help="sample numbers: random (default) or halton")
     p.add_argument("--time-limit", type=float, help="stop after this many seconds")
     p.add_argument("--denoise", choices=METHODS, help="denoise the result (auto: Open Image Denoise, else À-Trous)")
     p.add_argument("--report", type=Path, action="append", default=[], metavar="FILE",
@@ -73,7 +76,7 @@ def _overrides(args: argparse.Namespace) -> dict[str, Any]:
         out["width"], out["height"] = args.size
     if args.samples:
         out["samples"] = args.samples
-    for key in ("noise_threshold", "time_limit"):
+    for key in ("noise_threshold", "time_limit", "sampler", "bucket_order", "sequence"):
         if getattr(args, key) is not None:
             out[key] = getattr(args, key)
     return out

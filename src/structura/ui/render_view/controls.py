@@ -43,6 +43,7 @@ class RenderControls:
         self.resume_button.setEnabled(False)
         self.report_button = QPushButton(tr("Report…"))
         self.report_button.setToolTip(tr("Save a detailed report of the render: PDF, HTML, Markdown, text, JSON, CSV"))
+        self.save_button.setToolTip(tr("Save the image, with a report beside it (PDF, HTML, Markdown or text)"))
         self.snapshot_button.setToolTip(
             tr("Snapshot the current image and compare it with the next render (drag the split; click again to clear)")
         )

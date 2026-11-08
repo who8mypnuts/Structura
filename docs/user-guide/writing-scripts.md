@@ -42,13 +42,32 @@ and the camera lines Structure Synth writes (`set translation`, `set rotation`, 
 `#define SIZE 0.9 (float:0.5-1.2)` declares a **slider** in the Parameters dock and in the editor. Every use of
 `SIZE` takes its value. Plain `#define NAME TEXT` substitutes text.
 
+While you drag a slider the structure is rebuilt with at most 250,000 objects, so it follows the slider; the
+full build comes when you let go. Undoing a change, or going back to a value you had, shows the earlier
+structure at once.
+
+## Includes
+
+`#include "library.es"` inserts that file's lines (rules, defines) at this point. The file is looked for next
+to the script, then in the library folders of Preferences ▸ Paths. Each file is included once. Errors in an
+included file are shown on the `#include` line.
+
+## Build limits
+
+**Build ▸ Build Limits…** caps every build: an object limit, a time limit, and a memory guard (the share of
+the free memory a build may use). A build that reaches a limit stops and keeps what it made; the status bar
+says which limit stopped it.
+
 ## EisenScript v2
 
 Start a script with `#version 2` to get the additions (every 1.5 script keeps working without it):
 
 - **Expressions** wherever a number goes: `{ rz (360 / n) s (0.9 ^ 2) } R`. They can read `frame`, `time`
   and `fps` for animation.
-- **`#param n int = 12 range 3..40 "Arms"`** declares a typed slider.
+- **`#param n int = 12 range 3..40 "Arms"`** declares a typed slider. Other types get their own controls:
+  `#param tint color = #f80` (a colour button), `#param caps bool = true` (a switch, `1` or `0` in
+  expressions) and `#param style enum = tree of spiral|grid|tree` (a choice list — the name is substituted, so
+  it can pick which rule to call).
 - **Blocks:** `material NAME { … }`, `light NAME { … }`, `environment { … }`, `camera { … }`, `render { … }`.
 - **`{ mat gold } R`** gives a whole subtree a material (a tag on a primitive still wins).
 - **Primitives:** `cylinder`, `cone[r]`, `torus[r]`, `ellipsoid`, `tube[r]`.
@@ -72,4 +91,12 @@ same structure.
 ## JavaScript movie scripts
 
 Structure Synth's `#javascript` scripts run with **Build ▸ Run JavaScript** (F7) or `structura run`. The
-`Builder` object has 1.5's API (`load`, `define`, `build`, `raytraceToFile`, …).
+`Builder` object has 1.5's API (`load`, `define`, `build`, `raytraceToFile`, `execute`, …); `Debug` (`Info`,
+`Message`, progress, `Sleep`, `waitForMouseButton` — click in the viewport), `World` (`addSphere`, `setColor`,
+`clear`) and `Vector3` are there too. Scripts run in their own process: the window never waits for them, each
+`Builder.build()` shows its structure in the viewport, **Cancel** stops the script, and `Builder.execute` asks
+before it runs a program.
+
+**File ▸ Save as Legacy .es…** writes a copy Structure Synth 1.5 can open: v2 features are flattened (sliders
+become 1.5 sliders, expressions their values, the camera block `set` lines) or dropped, and the Console lists
+what changed.

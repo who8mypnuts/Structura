@@ -3,7 +3,8 @@
 User-visible strings go through ``tr(text, context)``. Commands, menus and dock titles are translated where
 they are shown (registry, menus, docks), so the tables that define them stay in English and the catalogue
 extractor (tools/update_translations.py) finds every string in one place. Translations live in
-resources/i18n/structura_<language>.qm; 'pseudo' is a generated accented locale for layout testing.
+resources/i18n/structura_<language>.qm. Structura ships in English; 'pseudo' is a generated accented locale for
+layout testing, and a translator adds a language by adding its catalogue (tools/update_translations.py).
 """
 
 from __future__ import annotations
@@ -13,7 +14,7 @@ from pathlib import Path
 from PySide6.QtCore import QCoreApplication, QLibraryInfo, QLocale, QTranslator
 
 I18N = Path(__file__).resolve().parents[1] / "resources" / "i18n"
-LANGUAGES = {"system": "System language", "en": "English", "de": "Deutsch", "pseudo": "Pseudo-locale (layout testing)"}
+LANGUAGES = {"system": "System language", "en": "English", "pseudo": "Pseudo-locale (layout testing)"}
 _installed: list[QTranslator] = []
 
 

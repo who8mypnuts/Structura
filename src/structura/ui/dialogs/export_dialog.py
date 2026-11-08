@@ -9,7 +9,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from pathlib import Path
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer, Signal
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -27,9 +27,14 @@ from PySide6.QtWidgets import (
 from ...core.params import resolve
 from ...core.scene.ir import SceneIR
 from ...export.base import Exporter
+from ...export.estimate import human
 from ...export.presets import load_preset, preset_names, save_preset
+from ...export.templates.template_file import all_templates
+from ...themes.loader import DEFAULT_THEME, load_theme
+from ...themes.model import Theme
 from ..i18n import tr
 from ..widgets.param_form import ParamForm
+from .template_sheet import TemplatePages
 
 ChangePath = Callable[[Exporter, Path], Path | None]
 
@@ -42,9 +47,12 @@ def scene_summary(scene: SceneIR) -> str:
 
 
 class ExportDialog(QDialog):
+    estimate_wanted = Signal(object)  # the options (debounced): the owner estimates the file size
+    preview_wanted = Signal(object)  # the same, for templates: the owner renders the output preview
+
     def __init__(
         self, exporter: Exporter, path: Path, scene: SceneIR, values: dict[str, object], change: ChangePath,
-        parent: QWidget | None = None,
+        parent: QWidget | None = None, theme: Theme | None = None,
     ) -> None:  # fmt: skip
         super().__init__(parent)
         self.exporter, self.path, self._change = exporter, path, change
@@ -53,6 +61,9 @@ class ExportDialog(QDialog):
         head = QFormLayout()
         head.addRow(tr("Save to"), self._destination_row())
         head.addRow(tr("Contents"), QLabel(scene_summary(scene)))
+        self.estimate = QLabel(tr("estimating…"))
+        self.estimate.setObjectName("Muted")
+        head.addRow(tr("Estimated size"), self.estimate)
         head.addRow(tr("Preset"), self._preset_row())
         buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttons.button(QDialogButtonBox.StandardButton.Ok).setText(tr("Export"))
@@ -60,9 +71,44 @@ class ExportDialog(QDialog):
         buttons.rejected.connect(self.reject)
         layout = QVBoxLayout(self)
         layout.addLayout(head)
-        layout.addWidget(self.form)
+        self.pages = self._template_pages(theme) if exporter.name == "template" else None
+        layout.addWidget(self.pages or self.form)
         layout.addWidget(buttons)
         self._show_path()
+        self._debounce = QTimer(self)
+        self._debounce.setSingleShot(True)
+        self._debounce.setInterval(400)
+        self._debounce.timeout.connect(self._settled)
+        self.form.changed.connect(self._options_changed)
+        self._debounce.start()
+
+    def _template_pages(self, theme: Theme | None) -> TemplatePages:
+        pages = TemplatePages(self.form, theme or load_theme(DEFAULT_THEME))
+        pages.template_saved.connect(self._template_saved)
+        return pages
+
+    def _template_saved(self, name: str) -> None:
+        refresh = getattr(self.exporter, "refresh", None)
+        if callable(refresh):
+            refresh()
+        self.form.set_choices("template", tuple(all_templates()), name)
+
+    def autosave(self) -> bool:
+        """'Autosave script with seed and camera' is ticked (template exports)."""
+        return self.pages is not None and self.pages.autosave.isChecked()
+
+    def _settled(self) -> None:
+        values = self.form.values()
+        self.estimate_wanted.emit(values)
+        if self.pages is not None:
+            self.preview_wanted.emit(values)
+
+    def _options_changed(self, *_: object) -> None:
+        self.estimate.setText(tr("estimating…"))
+        self._debounce.start()
+
+    def show_estimate(self, size: int) -> None:
+        self.estimate.setText("≈ " + human(size))
 
     def _destination_row(self) -> QHBoxLayout:
         self.destination = QLabel()

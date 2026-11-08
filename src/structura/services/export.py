@@ -40,6 +40,7 @@ class ExportService(TrackedJobs):
     progress = Signal(str, float, str)  # path, fraction, text
     finished = Signal(object)  # ExportReport
     failed = Signal(str, object)  # path, ErrorInfo
+    cancelled = Signal(str)  # path
 
     def request(self, req: ExportRequest) -> JobHandle:
         job = FunctionJob(f"export {req.path.name}", Lane.IO, export_job(req), key=str(req.path))
@@ -47,7 +48,12 @@ class ExportService(TrackedJobs):
         handle.progress.connect(self._on_progress)
         handle.finished.connect(self._on_finished)
         handle.failed.connect(self._on_failed)
+        handle.cancelled.connect(self._on_cancelled)
         return handle
+
+    @Slot()
+    def _on_cancelled(self) -> None:
+        self.cancelled.emit(self.sender_doc())
 
     @Slot(float, str)
     def _on_progress(self, fraction: float, text: str) -> None:

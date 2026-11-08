@@ -4,6 +4,7 @@ diagnostic squiggles and editing helpers each live in their own module."""
 from __future__ import annotations
 
 from collections.abc import Callable
+from pathlib import Path
 
 from PySide6.QtCore import QEvent, QMimeData, QRect, Qt, Signal
 from PySide6.QtGui import (
@@ -26,7 +27,7 @@ from PySide6.QtWidgets import QMenu, QPlainTextEdit, QTextEdit, QWidget
 from ...core.lang.analysis import Analysis
 from ...core.lang.diagnostics import Diagnostic, Severity
 from ...themes.model import Theme
-from ..fonts import CODE_FAMILY, code_font
+from ..fonts import code_family, code_font
 from ..i18n import tr
 from ..theming import qcolor
 from .brackets import match_bracket
@@ -46,6 +47,7 @@ from .scrubber import Scrubber
 from .snippet_session import SnippetSession
 from .sticky import StickyHeaders
 from .swatches import paint_swatches
+from .vim import VimMode
 
 DIAG_ROLE = {Severity.ERROR: "diag.error", Severity.WARNING: "diag.warning", Severity.INFO: "diag.info"}
 
@@ -90,8 +92,10 @@ class CodeEditor(QPlainTextEdit):
         self.minimap = Minimap(self)
         self.sticky = StickyHeaders(self)
         self.inline_params = InlineParams(self)
+        self.vim = VimMode(self)
         self._press_position = 0
         self.menu_extender: Callable[[QMenu, QAction], None] | None = None  # adds commands to the menu
+        self.rule_preview: Callable[[str], Path | None] | None = None  # hover previews (ui/rule_previews.py)
         self._column_anchor: int | None = None
         self.set_theme(theme)
         self.set_font_size(code_font().pointSize())
@@ -132,6 +136,7 @@ class CodeEditor(QPlainTextEdit):
         text_option.setFlags(flags | whitespace if options.show_whitespace else flags & ~whitespace)
         self.document().setDefaultTextOption(text_option)
         self.highlighter.set_rainbow(options.rainbow_brackets)
+        self.vim.set_enabled(options.vim)
         self.set_font_size(options.code_size)
         self.sticky.refresh()
         self.viewport().update()
@@ -349,7 +354,7 @@ class CodeEditor(QPlainTextEdit):
         size = max(6, min(40, size))
         # A widget style sheet outranks the application's (whose QWidget rule sets the UI font), so the code
         # font and this editor's zoom survive theme changes; setFont keeps metrics right before polishing.
-        self.setStyleSheet(f'QPlainTextEdit#CodeEditor {{ font-family: "{CODE_FAMILY}"; font-size: {size}pt; }}')
+        self.setStyleSheet(f'QPlainTextEdit#CodeEditor {{ font-family: "{code_family()}"; font-size: {size}pt; }}')
         font = code_font(size)
         self.setFont(font)
         self.setTabStopDistance(self.fontMetrics().horizontalAdvance(" ") * 2)

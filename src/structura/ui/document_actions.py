@@ -18,6 +18,7 @@ from .editor.color_edit import ColorEdit, color_token_at
 from .editor.editing import toggle_comment
 from .editor.snippet_session import insert_snippet
 from .i18n import tr
+from .legacy_save import LegacySave
 from .save_paths import SavePaths, with_extension
 from .theming import qcolor
 
@@ -26,13 +27,14 @@ if TYPE_CHECKING:
 
 SCRIPT_FILTER = f"EisenScript (*.es);;Structura project (*{SUFFIX});;All files (*)"
 OPEN_FILTER = f"Scripts and projects (*.es *{SUFFIX});;{SCRIPT_FILTER}"
-EDITOR_MENU = ("edit.definition", "edit.peek", "edit.references", "edit.rename", "edit.quick_fix", "edit.comment",
-               "edit.format")  # fmt: skip
+EDITOR_MENU = ("edit.definition", "edit.peek", "edit.references", "edit.rename", "edit.quick_fix", "edit.refactor",
+               "edit.comment", "edit.format")  # fmt: skip
 
 
 class DocumentActions(QObject):
     def __init__(self, window: MainWindow) -> None:
         super().__init__(window)
+        self.legacy = LegacySave(window)
         self.w = window
         window.tabs.tab_added.connect(self.on_tab_added)
         self.recent = RecentFiles(window.settings)

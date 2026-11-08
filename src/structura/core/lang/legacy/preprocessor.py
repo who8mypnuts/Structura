@@ -14,6 +14,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
+from ...color import parse_color
 from ...rng import mt_get_double, mt_new
 from ..diagnostics import Diagnostic, Severity
 from ..source import Span
@@ -21,6 +22,7 @@ from ..source import Span
 _DEFINE_FLOAT = re.compile(r"^#define\s([^\s]+)\s(.*)\s\(float:([^\s]*)\)$")
 _DEFINE_INT = re.compile(r"^#define\s([^\s]+)\s(.*)\s\(int:([^\s]*)\)$")
 _DEFINE = re.compile(r"^#define\s([^\s]+)\s(.*)$")
+_DEFINE_TYPED = re.compile(r"^#define\s([^\s]+)\s(\S+)\s\((color|bool|enum)(?::([^\s)]*))?\)$")  # v2 #param
 _RANDOM = re.compile(r"random\[([-+]?[0-9]*\.?[0-9]+),([-+]?[0-9]*\.?[0-9]+)\]")
 _LINE_SPLIT = re.compile(r"\r\n|\r|\n")
 _KNOWN = re.compile(r"\s*#(version|javascript)\b", re.IGNORECASE)
@@ -30,11 +32,17 @@ MAX_SUBSTITUTIONS = 100
 @dataclass(frozen=True, slots=True)
 class GuiParameter:
     name: str
-    kind: str  # "float" | "int"
+    kind: str  # "float" | "int"; v2 #param adds "color" (0xRRGGBB), "bool" (0 / 1), "enum" (a choice's index)
     minimum: float
     maximum: float
     default: float
     line: int  # 0-based source line
+    choices: tuple[str, ...] = ()  # enum: the names, substituted for the index
+
+    @property
+    def numeric(self) -> bool:
+        """A slider parameter (float or int), as opposed to a colour, switch or choice."""
+        return self.kind in ("float", "int")
 
 
 @dataclass
@@ -43,6 +51,22 @@ class PreprocessResult:
     parameters: list[GuiParameter] = field(default_factory=list)
     diagnostics: list[Diagnostic] = field(default_factory=list)  # spans are in the *input* text
     defines: dict[str, str] = field(default_factory=dict)
+
+
+def typed_parameter(name: str, kind: str, default: str, extra: str, line: int) -> GuiParameter | None:
+    """A colour, switch or choice parameter; None when the default does not fit."""
+    if kind == "bool":
+        return GuiParameter(name, kind, 0.0, 1.0, 1.0 if default == "true" else 0.0, line)
+    if kind == "enum":
+        choices = tuple(c for c in extra.split("|") if c)
+        if default not in choices:
+            return None
+        return GuiParameter(name, kind, 0.0, float(len(choices) - 1), float(choices.index(default)), line, choices)
+    colour = parse_color(default)
+    if colour is None:
+        return None
+    packed = (round(colour.r / 257) << 16) | (round(colour.g / 257) << 8) | round(colour.b / 257)
+    return GuiParameter(name, kind, 0.0, float(0xFFFFFF), float(packed), line)
 
 
 def format_number(value: float) -> str:
@@ -127,6 +151,10 @@ class LegacyPreprocessor:
     def _directive(self, line: str, index: int) -> None:
         if _KNOWN.match(line):
             return  # '#version 2' (handled by the v2 front end) and '#javascript' (a script, not EisenScript)
+        typed = _DEFINE_TYPED.match(line) if self.whole_words else None
+        if typed:
+            self._typed_parameter(typed, index)
+            return
         for pattern, kind in ((_DEFINE_FLOAT, "float"), (_DEFINE_INT, "int")):
             match = pattern.match(line)
             if match:
@@ -155,6 +183,15 @@ class LegacyPreprocessor:
             self.warn("W121", f"Could not parse #define gui command: {match.group(0)}")
             return
         self.result.parameters.append(GuiParameter(name, kind, low, high, default, index))
+
+    def _typed_parameter(self, match: re.Match[str], index: int) -> None:
+        """'#define NAME DEFAULT (color)', '(bool)' or '(enum:a|b|c)' — what v2's #param becomes."""
+        name, default, kind, extra = match.group(1), match.group(2), match.group(3), match.group(4) or ""
+        param = typed_parameter(name, kind, default, extra, index)
+        if param is None:
+            self.warn("W121", f"Could not parse #param: {match.group(0)}")
+            return
+        self.result.parameters.append(param)
 
     @staticmethod
     def _replace_random(line: str, rng: np.ndarray) -> str:

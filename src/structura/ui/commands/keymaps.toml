@@ -17,3 +17,4 @@
 "edit.references" = "Shift+F12"
 "view.theme" = "Ctrl+K, Ctrl+T"
 "build.seed_random" = "Ctrl+Alt+R"
+"edit.refactor" = "Ctrl+Shift+R"

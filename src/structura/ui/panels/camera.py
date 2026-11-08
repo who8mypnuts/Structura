@@ -62,6 +62,7 @@ class CameraPanel(QWidget):
     bookmark_requested = Signal()  # save the current view
     bookmark_chosen = Signal(object)  # Camera
     bookmark_deleted = Signal(str)
+    lock_toggled = Signal(bool)  # Lock to Script
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -82,7 +83,13 @@ class CameraPanel(QWidget):
         copy = QPushButton(tr("Copy to Script"))
         copy.setToolTip(tr("Write this camera into the script (v1: 'set' lines; v2: a camera block)"))
         copy.clicked.connect(self.copy_to_script)
-        layout.addWidget(copy)
+        self.lock = QCheckBox(tr("Lock to script"))
+        self.lock.setToolTip(tr("Every build shows the script's own camera (set lines or camera block)"))
+        self.lock.toggled.connect(self.lock_toggled)
+        row = QHBoxLayout()
+        row.addWidget(copy)
+        row.addWidget(self.lock)
+        layout.addLayout(row)
         layout.addLayout(self._bookmarks(), 1)
         for edit in (self.eye, self.target, self.up):
             edit.changed.connect(self._edited)
@@ -90,6 +97,11 @@ class CameraPanel(QWidget):
             spin.valueChanged.connect(self._edited)
         self.auto_focus.toggled.connect(self._edited)
         self._base = Camera((0.0, 0.0, 10.0), (0.0, 0.0, 0.0))
+
+    def set_locked(self, locked: bool) -> None:
+        self.lock.blockSignals(True)
+        self.lock.setChecked(locked)
+        self.lock.blockSignals(False)
 
     def _view_buttons(self) -> QGridLayout:
         grid = QGridLayout()

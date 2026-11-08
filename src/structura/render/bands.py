@@ -17,9 +17,10 @@ MAX_GROWTH = 4.0
 class Bands:
     """Adapts the band height to the measured dispatch time."""
 
-    def __init__(self, width: int, height: int, rows: int = 32) -> None:
-        self.width, self.height = width, height
+    def __init__(self, width: int, height: int, rows: int = 32, origin: tuple[int, int] = (0, 0)) -> None:
+        self.width, self.height = width, height  # of the area dispatched: the image, or one bucket at ``origin``
         self.rows = min(height, rows)
+        self.origin = origin
 
     def _adapt(self, rows: int, seconds: float) -> None:
         scale = min(MAX_GROWTH, TARGET_SECONDS / max(seconds, 1e-6))
@@ -33,7 +34,7 @@ class Bands:
         y, total = 0, 0.0
         while y < self.height:
             rows = min(self.rows, self.height - y)
-            bound.update(row0=y)
+            bound.update(col0=self.origin[0], row0=self.origin[1] + y)
             bound.set_grid((self.width, rows, 1))
             started = time.perf_counter()
             bound.dispatch()

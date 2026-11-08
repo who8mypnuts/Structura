@@ -53,7 +53,9 @@ color = (1/n) Σ_i  blend(bright, dark, occluded(ray_i, maxdist)),  ray_i ~ cosi
 
 - `bright` defaults to the instance colour and `dark` to black, matching `Sunflow-Colored.rendertemplate`.
 - `samples` and `maxdist` are settings.
-- Optional direct lighting from declared lights can be added (`ao.direct = true`).
+- Optional direct lighting from declared lights can be added (`ao.direct = true`). *(Built in M11 as
+  `ao_direct`: the sun and every declared light, with shadows, over a white Lambertian surface, added to
+  the occlusion term.)*
 - This is the classic "white studio" Structure Synth look, and it is **cheap** (no recursion).
 
 ### 2.3 `path`: unidirectional path tracer (default for final renders)
@@ -62,7 +64,7 @@ color = (1/n) Σ_i  blend(bright, dark, occluded(ray_i, maxdist)),  ray_i ~ cosi
 |---------|--------|
 | Estimator | Next-event estimation + BSDF sampling, combined with **MIS** (power heuristic) |
 | Light selection | Power-proportional alias table over all lights and emissive instances; env has its own probability |
-| Depth control | Limits for total, diffuse, glossy and transmission bounces (Sunflow `depths.*` generalised); Russian roulette from bounce 3 |
+| Depth control | Limits for total, diffuse, glossy and transmission bounces (Sunflow `depths.*` generalised); Russian roulette from bounce 3. **M11:** `diffuse_bounces`, `glossy_bounces`, `transmission_bounces` (−1 = only `max_bounces` applies); a bounce is transmission when it crosses the surface, else diffuse-like when its sampled pdf is below 2 (the same test as `caustics filtered`), else glossy |
 | Firefly control | Optional clamp of indirect sample luminance |
 | Caustics | `caustics = on/off/filtered` (roughness regularisation on secondary bounces). **M2:** `filtered` (the default) raises the GGX alpha of every lobe to ≥ 0.3 after the first rough bounce (sampled pdf < 2), which removes the sun-caustic fireflies from glossy neighbours |
 | Opacity | Stochastic pass-through, using instance alpha × material opacity |
@@ -194,7 +196,7 @@ The key mapping is in [05](05-eisenscript-language.md) §6.3. In addition:
 | Area lights, spotlights | §4 | R2 |
 | Atmospheric fog | `path` fog (§2.3) | R3 |
 | CSG | Export-time booleans ([15](15-export.md) §3.1); legacy CSG template markers | E2 |
-| Mosaic preview, render block patterns | Quarter-res pass 0; bucket orders | R1 |
+| Mosaic preview, render block patterns | Quarter-res pass 0; bucket orders | R1 (built in M11: `render/mosaic.py`, `render/buckets.py`) |
 | Gamma / colour management | The single colour pipeline ([07](07-scene-model.md) §9) | R1 |
 
 ## 8. Post-1.0 candidates

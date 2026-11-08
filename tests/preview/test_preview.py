@@ -135,3 +135,22 @@ def test_technical_look_draws_edges(setup: tuple[PreviewRenderer, Any, Camera]) 
     technical = _image(fbo).astype(int)
     darker = flat.max(axis=2) - technical.max(axis=2) > 80
     assert darker.sum() > 10  # outlines where the flat look has colour
+
+
+def test_moving_frames_skip_ssao_when_full_frames_are_slow_and_reuse_the_shadow_map(
+    setup: tuple[PreviewRenderer, Any, Camera], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    renderer, fbo, camera = setup
+    shadows: list[int] = []
+    original = renderer._render_shadows
+    monkeypatch.setattr(renderer, "_render_shadows", lambda *a: (shadows.append(1), original(*a))[1])
+    renderer._shadow_key = None
+    renderer.render(camera, fbo, (W, H), PreviewOptions())
+    renderer.adaptive._pending, renderer.adaptive.full_ms = False, 100.0  # as if full frames took 100 ms
+    renderer.render(Camera(camera.eye, (0.2, 0.0, 0.0)), fbo, (W, H), PreviewOptions())
+    assert renderer.reduced  # a moving frame
+    renderer.render(Camera(camera.eye, (0.2, 0.0, 0.0)), fbo, (W, H), PreviewOptions())
+    assert not renderer.reduced  # still: accumulation is full quality
+    renderer.render(camera, fbo, (W, H), PreviewOptions(), accumulate=False)
+    assert not renderer.reduced  # single frames (thumbnails, tests) are always full quality
+    assert len(shadows) == 1

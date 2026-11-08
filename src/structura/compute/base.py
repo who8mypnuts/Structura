@@ -123,6 +123,10 @@ class Bound(ABC):
     @abstractmethod
     def read(self, name: str) -> np.ndarray: ...
 
+    def read_range(self, name: str, start: int, stop: int) -> np.ndarray:
+        """Elements [start, stop) of buffer ``name`` (a bucket's rows of the film, without the whole image)."""
+        return self.read(name)[start:stop]
+
     def finish(self) -> None:
         """Block until queued dispatches have run (GPU backends queue them asynchronously); lets callers time
         real device work and keep each submission short enough for the desktop to stay responsive."""

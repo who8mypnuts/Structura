@@ -18,6 +18,9 @@ BLADES, BLADE_ROT = 54, 55  # polygonal aperture (bokeh): blade count (< 3: a ro
 FOG_DENSITY, FOG_FALLOFF, FOG_BASE, FOG_COLOR = 56, 57, 58, 59  # kernels/fog.py; density 0 = no fog
 PHOTONS_ON, PHOTON_RADIUS, PHOTON_TABLE = 62, 63, 64  # caustic photon map (kernels/photons.py); 0 = off
 PHOTON_CENTRE, PHOTON_EXTENT, PHOTON_COUNT = 65, 68, 69  # photon emission: scene bounding sphere, photon count
+SEQUENCE = 70  # 0: hashed random numbers; 1: Halton (rotated per pixel) for the pixel, lens and first bounce
+DIFFUSE_BOUNCES, GLOSSY_BOUNCES, TRANSMISSION_BOUNCES = 71, 72, 73  # path: per-lobe limits (huge = none)
+AO_DIRECT = 74  # ao: 1 adds direct light from the sun and the declared lights
 CFG_SIZE = 80
 FILTER_BASE = CFG_SIZE  # cfg[FILTER_BASE:] holds the filter table when FILTER_ON (render/filters.py)
 FILTER_TABLE, FILTER_SIGNS = 256, 256  # FILTER_TABLE + 1 inverse-CDF offsets, then the signs

@@ -71,15 +71,15 @@
 | Outline | Rules (ambiguous alternatives grouped, with weights and %), materials, params, v2 blocks; click to navigate; filter box | ✅ |
 | Examples | Gallery grid with **thumbnails** (generated once by the `preview` integrator and cached), search, tags (Tutorials, Classic, Community); double-click opens a copy | ✅ gallery with cached thumbnails, group filter; opens copies |
 | Parameters | `#define … (float/int)` and `#param` controls: sliders, spin boxes, colour buttons, toggles, enums; per-parameter keyframe toggle ([16](16-animation-scripting-cli.md)); reset-to-default | ✅ |
-| Inspector | Picked-object info ([08](08-viewport.md) §6): kind, tag, material, generation, size, source link, "Show ancestry", "Select all from rule/tag/generation", "Hide/isolate" | ✅ info, go to source, select same call site/tag/generation/kind, isolate / show all; no ancestry |
+| Inspector | Picked-object info ([08](08-viewport.md) §6): kind, tag, material, generation, size, source link, "Show ancestry", "Select all from rule/tag/generation", "Hide/isolate" | ✅ info, go to source, select same call site/tag/generation/kind, isolate / show all, Show Ancestry (M11) |
 | Materials | Tags found in the scene → material assignment; editor for principled parameters with a live preview swatch (`preview` render of a sphere+box); preset picker; "Write as v2 `material` block" | ✅ tags, presets, live swatch, writes v2 blocks |
 | Render Settings | **Generated from registry ParamSpecs** ([02](02-architecture.md) §6.2): integrator, samples, noise threshold, size, filter, bounces, denoise, view transform, exposure, device | ✅ |
 | Environment & Lights | Environment type (colour/gradient/HDRI/sun-sky) with HDRI browser and rotation; light list with add/remove; sun position widget (azimuth/elevation dial) | ✅ Lights panel (v2 light blocks); environment and sun in Render Settings |
-| Camera | Numeric eye/target/up/fov/aperture/focus, projection type, **camera bookmarks** (saved views), "Copy camera to script" (v1 or v2 syntax), lock to script | ✅ numbers, standard views, saved views, Copy to Script; no lock-to-script |
+| Camera | Numeric eye/target/up/fov/aperture/focus, projection type, **camera bookmarks** (saved views), "Copy camera to script" (v1 or v2 syntax), lock to script | ✅ numbers, standard views, saved views, Copy to Script, Lock to script (M11; saved in projects) |
 | Problems | Diagnostics across open documents ([12](12-editor.md) §7) | ✅ |
 | Console | Log with severity filters, search, copy; structured build/render statistics | ✅ |
-| Build Stats | Counts by primitive kind; per-generation histogram; termination reasons (1.5 parity); timings per phase; memory; estimated vs actual object count | ✅ counts, termination reasons, generation histogram, time (no per-phase timings) |
-| Render Queue | Queued/running/finished renders and exports, with progress, ETA, open/reveal buttons | ✅ (renders only; exports run directly) |
+| Build Stats | Counts by primitive kind; per-generation histogram; termination reasons (1.5 parity); timings per phase; memory; estimated vs actual object count | ✅ counts, termination reasons, generation histogram, time; per-phase timings (analysis, build, viewport; M11) |
+| Render Queue | Queued/running/finished renders and exports, with progress, ETA, open/reveal buttons | ✅ (M11: exports are listed too, with progress and Cancel; they start at once on the io lane) |
 | Timeline | Animation tracks ([16](16-animation-scripting-cli.md)) | ✅ |
 | Activity | All Jobs with lane, state and duration (a debug aid, hidden by default) | ✅ |
 | **Variation Explorer** | §5.3 | ✅ seeds and parameters, Expand Around This |
@@ -101,9 +101,11 @@ There are no hand-built duplicate `QAction`s (DRY).
 
 > **As built:** the menus follow this table, with these differences. File has Export As… (Ctrl+E) and
 > Open from Render…; Render has Add to Render Queue… (Ctrl+Shift+F9) and Save Render Report…; View has
-> Panels, Workspace, Colour By, Overlays, Standard Views and Copy Camera to Script. "Save as Legacy .es",
-> "Render (Legacy Look)" as a separate command, "Build Limits…" and "Show Ancestry" are not built (the
-> legacy look is the `classic` integrator in the Render tab).
+> Panels, Workspace, Colour By, Overlays, Standard Views and Copy Camera to Script. M11 added the rest of the
+> table: File ▸ Save as Legacy .es… (`core/lang/to_legacy.py`), Build ▸ Build Limits… and Show Ancestry,
+> Build ▸ Run Python Script…, Render ▸ Render (Legacy Look), Render Region and Denoise, Edit ▸ Refactor…,
+> and Help ▸ User Guide, Quick Start, Examples, What's New and System Report… ("Report Issue": the output of
+> `structura doctor`, with Copy).
 
 | Menu | Items (abridged) |
 |------|------------------|
@@ -225,9 +227,22 @@ The sections are generated from `SettingsService` ParamSpecs:
 - Paths (library/include paths, templates, HDRIs, output folder);
 - Advanced (logging level, kernel cache, reset layout).
 
-> **As built:** one form generated from ParamSpecs (`ui/dialogs/preferences.py`): theme, interface size,
-> reduce motion, language, editor options, session, live build, viewport controls and engine, render device.
-> Sections, paths and advanced settings are backlog ([22](22-implementation-notes.md) §4).
+> **As built (M11):** `ui/dialogs/preferences.py`, one ParamForm per section in tabs (General, Appearance,
+> Editor, Viewport, Rendering, Paths, Advanced), applied live by `ui/settings_actions.py`:
+>
+> - General: session restore, hot exit, the recovery-snapshot interval, language;
+> - Appearance: theme, **follow the system's light/dark setting** (switches to the theme's pair, also when the
+>   system changes), interface font (Inter or the system font) and size, **density** (comfortable/compact),
+>   reduce motion;
+> - Editor: code font (any installed monospace family), the view options (including Vim), live build;
+> - Viewport: controls preset, engine;
+> - Rendering: device, default render preset, CPU threads, **memory guard** (renders needing more than this
+>   share of the free memory are refused with a message, `render/memory.py`);
+> - Paths: default output folder, **library folders** for `#include`, the Blender executable;
+> - Advanced: log level, **Reset Window Layout**, **Clear Caches** (compiled kernels, CUDA binaries,
+>   thumbnails).
+>
+> Build limits (object cap, time limit, build memory guard) have their own dialog, Build ▸ Build Limits….
 
 ## 8. Accessibility & internationalisation
 

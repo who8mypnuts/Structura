@@ -95,7 +95,7 @@ def substitute_expressions(text: str, names: dict[str, float] | None = None) -> 
 
 PARAM = re.compile(
     r"^(\s*)#param\s+([A-Za-z_]\w*)\s+(float|int|color|bool|enum)\s*=\s*(\S+)"
-    r'(?:\s+range\s+(-?[\d.]+)\.\.(-?[\d.]+))?(?:\s+of\s+\S+)?(?:\s+"([^"]*)")?\s*$'
+    r'(?:\s+range\s+(-?[\d.]+)\.\.(-?[\d.]+))?(?:\s+of\s+(\S+))?(?:\s+"([^"]*)")?\s*$'
 )
 
 
@@ -107,7 +107,9 @@ def params_to_defines(text: str) -> str:
         if m is None:
             out.append(line)
             continue
-        pad, name, kind, default, low, high, _label = m.groups()
-        slider = f" ({kind}:{low}-{high})" if kind in ("float", "int") and low is not None else ""
-        out.append(f"{pad}#define {name} {default}{slider}")
+        pad, name, kind, default, low, high, choices, _label = m.groups()
+        control = f" ({kind}:{low}-{high})" if kind in ("float", "int") and low is not None else ""
+        control = f" ({kind})" if kind in ("color", "bool") else control
+        control = f" (enum:{choices})" if kind == "enum" and choices else control
+        out.append(f"{pad}#define {name} {default}{control}")
     return "\n".join(out)

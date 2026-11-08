@@ -31,8 +31,8 @@ def merged(base: RenderUpdate | None, update: RenderUpdate) -> RenderUpdate:
 
 def eta(update: RenderUpdate) -> str:
     """' · 12 s left' from the rate so far ('' when finished or too early to tell)."""
-    p = update.progress
-    if p.samples <= 0 or p.samples >= update.total_samples or p.seconds < 0.5:
+    done, seconds = update.fraction, update.progress.seconds
+    if done <= 0.0 or done >= 1.0 or seconds < 0.5:
         return ""
-    left = p.seconds / p.samples * (update.total_samples - p.samples)
+    left = seconds / done * (1.0 - done)
     return f" · {left:.0f} s left"

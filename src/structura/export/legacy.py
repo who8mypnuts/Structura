@@ -11,7 +11,7 @@ from .base import Exporter, ExportJob, ExportReport, register
 from .legacy_obj import LegacyObjExport
 from .templates.engine import TemplateExport
 from .templates.placeholders import TemplateCamera
-from .templates.template_file import bundled_templates, load_template
+from .templates.template_file import all_templates, load_template
 
 
 class LegacyObjExporter(Exporter):
@@ -49,21 +49,43 @@ class TemplateExporter(Exporter):
     title = "Render template (.rendertemplate)"
     preferred = False  # .pov / .sc / .xml default to the modern scene writers
     extensions: tuple[str, ...] = (".pov", ".sc", ".rib", ".xml", ".txt")
-    params: tuple[ParamSpec, ...] = (
-        ParamSpec("template", ParamType.ENUM, "Sunflow-Colored", "Template", choices=tuple(bundled_templates())),
-        ParamSpec("width", ParamType.INT, 640, "Width", range=(1, 65536)),
-        ParamSpec("height", ParamType.INT, 480, "Height", range=(1, 65536)),
-    )
+    params: tuple[ParamSpec, ...] = ()
+
+    def __init__(self) -> None:
+        self.refresh()
+
+    def refresh(self) -> None:
+        """Re-list the templates (after the user saved one)."""
+        self.params = (
+            ParamSpec("template", ParamType.ENUM, "Sunflow-Colored", "Template", choices=tuple(all_templates())),
+            ParamSpec("width", ParamType.INT, 640, "Width", range=(1, 65536)),
+            ParamSpec("height", ParamType.INT, 480, "Height", range=(1, 65536)),
+        )
+
+    def _export(self, job: ExportJob) -> TemplateExport:
+        o = job.options
+        template = load_template(all_templates()[o["template"]])
+        return TemplateExport(template, template_camera(job, o["width"], o["height"]), job.model.background)
 
     def write(self, job: ExportJob, path: Path) -> ExportReport:
-        o = job.options
-        template = load_template(bundled_templates()[o["template"]])
-        export = TemplateExport(template, template_camera(job, o["width"], o["height"]), job.model.background)
+        export = self._export(job)
         with path.open("w", encoding="utf-8", newline="\n") as out:
             for chunk in export.chunks(job.scene):
                 job.check()
                 out.write(chunk.replace("\r", ""))
         return ExportReport(path, (path,), {}, tuple(export.warnings))
+
+    def preview(self, job: ExportJob, limit: int) -> str:
+        """The first ``limit`` characters of the output (the export sheet's Preview tab)."""
+        parts: list[str] = []
+        size = 0
+        for chunk in self._export(job).chunks(job.scene):
+            job.check()
+            parts.append(chunk.replace("\r", ""))
+            size += len(parts[-1])
+            if size >= limit:
+                break
+        return "".join(parts)[:limit]
 
 
 register(LegacyObjExporter())

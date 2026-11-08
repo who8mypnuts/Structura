@@ -5,6 +5,7 @@ from __future__ import annotations
 import numpy as np
 from pytestqt.qtbot import QtBot
 
+from structura.core.scene.camera import Camera
 from structura.ui.app_window import MainWindow
 
 
@@ -81,3 +82,30 @@ def test_history_snapshots_restore_text_seed_and_camera(qtbot: QtBot, window: Ma
     assert np.allclose(window.viewport.camera().eye, kept.camera.eye, atol=1e-6)
     tab.editor.undo()
     assert tab.text() == "sphere\n"  # the restore was one undo step
+
+
+def test_inspector_shows_the_ancestry_of_a_picked_object(qtbot: QtBot, window: MainWindow) -> None:
+    tab = window.docs.new_script()
+    tab.editor.setPlainText("R\nrule R md 3 { { x 1 } R box }\n")
+    qtbot.waitUntil(lambda: tab.outcome is not None and tab.analysis is not None, timeout=30000)
+    window.on_picked(len(tab.outcome.scene) - 1)
+    window.inspector.ancestry_button.click()
+    lines = window.inspector.ancestry
+    qtbot.waitUntil(lambda: lines.count() > 2 and "line" in lines.item(1).text(), timeout=30000)
+    assert lines.item(0).text() == "top level" and lines.item(lines.count() - 1).text().strip().startswith("box")
+    lines.itemClicked.emit(lines.item(1))
+    assert tab.editor.textCursor().position() == 0  # the top-level call 'R' on line 1
+
+
+def test_lock_to_script_shows_the_script_camera_after_every_build(qtbot: QtBot, window: MainWindow) -> None:
+    tab = window.docs.new_script()
+    tab.editor.setPlainText("#version 2\ncamera { position [0 0 12] target [0 0 0] fov 30 }\nbox\n")
+    qtbot.waitUntil(lambda: tab.outcome is not None, timeout=30000)
+    assert np.allclose(window.viewport.camera().eye, (0, 0, 12), atol=1e-4)  # v2 camera blocks on first build
+    window.viewport.move_camera(Camera((5.0, 5.0, 5.0), (0.0, 0.0, 0.0)))
+    window.camera_panel.lock.setChecked(True)
+    assert tab.camera_locked
+    qtbot.waitUntil(lambda: np.allclose(window.viewport.camera().eye, (0, 0, 12), atol=1e-4), timeout=5000)
+    window.viewport.move_camera(Camera((5.0, 5.0, 5.0), (0.0, 0.0, 0.0)))
+    tab.editor.setPlainText("#version 2\ncamera { position [0 0 12] target [0 0 0] fov 30 }\nbox\nsphere\n")
+    qtbot.waitUntil(lambda: np.allclose(window.viewport.camera().eye, (0, 0, 12), atol=1e-4), timeout=30000)

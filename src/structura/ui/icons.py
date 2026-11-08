@@ -30,6 +30,7 @@ PATHS = {
     "file": '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/>',
     "frame": '<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/>',
     "x": '<path d="M7 7l10 10M17 7L7 17"/>',
+    "check": '<path d="M5 12.5l4.5 4.5L19 7.5" stroke-width="3"/>',
     "info": '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
     "layers": '<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
     "activity": '<path d="M3 12h4l3-8 4 16 3-8h4"/>',

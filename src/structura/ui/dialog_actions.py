@@ -28,6 +28,8 @@ class DialogActions(QObject):
         if dialog.exec() == QDialog.DialogCode.Accepted:
             dialog.apply()
             self.w.apply_settings()
+            if dialog.reset_layout_requested:
+                self.w.workspaces.reset_layout()
 
     def choose_theme(self) -> None:
         ThemePicker(self.w.themes, self.w).exec()

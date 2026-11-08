@@ -23,6 +23,12 @@ The Render tab's **device** list shows what is available; `auto` picks CUDA, the
 CPU. NVIDIA GPUs need a driver with CUDA 12 support; AMD and Intel GPUs work through OpenCL or wgpu. The CPU
 renderer produces the same image, only slower.
 
+## Clearing the caches
+
+**Preferences ▸ Advanced ▸ Clear Caches** deletes the compiled kernels, CUDA binaries and thumbnails; they
+are made again when next needed (`structura warmup` compiles the kernels ahead of time). **Reset Window
+Layout** puts every panel back where it started.
+
 ## The first build or render is slow
 
 The kernels are compiled once (about a minute) and cached. Installers do this during installation; otherwise
@@ -40,7 +46,8 @@ otherwise.
 ## Large structures
 
 - The viewport handles millions of instances on a recent GPU. Lines and grids cost more than boxes.
-- `set maxobjects` caps a runaway script; the Build Stats dock shows counts and timings.
+- `set maxobjects` caps a runaway script; **Build ▸ Build Limits…** caps every build (objects, time, memory).
+  The Build Stats dock shows counts and the time each phase took.
 - Renders of huge scenes need GPU memory; the CPU renderer uses system memory instead.
 
 ## The Examples gallery shows grey tiles
@@ -57,6 +64,7 @@ the Console logs every path written.
 
 ## Reporting a problem
 
-**Help ▸ About** shows the version. Include the output of `structura doctor` and, if possible, the script. A
+**Help ▸ About** shows the version. **Help ▸ System Report…** shows what `structura doctor` finds (Qt
+platform, OpenGL, compute devices) with a **Copy** button: include it and, if possible, the script. A
 **render report** (Render ▸ Save Render Report…, or `structura render … --report report.txt`) records the
 settings, the device and the system in one file.

@@ -42,17 +42,4 @@ def test_catalogues_are_up_to_date_and_listed() -> None:
     check = subprocess.run([sys.executable, str(tool), "--check"], capture_output=True, text=True, check=False)
     assert check.returncode == 0, check.stderr  # a separate process: the tool builds a window of its own
     assert len(update_translations.read_ts(I18N / "structura_pseudo.ts")) > 150
-    assert (I18N / "structura_pseudo.qm").exists() and {"pseudo", "de"} <= set(available())
-
-
-def test_german_is_complete(qtbot: QtBot, tmp_path: Path) -> None:
-    catalogue = update_translations.read_ts(I18N / "structura_de.ts")
-    assert catalogue and all(catalogue.values())  # every string translated
-    assert install("de") == "de"
-    try:
-        window = MainWindow(SettingsService(tmp_path / "s.ini"))
-        qtbot.addWidget(window)
-        assert next(a.text() for a in window.menuBar().actions()) == "&Datei"
-        window.runner.shutdown()
-    finally:
-        install("en")
+    assert (I18N / "structura_pseudo.qm").exists() and "pseudo" in available()

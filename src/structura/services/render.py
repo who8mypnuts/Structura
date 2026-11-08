@@ -50,6 +50,8 @@ class RenderUpdate:
 
     @property
     def fraction(self) -> float:
+        if self.progress.completed is not None:  # the tiled sampler counts buckets
+            return self.progress.completed
         return self.progress.samples / max(1, self.total_samples)
 
 

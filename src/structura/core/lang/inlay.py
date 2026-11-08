@@ -1,5 +1,6 @@
 """Inlay hints (docs/12 §2.2), Qt-free: the probability of each alternative of an ambiguous rule, the number
-of children a chain of loops produces, and the material a tag resolves to (v2). Positions are original-text
+of children a chain of loops produces, the material a tag resolves to (v2), and the estimated object count of
+each top-level call. Positions are original-text
 offsets; the editor shows each line's hints after its text."""
 
 from __future__ import annotations
@@ -9,6 +10,7 @@ from dataclasses import dataclass
 from ..scene.declarations import SceneDeclarations
 from ..scene.material import presets
 from .ast import CallAction, Program
+from .estimate import Estimator, estimate_label
 from .position_map import PositionMap
 
 
@@ -16,7 +18,7 @@ from .position_map import PositionMap
 class Hint:
     position: int  # where it belongs in the original text (the editor draws it at the end of that line)
     text: str
-    kind: str  # "probability" | "loops" | "material"
+    kind: str  # "probability" | "loops" | "material" | "estimate"
 
 
 def probability_hints(program: Program, pm: PositionMap) -> list[Hint]:
@@ -64,6 +66,17 @@ def material_hints(program: Program, pm: PositionMap, declarations: SceneDeclara
     return hints
 
 
+def estimate_hints(program: Program, pm: PositionMap) -> list[Hint]:
+    """The expected object count of each top-level call of a rule (core.lang.estimate)."""
+    estimator, hints = Estimator(program), []
+    for call in (a for a in program.top if isinstance(a, CallAction)):
+        if call.target.split("::")[0].lower() in estimator.index:
+            objects, capped = estimator.call(call)
+            hints.append(Hint((pm.span(call.span) or call.span).end, estimate_label(objects, capped), "estimate"))
+    return hints
+
+
 def inlay_hints(program: Program, pm: PositionMap, declarations: SceneDeclarations | None) -> tuple[Hint, ...]:
-    found = [*probability_hints(program, pm), *loop_hints(program, pm), *material_hints(program, pm, declarations)]
+    found = [*probability_hints(program, pm), *loop_hints(program, pm), *material_hints(program, pm, declarations),
+             *estimate_hints(program, pm)]  # fmt: skip
     return tuple(sorted(found, key=lambda h: h.position))

@@ -56,3 +56,21 @@ def test_playback_advances_and_wraps(qtbot: QtBot, window: MainWindow) -> None:
     qtbot.waitUntil(lambda: tab.frame == 0, timeout=3000)
     window.timeline.play(False)
     assert not window.timeline.timer.isActive() and window.timeline_panel.play.text() == "▶"
+
+
+def test_colour_switch_and_choice_parameters_get_their_own_controls(qtbot: QtBot, window: MainWindow) -> None:
+    from PySide6.QtWidgets import QComboBox  # noqa: PLC0415
+
+    from structura.ui.widgets.param_choice import ParamChoice  # noqa: PLC0415
+
+    tab = window.docs.new_script()
+    tab.editor.setPlainText("#version 2\n#param style enum = tree of ball|tree\nstyle\nrule tree { box }\n"
+                            "rule ball { sphere }\n")  # fmt: skip
+    qtbot.waitUntil(
+        lambda: tab.outcome is not None and bool(window.parameters.findChildren(ParamChoice)), timeout=30000
+    )
+    choice = window.parameters.findChildren(ParamChoice)[0]
+    assert isinstance(choice.control, QComboBox) and choice.control.currentText() == "tree"
+    choice.control.setCurrentIndex(0)
+    qtbot.waitUntil(lambda: tab.outcome is not None and int(tab.outcome.scene.kind[0]) == 1, timeout=30000)
+    assert tab.params["style"] == 0.0

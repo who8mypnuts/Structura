@@ -24,7 +24,7 @@ def test_every_filter_has_a_table_and_negative_lobes_are_signed() -> None:
         table, radius = filter_table(name)
         inverse, signs = table[:257], table[257:]
         assert np.all(np.diff(inverse) >= -1e-6) and inverse[0] >= -radius - 1e-6 and inverse[-1] <= radius + 1e-6
-        assert ((signs < 0).any()) == (name in ("mitchell", "catmull-rom", "lanczos")), name
+        assert ((signs < 0).any()) == (name in ("mitchell", "catmull-rom", "lanczos", "sinc")), name
 
 
 @pytest.mark.parametrize(("name", "tolerance"), [("gaussian", 0.02), ("mitchell", 0.02), ("lanczos", 0.05)])

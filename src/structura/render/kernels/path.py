@@ -6,7 +6,7 @@ camera rays that only pass through or refract keep seeing the backdrop colour, e
 
 from __future__ import annotations
 
-from structura.kernels.skl import INF, dot, f32, func, max3, min, normalize, struct, u32, vec3
+from structura.kernels.skl import INF, Buf, dot, f32, func, max3, min, normalize, struct, u32, vec3
 
 from .bsdf import Principled, bsdf_eval, bsdf_sample, principled_setup
 from .buffers import SceneBufs
@@ -19,8 +19,10 @@ from .layout import (
     BACKDROP_SKY,
     BACKGROUND,
     CAUSTIC_ALPHA,
+    DIFFUSE_BOUNCES,
     ENV_ON,
     EPS,
+    GLOSSY_BOUNCES,
     M_MODEL,
     N_EMITTERS,
     N_LIGHTS,
@@ -28,11 +30,12 @@ from .layout import (
     SUN_COS,
     SUN_DIR,
     SUN_IRRADIANCE,
+    TRANSMISSION_BOUNCES,
 )
 from .lights import light_sample, offset, power_heuristic, sun_pdf, sun_radiance, unoccluded
 from .microfacet import luminance
 from .photons import caustic_light, is_specular
-from .sampling import cone_direction, rand01, to_local, to_world
+from .sampling import cone_direction, sample01, to_local, to_world
 from .scene import NO_HIT, PRIM_U, Hit, trace
 from .surface import Surface, surface_at
 
@@ -177,23 +180,43 @@ def scatter(
     """Sun NEE at the vertex plus one BSDF-sampled continuation."""
     wo = to_local(rd * -1.0, h.normal)
     bs = principled_setup(sc.mat_f, s, wo, h.front, alpha_floor)
-    u1 = rand01(pixel, sample_index, dim)
-    u2 = rand01(pixel, sample_index, dim + 1)
+    u1 = sample01(sc.cfg, pixel, sample_index, dim)
+    u2 = sample01(sc.cfg, pixel, sample_index, dim + 1)
     direct = sun_nee(sc, bs, wo, p, h.normal, u1, u2) + lights_nee(sc, bs, wo, p, h.normal, u1, u2)
-    u_env = rand01(pixel, sample_index, dim + 8)
-    direct = direct + env_nee(sc, bs, wo, p, h.normal, u_env, rand01(pixel, sample_index, dim + 9))
-    u_emit = vec3(rand01(pixel, sample_index, dim + 10), rand01(pixel, sample_index, dim + 11),
-                  rand01(pixel, sample_index, dim + 12))  # fmt: skip
+    u_env = sample01(sc.cfg, pixel, sample_index, dim + 8)
+    u_env2 = sample01(sc.cfg, pixel, sample_index, dim + 9)
+    direct = direct + env_nee(sc, bs, wo, p, h.normal, u_env, u_env2)
+    u_emit = vec3(sample01(sc.cfg, pixel, sample_index, dim + 10), sample01(sc.cfg, pixel, sample_index, dim + 11),
+                  sample01(sc.cfg, pixel, sample_index, dim + 12))  # fmt: skip
     direct = direct + emitter_nee(sc, bs, wo, p, h.normal, u_emit)
     if not is_specular(sc.mat_f, s.mat):
         direct = direct + caustic_light(sc, bs, wo, p, h.normal)
-    u_lobe = rand01(pixel, sample_index, dim + 2)
-    wi = bsdf_sample(bs, wo, u_lobe, rand01(pixel, sample_index, dim + 3), rand01(pixel, sample_index, dim + 4))
+    u_lobe = sample01(sc.cfg, pixel, sample_index, dim + 2)
+    u_dir = sample01(sc.cfg, pixel, sample_index, dim + 3)
+    wi = bsdf_sample(bs, wo, u_lobe, u_dir, sample01(sc.cfg, pixel, sample_index, dim + 4))
     v = bsdf_eval(bs, wo, wi)
     if v.pdf <= 0.0 or luminance(v.f) <= 0.0:
         return Scatter(direct, vec3(0.0), p, rd, 0.0)
     side = h.normal if wi.z > 0.0 else h.normal * -1.0
     return Scatter(direct, v.f * (1.0 / v.pdf), offset(p, side, sc.cfg[EPS]), normalize(to_world(wi, h.normal)), v.pdf)
+
+
+@func
+def lobe_of(sca: Scatter, n: vec3, rd: vec3) -> vec3:
+    """The bounce as a count vector: (1,0,0) diffuse-like, (0,1,0) glossy, (0,0,1) transmission."""
+    if dot(sca.d, n) * dot(rd, n) > 0.0:  # continues to the other side of the surface
+        return vec3(0.0, 0.0, 1.0)
+    return vec3(1.0, 0.0, 0.0) if sca.pdf < ROUGH_PDF else vec3(0.0, 1.0, 0.0)
+
+
+@func
+def bounces(lobes: vec3) -> u32:
+    return u32(lobes.x + lobes.y + lobes.z + 0.5)
+
+
+@func
+def within_lobe_limits(cfg: Buf[f32], lobes: vec3) -> bool:
+    return lobes.x <= cfg[DIFFUSE_BOUNCES] and lobes.y <= cfg[GLOSSY_BOUNCES] and lobes.z <= cfg[TRANSMISSION_BOUNCES]
 
 
 @func
@@ -205,9 +228,9 @@ def path_radiance(o: vec3, d: vec3, max_bounces: u32, pixel: u32, sample_index: 
     exclude = u32(NO_HIT)
     backdrop = True
     last_pdf = 0.0
-    depth = u32(0)
     alpha_floor = 0.0
     caustic = 0.0  # photon-map state (caustic_state): 2 = in a specular chain after a non-specular bounce
+    lobes = vec3(0.0)  # diffuse, glossy and transmission bounces so far (per-lobe limits)
     for step in range(max_bounces + PASS_LIMIT):
         h = trace(ro, rd, 0.0, INF, u32(0), exclude, sc)
         radiance = radiance + throughput * fog_light(sc.cfg, ro, rd, h.t)
@@ -218,7 +241,7 @@ def path_radiance(o: vec3, d: vec3, max_bounces: u32, pixel: u32, sample_index: 
         dim = u32(32) + u32(step) * 16
         s = surface_at(sc, h.prim)
         p = ro + rd * h.t
-        if s.alpha < 1.0 and rand01(pixel, sample_index, dim + 7) >= s.alpha:
+        if s.alpha < 1.0 and sample01(sc.cfg, pixel, sample_index, dim + 7) >= s.alpha:
             ro = p
             exclude = sc.prim_u[h.prim * PRIM_U + 2]
             continue
@@ -227,11 +250,12 @@ def path_radiance(o: vec3, d: vec3, max_bounces: u32, pixel: u32, sample_index: 
             radiance = radiance + throughput * caught(sc, rd, p, h.normal, pixel, sample_index, dim + 13)
             break
         radiance = radiance + throughput * surface_light(sc, s, h, ro, rd, last_pdf)
-        if sc.mat_f[s.mat + M_MODEL] == f32(MODEL_CONSTANT) or depth >= max_bounces:
+        if sc.mat_f[s.mat + M_MODEL] == f32(MODEL_CONSTANT) or bounces(lobes) >= max_bounces:
             break
         sca = scatter(sc, h, s, p, rd, alpha_floor, pixel, sample_index, dim)
         radiance = radiance + throughput * sca.direct
-        if sca.pdf <= 0.0:
+        lobes = lobes + lobe_of(sca, h.normal, rd)
+        if sca.pdf <= 0.0 or not within_lobe_limits(sc.cfg, lobes):
             break
         throughput = throughput * sca.weight
         last_pdf = sca.pdf
@@ -240,9 +264,8 @@ def path_radiance(o: vec3, d: vec3, max_bounces: u32, pixel: u32, sample_index: 
         backdrop = backdrop and dot(sca.d, h.normal) < 0.0
         ro = sca.o
         rd = sca.d
-        depth += 1
-        keep = roulette(depth, throughput, rand01(pixel, sample_index, dim + 5))
+        keep = roulette(bounces(lobes), throughput, sample01(sc.cfg, pixel, sample_index, dim + 5))
+        throughput = throughput * keep
         if keep == 0.0:
             break
-        throughput = throughput * keep
     return radiance

@@ -53,6 +53,14 @@ class OpenCLBound(Bound):
         self.backend.queue.finish()
         return result
 
+    def read_range(self, name: str, start: int, stop: int) -> np.ndarray:
+        _, dtype = self.shapes[name]
+        result = np.empty(max(0, stop - start), dtype)
+        if result.nbytes:
+            cl.enqueue_copy(self.backend.queue, result, self.device[name], src_offset=start * result.itemsize)
+            self.backend.queue.finish()
+        return result
+
 
 class OpenCLBackend(BackendBase):
     name = "opencl"

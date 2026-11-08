@@ -18,8 +18,9 @@ The current status of every milestone, the deviations from the plan and the rema
 | M6 Precision engine v2 | ✅ done (owner benchmark pending) |
 | M7 v2, animation, scripting | ✅ done |
 | M8 Export v2 | ✅ done (Blender Geometry Nodes run pending) |
-| M9 Hardening & 1.0 | 🟡 owner checks pending (installers, benchmarks, screen reader, German review) |
+| M9 Hardening & 1.0 | 🟡 owner checks pending (installers, benchmarks, screen reader) |
 | M10 Studio completion | ✅ done |
+| M11 Plan completion | ✅ done |
 
 ---
 
@@ -1091,3 +1092,78 @@ watchdog, unit, parity and golden suites).
 - Look at the side panels, workspaces and the Examples gallery on your screen (the sandbox screen is small).
 - Render a report as PDF and HTML and check the layout in your viewers.
 - Template export with Sunflow-Colored: the 'runAfter' prompt, with `SUNFLOW` set or not.
+
+---
+
+## M11 — Plan completion (owner feedback round 4)
+
+The owner reported that clicking the side-panel tabs (Render Settings most of all) grew the window past
+the screen; asked to drop the German translation; and asked for the rest of the plan. Everything below is
+tested (unit, services, export, render, parity, UI suites with the stall watchdog).
+
+### Requested items
+
+- **Window growth fixed** (`ui/dock_layout.py`, `ui/window_geometry.py`): every panel sits in a frameless
+  scroll area, so a tall panel scrolls instead of raising the window's minimum height; the window is kept on
+  its screen at start, after restoring a layout and when panels are shown.
+- **German dropped:** the catalogue is gone; the `tr()` mechanism and the pseudo-locale (for layout tests)
+  stay.
+
+### The rest of the plan
+
+- **Preferences** in sections (General, Appearance, Editor, Viewport, Rendering, Paths, Advanced): interface
+  and code fonts, density, follow the system's light/dark setting, default render preset, the render
+  **memory guard**, log level, library folders for `#include`, the Blender executable, Reset Window Layout,
+  Clear Caches.
+- **Viewport and inspection:** Show Ancestry (traced rebuild; Inspector and Build menu); selection outline in
+  the compute preview; **adaptive quality** (SSAO off on slow moving frames, by GL timer query; the shadow map
+  cached); Camera ▸ **Lock to script** (v2 camera blocks now also set the first view).
+- **Renderer:** the **tiled bucket sampler** (six bucket orders, corner marks on the bucket being rendered,
+  bucket-only read-back, resumable), the **mosaic** first image, the **Halton** sequence, **per-lobe bounce
+  limits**, **AO direct light**, the **sinc** filter.
+- **Editor:** **Vim** keybindings; **refactorings** (extract a rule, inline a rule here or everywhere, `{…} R`
+  ↔ `1 * {…} R`); **structure previews** of rules on hover; the **object estimate** inlay hint.
+- **Language:** `#include` (script folder, then library folders; include-once; E012); typed `#param`
+  (colour button, switch, choice list; E015 for mismatches).
+- **Build:** Build ▸ **Build Limits…** (object cap, time limit, memory guard), the 250k-object cap while a
+  slider is dragged, and the **scene cache** (undo and timeline scrubbing show recent scenes at once).
+- **Export:** the **template sheet** (description, autosave script with seed and camera, template editor with
+  Save as My Template, 64 KB output preview), the live **size estimate**, **Open in Blender**, the Render
+  Queue lists exports.
+- **Scripting:** the JavaScript **Debug**, **World** and **Vector3** globals and `Builder.execute` (confirmed
+  once); scripts run **in a separate process** because QJSEngine holds Python's GIL (a pure-JavaScript loop
+  used to freeze the window). The Python API gained `st.open` → `Document`; `structura run file.py` and
+  Build ▸ Run Python Script….
+- **Menus:** File ▸ Save as Legacy .es, Build ▸ Show Ancestry / Build Limits / Run Python Script, Render ▸
+  Render (Legacy Look) / Render Region / Denoise, Edit ▸ Refactor, Help ▸ User Guide / Quick Start / Examples /
+  What's New / System Report (the guide, reference and changelog are bundled in `resources/help`).
+- **Panels:** Console severity colours and marks; the Outline lists parameters, v2 materials and lights;
+  Build Stats per-phase timings.
+- **Fixes found on the way:** three io-job results that reached the GUI through lambdas (they ran on the io
+  thread); a race in a report test (the file existed before it was written); **check boxes had no visible
+  box** in any theme — the application style sheet replaced Fusion's indicators with nothing, so unchecked
+  options looked like plain labels (found on a Preferences screenshot; now drawn by the style sheet, with a
+  check-mark icon, also in menus); the template editor and System Report now use the code font.
+
+### Documentation
+
+- [22-implementation-notes.md](22-implementation-notes.md): the status table gains M11; the backlog (§4) is
+  down to the owner's installers and three deliberate omissions; new refinements in §2.3–2.9.
+- "As built" notes in docs 05, 06, 08, 09, 10, 12, 14, 15 and 16; the user guide; CHANGELOG.
+
+### Owner checks added
+
+- Render with the tiled sampler on the GTX 1660 (CUDA `read_range` is only exercised there).
+- Try Vim mode and the refactorings (Ctrl+Alt+R) on your own scripts.
+- Run a `#javascript` movie script from the window and cancel it midway.
+
+### Owner request (M11, round 5): reports beside the image, final renders ask where to save
+
+- One dialog for every render output (`ui/dialogs/render_output.py`): the image file (typed or Browse…) and
+  the report written **beside** it (`tree.png` → `tree-report.pdf`) in the chosen format — PDF, HTML,
+  Markdown, plain text, JSON, CSV, ODT or none; the choice is remembered. Used by Save…, the render queue
+  (the panel's "PDF report" check box is gone) and final renders.
+- **Final Render…** (Shift+F9; also F9 with the Final or Print 4K preset): the dialog comes first (quality,
+  image, report), the render starts, and the image and report are saved there when the render and its
+  denoising finish. "Render Only" renders without saving.
+- Report… on its own starts beside the image saved last.

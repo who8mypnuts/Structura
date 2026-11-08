@@ -83,20 +83,29 @@ def test_export_as_asks_where_and_in_which_format(
 def test_render_save_and_reports_go_to_the_chosen_files(
     qtbot: QtBot, window: MainWindow, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    from structura.ui import render_actions  # noqa: PLC0415
+    from structura.ui.dialogs.render_output import RenderOutput  # noqa: PLC0415
+
     _built(qtbot, window)
     window.render_view.samples.setValue(2)
     window.render_actions.start_render()
     qtbot.waitUntil(lambda: window.render_view.last is not None and window.render_view.last.fraction >= 1.0,
                     timeout=120000)  # fmt: skip
-    targets = iter([tmp_path / "image.png", tmp_path / "report.html", tmp_path / "report"])
-    monkeypatch.setattr(SavePaths, "ask", lambda *a, **k: (next(targets), a[5][0]))
+    image, beside = tmp_path / "out" / "image.png", tmp_path / "out" / "image-report.md"
+    monkeypatch.setattr(render_actions, "choose_output", lambda *a, **k: RenderOutput(image, beside))
     window.registry.trigger("render.save")
-    qtbot.waitUntil((tmp_path / "image.png").exists, timeout=30000)
+    qtbot.waitUntil(lambda: beside.exists() and "image.png" in beside.read_text(encoding="utf-8"), timeout=30000)
+    assert image.exists()
     qtbot.waitUntil(lambda: any("image.png" in t.label.text() for t in window.toasts.toasts), timeout=10000)
     assert window.toasts.toasts[-1].button is not None  # "Show in Folder"
+    targets = iter([tmp_path / "report.html", tmp_path / "report"])
+    asked: list[Path] = []
+    monkeypatch.setattr(SavePaths, "ask", lambda *a, **k: (asked.append(a[4]), next(targets), a[5][0])[1:])
     window.registry.trigger("render.report")
-    qtbot.waitUntil((tmp_path / "report.html").exists, timeout=30000)
-    html = (tmp_path / "report.html").read_text(encoding="utf-8")
+    assert asked[-1].parent == image.parent  # a report on its own starts beside the saved image
+    report = tmp_path / "report.html"
+    qtbot.waitUntil(lambda: report.exists() and "</html>" in report.read_text(encoding="utf-8"), timeout=30000)
+    html = report.read_text(encoding="utf-8")
     assert "image.png" in html and "Visible objects" in html
     window.registry.trigger("render.report")  # no extension typed: the chosen type's (PDF, listed first)
     qtbot.waitUntil((tmp_path / "report.pdf").exists, timeout=30000)
@@ -149,3 +158,147 @@ def test_template_run_after_asks_once_then_runs(
     assert len(asked) == 1 and len(started) == 2 and str(target) in started[0]
     window.exports.run_after("povray", target)  # no runAfter: nothing happens
     assert len(started) == 2
+
+
+def test_the_export_sheet_estimates_the_file_size(qtbot: QtBot, window: MainWindow, tmp_path: Path) -> None:
+    _built(qtbot, window)
+    exporters = {e.name: e for e in window.exports.exporters()}
+    tab = window.tabs.current()
+    dialog = ExportDialog(exporters["stl"], tmp_path / "a.stl", tab.outcome.scene, {}, lambda e, p: None, window)
+    qtbot.addWidget(dialog)
+    window.exports.estimating = dialog
+    window.exports._estimate(tab.outcome.scene, dialog, dialog.form.values())
+    qtbot.waitUntil(lambda: dialog.estimate.text().startswith("≈"), timeout=30000)
+    assert "KB" in dialog.estimate.text() or "MB" in dialog.estimate.text()
+
+
+def test_the_template_sheet_describes_previews_edits_and_autosaves(
+    qtbot: QtBot, window: MainWindow, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from structura.export.templates import template_file  # noqa: PLC0415
+
+    monkeypatch.setattr(template_file, "user_template_dir", lambda: tmp_path / "mine")
+    _built(qtbot, window)
+    exporter = {e.name: e for e in window.exports.exporters()}["template"]
+    tab = window.tabs.current()
+    dialog = ExportDialog(exporter, tmp_path / "a.pov", tab.outcome.scene, {"template": "povray"},
+                          lambda e, p: None, window, window.themes.theme)  # fmt: skip
+    qtbot.addWidget(dialog)
+    pages = dialog.pages
+    assert pages is not None and pages.description.text() and "<template" in pages.editor.toPlainText()
+    window.exports.estimating = dialog
+    window.exports._preview(tab.outcome.scene, dialog.form.values())
+    qtbot.waitUntil(lambda: bool(pages.preview.toPlainText()), timeout=30000)
+    pages.editor.setPlainText(pages.editor.toPlainText().replace("#declare", "// mine\n#declare", 1))
+    assert pages.save_as("Mine")
+    assert dialog.form.values()["template"] == "Mine" and "// mine" in pages.editor.toPlainText()
+    exporter.refresh()  # type: ignore[attr-defined]
+    monkeypatch.undo()
+    exporter.refresh()  # type: ignore[attr-defined]
+    window.exports.autosave_script(tab, tmp_path / "a.pov")
+    saved = tmp_path / "a.es"
+    qtbot.waitUntil(lambda: saved.exists() and f"set seed {tab.seed}" in saved.read_text(encoding="utf-8"),
+                    timeout=10000)  # fmt: skip
+
+
+def test_blender_exports_offer_open_in_blender(
+    window: MainWindow, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from structura.ui import blender_app, export_actions  # noqa: PLC0415
+
+    fake = tmp_path / "blender"
+    fake.write_text("")
+    assert blender_app.find_blender(str(fake)) == str(fake)
+    assert blender_app.find_blender(str(tmp_path / "missing")) is None
+    window.settings.set_value("paths/blender", str(fake))
+    started: list[tuple[str, list[str]]] = []
+    monkeypatch.setattr(window.processes, "start_program", lambda p, args, cwd: started.append((p, args)))
+    script = tmp_path / "scene.py"
+    window.exports._offer_blender(script)
+    toast = window.toasts.toasts[-1]
+    assert toast.button is not None and toast.button.text() == "Open in Blender"
+    toast.button.click()
+    assert started == [(str(fake), ["--python", str(script)])]
+    monkeypatch.setattr(export_actions, "find_blender", lambda _configured: None)
+    window.exports.open_in_blender(script)
+    assert "Blender was not found" in window.status.currentMessage()
+
+
+def test_save_as_legacy_writes_a_1_5_copy_with_the_camera(
+    qtbot: QtBot, window: MainWindow, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    tab = window.docs.new_script()
+    tab.editor.setPlainText("#version 2\ncamera { position [0 0 10] target [0 0 0] fov 40 }\n{ x 1 } cone\nbox\n")
+    target = tmp_path / "old.es"
+    monkeypatch.setattr(SavePaths, "ask", lambda *a, **k: (target, a[5][0]))
+    window.registry.trigger("file.save_legacy")
+    qtbot.waitUntil(lambda: target.exists() and "box" in target.read_text(encoding="utf-8"), timeout=10000)
+    text = target.read_text(encoding="utf-8")
+    assert "set translation" in text and "cone" not in text and "#version" not in text
+    qtbot.waitUntil(lambda: any("Legacy copy:" in line for line, _ in window.console.records), timeout=5000)
+
+
+def test_exports_are_listed_in_the_queue(qtbot: QtBot, window: MainWindow, tmp_path: Path) -> None:
+    from structura.services.export import ExportRequest  # noqa: PLC0415
+
+    _built(qtbot, window)
+    tab = window.tabs.current()
+    target = tmp_path / "a.stl"
+    window.exports.service.request(ExportRequest(tab.outcome.scene, target, "stl"))
+    entry = window.render_queue.track_export("STL", target)
+    assert entry.state == "exporting" and entry.request is None
+    qtbot.waitUntil(lambda: entry.state == "done", timeout=30000)
+    assert entry.fraction == 1.0
+    window.queue_panel.refresh()
+    assert window.queue_panel.tree.topLevelItem(0).text(1) == "done"
+
+
+def test_the_output_dialog_puts_the_chosen_report_beside_the_image(window: MainWindow, tmp_path: Path) -> None:
+    from structura.ui.dialogs.render_output import RenderOutputDialog, image_path, report_beside  # noqa: PLC0415
+
+    paths = SavePaths(window.settings)
+    dialog = RenderOutputDialog(paths, tmp_path / "tree.png", "Final Render", "Render", ("Final", "Print 4K"), window)
+    assert [dialog.report.itemData(i) for i in range(5)] == ["", ".pdf", ".html", ".md", ".txt"]
+    dialog.report.setCurrentIndex(dialog.report.findData(".txt"))
+    dialog.path.setText(str(tmp_path / "renders" / "spiral"))
+    assert "spiral-report.txt" in dialog.where.text()
+    dialog._accept()
+    out = dialog.output()
+    assert out is not None and out.image == tmp_path / "renders" / "spiral.png" and out.preset == "Final"
+    assert out.report == tmp_path / "renders" / "spiral-report.txt" and out.save
+    assert window.settings.value("render/report_format") == ".txt"  # remembered for the next time
+    again = RenderOutputDialog(paths, tmp_path / "x.png", "Save Render", "Save", parent=window)
+    assert again.report.currentData() == ".txt" and again.preset is None
+    again.report.setCurrentIndex(0)
+    assert again.output().report is None and again.where.text() == ""  # type: ignore[union-attr]
+    assert image_path("a.exr") == Path("a.exr") and report_beside(Path("/r/a.exr"), ".html") == Path("/r/a-report.html")
+
+
+def test_a_final_render_asks_where_then_saves_image_and_report(
+    qtbot: QtBot, window: MainWindow, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from structura.ui import render_actions  # noqa: PLC0415
+    from structura.ui.dialogs.render_output import RenderOutput  # noqa: PLC0415
+
+    _built(qtbot, window)
+    controls = window.render_view.controls
+    finals: list[bool] = []
+    monkeypatch.setattr(window.render_actions, "final_render", lambda: finals.append(True))
+    controls.preset.setCurrentText("Final")
+    controls.render_button.click()  # the Render button with a final preset asks where to save first
+    assert finals == [True]
+    monkeypatch.undo()
+    offered: list[tuple[str, ...]] = []
+
+    def choose(*args: object) -> RenderOutput:
+        offered.append(args[5])  # type: ignore[arg-type]
+        return RenderOutput(tmp_path / "final.png", tmp_path / "final-report.html", "Custom")
+
+    monkeypatch.setattr(render_actions, "choose_output", choose)
+    controls.samples.setValue(2)  # Custom: the tool bar's own settings (a quick test)
+    window.registry.trigger("render.final")
+    assert offered[0][0] == "Custom" and "Final" in offered[0] and "Print 4K" in offered[0]
+    report = tmp_path / "final-report.html"
+    qtbot.waitUntil(lambda: report.exists() and "</html>" in report.read_text(encoding="utf-8"), timeout=120000)
+    assert (tmp_path / "final.png").exists() and "final.png" in report.read_text(encoding="utf-8")
+    assert window.render_actions.pending is None

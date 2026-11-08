@@ -53,6 +53,11 @@ severity = "error"
 title = "Redefinition of a primitive"
 doc = "A rule cannot be named like a primitive (box, sphere, …)."
 [[diagnostic]]
+code = "E012"
+severity = "error"
+title = "Include error"
+doc = "An '#include \"file.es\"' names a file that is not found (next to the script or in the library folders), or a file that includes itself."
+[[diagnostic]]
 code = "E013"
 severity = "error"
 title = "Tag on a non-primitive"
@@ -62,6 +67,11 @@ code = "E014"
 severity = "error"
 title = "Malformed triangle or primitive argument"
 doc = "triangle[x,y,z;x,y,z;x,y,z] needs three corners of three numbers; cone[r], torus[r] and tube[r] need one number."
+[[diagnostic]]
+code = "E015"
+severity = "error"
+title = "Parameter type mismatch (v2)"
+doc = "A '#param' default does not fit its type or range, or a parameter is used where its type does not fit (a colour where a number is needed, or the other way round)."
 [[diagnostic]]
 code = "E016"
 severity = "error"

@@ -87,3 +87,16 @@ def test_rendered_view_path_traces_the_viewport(qtbot: QtBot, window: MainWindow
     assert compute.badge_text().endswith("rendered") and window.registry.action("view.rendered").isChecked()
     window.registry.trigger("view.rendered")
     assert not window.viewport.rendered and compute._settings(False).integrator == "preview"
+
+
+def test_the_compute_preview_outlines_the_selection(qtbot: QtBot, window: MainWindow) -> None:
+    tab = window.docs.new_script()
+    tab.editor.setPlainText("{ x 2 s 2 } box\n")
+    qtbot.waitUntil(lambda: window.viewport.scene is not None, timeout=30000)
+    window.on_picked(0)
+    corners = window.viewport.overlay.selected
+    xform = tab.outcome.scene.xform[0]
+    assert corners is not None and corners.shape == (8, 3)
+    assert np.allclose(corners[0], xform[:, 3]) and np.allclose(corners[7], xform[:, 3] + xform[:, :3].sum(axis=1))
+    window.on_picked(None)
+    assert window.viewport.overlay.selected is None

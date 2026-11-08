@@ -1,4 +1,5 @@
-"""Parameters panel: sliders for '#define NAME V (float:A-B)' GUI parameters (docs/05 §2.2, docs/14 §3)."""
+"""Parameters panel: sliders for '#define NAME V (float:A-B)' GUI parameters (docs/05 §2.2, docs/14 §3), and
+a colour button, switch or choice list for v2's '#param … color / bool / enum'."""
 
 from __future__ import annotations
 
@@ -8,6 +9,7 @@ from PySide6.QtWidgets import QFormLayout, QHBoxLayout, QLabel, QToolButton, QWi
 from ...core.animation.timeline import Timeline
 from ...core.lang.legacy.preprocessor import GuiParameter
 from ..i18n import tr
+from ..widgets.param_choice import ParamChoice
 from ..widgets.param_slider import ParamSlider
 
 
@@ -30,6 +32,7 @@ def _empty_label() -> QLabel:
 
 class ParametersPanel(QWidget):
     changed = Signal(str, float)  # name, value
+    released = Signal(str)  # a slider was let go
     key_toggled = Signal(str)  # name: add or remove its key at the current frame
 
     def __init__(self, parent: QWidget | None = None) -> None:
@@ -53,16 +56,21 @@ class ParametersPanel(QWidget):
             self.form.addRow(p.name, self._row(p, values.get(p.name, p.default)))
 
     def _row(self, param: GuiParameter, value: float) -> QWidget:
-        slider = ParamSlider(param, value)
-        slider.changed.connect(self.changed)
-        key = _key_button(param.name)
-        key.clicked.connect(lambda _=False, name=param.name: self.key_toggled.emit(name))
+        control: ParamSlider | ParamChoice = ParamSlider(param, value) if param.numeric else ParamChoice(param, value)
+        control.changed.connect(self.changed)
+        control.released.connect(self.released)
         row = QWidget()
         layout = QHBoxLayout(row)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(slider, 1)
-        layout.addWidget(key)
+        layout.addWidget(control, 1)
+        if param.numeric:  # colours, switches and choices are not keyframed (they do not interpolate)
+            key = _key_button(param.name)
+            key.clicked.connect(lambda _=False, name=param.name: self.key_toggled.emit(name))
+            layout.addWidget(key)
         return row
+
+    def dragging(self) -> bool:
+        return any(slider.dragging for slider in self.findChildren(ParamSlider))
 
     def show_keys(self, timeline: Timeline, frame: int) -> None:
         """◆ where the parameter has a key at ``frame``, ◈ where it is animated, ◇ otherwise."""
@@ -79,6 +87,7 @@ class ParametersPanel(QWidget):
 
     def set_value(self, name: str, value: float) -> None:
         """Mirror a value changed elsewhere (the editor's inline slider) without emitting."""
-        for row in self.findChildren(ParamSlider):
+        rows: list[ParamSlider | ParamChoice] = [*self.findChildren(ParamSlider), *self.findChildren(ParamChoice)]
+        for row in rows:
             if row.param.name == name:
                 row.set_value(value)

@@ -1,5 +1,6 @@
 """The render queue (docs/14 §3, §5.4): renders that run one after another on the device lane while the user
-keeps working, each saved to its own file (and, optionally, with a report) when it finishes."""
+keeps working, each saved to its own file (and, optionally, with a report) when it finishes. Exports are
+listed too (they run on the io lane as soon as they are asked for), so every long job is in one place."""
 
 from __future__ import annotations
 
@@ -21,7 +22,7 @@ from ..services.report_documents import write_report
 if TYPE_CHECKING:
     from .app_window import MainWindow
 
-PREFIX = "queue:"
+PREFIX, EXPORT_PREFIX = "queue:", "export:"
 _ids = itertools.count(1)
 
 
@@ -29,18 +30,14 @@ _ids = itertools.count(1)
 class QueueEntry:
     doc_id: str
     name: str
-    request: RenderRequest
-    path: Path  # the image to write
+    request: RenderRequest | None  # None: an export
+    path: Path  # the image (or export) to write
     script: str
     report: Path | None = None  # also write a report here
-    state: str = "queued"  # queued | rendering | saving | done | failed | cancelled
+    state: str = "queued"  # queued | rendering | exporting | saving | done | failed | cancelled
     fraction: float = 0.0
     seconds: float = 0.0
     message: str = ""
-
-
-def report_path(image: Path, suffix: str | None) -> Path | None:
-    return image.with_name(f"{image.stem}-report{suffix}") if suffix else None
 
 
 class RenderQueue(QObject):
@@ -59,9 +56,10 @@ class RenderQueue(QObject):
 
     def add(self, name: str, request: RenderRequest, path: Path, script: str, report: Path | None) -> QueueEntry:
         doc_id = f"{PREFIX}{next(_ids)}"
-        entry = QueueEntry(doc_id, name, replace(request, doc_id=doc_id), path, script, report)
+        queued = replace(request, doc_id=doc_id)
+        entry = QueueEntry(doc_id, name, queued, path, script, report)
         self.entries.append(entry)
-        self.w.renders.request(entry.request)  # the device lane runs renders one at a time, in order
+        self.w.renders.request(queued)  # the device lane runs renders one at a time, in order
         self.changed.emit(entry)
         return entry
 
@@ -69,8 +67,31 @@ class RenderQueue(QObject):
         return next((e for e in self.entries if e.doc_id == doc_id), None)
 
     def cancel(self, entry: QueueEntry) -> None:
-        if entry.state in ("queued", "rendering"):
+        if entry.request is None and entry.state == "exporting":
+            self.w.exports.service.cancel(str(entry.path))
+        elif entry.state in ("queued", "rendering"):
             self.w.renders.cancel(entry.doc_id)
+
+    # -- exports -------------------------------------------------------------------------------------------------
+    def track_export(self, name: str, path: Path) -> QueueEntry:
+        entry = QueueEntry(f"{EXPORT_PREFIX}{path}", name, None, path, "", state="exporting")
+        self.entries.append(entry)
+        self.changed.emit(entry)
+        return entry
+
+    def export_progress(self, path: Path, fraction: float) -> None:
+        self._export_state(path, "exporting", fraction)
+
+    def export_ended(self, path: Path, state: str, message: str = "") -> None:
+        """'done', 'failed' or 'cancelled'."""
+        self._export_state(path, state, 1.0 if state == "done" else None, message)
+
+    def _export_state(self, path: Path, state: str, fraction: float | None, message: str = "") -> None:
+        entry = self.entry(f"{EXPORT_PREFIX}{path}")
+        if entry is not None and entry.state == "exporting":
+            entry.state, entry.message = state, message
+            entry.fraction = entry.fraction if fraction is None else fraction
+            self.changed.emit(entry)
 
     def remove(self, entry: QueueEntry) -> None:
         self.cancel(entry)
@@ -133,6 +154,7 @@ class RenderQueue(QObject):
 def _save_job(entry: QueueEntry, update: RenderUpdate) -> Callable[[JobContext], Path]:
     def run(ctx: JobContext) -> Path:
         request, details = entry.request, update.details
+        assert request is not None  # (a render entry)
         image = update.denoised if update.denoised is not None else update.progress.image
         camera = details.camera if details is not None else request.camera
         assert camera is not None

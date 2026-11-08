@@ -9,7 +9,11 @@
 - **Diagnostics** underline errors and warnings as you type; the **Problems** panel lists them — every broken
   rule at once, while the rules that parse stay available to the outline and completion. **Ctrl+.** offers
   quick fixes (create a missing rule, fix a spelling, convert an alias …).
-- **Inlay hints** show loop counts and the material a tag resolves to.
+- **Inlay hints** show loop counts, the chance of each alternative of a rule, the material a tag resolves to,
+  and after each top-level call an **estimate of the objects** it makes ("≈ 1.2k objects", "(limit)" when the
+  script's object limit cuts it).
+- **Hover a rule name** for a small picture of that rule built on its own ("Building a preview…" the first
+  time; later hovers are instant).
 - **Inline sliders** appear after `#define … (float:a-b)` and `#param` lines, mirrored in the Parameters dock.
 - **Alt+drag** over a number scrubs it (Shift = fine, Ctrl = coarse).
 - **Colours:** right-click a colour (`#f80`, `#FF8800`, `red`, also inside `#define` lines) and choose **Pick
@@ -17,8 +21,21 @@
   new value keeps the literal's style (three-digit hex when possible, upper or lower case, a colour name when
   the choice is exactly one). Right-click elsewhere for **Insert Colour…**; **Ctrl+Shift+C** does either at the
   cursor, and **Ctrl+click** a colour also opens the picker.
-- The **context menu** also has Go to Definition, Peek, Find References, Rename, Quick Fix, Toggle Comment and
-  Format Document.
+- The **context menu** also has Go to Definition, Peek, Find References, Rename, Quick Fix, Refactor, Toggle
+  Comment and Format Document.
+
+## Refactoring
+
+**Edit ▸ Refactor…** (Ctrl+Alt+R; the refactorings are also in the Ctrl+. menu) on a call or a rule:
+
+- **Extract the transforms into a new rule:** `3 * { x 1 } box` becomes `newRule`, with `rule newRule { 3 * {
+  x 1 } box }` added after the rule you are in.
+- **Inline** a rule at one call, or — on the rule's `rule` line — everywhere, removing the rule. Only plain
+  rules (one definition, no weight or maxdepth, no `set` lines, not recursive) can be inlined.
+- **Convert `{ … } R` ↔ `1 * { … } R`**.
+
+Each is one undo step and keeps the structure the script builds. Nothing is offered on a line that a
+`#define` changes.
 
 ## Navigating
 
@@ -43,8 +60,24 @@ The breadcrumb bar above the editor shows the rule you are in; the Outline dock 
 - **Comments:** Ctrl+/ toggles line comments, Shift+Alt+A block comments.
 - **Format Document** (Shift+Alt+F) normalises spacing and indentation.
 - **Split Editor** (Ctrl+\\) shows a second view of the same script.
-- View toggles (**View ▸**): word wrap (Alt+Z), whitespace, indent guides, rainbow brackets, minimap, sticky
-  scroll.
+- View toggles (**View ▸ Editor**): word wrap (Alt+Z), whitespace, indent guides, rainbow brackets, minimap,
+  sticky scroll, breadcrumbs and **Vim keybindings**.
+
+## Vim keybindings
+
+Turn them on in **View ▸ Editor ▸ Vim Keybindings** (or Preferences ▸ Editor). The status bar shows the mode.
+
+- Modes: normal, insert (`i a I A o O`, `s S C c…`), visual (`v`) and visual line (`V`); Escape returns to
+  normal mode.
+- Motions (with counts): `h j k l`, `w b e W B E`, `0 ^ $`, `gg G` (`5G` goes to line 5), `{ }`, `%`,
+  `f t F T` with `; ,`.
+- Operators with any motion: `d c y > <` (doubled for whole lines: `dd`, `cc`, `yy`, `>>`); in visual mode
+  also `~`.
+- Changes: `x X s S D C Y p P r J ~`, undo `u`, redo Ctrl+R, repeat `.`.
+- `/text` searches (Enter), `n` / `N` repeat; `:w` saves, `:q` closes the tab, `:wq` / `:x` do both, `:12`
+  goes to line 12.
+
+Shortcuts with Ctrl keep working in every mode; completion and snippets work in insert mode.
 
 ## Files
 
@@ -61,5 +94,8 @@ The breadcrumb bar above the editor shows the rule you are in; the Outline dock 
 - **View ▸ Edit Theme…** changes any colour with a live preview, checks contrast, and saves your own themes.
 - **File ▸ Keyboard Shortcuts…** (Ctrl+K Ctrl+S): presets (Structura, Structure Synth 1.5, VS Code-like) and
   your own bindings; conflicts are marked.
-- **File ▸ Preferences…** (Ctrl+,): fonts and sizes, reduced motion, editor options, language, viewport engine
-  and mouse controls (Structura, Structure Synth 1.5, Blender), render device.
+- **File ▸ Preferences…** (Ctrl+,), in sections: General (sessions, recovery interval), Appearance (theme,
+  follow the system's light/dark setting, interface font and size, density, reduced motion), Editor (code
+  font, view options), Viewport (mouse controls: Structura, Structure Synth 1.5, Blender; engine), Rendering
+  (device, default preset, CPU threads, memory guard), Paths (output folder, `#include` library folders,
+  Blender), Advanced (log level, Reset Window Layout, Clear Caches).

@@ -37,7 +37,7 @@ class Track:
   expressions) trigger a latest-wins build with the preview budget. **Non-geometry** changes (camera, env,
   materials) update immediately without rebuilding.
 - **Frame cache:** an LRU of built `SceneIR`s keyed by the frame's program hash. Scrubbing back and forth is
-  instant, and memory is capped.
+  instant, and memory is capped. *(As built, M11: the workbench's SceneCache, docs/06 §10.5.)*
 
 ### 2.3 Animation render (Job)
 
@@ -70,6 +70,15 @@ mirror 1.5 exactly:
 - Stop/Cancel interrupts the engine (`QJSEngine.setInterrupted(True)`).
 - The three 1.5 JS examples in the corpus are part of the test suite.
 
+> **As built (M11):** all four globals exist (`scripting/js_bridge.py`, `scripting/js_world.py`).
+> `QJSEngine.evaluate` keeps Python's GIL while JavaScript runs, so a script thread inside the app would still
+> freeze the window during a long pure-JavaScript loop. The window therefore runs `structura run --ipc` in a
+> `QProcess` (`services/script_process.py`): the child prints channel lines (`info`, `message`, `progress`,
+> `scene` as an `.npz` file, questions) that become signals, and reads yes/no answers on stdin
+> (`Debug.waitForMouseButton` waits for a click in the viewport; `Builder.execute` asks once per command).
+> `Builder.build` and `World` show their scenes in the viewport; Cancel kills the process. Headless
+> `structura run` uses the same host without a channel (execute needs `--allow-execute`).
+
 ## 4. Python API (`structura.api`)
 
 A small, stable, documented façade over the domain layer. It needs no Qt (except `run_legacy_js`, which
@@ -97,6 +106,13 @@ for frame, scene in doc.animate(frames=range(1, 241)):
 - Scripts can run inside the app via **Run Python Script…** (script thread, same API, with output to the
   Console) or outside with the CLI.
 - The API surface is covered by docs and doctests. It follows semantic versioning from 1.0.
+
+> **As built (M11):** `structura/api.py`, re-exported lazily by `import structura as st` (importing the
+> package stays light): `st.build`, `st.render`, `st.export`, and `st.open(path)` → `Document` for a script or
+> a project (`text`, `dialect`, `seed`, `params`, `camera`, `timeline`, `render_overrides`; `build(seed,
+> frame)`, `animate(frames)` yielding `(frame, scene)` with the keyed parameters and seed, `camera_at(frame)`).
+> `structura run file.py` runs a Python script; **Build ▸ Run Python Script…** runs one in its own process
+> with its output in the Console. `structura animate` builds its Animation from the same Document.
 
 ## 5. Command-line interface
 

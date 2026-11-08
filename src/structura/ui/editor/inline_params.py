@@ -18,6 +18,7 @@ GAP = "    "  # space between the line's text and its slider
 
 class InlineParams(QObject):
     changed = Signal(str, float)
+    released = Signal(str)
 
     def __init__(self, editor: CodeEditor) -> None:
         super().__init__(editor)
@@ -34,13 +35,17 @@ class InlineParams(QObject):
             for slider in self.sliders:
                 slider.deleteLater()
             self.sliders = []
-            for p in params:
+            for p in (p for p in params if p.numeric):  # colours, switches and choices: the Parameters panel
                 slider = ParamSlider(p, values.get(p.name, p.default), compact=True, parent=self.editor.viewport())
                 slider.changed.connect(self.changed)
+                slider.released.connect(self.released)
                 self.sliders.append(slider)
         for slider in self.sliders:
             slider.set_value(values.get(slider.param.name, slider.param.default))
         self.place()
+
+    def dragging(self) -> bool:
+        return any(slider.dragging for slider in self.sliders)
 
     def set_value(self, name: str, value: float) -> None:
         for slider in self.sliders:

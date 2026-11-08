@@ -5,9 +5,9 @@ It keeps the EisenScript grammar language and adds a GPU-accelerated, Sunflow-de
 It also adds a modern code editor, app-wide theming, and export to mesh, USD, glTF and Blender formats.
 
 This folder started as the **planning set**: what would be built, how, and in what order. The plan has since
-been implemented milestone by milestone (M0–M10). [PROGRESS.md](PROGRESS.md) records what was built and every
+been implemented milestone by milestone (M0–M11). [PROGRESS.md](PROGRESS.md) records what was built and every
 deviation, and [22-implementation-notes.md](22-implementation-notes.md) gives the status of each milestone, the
-refinements of the plan, and the **backlog** of planned items that are not built. Documents 00–21 keep the
+refinements of the plan, and what is left (§4: the owner's installers and three deliberate omissions). Documents 00–21 keep the
 original plan; where the program differs they carry "As built" notes. The
 [user guide](user-guide/README.md) describes the finished program, and [reference/language.md](reference/language.md)
 is the generated language reference.

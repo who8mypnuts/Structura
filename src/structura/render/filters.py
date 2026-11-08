@@ -50,6 +50,7 @@ FILTERS: dict[str, tuple[float, Filter]] = {  # name → (radius in pixels, f)
     "catmull-rom": (2.0, _mitchell(0.0, 0.5)),
     "bspline": (2.0, _mitchell(1.0, 0.0)),
     "lanczos": (3.0, _lanczos(3.0)),
+    "sinc": (2.0, np.sinc),  # Sunflow's SincFilter: size 4, unwindowed
 }
 
 

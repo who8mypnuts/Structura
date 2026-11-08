@@ -1,5 +1,5 @@
-"""Render pass kernel: adds 'spp' samples to every active pixel of a band of rows in the film 'accum'
-(layout.FILM_F floats per pixel: RGB + weight sums, then the same for the even-numbered samples)."""
+"""Render pass kernel: adds 'spp' samples to every active pixel of a band of rows (or a tile) in the film
+'accum' (layout.FILM_F floats per pixel: RGB + weight sums, then the same for the even-numbered samples)."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ from .layout import (
     INTEGRATOR_PATH,
 )
 from .path import path_radiance
-from .sampling import rand01
+from .sampling import sample01
 from .scene import NO_HIT, trace
 
 
@@ -53,8 +53,8 @@ class PixelSample:
 
 @func
 def pixel_sample(sc: SceneBufs, pixel: u32, s: u32) -> PixelSample:
-    ox = rand01(pixel, s, u32(0))
-    oy = rand01(pixel, s, u32(1))
+    ox = sample01(sc.cfg, pixel, s, u32(0))
+    oy = sample01(sc.cfg, pixel, s, u32(1))
     if sc.cfg[FILTER_ON] == 0.0:
         return PixelSample(ox, oy, 1.0)
     fx = filter_sample(sc.cfg, ox, sc.cfg[FILTER_RADIUS])
@@ -95,6 +95,7 @@ def render_pass(
     width: u32,
     height: u32,
     row0: u32,
+    col0: u32,
     sample_base: u32,
     spp: u32,
     integrator: u32,
@@ -104,10 +105,11 @@ def render_pass(
     pixel_mask: Buf[u32],
     accum: BufRW[f32],
 ) -> None:
-    y = gid.y + row0  # the dispatch covers a band of rows starting at row0
-    if gid.x >= width or y >= height:
+    x = gid.x + col0  # the dispatch covers a band of rows (or a tile) starting at (col0, row0)
+    y = gid.y + row0
+    if x >= width or y >= height:
         return
-    pixel = gid.x + y * width
+    pixel = x + y * width
     if pixel_mask[pixel] == u32(0):  # converged (adaptive sampling) or outside the render region
         return
     total = vec3(0.0)
@@ -118,9 +120,9 @@ def render_pass(
     for k in range(spp):
         s = sample_base + k
         ps = pixel_sample(sc, pixel, s)
-        sx = ((f32(gid.x) + ps.x) / f32(width)) * 2.0 - 1.0
+        sx = ((f32(x) + ps.x) / f32(width)) * 2.0 - 1.0
         sy = 1.0 - ((f32(y) + ps.y) / f32(height)) * 2.0
-        ray = camera_ray(sc.cfg, sx, sy, rand01(pixel, s, u32(2)), rand01(pixel, s, u32(3)))
+        ray = camera_ray(sc.cfg, sx, sy, sample01(sc.cfg, pixel, s, u32(2)), sample01(sc.cfg, pixel, s, u32(3)))
         color = sample_radiance(ray.o, ray.d, integrator, max_bounces, ao_samples, pixel, s, sc)
         weighted = vec3(min(color.x, limit), min(color.y, limit), min(color.z, limit)) * ps.weight
         total = total + weighted

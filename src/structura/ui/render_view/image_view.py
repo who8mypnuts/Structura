@@ -28,6 +28,8 @@ class ImageView(QWidget):
         self.offset = QPointF(0, 0)  # pan, in widget pixels
         self._drag: QPointF | None = None
         self._region: tuple[QPointF, QPointF] | None = None
+        self.bucket: tuple[int, int, int, int] | None = None  # tiled renders: the bucket rendered next
+        self.region_mode = False  # Render ▸ Render Region: the next drag picks a region (no Shift needed)
         self.setMinimumSize(160, 120)
         self.setMouseTracking(True)
         self.setAccessibleName(tr("Rendered image"))
@@ -35,6 +37,16 @@ class ImageView(QWidget):
     def set_image(self, image: QImage | None) -> None:
         self.image = image
         self.update()
+
+    def pick_region(self) -> None:
+        """The next drag selects a region to re-render."""
+        self.region_mode = True
+        self.setCursor(Qt.CursorShape.CrossCursor)
+
+    def set_bucket(self, bucket: tuple[int, int, int, int] | None) -> None:
+        if bucket != self.bucket:
+            self.bucket = bucket
+            self.update()
 
     # -- geometry --------------------------------------------------------------------------------------------
     def scale(self) -> float:
@@ -79,6 +91,20 @@ class ImageView(QWidget):
         if self._region is not None:
             painter.setPen(QPen(qcolor("#ffcc00"), 1, Qt.PenStyle.DashLine))
             painter.drawRect(QRectF(*self._region).normalized())
+        if self.bucket is not None:
+            self._paint_bucket(painter, target)
+
+    def _paint_bucket(self, painter: QPainter, target: QRectF) -> None:
+        """Corner marks around the bucket being rendered (as Sunflow shows them)."""
+        assert self.bucket is not None
+        s = self.scale()
+        x0, y0, x1, y1 = (target.x() + self.bucket[0] * s, target.y() + self.bucket[1] * s,
+                          target.x() + self.bucket[2] * s, target.y() + self.bucket[3] * s)  # fmt: skip
+        arm = max(3.0, min(x1 - x0, y1 - y0) / 4)
+        painter.setPen(QPen(qcolor("#ffcc00"), 1.5))
+        for cx, cy, dx, dy in ((x0, y0, 1, 1), (x1, y0, -1, 1), (x0, y1, 1, -1), (x1, y1, -1, -1)):
+            painter.drawLine(QPointF(cx, cy), QPointF(cx + dx * arm, cy))
+            painter.drawLine(QPointF(cx, cy), QPointF(cx, cy + dy * arm))
 
     def _paint_split(self, painter: QPainter, target: QRectF) -> None:
         cut = target.x() + target.width() * self.split
@@ -111,8 +137,10 @@ class ImageView(QWidget):
 
     def mousePressEvent(self, event: QMouseEvent) -> None:  # noqa: N802
         pos = event.position()
-        if event.modifiers() & Qt.KeyboardModifier.ShiftModifier:
+        if self.region_mode or event.modifiers() & Qt.KeyboardModifier.ShiftModifier:
             self._region = (pos, pos)
+            self.region_mode = False
+            self.unsetCursor()
         elif self.snapshot is not None and abs(pos.x() - self._split_x()) < 6:
             self._drag = None
             self._region = None

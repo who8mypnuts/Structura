@@ -49,6 +49,7 @@ class ViewportOverlay(QWidget):
         self.bounds: tuple[np.ndarray, np.ndarray] | None = None
         self.hud = ""
         self.stale = False  # the script has errors: the viewport shows the last good build
+        self.selected: np.ndarray | None = None  # corners of the selected instance (compute preview only)
         self.accent = QColor(255, 158, 38)
 
     def show_state(self, camera: Camera | None, bounds: tuple[np.ndarray, np.ndarray] | None, hud: str) -> None:
@@ -71,6 +72,8 @@ class ViewportOverlay(QWidget):
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         if self.options.bounds and self.bounds is not None:
             self._bounds(painter)
+        if self.selected is not None:
+            self._box(painter, self.selected, QPen(self.accent, 2.0))
         if self.options.axes:
             self._axes(painter)
         if self.options.hud and self.hud:
@@ -89,16 +92,30 @@ class ViewportOverlay(QWidget):
         painter.drawText(box, Qt.AlignmentFlag.AlignCenter, text)
 
     def _bounds(self, painter: QPainter) -> None:
-        assert self.camera is not None and self.bounds is not None
+        assert self.bounds is not None
         lo, hi = self.bounds
         corners = np.array([[(hi if i & 4 else lo)[0], (hi if i & 2 else lo)[1], (hi if i & 1 else lo)[2]]
                             for i in range(8)])  # fmt: skip
+        self._box(painter, corners, QPen(self.accent, 1.2, Qt.PenStyle.DashLine))
+
+    def _box(self, painter: QPainter, corners: np.ndarray, pen: QPen) -> None:
+        """Eight corners (bit 2: x, bit 1: y, bit 0: z) drawn as the twelve edges of their box."""
+        assert self.camera is not None
+        lo, hi = self.bounds if self.bounds is not None else (corners.min(axis=0), corners.max(axis=0))
         px = project(self.camera, (self.width(), self.height()), lo, hi, corners)
-        pen = QPen(self.accent, 1.2, Qt.PenStyle.DashLine)
         painter.setPen(pen)
         for a, b in EDGES:
             if np.isfinite(px[[a, b]]).all():
                 painter.drawLine(QPointF(*px[a]), QPointF(*px[b]))
+
+    def set_selected(self, xform: np.ndarray | None) -> None:
+        """Outline this instance frame (the compute preview has no outline pass of its own); None clears."""
+        if xform is None:
+            self.selected = None
+        else:
+            unit = np.array([[(i >> 2) & 1, (i >> 1) & 1, i & 1] for i in range(8)], np.float64)
+            self.selected = unit @ np.asarray(xform[:, :3], np.float64).T + np.asarray(xform[:, 3], np.float64)
+        self.update()
 
     def _axes(self, painter: QPainter) -> None:
         """The world axes as the camera sees them, in the bottom-left corner (orientation only)."""

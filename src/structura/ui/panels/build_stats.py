@@ -62,7 +62,7 @@ class GenerationChart(QWidget):
 
 class BuildStatsPanel(QWidget):
     FIELDS = ("Objects", "By kind", "Generations", "Stopped because", "Rule applications", "Culled (max/min size)",
-              "Time", "Seed")  # fmt: skip
+              "Time", "Phases", "Seed")  # fmt: skip
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -75,6 +75,11 @@ class BuildStatsPanel(QWidget):
         layout = QHBoxLayout(self)
         layout.addLayout(form, 3)
         layout.addWidget(self.chart, 2, Qt.AlignmentFlag.AlignBottom)
+
+    def show_phases(self, analysis: float, build: float, preview: float) -> None:
+        """Per-phase timings: analysing (and compiling), building, preparing the viewport scene."""
+        text = f"analysis {analysis * 1000:.0f} ms · build {build * 1000:.0f} ms · viewport {preview * 1000:.0f} ms"
+        self.labels["Phases"].setText(text)
 
     def show_outcome(self, outcome: BuildOutcome) -> None:
         stats, scene = outcome.stats, outcome.scene

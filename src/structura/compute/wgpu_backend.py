@@ -82,6 +82,14 @@ class WgpuBound(Bound):
         size, dtype = self.shapes[name]
         return np.frombuffer(self.device.queue.read_buffer(self.gpu[name]), dtype=dtype)[:size].copy()
 
+    def read_range(self, name: str, start: int, stop: int) -> np.ndarray:
+        _, dtype = self.shapes[name]
+        item = np.dtype(dtype).itemsize
+        first, last = (start * item) // 4 * 4, -(-(stop * item) // 4) * 4  # wgpu copies in 4-byte units
+        data = np.frombuffer(self.device.queue.read_buffer(self.gpu[name], first, last - first), dtype=dtype)
+        skip = (start * item - first) // item
+        return data[skip : skip + stop - start].copy()
+
 
 class WgpuBackend(BackendBase):
     name = "wgpu"

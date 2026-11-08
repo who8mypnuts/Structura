@@ -18,6 +18,8 @@ def _round2(value: float) -> float:
 
 def default_value(param: GuiParameter) -> float:
     """The value a freshly created GUI control reports."""
+    if not param.numeric:
+        return param.default
     if param.kind == "int":
         top = int(param.maximum)
         bottom = min(int(param.minimum), top)
@@ -28,6 +30,13 @@ def default_value(param: GuiParameter) -> float:
 
 
 def value_text(param: GuiParameter, value: float) -> str:
+    """What the parameter's name is replaced by: a number, or a colour, 1 / 0, or the chosen name (v2)."""
+    if param.kind == "color":
+        return f"#{round(value) & 0xFFFFFF:06x}"
+    if param.kind == "bool":
+        return "1" if value >= 0.5 else "0"
+    if param.kind == "enum":
+        return param.choices[max(0, min(len(param.choices) - 1, round(value)))]
     return str(int(value)) if param.kind == "int" else format_number(value)
 
 

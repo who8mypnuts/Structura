@@ -102,8 +102,12 @@ flowchart LR
 > lowers every alpha so the OIT passes show the structure through itself; isolated sets collapse the other
 > frames to a point, which keeps row numbers (provenance, picking) valid. **Rendered View** (View ▸ Rendered
 > View, Ctrl+Alt+V) switches the viewport to the compute viewport with the script's render settings and the
-> path tracer (one sample while moving, 64 when still), on the best compute device. Not built: adaptive
-> quality while moving.
+> path tracer (one sample while moving, 64 when still), on the best compute device.
+>
+> **Adaptive quality (M11, `preview/adaptive.py`):** a GL timer query measures full-quality frames (read one
+> frame later, so it never stalls); while the camera moves and a full frame took more than 22 ms of GPU time,
+> frames skip SSAO. Still frames — the AA accumulation — are always full quality. The shadow map depends only
+> on the scene and the sun, so it is rendered once and reused across camera moves.
 
 ## 6. Picking & provenance
 
@@ -121,7 +125,10 @@ flowchart LR
 > has no id buffer, picks with an exact CPU ray cast against every instance's unit cube (`preview/pick.py`,
 > on the compute lane); Alt+click uses the same cast to set the camera's focus distance in both viewports.
 > The **Inspector** panel fills in on every pick, and selects alike objects (same call site, tag, generation
-> or kind) by tinting them. Selection outlines and "Show ancestry" trace rebuilds are not built.
+> or kind) by tinting them; the GPU viewport outlines the picked object in the composite pass, and the
+> compute preview draws its box outline in the overlay (M11). **Show Ancestry** (Inspector button, Build ▸
+> Show Ancestry; M11) re-runs the build as a traced observer on the build lane (`core/build/trace.py`) and
+> lists the chain of rule calls, each jumping to its call site.
 
 ## 7. Camera controls
 

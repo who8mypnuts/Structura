@@ -13,6 +13,7 @@ import moderngl
 import numpy as np
 
 from ..core.scene.camera import Camera
+from .adaptive import AdaptiveQuality
 from .camera import Matrices, camera_matrices, gl, look_at, orthographic
 from .gpu_scene import GpuScene
 from .instances import PreviewScene
@@ -91,11 +92,16 @@ class PreviewRenderer:
         self._no_highlight = _mask_texture(ctx, np.zeros(1, np.uint8), 1)
         self.highlight: Any = None  # provenance hover: one texel per SceneIR row
         self._highlight_version = 0
+        self.adaptive = AdaptiveQuality(ctx)
+        self.reduced = False  # the last frame skipped SSAO (the camera moves and full frames are slow)
+        self._shadow_key: tuple[object, ...] | None = None
+        self._light: np.ndarray | None = None
 
     # -- scene -----------------------------------------------------------------------------------------
     def set_scene(self, scene: PreviewScene | None) -> None:
         if self.gpu is not None:
             self.gpu.release()
+        self._shadow_key = None
         self.gpu = GpuScene(self.ctx, self.programs, scene) if scene is not None else None
 
     def set_highlight(self, rows: np.ndarray | None, count: int) -> None:
@@ -123,26 +129,34 @@ class PreviewRenderer:
             if self.targets is not None:
                 self.targets.release()
             self.targets = Targets(self.ctx, w, h)
-        scene = self.scene
         key = (camera, (w, h), options, id(self.gpu), self._highlight_version)
+        moving = accumulate and key != self._key
         if not accumulate or key != self._key or self.samples >= ACCUMULATE:
             self.samples = 0 if (not accumulate or key != self._key) else self.samples
         self._key = key
         if self.samples >= ACCUMULATE:
             self._present(target, (w, h))  # converged: redisplay without new work
             return self.samples
-        lo, hi = (scene.lo, scene.hi) if scene is not None else (np.full(3, -1.0), np.full(3, 1.0))
-        self.last = camera_matrices(camera, w / h, lo, hi)
-        m = jittered(self.last, self.samples, (w, h))
-        self._geometry(m, (w, h), options)
-        light = self._shadows(lo, hi, options) if options.effects & 2 else np.eye(4)
-        if options.effects & 1 and scene is not None:
-            self._ssao(m, scene.feature_size)
-        oit = self._transparent(m, (w, h), options)
-        self._composite(m, light, self.targets.frame_fbo, (w, h), options, oit)
-        self._accumulate()
+        self.reduced = self.adaptive.reduced(moving)
+        with self.adaptive.measure(self.reduced):
+            self._frame(camera, (w, h), options)
         self._present(target, (w, h))
         return self.samples
+
+    def _frame(self, camera: Camera, size: tuple[int, int], options: PreviewOptions) -> None:
+        assert self.targets is not None
+        scene = self.scene
+        lo, hi = (scene.lo, scene.hi) if scene is not None else (np.full(3, -1.0), np.full(3, 1.0))
+        self.last = camera_matrices(camera, size[0] / size[1], lo, hi)
+        m = jittered(self.last, self.samples, size)
+        self._geometry(m, size, options)
+        light = self._shadows(lo, hi, options) if options.effects & 2 else np.eye(4)
+        effects = options.effects & ~1 if self.reduced else options.effects
+        if effects & 1 and scene is not None:
+            self._ssao(m, scene.feature_size)
+        oit = self._transparent(m, size, options)
+        self._composite(m, light, self.targets.frame_fbo, size, options, oit, effects)
+        self._accumulate()
 
     @property
     def converged(self) -> bool:
@@ -235,6 +249,14 @@ class PreviewRenderer:
         self._draw_scene(m, size, options)
 
     def _shadows(self, lo: np.ndarray, hi: np.ndarray, options: PreviewOptions) -> np.ndarray:
+        """The sun's shadow map; it depends on the scene and the sun only, so camera moves reuse it."""
+        key = (id(self.gpu), tuple(np.round(lo, 6)), tuple(np.round(hi, 6)), options.sun_direction, options.line_width)
+        if key == self._shadow_key and self._light is not None:
+            return self._light
+        self._shadow_key, self._light = key, self._render_shadows(lo, hi, options)
+        return self._light
+
+    def _render_shadows(self, lo: np.ndarray, hi: np.ndarray, options: PreviewOptions) -> np.ndarray:
         centre, radius = (lo + hi) / 2.0, max(float(np.linalg.norm(hi - lo)) / 2.0, 1e-3)
         sun = np.asarray(options.sun_direction, np.float64)
         up = np.array([0.0, 0.0, 1.0]) if abs(sun[1]) > 0.99 else np.array([0.0, 1.0, 0.0])
@@ -267,8 +289,9 @@ class PreviewRenderer:
         self._vaos["blur"].render(moderngl.TRIANGLES, vertices=3)
 
     def _composite(
-        self, m: Matrices, light: np.ndarray, target: Any, size: tuple[int, int], options: PreviewOptions, oit: bool
-    ) -> None:
+        self, m: Matrices, light: np.ndarray, target: Any, size: tuple[int, int], options: PreviewOptions, oit: bool,
+        effects: int,
+    ) -> None:  # fmt: skip
         assert self.targets is not None
         t, prog = self.targets, self.programs.composite
         target.use()
@@ -299,7 +322,7 @@ class PreviewRenderer:
             options.ground,
         )
         prog["u_bg_top"].value, prog["u_bg_bottom"].value = options.background_top, options.background_bottom
-        prog["u_look"].value, prog["u_effects"].value = options.look_index, options.effects
+        prog["u_look"].value, prog["u_effects"].value = options.look_index, effects
         prog["u_exposure"].value = options.exposure
         prog["u_selected"].value = 0 if options.selected is None else options.selected + 1
         prog["u_select_color"].value = tuple(float(v) ** 2.2 for v in options.select_color)
@@ -337,3 +360,4 @@ class PreviewRenderer:
         if self.targets is not None:
             self.targets.release()
         self.shadow.release()
+        self.adaptive.release()

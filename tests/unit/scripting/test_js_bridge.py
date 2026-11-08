@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from pathlib import Path
 from typing import Any
 
@@ -27,12 +28,45 @@ class Host:
         self.rendered.append((path.name, 0, 0))
 
     def allow_execute(self, command: str, arguments: str) -> bool:
-        return False
+        return command == "allowed"
+
+    def execute(self, command: str, arguments: str, wait: bool) -> None:
+        self.log.append(f"exec {command} {arguments} {wait}")
 
     def cancelled(self) -> bool:
-        return len(self.rendered) >= self.stop_after
+        return len(self.rendered) >= self.stop_after or time.perf_counter() > self.deadline
+
+    def info(self, text: str) -> None:
+        self.log.append(f"info {text}")
+
+    def message(self, text: str) -> None:
+        self.log.append(f"message {text}")
+
+    def progress(self, caption: str | None, fraction: float | None) -> None:
+        self.log.append(f"progress {caption} {fraction}")
+
+    def sleep(self, ms: int) -> None:
+        self.log.append(f"sleep {ms}")
+
+    def wait_for_click(self) -> bool:
+        return self.click
+
+    def show_scene(self, scene: Any) -> None:
+        self.shown.append(scene)
 
     stop_after = 10**9
+    deadline = float("inf")
+    click = True
+
+    @property
+    def log(self) -> list[str]:
+        self.__dict__.setdefault("_log", [])
+        return self.__dict__["_log"]
+
+    @property
+    def shown(self) -> list[Any]:
+        self.__dict__.setdefault("_shown", [])
+        return self.__dict__["_shown"]
 
 
 @pytest.fixture(autouse=True)
@@ -67,3 +101,27 @@ def test_cancellation_ends_the_script_between_actions(tmp_path: Path) -> None:
     script = f"#javascript\n{loop}\n"
     written = run_javascript(script, tmp_path, host)
     assert written == 2 and len(host.rendered) == 2  # stopped cleanly, not an error
+
+
+def test_debug_world_and_vector3(tmp_path: Path) -> None:
+    (tmp_path / "a.es").write_text("box\n")
+    script = ("#javascript\nDebug.Info('hi'); Debug.ShowProgress('work'); Debug.SetProgress(0.5);\n"
+              "Debug.HideProgress();\n"
+              "Debug.Sleep(5); Debug.Message('note');\nBuilder.load('a.es'); Builder.build();\n"
+              "World.setColor(new Vector3(1, 0, 0), 0.5); World.addSphere(new Vector3(1, 2, 3), 0.5);\n"
+              "Builder.execute('allowed', '-x', true); Builder.execute('other', '', false);\n")  # fmt: skip
+    host = Host()
+    run_javascript(script, tmp_path, host)
+    assert host.log == ["info hi", "progress work 0.0", "progress None 0.5", "progress None None", "sleep 5",
+                        "message note", "exec allowed -x True"]  # fmt: skip
+    assert host.shown[0] == 1  # Builder.build shows its scene
+    world = host.shown[-1]
+    assert len(world) == 1 and world.rgba[0].tolist() == [1.0, 0.0, 0.0, 0.5]
+    assert world.xform[0, :, 3].tolist() == [0.5, 1.5, 2.5]  # the sphere's frame: centre − radius
+
+
+def test_a_right_click_ends_the_script_quietly(tmp_path: Path) -> None:
+    host = Host()
+    host.click = False
+    run_javascript("#javascript\nDebug.waitForMouseButton(); Builder.build();\n", tmp_path, host)
+    assert host.built == []

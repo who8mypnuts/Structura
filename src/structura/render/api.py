@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import time
 from collections.abc import Callable, Iterator, Mapping
 from dataclasses import dataclass, replace
 from functools import cache
@@ -19,24 +18,27 @@ from ..core.scene.material_library import MaterialTable, resolve_materials
 from ..core.scene.settings import SceneSettings, settings_from_events
 from ..kernels.skl import ir
 from ..kernels.skl.frontend import compile_module
-from .aovs import Aovs, render_aovs
+from .aovs import render_aovs
 from .bands import Bands
 from .bvh import Bvh, build_bvh
 from .config import Frame, config, scene_frame
 from .declarations import declared_settings
 from .emitters import Emitters, pack_emitters
 from .environment import settings_environment
-from .film import active_mask, film_image, initial_mask, new_film
+from .film import active_mask, initial_mask, new_film
 from .ground import Ground, with_ground
 from .kernels.layout import N_EMITTERS
 from .kernels.passes import render_pass
 from .legacy import with_legacy
 from .lights import pack_lights
 from .materials import pack_materials
+from .mosaic import mosaic_pass
 from .pacing import Pacing
 from .pack import PackedScene, PackOptions, pack_scene
 from .photons import add_photons
+from .progress import RenderProgress, RenderRun
 from .settings import INTEGRATORS, RenderSettings
+from .tiled import tiled_passes
 
 
 @cache
@@ -56,18 +58,6 @@ class Prepared:
     declarations: SceneDeclarations | None
     lo: np.ndarray
     hi: np.ndarray
-
-
-@dataclass(frozen=True)
-class RenderProgress:
-    image: np.ndarray  # float32[H, W, 3] linear radiance estimate
-    samples: int  # the most samples any pixel has
-    seconds: float
-    aovs: Aovs | None = None  # when settings.aovs
-    sample_map: np.ndarray | None = None  # int32[H, W] samples per pixel (adaptive sampling varies them)
-    active: float = 1.0  # the fraction of pixels still being sampled
-    film: np.ndarray | None = None  # the raw accumulation buffer (resuming a stopped render)
-    mask: np.ndarray | None = None  # uint32 pixel mask still being sampled (resuming)
 
 
 def prepare(
@@ -148,6 +138,7 @@ def launch_args(prepared: Prepared, frame: Frame) -> dict[str, Any]:
         "pixel_mask": initial_mask(st.width, st.height, st.region),
         "accum": new_film(st.width, st.height),
         "row0": 0,
+        "col0": 0,
         "sample_base": 0,
         "spp": 0,
     }
@@ -158,11 +149,28 @@ def _resumed(args: dict[str, Any], w: int, h: int, resume: RenderProgress | None
     the pixel mask go back into ``args``; sample indices continue, so the result equals an uninterrupted render."""
     if resume is None or resume.film is None:
         return np.zeros((h, w), np.int32), 0, 0.0
-    args["accum"] = resume.film
+    args["accum"] = resume.film.copy()
     if resume.mask is not None:
-        args["pixel_mask"] = resume.mask
+        args["pixel_mask"] = resume.mask.copy()
     counts = resume.sample_map.copy() if resume.sample_map is not None else np.full((h, w), resume.samples, np.int32)
     return counts, resume.samples, resume.seconds
+
+
+def start_run(
+    prepared: Prepared, settings: RenderSettings, backend: Backend, frame: Frame, resume: RenderProgress | None
+) -> tuple[RenderRun, np.ndarray]:
+    """Bind the render kernel (photons and AOVs first when asked for); returns the run and the starting film."""
+    w, h = settings.width, settings.height
+    args = launch_args(prepared, frame)
+    if settings.caustics == "photons":
+        add_photons(args, prepared.lo, prepared.hi, settings.photon_count, settings.photon_radius, backend,
+                    settings.seed)  # fmt: skip
+    aovs = render_aovs(args, backend) if settings.aovs and (resume is None or resume.aovs is None) else None
+    aovs = aovs or (resume.aovs if resume is not None else None)
+    counts, done, spent = _resumed(args, w, h, resume)
+    film = args["accum"].copy()
+    bound = backend.bind(Launch(render_module(), "render_pass", (w, h, 1), args))
+    return RenderRun(settings, bound, args["pixel_mask"], counts, done, spent, aovs), film
 
 
 def progressive(
@@ -173,40 +181,40 @@ def progressive(
     between: Callable[[], None] | None = None,
     resume: RenderProgress | None = None,
 ) -> Iterator[RenderProgress]:
-    """Yield an updated image after every pass (render/pacing.py sizes the passes).
+    """Yield an updated image after every pass (render/pacing.py sizes the passes), or with the tiled sampler
+    after buckets (render/tiled.py).
 
     Stops at settings.samples, at the time limit, or when adaptive sampling finds every pixel below the
     noise threshold. ``between`` runs between the row bands of each pass (cancellation checks). ``resume``
     continues a stopped render of the same scene, camera and settings.
     """
-    started = time.perf_counter()
     prepared = scene if isinstance(scene, Prepared) else prepare(scene)
     frame = frame or scene_frame(prepared.scene_settings, settings, prepared.lo, prepared.hi, prepared.declarations)
-    w, h = settings.width, settings.height
-    args = launch_args(prepared, frame)
-    if settings.caustics == "photons":
-        add_photons(args, prepared.lo, prepared.hi, settings.photon_count, settings.photon_radius, backend,
-                    settings.seed)  # fmt: skip
-    aovs = render_aovs(args, backend) if settings.aovs and (resume is None or resume.aovs is None) else None
-    aovs = aovs or (resume.aovs if resume is not None else None)
-    counts, done, spent = _resumed(args, w, h, resume)
-    bound = backend.bind(Launch(render_module(), "render_pass", (w, h, 1), args))
-    bands, active, pacing = Bands(w, h), args["pixel_mask"], Pacing(settings)
-    while done < settings.samples and active.any():
-        spp = pacing.next(done)
-        bound.update(sample_base=settings.seed * 1_000_003 + done, spp=spp)
-        pacing.observe(spp, bands.dispatch(bound, between))
-        done += spp
-        counts += active.reshape(h, w).astype(np.int32) * spp
-        accum = bound.read("accum")
-        seconds = spent + time.perf_counter() - started
-        if settings.noise_threshold > 0 and done >= settings.adaptive_min_samples:
-            active = active_mask(accum, w, h, settings.noise_threshold) & active
-            bound.update(pixel_mask=active)
-        if 0 < settings.time_limit <= seconds:
-            active = np.zeros_like(active)
-        image = film_image(accum, w, h)
-        yield RenderProgress(image, done, seconds, aovs, counts.copy(), float(active.mean()), accum, active)
+    run, film = start_run(prepared, settings, backend, frame, resume)
+    if settings.sampler == "tiled":
+        yield from tiled_passes(run, film, between)
+        return
+    if settings.mosaic and resume is None and settings.region is None:
+        yield mosaic_pass(run, between)
+    yield from _passes(run, between)
+
+
+def _passes(run: RenderRun, between: Callable[[], None] | None) -> Iterator[RenderProgress]:
+    s, (w, h) = run.settings, run.size
+    bands, pacing = Bands(w, h), Pacing(s)
+    while run.done < s.samples and run.mask.any():
+        spp = pacing.next(run.done)
+        run.bound.update(sample_base=run.sample_base(run.done), spp=spp)
+        pacing.observe(spp, bands.dispatch(run.bound, between))
+        run.done += spp
+        run.counts += run.mask.reshape(h, w).astype(np.int32) * spp
+        accum = run.bound.read("accum")
+        if s.noise_threshold > 0 and run.done >= s.adaptive_min_samples:
+            run.mask = active_mask(accum, w, h, s.noise_threshold) & run.mask
+            run.bound.update(pixel_mask=run.mask)
+        if run.out_of_time():
+            run.mask = np.zeros_like(run.mask)
+        yield replace(run.snapshot(accum), samples=run.done)
 
 
 def render(
@@ -214,3 +222,17 @@ def render(
 ) -> RenderProgress:
     *_, last = progressive(scene, settings, backend, frame)
     return last
+
+
+__all__ = [
+    "Prepared",
+    "RenderProgress",
+    "launch_args",
+    "prepare",
+    "prepare_with_frame",
+    "progressive",
+    "render",
+    "render_module",
+    "script_settings",
+    "start_run",
+]

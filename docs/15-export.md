@@ -137,7 +137,7 @@ with embedded base64/zlib data, "single-file mode"). Blender ships numpy, so the
 | Geometry mode B: **Instanced (Geometry Nodes)** | A point-cloud mesh (one point per instance) with attributes `kind`, colour, and transform. The GN tree instances the unit prototypes. Full-matrix instance transforms rely on Blender 4.2+ matrix attributes/sockets. **Spike S5 ([19](19-roadmap.md)) verifies the exact node path.** The fallback is rotation (quaternion) + scale attributes from the TRS decomposition, with sheared instances baked. |
 | Materials | Principled BSDF per Structura material; base colour from an Attribute node (`Col`, instance or geometry); metallic, roughness, IOR, transmission, coat, emission and anisotropy mapped 1:1 |
 | Scene | Camera (sensor/focal from fov; DOF f-stop from aperture and focus distance), lights (Sun/Point/Area/Spot), world (colour / gradient / HDRI Environment Texture / Nishita sky for sun-sky), Cycles settings (samples, denoise), axis conversion (Y-up → Z-up) |
-| Convenience | "Open in Blender": if a Blender executable is configured or detected, launch it with the script via a non-blocking `QProcess`. This is a convenience only. Export itself needs no Blender. |
+| Convenience | "Open in Blender": if a Blender executable is configured or detected, launch it with the script via a non-blocking `QProcess`. This is a convenience only. Export itself needs no Blender. **M11:** after a Blender-script export a toast offers it (Preferences ▸ Paths, else `blender` on the PATH, else the usual install folders; `ui/blender_app.py`). |
 | Legacy | The 1.5 `Blender_Importer_2` template (Blender 2.4x API) ships unchanged and is marked *obsolete* |
 | Validation | Nightly CI runs the generated scripts in headless Blender 4.2 LTS and the latest release, and checks object counts and material assignment |
 
@@ -202,8 +202,14 @@ arbitrary programs.
 > **As built:** template export (all bundled templates, byte-identical to 1.5) and the **post-process
 > command** (`export/templates/run_after.py` expands `$FILE`, `%VAR%`, `$VAR`, `${VAR}`; the confirmation shows
 > the expanded command and any unset variable; `ui/processes.py` runs it with a non-blocking `QProcess` and
-> pipes its output to the Console). The template picker is the exporter's "template" option. Not built: the
-> template editor tab, the output preview, and "autosave script with seed and camera".
+> pipes its output to the Console). The template picker is the exporter's "template" option.
+>
+> **M11** completed the sheet (`ui/dialogs/template_sheet.py`): an **Options** tab with the template's
+> description and **"Autosave the script with its seed and camera"** (`<name>.es` beside the export, 1.5's
+> header, camera lines and `set seed`, `export/templates/autosave.py`); a **Template** tab — the XML with tags,
+> attributes and `{placeholders}` highlighted — whose edits are kept with **Save as My Template…** (a user
+> template in the data folder that joins the list and shadows a bundled name); and a **Preview** tab with the
+> first 64 KB of the output, made on the io lane (`export.api.template_preview`).
 
 ### 5.3 Bundled templates
 

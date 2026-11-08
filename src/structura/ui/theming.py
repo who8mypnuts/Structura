@@ -45,12 +45,14 @@ def palette(theme: Theme) -> QPalette:
     return pal
 
 
-def apply_theme(app: QApplication, theme: Theme, fonts: Fonts | None = None) -> None:
+def apply_theme(app: QApplication, theme: Theme, fonts: Fonts | None = None, density: str = "comfortable") -> None:
     if app.style().name().lower() != "fusion":  # setting it again re-polishes every widget for nothing
         app.setStyle("Fusion")
     app.setPalette(palette(theme))
-    assets = {"close": icon_file("x", split_alpha(theme["ui.fg.muted"])[0])}
-    app.setStyleSheet(render_qss(theme, fonts, assets=assets))
+    assets = {"close": icon_file("x", split_alpha(theme["ui.fg.muted"])[0]),
+              "check": icon_file("check", split_alpha(theme["ui.accent.fg"])[0]),
+              "tick": icon_file("check", split_alpha(theme["ui.fg"])[0])}  # fmt: skip
+    app.setStyleSheet(render_qss(theme, fonts, density, assets=assets))
 
 
 def syntax_format(theme: Theme, role: str) -> QTextCharFormat:

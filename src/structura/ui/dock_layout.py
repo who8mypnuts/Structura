@@ -16,7 +16,16 @@ from dataclasses import dataclass
 
 from PySide6.QtCore import QByteArray, QObject, QSize, Qt, QTimer, Slot
 from PySide6.QtGui import QKeySequence
-from PySide6.QtWidgets import QDockWidget, QMainWindow, QTabWidget, QToolBar, QToolButton, QWidget
+from PySide6.QtWidgets import (
+    QDockWidget,
+    QFrame,
+    QMainWindow,
+    QScrollArea,
+    QTabWidget,
+    QToolBar,
+    QToolButton,
+    QWidget,
+)
 
 from ..themes.model import Theme
 from .commands.registry import CommandRegistry
@@ -24,6 +33,7 @@ from .i18n import tr
 from .icons import icon
 
 LAYOUT_VERSION = 2  # QMainWindow.saveState version; 1 = every side panel tabified (before the rail)
+MIN_PANEL = 80  # pixels: what a docked panel may ask for at least, whatever its contents
 Area = Qt.DockWidgetArea
 
 
@@ -61,6 +71,19 @@ PANELS = (
     Panel("Activity", "activity", side=False, hidden=True),
 )
 BY_TITLE = {p.title: p for p in PANELS}
+
+
+def scrolling(widget: QWidget) -> QScrollArea:
+    """The panel inside a frameless scroll area: a tall panel (Render Settings, Camera) then scrolls instead of
+    raising the dock's minimum height — which would make QMainWindow grow the window past the screen."""
+    area = QScrollArea()
+    area.setObjectName("PanelScroll")
+    area.setFrameShape(QFrame.Shape.NoFrame)
+    area.setWidgetResizable(True)
+    area.setWidget(widget)
+    area.setMinimumSize(MIN_PANEL, MIN_PANEL)
+    area.setAccessibleName(widget.accessibleName())
+    return area
 
 
 class ActivityRail(QToolBar):
@@ -117,8 +140,8 @@ class DockLayout(QObject):
         panel = BY_TITLE[title]
         dock = QDockWidget(tr(title, "Panels"), self.w)
         dock.setObjectName(f"dock-{title.lower().replace(' ', '-')}")
-        dock.setWidget(widget)
         widget.setAccessibleName(dock.windowTitle())
+        dock.setWidget(scrolling(widget))
         area = Area.LeftDockWidgetArea if panel.side else Area.BottomDockWidgetArea
         self.w.addDockWidget(area, dock)
         group = [d for t, d in self.docks.items() if BY_TITLE[t].side == panel.side]
@@ -172,6 +195,8 @@ class DockLayout(QObject):
         if visible and BY_TITLE[title].side and not dock.isFloating() and not self.restoring:
             self._hide_side_siblings(dock)
         self._tidy.start()
+        if visible:
+            QTimer.singleShot(0, getattr(self.w, "fit_to_screen", lambda: None))
         if self.rail is not None:
             self.rail.registry.refresh()
 

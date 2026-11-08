@@ -130,6 +130,13 @@ class BuildSession:
     def emitted(self) -> int:
         return int(self.ctl[layout.ST_NOUT])
 
+    def memory_bytes(self) -> int:
+        """Bytes held by the state and output buffers (each grows by doubling)."""
+        total = 0
+        for buffer in (self.buf_a, self.buf_b, self.work, self.outbuf):
+            total += sum(v.nbytes for v in buffer if isinstance(v, np.ndarray))  # NamedTuples of arrays
+        return total
+
     def stats(self) -> BuildStats:
         c = self.ctl
         return BuildStats(

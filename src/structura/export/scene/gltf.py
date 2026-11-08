@@ -153,7 +153,8 @@ class GltfExporter(Exporter):
     @staticmethod
     def _save(doc: g.GLTF2, blob: _Blob, path: Path) -> None:
         if len(blob.data) > GLB_LIMIT:
-            raise ValueError("the GLB would exceed 2 GB; export fewer objects or use a lower sphere detail")
+            raise ValueError("the GLB would exceed 2 GB: turn on instancing, use a lower sphere detail, or export "
+                             "fewer objects")  # fmt: skip
         doc.buffers.append(g.Buffer(byteLength=len(blob.data)))
         used = {k for m in doc.materials for k in (m.extensions or {})}
         used |= {k for n in doc.nodes for k in (n.extensions or {})}

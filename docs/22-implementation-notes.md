@@ -13,12 +13,13 @@ detail is in [PROGRESS.md](PROGRESS.md).
 | M2 SKL + precision engine | ✅ done | Five SKL targets, four compute backends, χ² and furnace tests, example renders |
 | M3 App shell + preview + editor basics | ✅ done | GPU viewport verified on the owner's GTX 1660 (Wayland, after the desktop-GL fix of M9 part 3); compute preview everywhere else |
 | M4 Export v1 | ✅ done | 252/252 template and 75/75 OBJ goldens byte-identical; 14 exporters with M8 |
-| M5 Editor pro + themes | ✅ done | The docs/12 P0 and P1 checklists, including Find in Files, Quick Open and the colour picker (M10). P2 items are in the backlog (§4) |
-| M6 Precision engine v2 | ✅ done | Every docs/09–10 feature except tiled bucket rendering (replaced by progressive + adaptive, §2.5) and pause/resume. Owner benchmark on the GTX 1660 still to be sent |
+| M5 Editor pro + themes | ✅ done | The docs/12 P0 and P1 checklists, including Find in Files, Quick Open and the colour picker (M10); the P2 items (Vim, refactorings, hover previews) came in M11 |
+| M6 Precision engine v2 | ✅ done | Every docs/09–10 feature; the tiled bucket sampler, mosaic pass, Halton sequence, per-lobe bounces, AO direct light and the sinc filter came in M11. Owner benchmark on the GTX 1660 still to be sent |
 | M7 v2, animation, scripting | ✅ done | v2 blocks, expressions, `#param`, timeline, `#javascript` bridge, Python API, Variation Explorer, v2 primitives, `convert --to v2` |
 | M8 Export v2 | ✅ done | 3MF, X3D/VRML, glTF instancing, USD policies, POV-Ray/Sunflow/Mitsuba writers, CSG, Blender GN (owner to verify in Blender), fog, photon caustics |
-| M9 Hardening & 1.0 | 🟡 mostly done | Done: warm-up, i18n (English + German + pseudo), accessibility names, packaging scripts and CI, user guide, benchmark suite, UI-stall watchdog, GPU preview on NVIDIA/Wayland, cached CUDA binaries, time-paced passes. Open: the owner checks of §3 (installers, benchmarks, screen reader, native German review) |
+| M9 Hardening & 1.0 | 🟡 mostly done | Done: warm-up, i18n infrastructure (English UI; pseudo-locale for layout testing; German dropped at the owner's request), accessibility names, packaging scripts and CI, user guide, benchmark suite, UI-stall watchdog, GPU preview on NVIDIA/Wayland, cached CUDA binaries, time-paced passes. Open: the owner checks of §3 (installers, benchmarks, screen reader) |
 | M10 Studio completion | ✅ done | The docs/14 window and panels, render reports, Save As flows, viewport colour modes, X-ray, isolation and overlays, navigation presets, render queue, pause/resume, History snapshots, export presets — see PROGRESS.md "M10" |
+| M11 Plan completion | ✅ done | The M10 backlog and the remaining plan items: sectioned Preferences, Show Ancestry, template sheet extras, adaptive viewport quality, the tiled sampler and renderer extras, Vim/refactorings/hover previews, `#include`, typed `#param` controls, build limits and the scene cache, the JavaScript globals (in a separate process), the Python `Document` API, the remaining menu commands — see PROGRESS.md "M11" |
 
 ## 2. Refinements and deviations
 
@@ -46,6 +47,12 @@ detail is in [PROGRESS.md](PROGRESS.md).
   the submitting slot has connected to its handle. Without this, fast jobs occasionally lost their
   results.
 - Connect handle signals only to slots of QObjects on the GUI thread. Lambdas run on the worker thread.
+  (M11 fixed three places that still used lambdas: saving renders/reports, the autosaved template script
+  and the legacy copy.)
+- **Build limits** (M11) are checked between build slices: an object cap, a time limit and the memory
+  guard (the builder's buffers against a share of the free memory). While a parameter slider is held,
+  builds are capped at 250k objects; the full build follows on release. Finished builds are cached by
+  (analysis digest, seed, limits).
 - **Numba cache invalidation:** `core.jit` hashes every kernel source at import and drops cached kernels
   when any of them changes. Numba keys its cache by the defining file only, so inlined helpers from other
   modules would otherwise go stale.
@@ -54,6 +61,9 @@ detail is in [PROGRESS.md](PROGRESS.md).
 
 - Picking reads one pixel of an id attachment synchronously after the frame, instead of PBO + fence. The
   read is one texel and it only happens on click.
+- **Adaptive quality** (M11) drops SSAO on moving frames only when a GL timer query showed that full frames
+  take more than 22 ms; the shadow map is cached across camera moves. Quarter-resolution SSAO and FXAA were
+  not needed.
 - Weighted-blended OIT runs in **two passes** (accumulate, then revealage), because GL 3.3 has no
   per-attachment blend functions. A third "pick" pass writes see-through ids so they can be clicked.
 - Boxes are split by the sign of their determinant, so back faces can be culled even for mirrored
@@ -69,6 +79,11 @@ detail is in [PROGRESS.md](PROGRESS.md).
 - Point, sphere and spot lights use NEE without MIS. They are not geometry, so BSDF rays cannot hit them.
 - SKL gained **buffer sets** (`@bufset`), a front-end rewrite that passes eight scene buffers as one
   argument ([11](11-compute-backends.md) §3.2).
+- **Tiled sampler** (M11): the render kernel takes a column offset too, so one bucket is one dispatch;
+  `Bound.read_range` (every backend) reads back only the bucket's rows. Both samplers use the same global
+  per-pixel sample indices, so they give the same image.
+- **Sample numbers** are hashed per (pixel, sample, dimension), not Sobol; `sequence halton` (M11) switches
+  the first dimensions to a rotated Halton sequence. Faure's permutations are not ported.
 
 ### 2.6 Export ([15](15-export.md))
 
@@ -83,10 +98,20 @@ detail is in [PROGRESS.md](PROGRESS.md).
 - v2 is implemented as **front passes** over the text (block extraction, `#param` → `#define` sliders, then
   `( expr )` after preprocessing). Line structure is preserved, so diagnostics and provenance map back
   unchanged.
-- `#param` of type color, bool and enum becomes a plain define for now.
+- `#param` of type color, bool and enum becomes a typed define (`#define NAME VALUE (color)`, `(bool)`,
+  `(enum:a|b)`) that the v2 preprocessor turns into a parameter with a colour button, switch or choice list
+  (M11). Its value travels as a float like the sliders' (0xRRGGBB, 1/0, the choice's index), so every
+  parameter path (panel, projects, variations) stays one path.
+- **`#include`** (M11) is expanded before the v2 front passes; `core/lang/includes.Expansion` maps spans from
+  the expanded text back to the edited file (included lines map to their `#include` line).
 
 ### 2.8 Editor ([12](12-editor.md))
 
+- **Refactorings without a CST** (M11): `core/lang/restructure.py` rewrites actions by the parser's spans,
+  mapped back through the PositionMap, and only where the mapped text equals the parsed text (no `#define`
+  substitution on the action). That was enough for extract, inline and the count toggle.
+- **Vim** is an event filter installed in front of the editor's other key filters; insert mode passes
+  every key through except Escape, so completion, snippets and multi-cursor keep working while typing.
 - **Recovering parser instead of a CST parser.** When the strict 1.5 parser fails, the analysis re-parses
   with `RecoveringParser`, which notes each error and resumes at the next `rule` (rules never nest). The
   Problems panel then lists every broken rule, and the rules that parse keep feeding the outline, completion
@@ -101,8 +126,12 @@ detail is in [PROGRESS.md](PROGRESS.md).
   unreadable ("Exa…", "Ou…") at side-bar widths. Docks stay real `QDockWidget`s (movable, floatable, saved
   in the layout); a tabified bottom dock hides its own title bar because the tab names it.
 - **Export sheet = Save As dialog + `ExportDialog`.** The native Save As dialog lists every format and
-  decides it; the dialog that follows shows the full destination, the contents and the options. No live
-  file-size estimate (backlog).
+  decides it; the dialog that follows shows the full destination, the contents, the options and (M11) a live
+  size estimate: two small samples of the scene are exported for real on the io lane and extrapolated
+  (`export/estimate.py`).
+- **JavaScript runs in a separate process** (M11). `QJSEngine.evaluate` keeps Python's GIL while JavaScript
+  runs, so even on a worker thread a long pure-JavaScript loop froze the GUI. The window now runs
+  `structura run --ipc` in a QProcess and talks to it with JSON lines (`services/script_process.py`).
 - **Materials and Lights panels edit the script** (v2 `material`/`light` blocks) rather than holding
   overrides outside it: the script stays the single source of truth, and renders and exports agree.
 - **Colour-by modes recolour on the CPU** (io lane) and re-upload, instead of a shader uniform. It is one
@@ -143,24 +172,21 @@ detail is in [PROGRESS.md](PROGRESS.md).
    first, so the installers denoise with Open Image Denoise.
 8. Blender 4.2 LTS: run an exported `.py` in both geometry modes (`baked`, `instanced`). The Geometry Nodes
    path (spike S5) is written against the 4.2 API but has not been executed.
-9. Screen-reader pass (NVDA, VoiceOver) and a review of the German translation by a native speaker.
+9. Screen-reader pass (NVDA, VoiceOver).
 10. (M10) Look at the activity rail, workspaces and the Examples gallery at your screen size; save a render
     report as PDF and HTML and check them in your viewers; export with the Sunflow-Colored template to see the
     'runAfter' prompt.
+11. (M11) Render with Image sampler = tiled on the GTX 1660 (the CUDA bucket read-back only runs there); try
+    Vim mode and the refactorings (Ctrl+Alt+R); run a `#javascript` movie script from the window and cancel it.
 
 ## 4. Backlog — planned but not built
 
-These items are in the plan documents but not in the program. None blocks 1.0 functionality; each has a
-workaround.
+Every feature of the plan documents is in the program (M11 closed the list that stood here after M10).
+What remains is work only the owner can do, and a few deliberate omissions:
 
-| Item | Plan | Notes / workaround |
-|------|------|--------------------|
-| Tiled bucket renderer with bucket order | [09](09-renderer.md) §5.2 | Progressive rendering with adaptive sampling covers the same ground |
-| Adaptive viewport quality (quarter-res SSAO while moving) | [08](08-viewport.md) §5 | Accumulation AA converges when the camera stops |
-| "Show ancestry" trace rebuild; selection outlines in the compute preview | [08](08-viewport.md) §6 | Inspector selections tint alike objects (GPU viewport); Isolate Selection |
-| Console severity icons; Outline listing of materials and parameters | [14](14-ui-ux.md) §3 | Console severity filter and search; the Materials and Parameters panels |
-| Live file-size estimate in the export sheet | [14](14-ui-ux.md) §5.5 | The sheet shows the object counts |
-| Template export sheet extras: template editor tab, output preview, "autosave script" | [15](15-export.md) §5.2 | Template export and its 'runAfter' command work |
-| Vim keybindings; extract/inline-rule refactorings; hover thumbnails of rules | [12](12-editor.md) §2 (P2) | P2 by plan (post-1.0) |
-| Preferences: autosave interval, memory guard, kernel-cache reset, sectioned layout | [14](14-ui-ux.md) §7 | CPU threads and the default folder are in Preferences; `structura warmup` rebuilds kernels |
-| Windows/macOS signed installers, PyPI release | [19](19-roadmap.md) M9 | Scripts exist (packaging/); the owner builds and signs them |
+| Item | Plan | Notes |
+|------|------|-------|
+| Windows/macOS signed installers, PyPI release | [19](19-roadmap.md) M9 | Scripts exist (`packaging/`); the owner builds and signs them (§3) |
+| Faure permutations for the Halton sequence | [09](09-renderer.md) §4 | The rotated Halton sequence is there for comparisons with Sunflow |
+| W111 "build cap reached" as a diagnostic | [05](05-eisenscript-language.md) §10 | A build result, not an analysis result: the status bar, Build Stats and the build-limit message say it |
+| Project sections for materials, lights and the environment | [07](07-scene-model.md) §8 | Kept when a project is read and written; the script's v2 blocks hold these (the Materials and Lights panels edit them) |

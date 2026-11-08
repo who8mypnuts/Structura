@@ -5,8 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
-from PySide6.QtCore import QSize, Qt, QTimer, Slot
-from PySide6.QtGui import QCloseEvent, QGuiApplication, QIcon
+from PySide6.QtCore import Qt, Slot
+from PySide6.QtGui import QCloseEvent, QIcon
 from PySide6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -17,7 +17,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ..core.jit import set_cpu_threads
 from ..core.lang.analysis import Analysis
 from ..core.scene.camera import Camera
 from ..render.api import script_settings
@@ -27,7 +26,6 @@ from ..services.render import RenderService
 from ..services.settings import SettingsService
 from ..services.theme import ThemeService
 from ..themes.model import Theme
-from ..themes.qss import Fonts
 from .animation_actions import AnimationActions
 from .banners import Banners
 from .build_actions import BuildActions
@@ -77,6 +75,7 @@ from .scene_view import describe_pick, viewport_options
 from .script_actions import ScriptActions
 from .search_actions import SearchActions
 from .session_actions import SessionActions
+from .settings_actions import SettingsActions
 from .statusbar import StatusBar
 from .theming import apply_theme
 from .timeline_actions import TimelineActions
@@ -84,22 +83,9 @@ from .viewport.host import ViewportHost, preview_label
 from .welcome import WelcomePage
 from .widgets.banner import Banner
 from .widgets.toast import ToastStack
+from .window_geometry import WindowGeometry, initial_size
 from .workbench import PreviewReady, Workbench
 from .workspaces import Workspaces
-
-DEFAULT_SIZE = QSize(1440, 900)
-EDITOR_SHARE = 0.45  # of the central area, beside the viewport
-SCREEN_FRACTION = 0.92  # leave room for panels and window decorations
-SIDE_WIDTH = 280  # the side panel beside the activity rail
-
-
-def initial_size(widget: QWidget) -> QSize:
-    """The default window size, shrunk to fit the screen the window opens on."""
-    screen = widget.screen() or QGuiApplication.primaryScreen()
-    if screen is None:
-        return DEFAULT_SIZE
-    room = screen.availableGeometry().size() * SCREEN_FRACTION
-    return DEFAULT_SIZE.boundedTo(room)
 
 
 class MainWindow(QMainWindow):
@@ -121,7 +107,7 @@ class MainWindow(QMainWindow):
         self.session = SessionActions(self)
         self.projects = ProjectActions(self)
         self.help = HelpActions(self)
-        self.dialogs = DialogActions(self)
+        self.dialogs, self.settings_actions = DialogActions(self), SettingsActions(self)
         self.scripts = ScriptActions(self)
         self.provenance = ProvenanceHover(self)
         self.parameter_sync = ParameterSync(self)
@@ -210,9 +196,8 @@ class MainWindow(QMainWindow):
         for title, widget in widgets.items():
             self.panels.add(title, widget)
         self.rail = self.panels.attach_rail(self.registry)
+        self.geometry_keeper = WindowGeometry(self)
         self.resize(initial_size(self))
-        self._sized = False
-        self._split_sized = False  # True once restored from the session or set to the default share
 
     def _show_welcome(self, *_: object) -> None:
         """The welcome page while no script is open."""
@@ -237,32 +222,15 @@ class MainWindow(QMainWindow):
         self.welcome.probe_device(self.runner, self.renders.backends)
         self.session.startup(files)
         if self.session.restore_layout():
-            self._sized = True  # the user's layout wins over the default dock sizes
-            self._split_sized = self.session.split_restored
+            self.geometry_keeper.sized = True  # the user's layout wins over the default dock sizes
+            self.geometry_keeper.split_sized = self.session.split_restored
+
+    def fit_to_screen(self) -> None:
+        self.geometry_keeper.fit_to_screen()
 
     def showEvent(self, event: object) -> None:  # noqa: N802
         super().showEvent(event)  # type: ignore[arg-type]
-        if not self._sized:  # dock sizes only apply once the window has its real geometry
-            self._sized = True
-            QTimer.singleShot(0, self._initial_dock_sizes)
-        if not self._split_sized:
-            self._split_sized = True
-            QTimer.singleShot(0, lambda: QTimer.singleShot(0, self._initial_split))  # after the dock sizes
-
-    def _initial_dock_sizes(self) -> None:
-        # The first layout pass can run before the header has collapsed its labels, which widens the window;
-        # Qt never shrinks it back, so the intended size is applied again now that the minimum is final.
-        self.resize(initial_size(self))
-        area = Qt.DockWidgetArea.BottomDockWidgetArea
-        bottom = [d for d in self.docks.values() if self.dockWidgetArea(d) == area and not d.isHidden()]
-        self.resizeDocks(bottom, [170] * len(bottom), Qt.Orientation.Vertical)
-        side = [d for d in self.docks.values() if d.isVisible() and d not in bottom]
-        self.resizeDocks(side, [SIDE_WIDTH] * len(side), Qt.Orientation.Horizontal)
-
-    def _initial_split(self) -> None:
-        """Editor and views share the central area 45 : 55 once its width is known."""
-        width = max(1, self.split.width())
-        self.split.setSizes([round(width * EDITOR_SHARE), width - round(width * EDITOR_SHARE)])
+        self.geometry_keeper.shown()
 
     def _connect(self) -> None:
         wb = self.workbench
@@ -298,29 +266,27 @@ class MainWindow(QMainWindow):
         w.choose_theme.connect(self.choose_theme)
         self.inspector.select_rows.connect(self._select_rows)
         self.inspector.isolate_rows.connect(self.build_actions.isolate)
+        self.inspector.ancestry_requested.connect(self.build_actions.show_ancestry)
         self.variations.adopt.connect(self.build_actions.adopt_seed)
         self.variations.adopt_params.connect(self.build_actions.adopt_params)
         self.viewport.picked.connect(self.on_picked)
         self.viewport.mode_changed.connect(lambda mode: self.status.set("device", f"Preview: {preview_label(mode)}"))
         self.themes.theme_changed.connect(self.apply_theme)
         self.render_view.status.connect(self.show_message)
-        self.render_view.request_source = self.render_actions.render_source
+        self.render_view.request_source = self.render_actions.guarded_source
 
     # -- appearance ----------------------------------------------------------------------------------------
     @Slot(object)
     def apply_theme(self, theme: Theme) -> None:
         app = QApplication.instance()
         if isinstance(app, QApplication):
-            apply_theme(app, theme, self.fonts())
+            apply_theme(app, theme, self.settings_actions.fonts(), self.settings_actions.density())
         self.tabs.set_theme(theme)
         self.header.set_theme(theme)
+        self.console.set_colors(theme["diag.warning"][:7], theme["diag.error"][:7])
         self.rail.set_theme(theme)
         self.render_view.view.checker = (theme["render.checker.a"], theme["render.checker.b"])
         self._refresh_viewport_options()
-
-    def fonts(self) -> Fonts:
-        ui_size = int(self.settings.value("appearance/ui_size", 10))
-        return Fonts(ui_size=ui_size, code_size=int(self.settings.value("editor/code_size", 11)))
 
     def _refresh_viewport_options(self) -> None:
         tab = self.tabs.current()
@@ -328,16 +294,7 @@ class MainWindow(QMainWindow):
         self.viewport.set_options(viewport_options(self.viewport.options, self.themes.theme, scene))
 
     def apply_settings(self) -> None:
-        """Push stored preferences into the live UI (called at start-up and after Preferences)."""
-        self.themes.set_theme(str(self.settings.value("appearance/theme", self.themes.theme.meta.id)))
-        self.workbench.live = bool(self.settings.value("editor/live_build", True))
-        self.render_view.device.setCurrentText(str(self.settings.value("render/device", "auto")))
-        self.editor_actions.apply()
-        self.build_actions.apply_overlays()
-        set_cpu_threads(int(self.settings.value("render/cpu_threads", 0)))
-        self.viewport.set_navigation(str(self.settings.value("viewport/controls", "structura")))
-        self.viewport.animate_moves = lambda: not bool(self.settings.value("appearance/reduce_motion", False))
-        self.apply_theme(self.themes.theme)
+        self.settings_actions.apply()
 
     # -- workbench events ----------------------------------------------------------------------------------
     @Slot(object)
@@ -362,7 +319,7 @@ class MainWindow(QMainWindow):
         self.problems.show_diagnostics(tab.text(), list(analysis.diagnostics))
         self.status.set("dialect", tab.language_label)
         tab.editor.highlighter.set_analysis(analysis)
-        self.outline.show_analysis(analysis)
+        self.outline.show_analysis(analysis, tab.text())
         self.parameter_sync.show(tab, analysis)
         errors = sum(1 for d in analysis.diagnostics if d.severity.name == "ERROR")
         self.viewport.overlay.set_stale(bool(errors) and tab.outcome is not None)
@@ -386,6 +343,7 @@ class MainWindow(QMainWindow):
         if tab is not self.tabs.current():
             return
         self.stats.show_outcome(outcome)
+        self.stats.show_phases(tab.analysis.seconds if tab.analysis else 0.0, outcome.stats.seconds, ready.seconds)
         script = script_settings(outcome.scene)
         self.render_settings.show_settings(script)
         self.render_view.integrator.setCurrentText(script.integrator)

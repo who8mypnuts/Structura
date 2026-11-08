@@ -20,6 +20,7 @@ from .lights import light_count
 from .settings import RenderSettings
 
 CAUSTIC_FLOOR = 0.3  # GGX alpha after a rough bounce when caustics are filtered
+NO_LIMIT = 1e9  # a per-lobe bounce limit that never applies
 
 
 @dataclass(frozen=True)
@@ -71,6 +72,18 @@ def _fog(cfg: np.ndarray, frame: Frame) -> None:
         _put(cfg, lay.FOG_COLOR, srgb_to_linear(np.asarray(st.fog_color, np.float32)))
 
 
+def _limit(value: int) -> float:
+    return float(value) if value >= 0 else NO_LIMIT
+
+
+def _sampling(cfg: np.ndarray, st: RenderSettings) -> None:
+    cfg[lay.SEQUENCE] = 1.0 if st.sequence == "halton" else 0.0
+    cfg[lay.DIFFUSE_BOUNCES] = _limit(st.diffuse_bounces)
+    cfg[lay.GLOSSY_BOUNCES] = _limit(st.glossy_bounces)
+    cfg[lay.TRANSMISSION_BOUNCES] = _limit(st.transmission_bounces)
+    cfg[lay.AO_DIRECT] = 1.0 if st.ao_direct else 0.0
+
+
 def config(frame: Frame) -> np.ndarray:
     cam, st = frame.camera, frame.settings
     cfg = np.zeros(lay.CFG_SIZE, np.float32)
@@ -102,6 +115,7 @@ def config(frame: Frame) -> np.ndarray:
         cfg[lay.FILTER_ON], cfg[lay.FILTER_RADIUS] = 1.0, radius
     cfg[lay.BLADES], cfg[lay.BLADE_ROT] = st.blades, math.radians(st.blade_rotation_deg)
     _fog(cfg, frame)
+    _sampling(cfg, st)
     env = settings_environment(st)
     if env is not None:
         cfg[lay.ENV_ON], cfg[lay.ENV_W], cfg[lay.ENV_H] = 1.0, env.width, env.height

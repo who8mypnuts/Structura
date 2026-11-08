@@ -21,6 +21,20 @@ class ProcessRunner(QObject):
         self.running: list[QProcess] = []
 
     def start(self, command: str, cwd: Path) -> QProcess:
+        """Run a command line (a template's 'runAfter')."""
+        process = self._new(cwd)
+        self.w.console.info(f"$ {command}")
+        process.startCommand(command)
+        return process
+
+    def start_program(self, program: str, arguments: list[str], cwd: Path) -> QProcess:
+        """Run ``program`` with ``arguments`` as given (no shell parsing; paths with spaces are safe)."""
+        process = self._new(cwd)
+        self.w.console.info("$ " + " ".join([program, *arguments]))
+        process.start(program, arguments)
+        return process
+
+    def _new(self, cwd: Path) -> QProcess:
         process = QProcess(self)
         process.setWorkingDirectory(str(cwd))
         process.setProcessChannelMode(QProcess.ProcessChannelMode.MergedChannels)
@@ -28,8 +42,6 @@ class ProcessRunner(QObject):
         process.finished.connect(self._finished)
         process.errorOccurred.connect(self._error)
         self.running.append(process)
-        self.w.console.info(f"$ {command}")
-        process.startCommand(command)
         return process
 
     def _process(self) -> QProcess | None:

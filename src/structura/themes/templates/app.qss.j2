@@ -63,6 +63,15 @@ QPushButton:pressed { background: {{ c("ui.pressed") }}; }
 QPushButton:default, QPushButton[accent="true"] { background: {{ c("ui.accent") }}; color: {{ c("ui.accent.fg") }}; border-color: {{ c("ui.accent") }}; }
 QPushButton:focus { border-color: {{ c("ui.focus.ring") }}; }
 QCheckBox, QRadioButton { background: transparent; spacing: {{ pad * 2 }}px; }
+QCheckBox::indicator, QAbstractItemView::indicator, QGroupBox::indicator, QRadioButton::indicator { width: 14px; height: 14px; border: 1px solid {{ c("ui.border.strong") }}; border-radius: 3px; background: {{ c("ui.bg.sunken") }}; }
+QRadioButton::indicator { border-radius: 8px; }
+QCheckBox::indicator:hover, QAbstractItemView::indicator:hover, QGroupBox::indicator:hover, QRadioButton::indicator:hover { border-color: {{ c("ui.accent") }}; }
+QCheckBox::indicator:checked, QAbstractItemView::indicator:checked, QGroupBox::indicator:checked { background: {{ c("ui.accent") }}; border-color: {{ c("ui.accent") }};{% if assets.check %} image: url({{ assets.check }});{% endif %} }
+QCheckBox::indicator:indeterminate { background: {{ c("ui.hover") }}; border-color: {{ c("ui.accent") }}; }
+QRadioButton::indicator:checked { background: {{ c("ui.accent.fg") }}; border: 4px solid {{ c("ui.accent") }}; }
+QCheckBox::indicator:disabled, QRadioButton::indicator:disabled { background: {{ c("ui.bg.alt") }}; border-color: {{ c("ui.border") }}; }
+QMenu::indicator { width: 14px; height: 14px; left: {{ pad }}px; }
+QMenu::indicator:checked {% raw %}{{% endraw %}{% if assets.tick %} image: url({{ assets.tick }});{% endif %} }
 QSlider::groove:horizontal { height: 4px; background: {{ c("ui.border") }}; border-radius: 2px; }
 QSlider::sub-page:horizontal { background: {{ c("ui.accent") }}; border-radius: 2px; }
 QSlider::handle:horizontal { background: {{ c("ui.fg") }}; width: 12px; height: 12px; margin: -4px 0; border-radius: 6px; }

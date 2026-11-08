@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from dataclasses import replace
 from functools import partial
 from typing import Any
 
@@ -78,6 +79,19 @@ class ParamForm(QWidget):
                 widget.blockSignals(True)
                 _set(widget, values[spec.key])
                 widget.blockSignals(False)
+
+    def set_choices(self, key: str, choices: tuple[str, ...], current: str | None = None) -> None:
+        """New choices for an ENUM row (e.g. a template the user just saved); ``current`` is then selected."""
+        self.specs = tuple(replace(s, choices=choices) if s.key == key else s for s in self.specs)
+        combo = self.widgets[key]
+        assert isinstance(combo, QComboBox)
+        keep = current or combo.currentText()
+        combo.blockSignals(True)
+        combo.clear()
+        combo.addItems(list(choices))
+        combo.blockSignals(False)
+        combo.setCurrentText(keep)
+        self.changed.emit(key, keep)
 
     def mark(self, key: str, marked: bool, note: str = "") -> None:
         """Flag a row (e.g. 'overridden'): a dot after its label and a note in the tooltip."""

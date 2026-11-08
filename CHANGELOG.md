@@ -5,8 +5,33 @@ semantic versioning. The detailed record, with every deviation from the plan, is
 
 ## [Unreleased] — 0.1.0
 
-The first complete implementation of the plan in [docs/](docs/README.md) (milestones M0–M8 and M10; M9 waits
-on the owner's platform checks).
+The first complete implementation of the plan in [docs/](docs/README.md) (milestones M0–M8, M10 and M11; M9
+waits on the owner's platform checks).
+
+### Plan completion (M11)
+
+- Tall panels scroll instead of growing the window past the screen; the window stays on its screen.
+- Preferences in sections: fonts, density, follow the system's light/dark setting, default render preset,
+  render memory guard, log level, library folders, Blender path, Reset Window Layout, Clear Caches.
+- Renderer: a tiled bucket sampler (six bucket orders, bucket marks in the Render view), a mosaic first
+  image, the Halton sequence, per-lobe bounce limits, AO direct light, the sinc filter.
+- Viewport: adaptive quality while moving; Show Ancestry; Lock camera to script.
+- Editor: Vim keybindings; refactorings (extract / inline rule, `{…} R` ↔ `1 * {…} R`); rule previews on
+  hover; an object-estimate hint after top-level calls.
+- Language: `#include`; colour, switch and choice `#param` controls; E012 and E015 diagnostics.
+- Build: Build Limits (object cap, time limit, memory guard); capped builds while dragging a slider; a cache
+  of recent scenes for undo and timeline scrubbing.
+- Export: the template sheet (description, autosaved script, template editor, output preview), a size
+  estimate, Open in Blender, exports in the Render Queue; File ▸ Save as Legacy .es.
+- Scripting: the JavaScript Debug, World and Vector3 globals, run in a separate process so scripts can never
+  freeze the window; `st.open()` documents in the Python API, `structura run file.py` and Run Python Script.
+- Help: the user guide, What's New and a System Report inside the app.
+- Render output dialog: the image file and a report beside it (PDF, HTML, Markdown, plain text, JSON, CSV or
+  ODT) for Save…, queued renders and **Final Render…** (Shift+F9, or F9 with a final preset), which asks before
+  rendering and saves both when it finishes.
+- Fixed: check boxes and radio buttons had no visible box in any theme (the application style sheet hid
+  Fusion's indicators); menus show a check mark for toggled items.
+- Removed: the German translation.
 
 ### Window and workflow (M10)
 
@@ -84,6 +109,6 @@ on the owner's platform checks).
 ### Platform
 
 - A non-blocking GUI (job lanes, fair parallel sections, banded dispatch) with a UI-stall watchdog.
-- Kernel warm-up, i18n (German and a pseudo-locale) and accessible names.
+- Kernel warm-up, i18n infrastructure (English; a pseudo-locale for layout testing) and accessible names.
 - Packaging scripts for Windows, macOS and Linux; CI workflows; a user guide.
 - CLI: `theme list/check/import`, `devices`, `template`, and `structura FILE` to open the app.

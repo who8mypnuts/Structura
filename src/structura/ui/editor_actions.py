@@ -14,7 +14,8 @@ from .editor import editing
 from .editor.code_editor import CodeEditor
 from .editor.options import EditorOptions, load_options, toggle_option
 from .editor.peek import peek_definition
-from .editor.quick_fix import show_quick_fixes
+from .editor.quick_fix import show_quick_fixes, show_refactorings
+from .rule_previews import RulePreviews
 
 if TYPE_CHECKING:
     from .app_window import MainWindow
@@ -25,6 +26,8 @@ class EditorActions(QObject):
         super().__init__(window)
         self.w = window
         window.tabs.tab_added.connect(self._on_tab_added)
+        self.previews = RulePreviews(window.runner, self)
+        self.previews.ready.connect(self._preview_ready)
 
     def _with_editor(self, action: Callable[[CodeEditor], object]) -> None:
         tab = self.w.tabs.current()
@@ -55,6 +58,9 @@ class EditorActions(QObject):
 
     def quick_fix(self) -> None:
         self._with_editor(show_quick_fixes)
+
+    def refactor(self) -> None:
+        self._with_editor(show_refactorings)
 
     def peek(self) -> None:
         tab = self.w.tabs.current()
@@ -95,8 +101,27 @@ class EditorActions(QObject):
             tab.editor.set_options(options)
             tab.breadcrumbs.setVisible(options.breadcrumbs)
 
+    @Slot(str)
+    def vim_command(self, command: str) -> None:
+        """':w' saves, ':q' closes the tab, ':wq' / ':x' do both (the current tab)."""
+        name = command.rstrip("!")
+        if name in ("w", "wq", "x"):
+            self.w.docs.save()
+        if name in ("q", "wq", "x"):
+            self.w.docs.close_tab()
+        elif name not in ("w",):
+            self.w.show_message(f"Not a Vim command here: :{command}")
+
+    @Slot(str)
+    def _preview_ready(self, rule: str) -> None:
+        tab = self.w.tabs.current()
+        if tab is not None:
+            tab.completion.refresh_hover(rule)
+
     @Slot(object)
     def _on_tab_added(self, tab: EditorTab) -> None:
+        tab.editor.rule_preview = lambda rule, t=tab: self.previews.image(t.text(), rule, t.seed)
+        tab.editor.vim.command_entered.connect(self.vim_command)
         options = self.options()
         tab.editor.set_options(options)
         tab.breadcrumbs.setVisible(options.breadcrumbs)

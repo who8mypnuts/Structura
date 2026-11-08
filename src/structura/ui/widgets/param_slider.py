@@ -14,6 +14,7 @@ COMPACT_WIDTH = 150
 
 class ParamSlider(QWidget):
     changed = Signal(str, float)
+    released = Signal(str)  # the slider handle was let go (the full build follows a capped drag preview)
 
     def __init__(self, param: GuiParameter, value: float, compact: bool = False, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -37,6 +38,11 @@ class ParamSlider(QWidget):
         self.setToolTip(f"{param.name}: {param.minimum:g} … {param.maximum:g}")
         self.set_value(value)
         self.slider.valueChanged.connect(self._slider_moved)
+        self.slider.sliderReleased.connect(lambda: self.released.emit(self.param.name))
+
+    @property
+    def dragging(self) -> bool:
+        return self.slider.isSliderDown()
 
     @property
     def value(self) -> float:

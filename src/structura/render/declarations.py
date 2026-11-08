@@ -12,7 +12,7 @@ from ..core.color import parse_color, srgb_to_linear
 from ..core.scene.camera import Camera
 from ..core.scene.declarations import SceneDeclarations
 from .ground import MODES as GROUND_MODES
-from .settings import FILTER_NAMES, INTEGRATORS, RenderSettings
+from .settings import BUCKET_ORDERS, FILTER_NAMES, INTEGRATORS, SAMPLERS, SEQUENCES, RenderSettings
 
 RGB = tuple[float, float, float]
 
@@ -34,9 +34,15 @@ CHOICES: dict[str, tuple[str, tuple[str, ...]]] = {  # block key → (settings f
     "type": ("camera_type", ("perspective", "orthographic", "spherical", "fisheye")),
     "filter": ("filter", FILTER_NAMES),
     "caustics": ("caustics", ("filtered", "on", "photons")),
+    "sampler": ("sampler", SAMPLERS),
+    "bucket_order": ("bucket_order", BUCKET_ORDERS),
+    "sequence": ("sequence", SEQUENCES),
 }
 INTS = {"samples": ("samples", 1), "max_bounces": ("max_bounces", 0), "blades": ("blades", 0),
-        "photon_count": ("photon_count", 1000)}  # block key → (field, minimum)  # fmt: skip
+        "photon_count": ("photon_count", 1000), "bucket_size": ("bucket_size", 8),
+        "diffuse_bounces": ("diffuse_bounces", 0), "glossy_bounces": ("glossy_bounces", 0),
+        "transmission_bounces": ("transmission_bounces", 0)}  # block key → (field, minimum)  # fmt: skip
+TRUE = ("true", "on", "yes", "1")
 FLOATS = {"height": "ortho_height", "blade_rotation": "blade_rotation_deg", "noise_threshold": "noise_threshold",
           "time_limit": "time_limit", "photon_radius": "photon_radius"}  # fmt: skip
 
@@ -49,6 +55,8 @@ def _render_block(block: dict[str, Any]) -> dict[str, Any]:
     for key in ("noise_threshold", "time_limit", "photon_radius"):
         if key in out:
             out[key] = max(0.0, out[key])
+    if "ao_direct" in block:
+        out["ao_direct"] = str(block["ao_direct"]).lower() in TRUE
     size = str(block.get("size", ""))
     if "x" in size:
         w, _, h = size.lower().partition("x")

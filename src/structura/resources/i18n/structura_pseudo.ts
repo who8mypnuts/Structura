@@ -8,6 +8,14 @@
       <translation>[3MF (çölöûr 3D prîñtîñg)… ~~~~~~~]</translation>
     </message>
     <message>
+      <source>A copy Structure Synth 1.5 opens (v2 features flattened or dropped; notes in the Console)</source>
+      <translation>[À çöpý Strûçtûré Sýñth 1.5 öpéñs (v2 féàtûrés flàttéñéd ör dröppéd; ñötés îñ thé Çöñsölé) ~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>A script that uses the Python API (import structura as st); output in the Console</source>
+      <translation>[À sçrîpt thàt ûsés thé Pýthöñ ÀPÎ (împört strûçtûrà às st); öûtpût îñ thé Çöñsölé ~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>A second view of the script beside the first</source>
       <translation>[À séçöñd vîéw öf thé sçrîpt bésîdé thé fîrst ~~~~~~~~~~~~~]</translation>
     </message>
@@ -60,6 +68,10 @@
       <translation>[Bûîld (F5) ~~~]</translation>
     </message>
     <message>
+      <source>Build Limits…</source>
+      <translation>[Bûîld Lîmîts… ~~~]</translation>
+    </message>
+    <message>
       <source>Build Stats</source>
       <translation>[Bûîld Stàts ~~~]</translation>
     </message>
@@ -78,6 +90,10 @@
     <message>
       <source>Choose Theme…</source>
       <translation>[Çhöösé Thémé… ~~~]</translation>
+    </message>
+    <message>
+      <source>Choose the quality, where the image goes and the report beside it; saved when finished</source>
+      <translation>[Çhöösé thé qûàlîtý, whéré thé îmàgé göés àñd thé répört bésîdé ît; sàvéd whéñ fîñîshéd ~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Close Tab</source>
@@ -124,6 +140,18 @@
       <translation>[Çût (Çtrl+X) ~~~]</translation>
     </message>
     <message>
+      <source>Denoise</source>
+      <translation>[Déñöîsé ~~]</translation>
+    </message>
+    <message>
+      <source>Denoise the finished render (Open Image Denoise, else À-Trous)</source>
+      <translation>[Déñöîsé thé fîñîshéd réñdér (Öpéñ Îmàgé Déñöîsé, élsé À-Tröûs) ~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Drag over the rendered image to render that part again (or Shift+drag any time)</source>
+      <translation>[Dràg övér thé réñdéréd îmàgé tö réñdér thàt pàrt àgàîñ (ör Shîft+dràg àñý tîmé) ~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Edit Theme…</source>
       <translation>[Édît Thémé… ~~~]</translation>
     </message>
@@ -156,8 +184,16 @@
       <translation>[Éxpört thé strûçtûré: çhöösé thé földér, fîlé ñàmé àñd förmàt ~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Extract a rule, inline a rule, add or drop '1 *'</source>
+      <translation>[Éxtràçt à rûlé, îñlîñé à rûlé, àdd ör dröp '1 *' ~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Files</source>
       <translation>[Fîlés ~]</translation>
+    </message>
+    <message>
+      <source>Final Render…</source>
+      <translation>[Fîñàl Réñdér… ~~~]</translation>
     </message>
     <message>
       <source>Find References</source>
@@ -230,6 +266,10 @@
     <message>
       <source>History</source>
       <translation>[Hîstörý ~~]</translation>
+    </message>
+    <message>
+      <source>How the picked object was made: its chain of rule calls</source>
+      <translation>[Höw thé pîçkéd öbjéçt wàs màdé: îts çhàîñ öf rûlé çàlls ~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Indentation guides</source>
@@ -328,6 +368,10 @@
       <translation>[Öbjéçt Çöûñts ~~~]</translation>
     </message>
     <message>
+      <source>Object, time and memory limits for every build</source>
+      <translation>[Öbjéçt, tîmé àñd mémörý lîmîts för évérý bûîld ~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Only the image, full screen (Esc returns)</source>
       <translation>[Öñlý thé îmàgé, fûll sçrééñ (Ésç rétûrñs) ~~~~~~~~~~~~]</translation>
     </message>
@@ -416,6 +460,10 @@
       <translation>[Qûîçk Öpéñ… ~~~]</translation>
     </message>
     <message>
+      <source>Quick Start</source>
+      <translation>[Qûîçk Stàrt ~~~]</translation>
+    </message>
+    <message>
       <source>Quit</source>
       <translation>[Qûît ~]</translation>
     </message>
@@ -448,6 +496,10 @@
       <translation>[Rédö (Çtrl+Shîft+Z) ~~~~~]</translation>
     </message>
     <message>
+      <source>Refactor…</source>
+      <translation>[Réfàçtör… ~~]</translation>
+    </message>
+    <message>
       <source>Reload from disk, discarding unsaved edits</source>
       <translation>[Rélöàd fröm dîsk, dîsçàrdîñg ûñsàvéd édîts ~~~~~~~~~~~~]</translation>
     </message>
@@ -460,12 +512,20 @@
       <translation>[Réñdér ~]</translation>
     </message>
     <message>
+      <source>Render (Legacy Look)</source>
+      <translation>[Réñdér (Légàçý Löök) ~~~~~~]</translation>
+    </message>
+    <message>
       <source>Render Animation…</source>
       <translation>[Réñdér Àñîmàtîöñ… ~~~~~]</translation>
     </message>
     <message>
       <source>Render Queue</source>
       <translation>[Réñdér Qûéûé ~~~]</translation>
+    </message>
+    <message>
+      <source>Render Region</source>
+      <translation>[Réñdér Régîöñ ~~~]</translation>
     </message>
     <message>
       <source>Render Settings</source>
@@ -516,6 +576,10 @@
       <translation>[Rûñ JàvàSçrîpt ~~~~]</translation>
     </message>
     <message>
+      <source>Run Python Script…</source>
+      <translation>[Rûñ Pýthöñ Sçrîpt… ~~~~~]</translation>
+    </message>
+    <message>
       <source>Run this '#javascript' script (Builder API); files go next to the script</source>
       <translation>[Rûñ thîs '#jàvàsçrîpt' sçrîpt (Bûîldér ÀPÎ); fîlés gö ñéxt tö thé sçrîpt ~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
@@ -544,8 +608,12 @@
       <translation>[Sàvé Réñdér… ~~~]</translation>
     </message>
     <message>
-      <source>Save the rendered image (PNG, EXR with AOVs, JPEG, …)</source>
-      <translation>[Sàvé thé réñdéréd îmàgé (PÑG, ÉXR wîth ÀÖVs, JPÉG, …) ~~~~~~~~~~~~~~~]</translation>
+      <source>Save as Legacy .es…</source>
+      <translation>[Sàvé às Légàçý .és… ~~~~~]</translation>
+    </message>
+    <message>
+      <source>Save the rendered image (PNG, EXR with AOVs, JPEG, …) and a report beside it</source>
+      <translation>[Sàvé thé réñdéréd îmàgé (PÑG, ÉXR wîth ÀÖVs, JPÉG, …) àñd à répört bésîdé ît ~~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Save the script with its seed, parameters, camera and render settings (.structura)</source>
@@ -584,6 +652,10 @@
       <translation>[Shöw Àll ~~]</translation>
     </message>
     <message>
+      <source>Show Ancestry</source>
+      <translation>[Shöw Àñçéstrý ~~~]</translation>
+    </message>
+    <message>
       <source>Show the objects hidden by Isolate Selection (Inspector)</source>
       <translation>[Shöw thé öbjéçts hîddéñ bý Îsölàté Séléçtîöñ (Îñspéçtör) ~~~~~~~~~~~~~~~~]</translation>
     </message>
@@ -620,6 +692,10 @@
       <translation>[Sûñflöw sçéñé (.sç)… ~~~~~~]</translation>
     </message>
     <message>
+      <source>System Report…</source>
+      <translation>[Sýstém Répört… ~~~~]</translation>
+    </message>
+    <message>
       <source>Tag</source>
       <translation>[Tàg ~]</translation>
     </message>
@@ -630,6 +706,10 @@
     <message>
       <source>The EisenScript reference at the symbol under the cursor</source>
       <translation>[Thé ÉîséñSçrîpt référéñçé àt thé sýmböl ûñdér thé çûrsör ~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>The classic integrator: Structure Synth 1.5's raytracer look</source>
+      <translation>[Thé çlàssîç îñtégràtör: Strûçtûré Sýñth 1.5's ràýtràçér löök ~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Timeline</source>
@@ -672,6 +752,10 @@
       <translation>[Ûñföld Àll ~~~]</translation>
     </message>
     <message>
+      <source>User Guide</source>
+      <translation>[Ûsér Gûîdé ~~~]</translation>
+    </message>
+    <message>
       <source>VRML97 (.wrl)…</source>
       <translation>[VRML97 (.wrl)… ~~~~]</translation>
     </message>
@@ -680,8 +764,20 @@
       <translation>[Vàrîàtîöñs ~~~]</translation>
     </message>
     <message>
+      <source>Vim keybindings</source>
+      <translation>[Vîm kéýbîñdîñgs ~~~~]</translation>
+    </message>
+    <message>
       <source>Wavefront OBJ…</source>
       <translation>[Wàvéfröñt ÖBJ… ~~~~]</translation>
+    </message>
+    <message>
+      <source>What Structura sees of this computer (for bug reports)</source>
+      <translation>[Whàt Strûçtûrà séés öf thîs çömpûtér (för bûg répörts) ~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>What's New</source>
+      <translation>[Whàt's Ñéw ~~~]</translation>
     </message>
     <message>
       <source>Word wrap</source>
@@ -901,6 +997,14 @@
       <translation>[(çûrréñt öptîöñs) ~~~~~]</translation>
     </message>
     <message>
+      <source>(no description)</source>
+      <translation>[(ñö désçrîptîöñ) ~~~~]</translation>
+    </message>
+    <message>
+      <source>A build that reaches a limit stops there and shows what it has built so far.</source>
+      <translation>[À bûîld thàt réàçhés à lîmît stöps théré àñd shöws whàt ît hàs bûîlt sö fàr. ~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>A/B</source>
       <translation>[À/B ~]</translation>
     </message>
@@ -917,8 +1021,20 @@
       <translation>[Àdd ör ûpdàté thîs tàg's 'màtérîàl' blöçk (ÉîséñSçrîpt v2) ~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Add to Queue</source>
+      <translation>[Àdd tö Qûéûé ~~~]</translation>
+    </message>
+    <message>
+      <source>Advanced</source>
+      <translation>[Àdvàñçéd ~~]</translation>
+    </message>
+    <message>
       <source>All messages</source>
       <translation>[Àll méssàgés ~~~]</translation>
+    </message>
+    <message>
+      <source>Ancestry</source>
+      <translation>[Àñçéstrý ~~]</translation>
     </message>
     <message>
       <source>Aperture</source>
@@ -929,12 +1045,20 @@
       <translation>[Àpértûré ràdîûs ~~~~]</translation>
     </message>
     <message>
+      <source>Appearance</source>
+      <translation>[Àppéàràñçé ~~~]</translation>
+    </message>
+    <message>
       <source>Area (rectangle)</source>
       <translation>[Àréà (réçtàñglé) ~~~~]</translation>
     </message>
     <message>
       <source>Auto (target distance)</source>
       <translation>[Àûtö (tàrgét dîstàñçé) ~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Autosave the script with its seed and camera (.es next to the file)</source>
+      <translation>[Àûtösàvé thé sçrîpt wîth îts sééd àñd çàmérà (.és ñéxt tö thé fîlé) ~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Back</source>
@@ -949,6 +1073,14 @@
       <translation>[Bàsé çölöûr ~~~]</translation>
     </message>
     <message>
+      <source>Blender script ready</source>
+      <translation>[Bléñdér sçrîpt réàdý ~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Blender was not found: set its path in Preferences ▸ Paths.</source>
+      <translation>[Bléñdér wàs ñöt föûñd: sét îts pàth îñ Préféréñçés ▸ Pàths. ~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Bottom</source>
       <translation>[Böttöm ~]</translation>
     </message>
@@ -961,12 +1093,16 @@
       <translation>[Bröwsé… ~~]</translation>
     </message>
     <message>
-      <source>Build the script first (F5), then queue a render.</source>
-      <translation>[Bûîld thé sçrîpt fîrst (F5), théñ qûéûé à réñdér. ~~~~~~~~~~~~~~]</translation>
+      <source>Build Limits</source>
+      <translation>[Bûîld Lîmîts ~~~]</translation>
     </message>
     <message>
       <source>Build the script first (F5).</source>
       <translation>[Bûîld thé sçrîpt fîrst (F5). ~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Building a preview…</source>
+      <translation>[Bûîldîñg à prévîéw… ~~~~~]</translation>
     </message>
     <message>
       <source>CPU rendering: {cores} cores (no GPU compute)</source>
@@ -997,6 +1133,10 @@
       <translation>[Çléàr ~]</translation>
     </message>
     <message>
+      <source>Clear Caches</source>
+      <translation>[Çléàr Çàçhés ~~~]</translation>
+    </message>
+    <message>
       <source>Clear Finished</source>
       <translation>[Çléàr Fîñîshéd ~~~~]</translation>
     </message>
@@ -1009,8 +1149,16 @@
       <translation>[Çlîçk àñ öbjéçt îñ thé vîéwpört ~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Collecting… (structura doctor)</source>
+      <translation>[Çölléçtîñg… (strûçtûrà döçtör) ~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Colour</source>
       <translation>[Çölöûr ~]</translation>
+    </message>
+    <message>
+      <source>Compiled kernels, CUDA binaries and example thumbnails; rebuilt when next needed</source>
+      <translation>[Çömpîléd kérñéls, ÇÛDÀ bîñàrîés àñd éxàmplé thûmbñàîls; rébûîlt whéñ ñéxt ñéédéd ~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Completions</source>
@@ -1069,6 +1217,18 @@
       <translation>[Dîsmîss ~~]</translation>
     </message>
     <message>
+      <source>Drag over the image: that region renders again.</source>
+      <translation>[Dràg övér thé îmàgé: thàt régîöñ réñdérs àgàîñ. ~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Editor</source>
+      <translation>[Édîtör ~]</translation>
+    </message>
+    <message>
+      <source>Edits are used once saved as your own template.</source>
+      <translation>[Édîts àré ûséd öñçé sàvéd às ýöûr öwñ témplàté. ~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>EisenScript v1: the sun and sky are set in Render Settings</source>
       <translation>[ÉîséñSçrîpt v1: thé sûñ àñd ský àré sét îñ Réñdér Séttîñgs ~~~~~~~~~~~~~~~~~]</translation>
     </message>
@@ -1079,6 +1239,18 @@
     <message>
       <source>Errors only</source>
       <translation>[Érrörs öñlý ~~~]</translation>
+    </message>
+    <message>
+      <source>Estimated size</source>
+      <translation>[Éstîmàtéd sîzé ~~~~]</translation>
+    </message>
+    <message>
+      <source>Every build shows the script's own camera (set lines or camera block)</source>
+      <translation>[Évérý bûîld shöws thé sçrîpt's öwñ çàmérà (sét lîñés ör çàmérà blöçk) ~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Every panel back where it started (on OK)</source>
+      <translation>[Évérý pàñél bàçk whéré ît stàrtéd (öñ ÖK) ~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Example group</source>
@@ -1125,6 +1297,10 @@
       <translation>[Fîéld öf vîéw ° ~~~~]</translation>
     </message>
     <message>
+      <source>File Exists</source>
+      <translation>[Fîlé Éxîsts ~~~]</translation>
+    </message>
+    <message>
       <source>File name</source>
       <translation>[Fîlé ñàmé ~~]</translation>
     </message>
@@ -1143,6 +1319,10 @@
     <message>
       <source>Filter the log</source>
       <translation>[Fîltér thé lög ~~~~]</translation>
+    </message>
+    <message>
+      <source>Final Render</source>
+      <translation>[Fîñàl Réñdér ~~~]</translation>
     </message>
     <message>
       <source>Find</source>
@@ -1193,6 +1373,10 @@
       <translation>[GPÛ réñdérîñg: {device} ✓ ~~~~~~~]</translation>
     </message>
     <message>
+      <source>General</source>
+      <translation>[Géñéràl ~~]</translation>
+    </message>
+    <message>
       <source>Generation</source>
       <translation>[Géñéràtîöñ ~~~]</translation>
     </message>
@@ -1205,8 +1389,20 @@
       <translation>[Gràmmàr-bàséd 3D strûçtûrés ~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Help page</source>
+      <translation>[Hélp pàgé ~~]</translation>
+    </message>
+    <message>
       <source>Hide everything else in the viewport (renders and exports are not affected)</source>
       <translation>[Hîdé évérýthîñg élsé îñ thé vîéwpört (réñdérs àñd éxpörts àré ñöt àfféçtéd) ~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Image</source>
+      <translation>[Îmàgé ~]</translation>
+    </message>
+    <message>
+      <source>Image file</source>
+      <translation>[Îmàgé fîlé ~~~]</translation>
     </message>
     <message>
       <source>Insert Colour</source>
@@ -1231,6 +1427,10 @@
     <message>
       <source>Job</source>
       <translation>[Jöb ~]</translation>
+    </message>
+    <message>
+      <source>Keep the edited template under a new name; it joins the template list</source>
+      <translation>[Kéép thé édîtéd témplàté ûñdér à ñéw ñàmé; ît jöîñs thé témplàté lîst ~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Keep the script, seed, parameters and camera as they are now (Ctrl+Alt+H)</source>
@@ -1269,6 +1469,10 @@
       <translation>[Léft ~]</translation>
     </message>
     <message>
+      <source>Left click in the viewport to continue, right click to stop.</source>
+      <translation>[Léft çlîçk îñ thé vîéwpört tö çöñtîñûé, rîght çlîçk tö stöp. ~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Legacy Look</source>
       <translation>[Légàçý Löök ~~~]</translation>
     </message>
@@ -1283,6 +1487,10 @@
     <message>
       <source>Lights are EisenScript v2 blocks. Convert this script to v2 first? It builds the same.</source>
       <translation>[Lîghts àré ÉîséñSçrîpt v2 blöçks. Çöñvért thîs sçrîpt tö v2 fîrst? Ît bûîlds thé sàmé. ~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Lock to script</source>
+      <translation>[Löçk tö sçrîpt ~~~~]</translation>
     </message>
     <message>
       <source>Log</source>
@@ -1303,6 +1511,10 @@
     <message>
       <source>Material blocks are EisenScript v2. Convert this script to v2 first? It builds the same.</source>
       <translation>[Màtérîàl blöçks àré ÉîséñSçrîpt v2. Çöñvért thîs sçrîpt tö v2 fîrst? Ît bûîlds thé sàmé. ~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Materials</source>
+      <translation>[Màtérîàls ~~]</translation>
     </message>
     <message>
       <source>Modern Path Tracer</source>
@@ -1337,8 +1549,16 @@
       <translation>[Ñö réçéñt fîlés ýét. ~~~~~~]</translation>
     </message>
     <message>
+      <source>No report</source>
+      <translation>[Ñö répört ~~]</translation>
+    </message>
+    <message>
       <source>Not set: {names}</source>
       <translation>[Ñöt sét: {names} ~~~~]</translation>
+    </message>
+    <message>
+      <source>Nothing to render yet: build the script first (F5).</source>
+      <translation>[Ñöthîñg tö réñdér ýét: bûîld thé sçrîpt fîrst (F5). ~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Object</source>
@@ -1361,6 +1581,10 @@
       <translation>[Öpéñ Földér… ~~~]</translation>
     </message>
     <message>
+      <source>Open in Blender</source>
+      <translation>[Öpéñ îñ Bléñdér ~~~~]</translation>
+    </message>
+    <message>
       <source>Open scripts</source>
       <translation>[Öpéñ sçrîpts ~~~]</translation>
     </message>
@@ -1373,8 +1597,20 @@
       <translation>[Öpéñ… ~]</translation>
     </message>
     <message>
+      <source>Options</source>
+      <translation>[Öptîöñs ~~]</translation>
+    </message>
+    <message>
       <source>Output</source>
       <translation>[Öûtpût ~]</translation>
+    </message>
+    <message>
+      <source>Output preview</source>
+      <translation>[Öûtpût prévîéw ~~~~]</translation>
+    </message>
+    <message>
+      <source>Overwrite {path}?</source>
+      <translation>[Övérwrîté {path}? ~~~~~]</translation>
     </message>
     <message>
       <source>Panels</source>
@@ -1385,6 +1621,10 @@
       <translation>[Pàràmétérs ~~~]</translation>
     </message>
     <message>
+      <source>Paths</source>
+      <translation>[Pàths ~]</translation>
+    </message>
+    <message>
       <source>Pick Colour</source>
       <translation>[Pîçk Çölöûr ~~~]</translation>
     </message>
@@ -1393,12 +1633,20 @@
       <translation>[Pîçk Çölöûr… ~~~]</translation>
     </message>
     <message>
+      <source>Pick an object in the viewport first.</source>
+      <translation>[Pîçk àñ öbjéçt îñ thé vîéwpört fîrst. ~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Point</source>
       <translation>[Pöîñt ~]</translation>
     </message>
     <message>
       <source>Position</source>
       <translation>[Pösîtîöñ ~~]</translation>
+    </message>
+    <message>
+      <source>Preference sections</source>
+      <translation>[Préféréñçé séçtîöñs ~~~~~]</translation>
     </message>
     <message>
       <source>Preferences</source>
@@ -1417,8 +1665,20 @@
       <translation>[Préss F9 tö réñdér thé çûrréñt vîéw ~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Preview</source>
+      <translation>[Prévîéw ~~]</translation>
+    </message>
+    <message>
       <source>Progress</source>
       <translation>[Prögréss ~~]</translation>
+    </message>
+    <message>
+      <source>Python scripts (*.py)</source>
+      <translation>[Pýthöñ sçrîpts (*.pý) ~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Quality</source>
+      <translation>[Qûàlîtý ~~]</translation>
     </message>
     <message>
       <source>Queue Render As</source>
@@ -1427,6 +1687,10 @@
     <message>
       <source>Queued renders</source>
       <translation>[Qûéûéd réñdérs ~~~~]</translation>
+    </message>
+    <message>
+      <source>Rebuild first: the script changed since this build</source>
+      <translation>[Rébûîld fîrst: thé sçrîpt çhàñgéd sîñçé thîs bûîld ~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Recent</source>
@@ -1457,6 +1721,14 @@
       <translation>[Réñdér Àñîmàtîöñ… ~~~~~]</translation>
     </message>
     <message>
+      <source>Render Only</source>
+      <translation>[Réñdér Öñlý ~~~]</translation>
+    </message>
+    <message>
+      <source>Render first (F9), then pick a region to render again.</source>
+      <translation>[Réñdér fîrst (F9), théñ pîçk à régîöñ tö réñdér àgàîñ. ~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Render first (F9), then save a report.</source>
       <translation>[Réñdér fîrst (F9), théñ sàvé à répört. ~~~~~~~~~~~]</translation>
     </message>
@@ -1473,16 +1745,32 @@
       <translation>[Réñdér prését: sàmplés, îmàgé sîzé, ñöîsé thréshöld àñd déñöîsîñg ~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Render without saving; use Save… afterwards</source>
+      <translation>[Réñdér wîthöût sàvîñg; ûsé Sàvé… àftérwàrds ~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Rendered image</source>
       <translation>[Réñdéréd îmàgé ~~~~]</translation>
+    </message>
+    <message>
+      <source>Rendering</source>
+      <translation>[Réñdérîñg ~~]</translation>
     </message>
     <message>
       <source>Renders use the {name} integrator</source>
       <translation>[Réñdérs ûsé thé {name} îñtégràtör ~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Replace File</source>
+      <translation>[Réplàçé Fîlé ~~~]</translation>
+    </message>
+    <message>
       <source>Replace with</source>
       <translation>[Réplàçé wîth ~~~]</translation>
+    </message>
+    <message>
+      <source>Report</source>
+      <translation>[Répört ~]</translation>
     </message>
     <message>
       <source>Report saved: {name}</source>
@@ -1491,6 +1779,10 @@
     <message>
       <source>Report…</source>
       <translation>[Répört… ~~]</translation>
+    </message>
+    <message>
+      <source>Reset Window Layout</source>
+      <translation>[Rését Wîñdöw Làýöût ~~~~~]</translation>
     </message>
     <message>
       <source>Reset to script</source>
@@ -1525,6 +1817,14 @@
       <translation>[Rûñ Àftér Éxpört ~~~~]</translation>
     </message>
     <message>
+      <source>Run Python Script</source>
+      <translation>[Rûñ Pýthöñ Sçrîpt ~~~~~]</translation>
+    </message>
+    <message>
+      <source>Run a Program</source>
+      <translation>[Rûñ à Prögràm ~~~]</translation>
+    </message>
+    <message>
       <source>Same Call Site</source>
       <translation>[Sàmé Çàll Sîté ~~~~]</translation>
     </message>
@@ -1543,6 +1843,14 @@
     <message>
       <source>Samples per pixel</source>
       <translation>[Sàmplés pér pîxél ~~~~~]</translation>
+    </message>
+    <message>
+      <source>Samples, image size, noise threshold and denoising of the final render</source>
+      <translation>[Sàmplés, îmàgé sîzé, ñöîsé thréshöld àñd déñöîsîñg öf thé fîñàl réñdér ~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Save</source>
+      <translation>[Sàvé ~]</translation>
     </message>
     <message>
       <source>Save Preset</source>
@@ -1565,6 +1873,10 @@
       <translation>[Sàvé Sçrîpt ~~~]</translation>
     </message>
     <message>
+      <source>Save Template</source>
+      <translation>[Sàvé Témplàté ~~~]</translation>
+    </message>
+    <message>
       <source>Save View</source>
       <translation>[Sàvé Vîéw ~~]</translation>
     </message>
@@ -1577,8 +1889,24 @@
       <translation>[Sàvé à détàîléd répört öf thé réñdér: PDF, HTML, Màrkdöwñ, téxt, JSÖÑ, ÇSV ~~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Save as Legacy .es</source>
+      <translation>[Sàvé às Légàçý .és ~~~~~]</translation>
+    </message>
+    <message>
+      <source>Save as My Template…</source>
+      <translation>[Sàvé às Mý Témplàté… ~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Save the image, with a report beside it (PDF, HTML, Markdown or text)</source>
+      <translation>[Sàvé thé îmàgé, wîth à répört bésîdé ît (PDF, HTML, Màrkdöwñ ör téxt) ~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Save to</source>
       <translation>[Sàvé tö ~~]</translation>
+    </message>
+    <message>
+      <source>Saved a Structure Synth 1.5 copy</source>
+      <translation>[Sàvéd à Strûçtûré Sýñth 1.5 çöpý ~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Saved views</source>
@@ -1599,6 +1927,10 @@
     <message>
       <source>Script editor</source>
       <translation>[Sçrîpt édîtör ~~~]</translation>
+    </message>
+    <message>
+      <source>Scripts can run any program. Run it?</source>
+      <translation>[Sçrîpts çàñ rûñ àñý prögràm. Rûñ ît? ~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Search examples</source>
@@ -1623,6 +1955,10 @@
     <message>
       <source>Show All</source>
       <translation>[Shöw Àll ~~]</translation>
+    </message>
+    <message>
+      <source>Show Ancestry</source>
+      <translation>[Shöw Àñçéstrý ~~~]</translation>
     </message>
     <message>
       <source>Show in File Manager</source>
@@ -1673,8 +2009,20 @@
       <translation>[Stöp ~]</translation>
     </message>
     <message>
+      <source>Structura Help</source>
+      <translation>[Strûçtûrà Hélp ~~~~]</translation>
+    </message>
+    <message>
       <source>Sun</source>
       <translation>[Sûñ ~]</translation>
+    </message>
+    <message>
+      <source>System Report</source>
+      <translation>[Sýstém Répört ~~~]</translation>
+    </message>
+    <message>
+      <source>System report</source>
+      <translation>[Sýstém répört ~~~]</translation>
     </message>
     <message>
       <source>Tag</source>
@@ -1693,12 +2041,40 @@
       <translation>[Tàrgét ~]</translation>
     </message>
     <message>
+      <source>Template</source>
+      <translation>[Témplàté ~~]</translation>
+    </message>
+    <message>
+      <source>Template export pages</source>
+      <translation>[Témplàté éxpört pàgés ~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Template name</source>
+      <translation>[Témplàté ñàmé ~~~]</translation>
+    </message>
+    <message>
+      <source>Template text</source>
+      <translation>[Témplàté téxt ~~~]</translation>
+    </message>
+    <message>
       <source>Templates can run any program. Run it?</source>
       <translation>[Témplàtés çàñ rûñ àñý prögràm. Rûñ ît? ~~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>The layout is reset when you press OK.</source>
+      <translation>[Thé làýöût îs rését whéñ ýöû préss ÖK. ~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>The linear value of the pixel under the cursor; Shift+drag re-renders a region</source>
       <translation>[Thé lîñéàr vàlûé öf thé pîxél ûñdér thé çûrsör; Shîft+dràg ré-réñdérs à régîöñ ~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>The rules that made this object (re-runs the build in trace mode)</source>
+      <translation>[Thé rûlés thàt màdé thîs öbjéçt (ré-rûñs thé bûîld îñ tràçé mödé) ~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>The script wants to run:</source>
+      <translation>[Thé sçrîpt wàñts tö rûñ: ~~~~~~~]</translation>
     </message>
     <message>
       <source>The template '{name}' runs a program on the exported file:</source>
@@ -1719,6 +2095,10 @@
     <message>
       <source>Top</source>
       <translation>[Töp ~]</translation>
+    </message>
+    <message>
+      <source>Tracing…</source>
+      <translation>[Tràçîñg… ~~]</translation>
     </message>
     <message>
       <source>Up</source>
@@ -1765,6 +2145,10 @@
       <translation>[Vîéws ~]</translation>
     </message>
     <message>
+      <source>Vim command line</source>
+      <translation>[Vîm çömmàñd lîñé ~~~~]</translation>
+    </message>
+    <message>
       <source>Warnings and errors</source>
       <translation>[Wàrñîñgs àñd érrörs ~~~~~]</translation>
     </message>
@@ -1789,10 +2173,6 @@
       <translation>[Wrîté Màtérîàl ~~~~]</translation>
     </message>
     <message>
-      <source>Write a PDF report with each render</source>
-      <translation>[Wrîté à PDF répört wîth éàçh réñdér ~~~~~~~~~~]</translation>
-    </message>
-    <message>
       <source>Write this camera into the script (v1: 'set' lines; v2: a camera block)</source>
       <translation>[Wrîté thîs çàmérà îñtö thé sçrîpt (v1: 'sét' lîñés; v2: à çàmérà blöçk) ~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
@@ -1801,8 +2181,16 @@
       <translation>[Wrîté tö Sçrîpt ~~~~]</translation>
     </message>
     <message>
+      <source>Written beside the image: {name}</source>
+      <translation>[Wrîttéñ bésîdé thé îmàgé: {name} ~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>branches were culled by 'set maxsize' / 'set minsize'</source>
       <translation>[bràñçhés wéré çûlléd bý 'sét màxsîzé' / 'sét mîñsîzé' ~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>called at line {line}</source>
+      <translation>[çàlléd àt lîñé {line} ~~~~~~]</translation>
     </message>
     <message>
       <source>cancelled</source>
@@ -1821,8 +2209,16 @@
       <translation>[döñé ~]</translation>
     </message>
     <message>
+      <source>estimating…</source>
+      <translation>[éstîmàtîñg… ~~~]</translation>
+    </message>
+    <message>
       <source>every rule terminated on its own</source>
       <translation>[évérý rûlé térmîñàtéd öñ îts öwñ ~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>exporting</source>
+      <translation>[éxpörtîñg ~~]</translation>
     </message>
     <message>
       <source>failed</source>
@@ -1831,6 +2227,10 @@
     <message>
       <source>finished</source>
       <translation>[fîñîshéd ~~]</translation>
+    </message>
+    <message>
+      <source>generating…</source>
+      <translation>[géñéràtîñg… ~~~]</translation>
     </message>
     <message>
       <source>line {line}</source>
@@ -1865,8 +2265,16 @@
       <translation>[thé öbjéçt lîmît ('sét màxöbjéçts') wàs réàçhéd ~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>top level</source>
+      <translation>[töp lévél ~~]</translation>
+    </message>
+    <message>
       <source>variation …</source>
       <translation>[vàrîàtîöñ … ~~~]</translation>
+    </message>
+    <message>
+      <source>{count} cache folders removed; kernels compile again on the next start.</source>
+      <translation>[{count} çàçhé földérs rémövéd; kérñéls çömpîlé àgàîñ öñ thé ñéxt stàrt. ~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>{count} objects selected</source>
@@ -1875,6 +2283,10 @@
     <message>
       <source>{name} already exists.</source>
       <translation>[{name} àlréàdý éxîsts. ~~~~~~]</translation>
+    </message>
+    <message>
+      <source>{name} exists. Replace it?</source>
+      <translation>[{name} éxîsts. Réplàçé ît? ~~~~~~~]</translation>
     </message>
     <message>
       <source>{name} finished (exit code {code})</source>

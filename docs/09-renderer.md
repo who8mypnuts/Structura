@@ -127,6 +127,12 @@ sampling-only changes reuse the compiled scene.
   - then per bounce: 2 for BSDF, 2 for light, 1 for light selection, 1 for Russian roulette.
 - **Halton + Faure** (port of Sunflow `QMC`) is selectable, to compare against Sunflow renders.
 
+> **As built (M11):** the default numbers are hashed per (pixel, sample, dimension) (`kernels/sampling.py`
+> `rand01`; integer-only, identical on every backend), not Sobol. `sequence = halton` (Render Settings, the
+> v2 `render { sequence halton }` key, `--sequence`) switches the pixel, lens and first-bounce dimensions
+> (0–3, 32–43) to the Halton sequence in the first 16 prime bases, Cranley–Patterson rotated per pixel
+> (`sample01`); deeper dimensions stay hashed. Faure's digit permutations are not ported.
+
 ## 5. Image samplers
 
 ### 5.1 Progressive (interactive; default in Render view and viewport preview)
@@ -137,6 +143,10 @@ sampling-only changes reuse the compiled scene.
   ([04](04-concurrency-model.md) §5.2). The CPU backend renders tile batches in `prange`.
 - A `FilmSnapshot` is published after each completed pass, at ≤ 10 Hz.
 - It stops at target spp, a time limit, or a noise threshold (§5.3).
+
+> **As built (M11):** the mosaic is `render/mosaic.py`: one sample in every 4th pixel of every 4th row,
+> shown as 4×4 blocks. The film is cleared afterwards, so the render equals one without it. The Render view
+> asks for it (`RenderSettings.mosaic`); the CLI, animations and tests do not.
 
 ### 5.2 Tiled adaptive (final)
 
@@ -151,6 +161,15 @@ This follows Sunflow `BucketRenderer`, with POV-Ray's confidence test added:
 4. Optionally, the whole image is refined in rounds instead of per tile ("progressive final"). This gives a
    better preview, at the same cost.
 
+> **As built (M11): the tiled sampler.** `sampler = tiled` (Render Settings, `render { sampler tiled }`,
+> `--sampler tiled`) renders buckets of `bucket_size` pixels (64) in `bucket_order`: hilbert (default),
+> spiral (from the centre), rows, columns, diagonal or random (`render/buckets.py`). Each bucket is sampled
+> to completion, with the noise test on the bucket alone (`render/tiled.py`). The kernel's `col0`/`row0`
+> offsets dispatch just the bucket, and `Bound.read_range` reads back only its rows into a host copy of the
+> film. Snapshots go out at most every 0.25 s with the next bucket (`RenderProgress.tile`), which the Render
+> view marks with corner brackets, and the fraction of buckets done. Sample indices are per pixel and
+> global, so a tiled render equals a progressive one with the same settings. Stopped tiled renders resume.
+>
 > **As built (M6):** adaptive refinement runs over the whole image progressively (no buckets). Each pass is
 > dispatched in row bands of about 30 ms (`render/bands.py`); the even-sample half of the film
 > (`render/film.py`) gives the error estimate, and a `pixel_mask` buffer switches converged pixels off.
@@ -175,7 +194,8 @@ map as a heatmap AOV.
   for error estimation.
 - **Reconstruction:** *filter importance sampling*. Each sample's pixel offset is drawn from the selected
   filter's distribution (box, triangle, gaussian, mitchell, catmull-rom, blackman-harris, lanczos, sinc,
-  cubic B-spline, all from Sunflow). Negative lobes are handled with signed weights.
+  cubic B-spline, all from Sunflow). Negative lobes are handled with signed weights. *(All nine are built;
+  sinc was added in M11.)*
   - No atomics are needed on the GPU (WGSL has no float atomics).
   - CPU and GPU stay identical.
 - **AOVs** (first hit):
@@ -219,6 +239,13 @@ line. A thumbnail, an RGB + luminance histogram and the dominant-colour palette 
 `ReportInputs` → `build_report()` → `Report` (format-free) → writers: text, Markdown (+ preview image), HTML
 (one file), JSON, CSV; PDF and ODT via Qt's document engine (`services/report_documents.py`). The GUI
 (Render ▸ Save Render Report…, the render queue) and the CLI (`structura render --report FILE`) share it.
+
+**Reports beside the image (owner request, M11):** saving a render, a **final render** and a queued render all
+go through one dialog (`ui/dialogs/render_output.py`): the image file and a report format (PDF, HTML,
+Markdown, plain text, JSON, CSV, ODT or none, remembered), written beside the image as `<image>-report.<ext>`.
+Final renders (Render ▸ Final Render…, Shift+F9, or F9 with the Final / Print 4K preset) ask before rendering —
+quality preset, image path, report — and save both when the render and its denoising finish; "Render Only"
+skips the files.
 Render jobs attach `RenderDetails` (render/details.py) to their updates so the report states what was
 actually rendered.
 

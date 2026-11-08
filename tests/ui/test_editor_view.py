@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 from PySide6.QtCore import QPoint, Qt
 from PySide6.QtGui import QTextCursor, QTextOption
@@ -12,12 +14,12 @@ from structura.core.lang.analysis import analyze
 from structura.themes.loader import load_theme
 from structura.ui.app_window import MainWindow
 from structura.ui.commands.registry import Command, CommandRegistry
-from structura.ui.editor import editing
+from structura.ui.editor import editing, quick_fix
 from structura.ui.editor.code_editor import CodeEditor
 from structura.ui.editor.highlighter import brace_depth
 from structura.ui.editor.options import EditorOptions
 from structura.ui.editor.peek import PeekPopup, peek_definition
-from structura.ui.editor.quick_fix import apply_fix, fixes_at
+from structura.ui.editor.quick_fix import apply_fix, fixes_at, show_quick_fixes, show_refactorings
 from structura.ui.fonts import CODE_FAMILY
 
 SCRIPT = "set maxdepth 9\nrule r {\n  { x 1 } r\n  box\n}\nr\n"
@@ -136,6 +138,20 @@ def test_quick_fix_at_the_cursor_is_one_undo_step(editor: CodeEditor) -> None:
     assert [f.title for f in fixes_at(editor, 2)] == ["Remove 'set rng old'"]  # same line, no span overlap needed
 
 
+def test_the_refactor_menu_offers_and_applies_refactorings(editor: CodeEditor, monkeypatch: pytest.MonkeyPatch) -> None:
+    shown: list[list[str]] = []
+    monkeypatch.setattr(quick_fix, "run_menu", lambda menu, _point: shown.append([a.text() for a in menu.actions()]))
+    text = "{ x 1 } box\n"
+    editor.setPlainText(text)
+    cursor = editor.textCursor()
+    cursor.setPosition(2)
+    editor.setTextCursor(cursor)
+    show_refactorings(editor)
+    assert shown[-1][0].startswith("Extract") and "Convert to '1 * { … }'" in shown[-1]
+    show_quick_fixes(editor)  # Ctrl+. lists them too (no problems here)
+    assert shown[-1] == shown[-2]
+
+
 def test_f1_peek_and_breadcrumbs(window: MainWindow) -> None:
     tab = window.docs.new_script()
     text = "set maxdepth 9\nr\nrule r { { rx 10 } r box }\nrule r w 2 { sphere }\n"
@@ -216,3 +232,22 @@ def test_inline_parameter_sliders_mirror_the_panel(qtbot: QtBot, window: MainWin
     assert panel.value == pytest.approx(45.0, abs=0.1)
     panel.spin.setValue(10.0)  # and the other way round
     assert inline.value == pytest.approx(10.0, abs=0.1)
+
+
+def test_hovering_a_rule_previews_it_built_alone(
+    qtbot: QtBot, window: MainWindow, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from structura.ui import rule_previews  # noqa: PLC0415
+
+    monkeypatch.setattr(rule_previews, "cache_dir", lambda: tmp_path)
+    tab = window.docs.new_script()
+    tab.editor.setPlainText("R\nrule R { box { x 1.2 } sphere }\n")
+    qtbot.waitUntil(lambda: tab.analysis is not None and tab.analysis.ok, timeout=30000)
+    assert tab.editor.rule_preview is not None and tab.editor.rule_preview("R") is None  # being made
+    with qtbot.waitSignal(window.editor_actions.previews.ready, timeout=60000) as ready:
+        pass
+    assert ready.args == ["R"]
+    path = tab.editor.rule_preview("R")
+    assert path is not None and path.parent == tmp_path and path.stat().st_size > 0
+    tab.completion.hovered_rule = "R"
+    assert path.as_posix() in tab.completion._preview()

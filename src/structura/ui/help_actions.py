@@ -7,7 +7,9 @@ from typing import TYPE_CHECKING
 from PySide6.QtCore import QObject
 
 from ..core.lang.reference import anchor_at, anchors
+from .dialogs.guide import GuideBrowser
 from .dialogs.reference import ReferenceBrowser
+from .dialogs.system_report import SystemReport
 from .editor.quick_fix import diagnostics_at
 
 if TYPE_CHECKING:
@@ -19,6 +21,7 @@ class HelpActions(QObject):
         super().__init__(window)
         self.w = window
         self.browser: ReferenceBrowser | None = None
+        self.guide_browser: GuideBrowser | None = None
 
     def anchor_at_cursor(self) -> str | None:
         tab = self.w.tabs.current()
@@ -36,3 +39,13 @@ class HelpActions(QObject):
             self.browser = ReferenceBrowser(self.w.themes.theme, self.w)
             self.w.themes.theme_changed.connect(self.browser.set_theme)
         self.browser.show_anchor(self.anchor_at_cursor())
+
+    def guide(self, page: str = "README.md") -> None:
+        """Help ▸ User Guide (and Quick Start, What's New): the bundled pages."""
+        if self.guide_browser is None:
+            self.guide_browser = GuideBrowser(self.w.themes.theme, self.w)
+            self.w.themes.theme_changed.connect(self.guide_browser.set_theme)
+        self.guide_browser.show_page(page)
+
+    def system_report(self) -> None:
+        SystemReport(self.w).start()

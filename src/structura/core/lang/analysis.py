@@ -7,14 +7,17 @@ can start without compiling again.
 from __future__ import annotations
 
 import hashlib
+import time
 from collections.abc import Mapping
 from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 from ..errors import StructuraError, UnresolvedRuleError
+from ..scene.declarations import SceneDeclarations
 from .ast import CallAction, Loop, Program, RuleDef
 from .compile.program import RuleProgram, compile_rule_set
 from .diagnostics import Diagnostic, ParseError, Severity, diagnostic
+from .includes import Expansion, IncludeMap, expand_includes
 from .inlay import Hint, inlay_hints
 from .legacy.gui_params import apply_gui_parameters
 from .legacy.parser import parse_legacy, parse_recovering
@@ -24,6 +27,7 @@ from .position_map import PositionMap
 from .resolve import build_rule_set
 from .source import Span, is_javascript
 from .v2.front import Front, after_preprocessing, front, timeline_names, v2_syntax
+from .v2.param_check import param_diagnostics
 
 
 @dataclass(frozen=True)
@@ -46,6 +50,8 @@ class Analysis:
     digest: str = ""  # hash of the preprocessed source: equal digests build identical scenes
     hints: tuple[Hint, ...] = ()  # inlay hints (probabilities, loop counts, materials)
     defines: tuple[str, ...] = ()  # '#define' names (the editor colours their uses as substitutions)
+    declarations: SceneDeclarations | None = None  # v2 blocks (outline: materials, lights)
+    seconds: float = 0.0  # how long the analysis took (Build Stats)
 
     def semantic_symbols(self) -> tuple[frozenset[str] | None, frozenset[str], frozenset[str]]:
         """(defined rules or None before a successful parse, unused rules, define names) for highlighting."""
@@ -102,6 +108,7 @@ def _front_diagnostics(text: str, fr: Front, pre: PreprocessResult) -> list[Diag
     front_map = PositionMap(text, fr.text)
     out = [*fr.diagnostics, *(replace(d, span=front_map.span(d.span)) for d in pre.diagnostics)]
     out += define_substrings(text, 2 if fr.v2 else 1, pre.defines)
+    out += param_diagnostics(text) if fr.v2 else []
     hint = v2_syntax(text)
     if hint is not None:
         out.append(diagnostic("W114", "v2 syntax needs '#version 2' on the first line", hint))
@@ -117,7 +124,46 @@ def analyze(
     frame: int = 0,
     fps: float = 24.0,
 ) -> Analysis:
-    """``frame`` and ``fps`` bind the v2 animation variables (the timeline's current frame)."""
+    """``frame`` and ``fps`` bind the v2 animation variables (the timeline's current frame). '#include' lines
+    are expanded first; every span of the result refers to ``text`` itself."""
+    started = time.perf_counter()
+    expansion = expand_includes(text, script_dir)
+    if not expansion.active or is_javascript(text):
+        result = _analyze(text, seed, params, script_dir, version, frame, fps)
+    else:
+        result = _remapped(_analyze(expansion.text, seed, params, script_dir, version, frame, fps), expansion, text)
+    return replace(result, seconds=time.perf_counter() - started)
+
+
+def _remapped(a: Analysis, expansion: Expansion, text: str) -> Analysis:
+    """An analysis of the expanded text, with its spans in the edited file (includes.Expansion.span)."""
+
+    def span(s: Span | None) -> Span | None:
+        return expansion.span(s, text)
+
+    problems = tuple(
+        diagnostic("E012", message, expansion.line_span(line, text)) for line, message in expansion.problems
+    )
+    diagnostics = tuple(replace(d, span=span(d.span)) for d in a.diagnostics)
+    rules = tuple(replace(r, span=span(r.span) or r.span) for r in a.rules)
+    refs = {name: tuple(x for x in (span(s) for s in spans) if x is not None) for name, spans in a.references.items()}
+    hints = tuple(replace(h, position=expansion.offset(h.position, text)[0]) for h in a.hints
+                  if expansion.offset(h.position, text)[1])  # fmt: skip
+    params = tuple(replace(p, line=expansion.origins[min(p.line, len(expansion.origins) - 1)]) for p in a.parameters)
+    positions = IncludeMap(a.positions.original, a.positions.preprocessed, expansion, text) if a.positions else None
+    return replace(a, diagnostics=(*problems, *diagnostics), rules=rules, references=refs, hints=hints,
+                   parameters=params, positions=positions)  # fmt: skip
+
+
+def _analyze(
+    text: str,
+    seed: int,
+    params: Mapping[str, float] | None,
+    script_dir: Path | None,
+    version: int,
+    frame: int,
+    fps: float,
+) -> Analysis:
     if is_javascript(text):
         message = "JavaScript script: run it with Build ▸ Run JavaScript (F7)"
         return Analysis(version, (diagnostic("I204", message, Span(0, len(text.partition("\n")[0]))),))
@@ -154,7 +200,7 @@ def analyze(
                         defines=names)  # fmt: skip
     digest = hashlib.sha1(source.encode("utf-8")).hexdigest()
     return Analysis(version, tuple(diagnostics), rules, refs, tuple(pre.parameters), program, pm, digest, hints,
-                    names)  # fmt: skip
+                    names, fr.declarations)  # fmt: skip
 
 
 __all__ = ["Analysis", "Loop", "RuleDef", "RuleSymbol", "analyze"]

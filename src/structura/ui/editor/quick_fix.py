@@ -1,15 +1,17 @@
-"""Quick-fix menu (Ctrl+., docs/12 §2.2): the fixes of the diagnostics at the cursor, applied as one undo
-step. The fixes themselves come from core.lang.fixes."""
+"""Quick-fix menu (Ctrl+., docs/12 §2.2): the fixes of the diagnostics at the cursor and the refactorings
+there, each applied as one undo step. They come from core.lang.fixes and core.lang.restructure."""
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from PySide6.QtCore import QPoint
 from PySide6.QtGui import QTextCursor
 from PySide6.QtWidgets import QMenu, QToolTip
 
 from ...core.lang.diagnostics import Diagnostic
 from ...core.lang.fixes import QuickFix, quick_fixes
+from ...core.lang.restructure import refactorings_at
 
 if TYPE_CHECKING:
     from .code_editor import CodeEditor
@@ -41,13 +43,30 @@ def apply_fix(editor: CodeEditor, fix: QuickFix) -> None:
 
 
 def show_quick_fixes(editor: CodeEditor) -> None:
-    fixes = fixes_at(editor, editor.textCursor().position())
-    rect = editor.cursorRect()
-    point = editor.viewport().mapToGlobal(rect.bottomLeft())
-    if not fixes:
-        QToolTip.showText(point, "No quick fixes here", editor)
+    """Ctrl+.: the fixes of the problems at the cursor, then the refactorings that apply there."""
+    position = editor.textCursor().position()
+    _menu(editor, [fixes_at(editor, position), refactorings_at(editor.toPlainText(), position)], "No quick fixes here")
+
+
+def show_refactorings(editor: CodeEditor) -> None:
+    position = editor.textCursor().position()
+    _menu(editor, [refactorings_at(editor.toPlainText(), position)], "No refactorings here")
+
+
+def _menu(editor: CodeEditor, groups: list[list[QuickFix]], empty: str) -> None:
+    point = editor.viewport().mapToGlobal(editor.cursorRect().bottomLeft())
+    groups = [g for g in groups if g]
+    if not groups:
+        QToolTip.showText(point, empty, editor)
         return
     menu = QMenu(editor)
-    for fix in fixes:
-        menu.addAction(fix.title).triggered.connect(lambda _c=False, f=fix: apply_fix(editor, f))
-    menu.exec(point)
+    for k, group in enumerate(groups):
+        if k:
+            menu.addSeparator()
+        for fix in group:
+            menu.addAction(fix.title).triggered.connect(lambda _c=False, f=fix: apply_fix(editor, f))
+    run_menu(menu, point)
+
+
+def run_menu(menu: QMenu, point: QPoint) -> None:
+    menu.exec(point)  # modal (tests replace this function)

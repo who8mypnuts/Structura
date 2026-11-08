@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QAccessible
 from PySide6.QtWidgets import QAbstractSpinBox, QComboBox, QWidget
@@ -37,4 +39,9 @@ def test_main_window_and_dialogs_name_every_focusable_widget(window: MainWindow)
     window.docs.new_script()
     assert unnamed(window) == []
     assert unnamed(PreferencesDialog(window.settings, window)) == []
+    from structura.ui.dialogs.render_output import RenderOutputDialog  # noqa: PLC0415
+    from structura.ui.save_paths import SavePaths  # noqa: PLC0415
+
+    final = RenderOutputDialog(SavePaths(window.settings), Path("a.png"), "Final", "Render", ("Final",), window)
+    assert unnamed(final) == []
     assert unnamed(AnimationDialog(Timeline(), window.settings.directory(), window)) == []

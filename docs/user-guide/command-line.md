@@ -12,7 +12,7 @@
 | `template FILE -o OUT` | Export with a Structure Synth render template | `structura template tree.es --template Sunflow-Colored -o tree.sc` |
 | `animate FILE -o PAT` | Render frames (a project's timeline, or `--frames A:B`) and a video | `structura animate spin.structura -o f/f.png --video spin.mp4` |
 | `convert FILE --to v2` | Migrate a 1.5 script; prints notes and a diff | `structura convert old.es -o new.es` |
-| `run FILE` | Run a `#javascript` movie script | `structura run movie.es --allow-execute` |
+| `run FILE` | Run a `#javascript` movie script, or a Python script (`.py`) | `structura run movie.es --allow-execute` |
 | `doctor` | Show the Qt platform, OpenGL (also XWayland) and compute devices | `structura doctor` |
 | `devices` | List the compute devices and the one `auto` picks | `structura devices` |
 | `theme list / check / import` | Installed themes; contrast check of a theme file; import VS Code or Base16 themes | `structura theme import MyTheme.json` |
@@ -20,15 +20,23 @@
 
 Common options: `--seed N`, `--param NAME=VALUE` (sliders), `--device auto|cuda|opencl|wgpu|cpu`.
 `render` also takes `--integrator`, `--view`, `--exposure`, `--frame` (fit the structure), `--noise-threshold`,
-`--time-limit`, `--tag-presets`, `--no-embed-script`, and `--report FILE` (repeatable: `.pdf .html .md .txt .json
+`--time-limit`, `--sampler progressive|tiled`, `--bucket-order`, `--sequence random|halton`, `--tag-presets`, `--no-embed-script`, and `--report FILE` (repeatable: `.pdf .html .md .txt .json
 .csv .odt`), which writes the same render report as the app.
 
 ## Python
 
 ```python
-import structura.api as st
+import structura as st
 
 scene = st.build("tree.es", seed=4, params={"SIZE": 0.8})
 st.render(scene, "tree.png", device="cpu", samples=64, width=800, height=600)
 st.export(scene, "tree.glb")
+
+doc = st.open("spin.structura")          # a script or a project: seed, parameters, camera, timeline
+doc.params["SIZE"] = 0.7
+for frame, scene in doc.animate():       # the timeline's frames, with keyed parameters
+    st.render(scene, f"spin_{frame:04d}.png", camera=doc.camera_at(frame), samples=32)
 ```
+
+Run such a script with `structura run script.py`, or in the app with **Build ▸ Run Python Script…** (its output
+goes to the Console).

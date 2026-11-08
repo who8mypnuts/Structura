@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
-from structura.kernels.skl import PI, cos, dot, f32, func, max, sin, sqrt, u32, vec3
+from structura.kernels.skl import PI, Buf, cos, dot, f32, floor, func, max, min, sin, sqrt, u32, vec3
+
+from .layout import SEQUENCE
 
 INV_2_24 = 1.0 / 16777216.0
+HALTON_DIMS = 16  # dimensions with a Halton base: pixel (0-1), lens (2-3), the first bounce (32-43)
+ONE_MINUS = 0.99999994
 
 
 @func
@@ -23,6 +27,52 @@ def rand01(pixel: u32, sample_index: u32, dim: u32) -> f32:
     """Uniform in [0, 1) for (pixel, sample, dimension): decorrelated by nested hashing."""
     h = hash_u32(pixel ^ hash_u32(sample_index * 0x9E3779B9 + hash_u32(dim + 0x632BE5AB)))
     return f32(h >> 8) * INV_2_24
+
+
+@func
+def halton_prime(k: u32) -> u32:
+    """The prime base of Halton slot k (0 ≤ k < HALTON_DIMS)."""
+    if k < 4:
+        return u32(2) if k == 0 else (u32(3) if k == 1 else (u32(5) if k == 2 else u32(7)))
+    if k < 8:
+        return u32(11) if k == 4 else (u32(13) if k == 5 else (u32(17) if k == 6 else u32(19)))
+    if k < 12:
+        return u32(23) if k == 8 else (u32(29) if k == 9 else (u32(31) if k == 10 else u32(37)))
+    return u32(41) if k == 12 else (u32(43) if k == 13 else (u32(47) if k == 14 else u32(53)))
+
+
+@func
+def radical_inverse(i: u32, base: u32) -> f32:
+    """The digits of i in ``base`` mirrored behind the point (the Halton sequence's coordinate)."""
+    inv = 1.0 / f32(base)
+    f = inv
+    r = 0.0
+    n = i
+    while n > u32(0):
+        r = r + f32(n % base) * f
+        n = n // base
+        f = f * inv
+    return r
+
+
+@func
+def halton_slot(dim: u32) -> u32:
+    """The Halton slot of a sample dimension; HALTON_DIMS for dimensions that stay hashed random."""
+    if dim < 4:
+        return dim
+    if dim >= 32 and dim < 44:
+        return dim - 28
+    return u32(HALTON_DIMS)
+
+
+@func
+def sample01(cfg: Buf[f32], pixel: u32, sample_index: u32, dim: u32) -> f32:
+    """rand01, or (cfg SEQUENCE = 1) the Halton sequence, Cranley–Patterson rotated per pixel (docs/09 §4)."""
+    k = halton_slot(dim)
+    if cfg[SEQUENCE] == 0.0 or k >= u32(HALTON_DIMS):
+        return rand01(pixel, sample_index, dim)
+    v = radical_inverse(sample_index, halton_prime(k)) + rand01(pixel, u32(0x5EED5EED), dim)
+    return min(v - floor(v), ONE_MINUS)
 
 
 @func

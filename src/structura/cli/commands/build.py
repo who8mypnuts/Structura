@@ -7,10 +7,9 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
-import numpy as np
-
 from ...core.build.api import build_scene
 from ...core.errors import StructuraError
+from ...core.scene.ir_io import save_scene
 from .common import EXIT_OK, EXIT_SCRIPT_ERROR, add_script_arguments, compile_or_report
 
 HELP = "build a script and report statistics"
@@ -33,18 +32,6 @@ def run(args: argparse.Namespace) -> int:
     for key, value in asdict(result.stats).items():
         print(f"{key:>16}: {value}")
     if args.dump:
-        scene = result.scene
-        np.savez_compressed(
-            args.dump,
-            kind=scene.kind,
-            xform=scene.xform,
-            rgba=scene.rgba,
-            tag=scene.tag,
-            source=scene.source,
-            generation=scene.generation,
-            aux=scene.aux,
-            aux_data=scene.aux_data,
-            tags=np.array(scene.tags),
-        )
+        save_scene(result.scene, args.dump)
         print(f"{'dump':>16}: {args.dump}")
     return EXIT_OK

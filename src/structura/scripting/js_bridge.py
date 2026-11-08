@@ -1,8 +1,9 @@
 """Structure Synth's '#javascript' scripts (docs/16 §3), run with QJSEngine.
 
-The script sees a global ``Builder`` with 1.5's API: load, define, prepend, append, reset, build, setSize,
-renderToFile, raytraceToFile, templateRenderToFile and execute. Building, rendering and template export
-are provided by a ``JsHost`` from the layer above (dependency inversion), so this module stays a leaf.
+The script sees 1.5's globals: ``Builder`` (load, define, prepend, append, reset, build, setSize,
+renderToFile, raytraceToFile, templateRenderToFile, execute), ``Debug``, ``World`` and ``Vector3``
+(scripting/js_world.py). Building, rendering, template export and everything the GUI shows are provided by a
+``JsHost`` from the layer above (dependency inversion), so this module stays a leaf.
 ``execute`` runs nothing unless the host allows it: templates and scripts can name arbitrary programs.
 """
 
@@ -17,6 +18,7 @@ from PySide6.QtQml import QJSEngine
 
 from ..core.lang.source import is_javascript
 from ..core.text_file import read_script
+from .js_world import CANCELLED, VECTOR3, DebugApi, WorldApi
 
 log = logging.getLogger(__name__)
 
@@ -30,11 +32,25 @@ class JsHost(Protocol):
 
     def allow_execute(self, command: str, arguments: str) -> bool: ...
 
+    def execute(self, command: str, arguments: str, wait: bool) -> None: ...
+
     def cancelled(self) -> bool: ...
+
+    # Debug and World (docs/16 §3)
+    def info(self, text: str) -> None: ...
+
+    def message(self, text: str) -> None: ...
+
+    def progress(self, caption: str | None, fraction: float | None) -> None: ...
+
+    def sleep(self, ms: int) -> None: ...
+
+    def wait_for_click(self) -> bool: ...
+
+    def show_scene(self, scene: Any) -> None: ...
 
 
 STOP = "structura: output limit reached"
-CANCELLED = "structura: cancelled"
 
 
 def js_string(value: Any) -> str:
@@ -55,6 +71,7 @@ class BuilderApi(QObject):
         self.width, self.height = 0, 0
         self.outputs = 0
         self.stopped = False
+        self.built: Any = None  # called with nothing after every build (World shows the scene)
 
     def _guard(self, action: Any) -> None:
         """Run host work; Python errors become JavaScript exceptions that end the script."""
@@ -103,6 +120,8 @@ class BuilderApi(QObject):
     def build(self) -> None:
         def run() -> None:
             self.scene = self.host.build(self.loaded, self.dir)
+            if self.built is not None:
+                self.built()
 
         self._guard(run)
 
@@ -122,6 +141,8 @@ class BuilderApi(QObject):
     def execute(self, command: str, arguments: str, wait: bool) -> None:
         if not self.host.allow_execute(command, arguments):
             log.warning("Builder.execute(%s) was not run: external commands are disabled", command)
+            return
+        self._guard(lambda: self.host.execute(command, arguments, wait))
 
     def _output(self, name: str, overwrite: bool, write: Any) -> None:
         if self.limit is not None and self.outputs >= self.limit:
@@ -150,12 +171,16 @@ def run_javascript(text: str, script_dir: Path, host: JsHost, limit: int | None 
         raise ValueError("not a '#javascript' script")
     engine = QJSEngine()
     api = BuilderApi(engine, host, script_dir, limit)
-    QJSEngine.setObjectOwnership(api, QJSEngine.ObjectOwnership.CppOwnership)  # Python owns the API object
-    engine.globalObject().setProperty("Builder", engine.newQObject(api))
-    evaluated = engine.evaluate(body)
+    debug, world = DebugApi(engine, host), WorldApi(host, api)
+    api.built = world.show
+    for name, obj in (("Builder", api), ("Debug", debug), ("World", world)):
+        QJSEngine.setObjectOwnership(obj, QJSEngine.ObjectOwnership.CppOwnership)  # Python owns the API objects
+        engine.globalObject().setProperty(name, engine.newQObject(obj))
+    engine.evaluate(VECTOR3)
+    evaluated = engine.evaluate(body)  # (holds the GIL: the window runs scripts in another process)
     result = evaluated[0] if isinstance(evaluated, tuple) else evaluated  # the stubs list an overload pair
     outputs, stopped = api.outputs, api.stopped
-    error = None if stopped or not result.isError() else result.toString()
+    error = None if stopped or not result.isError() or CANCELLED in result.toString() else result.toString()
     line = result.property("lineNumber").toInt() if error else 0
     engine.collectGarbage()
     del engine  # before the API object it references

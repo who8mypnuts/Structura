@@ -10,7 +10,7 @@ from PySide6.QtCore import QEvent, QObject, Qt
 from PySide6.QtGui import QKeyEvent, QTextCursor
 from PySide6.QtWidgets import QFrame, QLabel, QListWidget, QListWidgetItem, QToolTip, QVBoxLayout
 
-from ...core.lang.assist import CompletionItem, Completions, complete, hover
+from ...core.lang.assist import CompletionItem, Completions, complete, hover, rule_at
 from ...core.lang.snippet_syntax import has_stops
 from ..i18n import tr
 from .code_editor import CodeEditor
@@ -143,8 +143,24 @@ class CompletionController(QObject):
             if diagnostic
             else hover(editor.toPlainText(), offset, editor.analysis)
         )
+        self.hovered_rule = None if diagnostic else rule_at(editor.toPlainText(), offset, editor.analysis)
         if text:
-            QToolTip.showText(editor.cursor().pos(), markdown_to_html(text), editor)
+            QToolTip.showText(editor.cursor().pos(), markdown_to_html(text) + self._preview(), editor)
         else:
             QToolTip.hideText()
         return True
+
+    def _preview(self) -> str:
+        """The hovered rule's structure preview (docs/12 §2.3): the image, or a note while it is made."""
+        make = self.editor.rule_preview
+        if self.hovered_rule is None or make is None:
+            return ""
+        path = make(self.hovered_rule)
+        if path is None:
+            return "<br><i>" + html.escape(tr("Building a preview…")) + "</i>"
+        return f'<br><img src="{html.escape(path.as_posix())}">'
+
+    def refresh_hover(self, rule: str) -> None:
+        """A preview was made: show it if its rule is still the one under the mouse."""
+        if QToolTip.isVisible() and self.hovered_rule is not None and self.hovered_rule.lower() == rule.lower():
+            self._hover()

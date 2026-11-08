@@ -63,6 +63,7 @@ class EditorTab(QWidget):
         self.outcome: BuildOutcome | None = None
         self.built_digest = ""
         self.camera_applied = False
+        self.camera_locked = False  # Camera ▸ Lock to Script: every build shows the script's camera
         self.editor = CodeEditor(theme)
         self.completion = CompletionController(self.editor)
         self.signature_help = SignatureHelp(self.editor)

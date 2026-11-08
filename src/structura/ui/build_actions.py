@@ -7,12 +7,17 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from PySide6.QtCore import QObject, Slot
+from PySide6.QtWidgets import QDialog
 
+from ..core.build.trace import Step, ancestry
+from ..services.jobs import FunctionJob, JobContext, Lane
+from .dialogs.build_limits import BuildLimitsDialog
 from .i18n import tr
 from .viewport.overlay import Overlays
 
 if TYPE_CHECKING:
     from .app_window import MainWindow
+    from .documents import EditorTab
 
 
 OVERLAYS = {"grid": False, "axes": True, "bounds": False, "hud": True}  # viewport overlay → default
@@ -92,3 +97,52 @@ class BuildActions(QObject):
     def apply_overlays(self) -> None:
         overlays = Overlays(self.overlay_on("axes"), self.overlay_on("bounds"), self.overlay_on("hud"))
         self.w.viewport.set_overlays(overlays, grid=self.overlay_on("grid"))
+
+    def edit_limits(self) -> None:
+        dialog = BuildLimitsDialog(self.w.settings, self.w)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            self.w.workbench.limits = dialog.apply()
+
+    def ancestry_of_selection(self) -> None:
+        """Build ▸ Show Ancestry: the trace of the object picked in the viewport (the Inspector shows it)."""
+        row = self.w.inspector.row
+        if row is None:
+            self.w.show_message(tr("Pick an object in the viewport first."))
+            return
+        self.w.panels.show("Inspector")
+        self.show_ancestry(row)
+
+    # -- ancestry ----------------------------------------------------------------------------------------------
+    @Slot(int)
+    def show_ancestry(self, row: int) -> None:
+        """Inspector ▸ Show Ancestry: re-run the build in trace mode on the build lane."""
+        tab = self.w.tabs.current()
+        analysis = tab.analysis if tab is not None else None
+        if tab is None or analysis is None or analysis.program is None or analysis.digest != tab.built_digest:
+            self.w.inspector.show_ancestry([(tr("Rebuild first: the script changed since this build"), None)])
+            return
+        program, seed = analysis.program, tab.seed
+
+        def run(ctx: JobContext) -> list[Step]:
+            return ancestry(program, seed, row, lambda: ctx.cancelled, lambda f: ctx.progress(f, "tracing"))
+
+        self._traced: EditorTab = tab
+        handle = self.w.runner.submit(FunctionJob("ancestry", Lane.BUILD, run, key="ancestry"))
+        handle.finished.connect(self._ancestry_ready)
+
+    @Slot(object)
+    def _ancestry_ready(self, steps: object) -> None:
+        tab = self._traced
+        if not isinstance(steps, list) or tab.analysis is None or tab.analysis.program is None:
+            return
+        names, text = tab.analysis.program.rule_names, tab.text()
+        lines: list[tuple[str, int | None]] = []
+        for step in steps:
+            span = tab.analysis.action_span(step.action) if step.action >= 0 else None
+            name = names[step.rule] if step.rule < len(names) else "?"
+            if name == "TopLevelRule" or span is None:
+                lines.append((tr("top level") if name == "TopLevelRule" else name, None))
+                continue
+            where = tr("called at line {line}").format(line=text.count("\n", 0, span.start) + 1)
+            lines.append((f"{name}  ·  {where}", span.start))
+        self.w.inspector.show_ancestry(lines)

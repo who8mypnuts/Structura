@@ -20,6 +20,7 @@ def test_typing_a_script_builds_it_live(qtbot: QtBot, window: MainWindow) -> Non
     qtbot.waitUntil(lambda: tab.outcome is not None and len(tab.outcome.scene) == expected, timeout=60000)
     assert window.status.labels["objects"].text() == f"{expected} objects"
     assert window.stats.labels["Objects"].text().startswith(str(expected))
+    assert window.stats.labels["Phases"].text().startswith("analysis ")
     assert [window.outline.tree.topLevelItem(i).text(0) for i in range(window.outline.tree.topLevelItemCount())] == [
         "r"
     ]

@@ -203,6 +203,14 @@ def hover(text: str, pos: int, analysis: Analysis | None = None) -> str | None:
     return _function_hover(text, start, word) or _word_hover(word.lower().split("::")[0], analysis)
 
 
+def rule_at(text: str, pos: int, analysis: Analysis | None) -> str | None:
+    """The rule name under ``pos`` as written (a defined rule, not a primitive or keyword), else None."""
+    word = word_at(text, pos)[1].split("::")[0]
+    if analysis is None or not word or not any(r.name == word.lower() for r in analysis.rules):
+        return None
+    return word
+
+
 def _function_hover(text: str, start: int, word: str) -> str | None:
     """A v2 expression function, only where it is called (a rule may share the name)."""
     if word not in SIGNATURES or not text[start + len(word) :].lstrip().startswith("("):

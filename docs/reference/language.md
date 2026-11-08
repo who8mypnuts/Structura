@@ -175,8 +175,16 @@ Top-level blocks of EisenScript v2 ('#version 2').
 | `render · integrator` | `integrator ‹path \| ao \| classic \| preview›` | path: physically based; ao: ambient occlusion; classic: Structure Synth 1.5's look; preview: fast. |
 | `render · samples` | `samples ‹int›` | Samples per pixel. |
 | `render · size` | `size ‹WxH›` | Output size in pixels, e.g. 1920x1080. |
-| `render · filter` | `filter ‹box \| triangle \| gaussian \| blackman-harris \| mitchell \| catmull-rom \| bspline \| lanczos›` | Pixel reconstruction filter (importance-sampled; box is a plain jitter inside the pixel). |
+| `render · filter` | `filter ‹box \| triangle \| gaussian \| blackman-harris \| mitchell \| catmull-rom \| bspline \| lanczos \| sinc›` | Pixel reconstruction filter (importance-sampled; box is a plain jitter inside the pixel). |
 | `render · max_bounces` | `max_bounces ‹int›` | Maximum path length (also written max-bounces). |
+| `render · diffuse_bounces` | `diffuse_bounces ‹int›` | path: at most this many diffuse bounces (within max_bounces). |
+| `render · glossy_bounces` | `glossy_bounces ‹int›` | path: at most this many glossy (mirror-like) bounces. |
+| `render · transmission_bounces` | `transmission_bounces ‹int›` | path: at most this many passes through glass and other transmissive surfaces. |
+| `render · ao_direct` | `ao_direct ‹true \| false›` | ao: also light the surfaces directly by the sun and the declared lights. |
+| `render · sampler` | `sampler ‹progressive \| tiled›` | progressive: the whole image in passes; tiled: buckets rendered and refined one at a time (like Sunflow). |
+| `render · bucket_size` | `bucket_size ‹int›` | tiled: bucket edge in pixels (default 64). |
+| `render · bucket_order` | `bucket_order ‹hilbert \| spiral \| rows \| columns \| diagonal \| random›` | tiled: the order the buckets are rendered in. |
+| `render · sequence` | `sequence ‹random \| halton›` | Sample numbers: hashed random (default) or the Halton sequence (Sunflow's QMC, for comparisons). |
 | `render · noise_threshold` | `noise_threshold ‹float›` | Adaptive sampling: a pixel stops once its relative noise is below this (e.g. 0.01; 0 = off). |
 | `render · time_limit` | `time_limit ‹float›` | Stop rendering after this many seconds (0 = no limit). |
 | `render · ground` | `ground ‹off \| plane \| catcher›` | A ground under the structure: a diffuse plane, or a shadow catcher that shows the background darkened by the shadows (path integrator). |
@@ -235,8 +243,10 @@ Problems reported while you type.
 | `E008` | `E008 · error` | maxdepth requires an integer. 'rule R maxdepth N' needs a whole number N. |
 | `E009` | `E009 · error` | Invalid set command or build error. An unknown 'set' command, or a value the builder rejected. |
 | `E010` | `E010 · error` | Redefinition of a primitive. A rule cannot be named like a primitive (box, sphere, …). |
+| `E012` | `E012 · error` | Include error. An '#include "file.es"' names a file that is not found (next to the script or in the library folders), or a file that includes itself. |
 | `E013` | `E013 · error` | Tag on a non-primitive. 'name::tag' is only allowed on primitives (box::shiny). |
 | `E014` | `E014 · error` | Malformed triangle or primitive argument. triangle[x,y,z;x,y,z;x,y,z] needs three corners of three numbers; cone[r], torus[r] and tube[r] need one number. |
+| `E015` | `E015 · error` | Parameter type mismatch (v2). A '#param' default does not fit its type or range, or a parameter is used where its type does not fit (a colour where a number is needed, or the other way round). |
 | `E016` | `E016 · error` | Expression error (v2). A '( expression )' uses an unknown name, divides by zero or is malformed. |
 | `E017` | `E017 · error` | Invalid v2 block. A material, light, environment, camera or render block has an unknown key or a bad value. |
 | `W101` | `W101 · warning` | Rule is never referenced. No call, retirement or top-level statement uses this rule. |

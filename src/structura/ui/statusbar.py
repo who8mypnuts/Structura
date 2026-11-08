@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class StatusBar(QStatusBar):
-    SEGMENTS = ("cursor", "encoding", "dialect", "objects", "build", "device")
+    SEGMENTS = ("vim", "cursor", "encoding", "dialect", "objects", "build", "device")
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -45,6 +45,7 @@ class StatusBar(QStatusBar):
 
     def _watch(self, tab: EditorTab) -> None:
         tab.editor.cursor_moved.connect(partial(self._cursor, tab))
+        tab.editor.vim.mode_changed.connect(partial(self._vim, tab))
         tab.saved.connect(partial(self._saved, tab))
 
     def _is_current(self, tab: EditorTab) -> bool:
@@ -53,6 +54,10 @@ class StatusBar(QStatusBar):
     def _cursor(self, tab: EditorTab, line: int, column: int) -> None:
         if self._is_current(tab):
             self.set("cursor", f"Ln {line}, Col {column}")
+
+    def _vim(self, tab: EditorTab, _mode: str) -> None:
+        if self._is_current(tab):
+            self.set("vim", tab.editor.vim.label())
 
     def _saved(self, tab: EditorTab) -> None:
         if self._is_current(tab):
@@ -65,3 +70,4 @@ class StatusBar(QStatusBar):
         self.set("cursor", f"Ln {cursor.blockNumber() + 1}, Col {cursor.positionInBlock() + 1}")
         self.set("encoding", tab.file.label)
         self.set("dialect", tab.language_label)
+        self.set("vim", tab.editor.vim.label())

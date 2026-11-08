@@ -1,30 +1,91 @@
 """Structura's Python API (docs/16 §4): build, render and export scripts without the GUI.
 
-import structura.api as st
+import structura as st
 scene = st.build("spiral.es", seed=3)
 st.render(scene, "spiral.png", samples=128, integrator="path")
 st.export(scene, "spiral.usdz")
-for frame in range(48):                       # v2 scripts can use 'time', 'frame' and 'fps'
-    st.render(st.build("anim.es", frame=frame), f"anim_{frame:04d}.png", samples=32)
+
+doc = st.open("tree.structura")               # a script or a project: text, seed, parameters, camera, timeline
+doc.params["angle"] = 30
+st.render(doc.build(), "tree.png", camera=doc.camera)
+for frame, scene in doc.animate():            # the project's timeline (v2 scripts: 'time', 'frame', 'fps')
+    st.render(scene, f"tree_{frame:04d}.png", camera=doc.camera_at(frame), samples=32)
 """
 
 from __future__ import annotations
 
-from dataclasses import replace
+from collections.abc import Iterable, Iterator
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any
 
 from .compute.select import select_backend
+from .core.animation.camera import camera_at, has_camera_tracks
+from .core.animation.timeline import Timeline
 from .core.build.api import build_scene
 from .core.lang.api import compile_script
+from .core.lang.source import detect_dialect
+from .core.project.model import SUFFIX
+from .core.project.model import load as load_project
 from .core.scene.camera import Camera
 from .core.scene.ir import SceneIR
 from .core.text_file import read_script
 from .export.api import export_scene
 from .export.base import ExportReport
+from .render.animation import Animation, build_frame
 from .render.api import RenderProgress, prepare_with_frame, progressive, script_settings
 from .render.metadata import render_metadata
 from .render.output import save_image
+
+
+@dataclass
+class Document:
+    """A script or project, opened for building (docs/16 §4): change ``params`` or ``seed``, then build."""
+
+    text: str
+    path: Path | None = None
+    seed: int = 0
+    params: dict[str, float] = field(default_factory=dict)
+    camera: Camera | None = None  # the project's camera (None: the script's, or framing)
+    timeline: Timeline = field(default_factory=Timeline)
+    render_overrides: dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def dialect(self) -> int:
+        return detect_dialect(self.text)
+
+    def animation(self) -> Animation:
+        folder = self.path.parent if self.path else None
+        return Animation(self.text, self.timeline, self.seed, dict(self.params), folder, self.camera,
+                         self.render_overrides)  # fmt: skip
+
+    def build(self, seed: int | None = None, frame: int = 0) -> SceneIR:
+        folder = self.path.parent if self.path else None
+        used = self.seed if seed is None else seed
+        compiled = compile_script(self.text, used, self.params, folder, frame, self.timeline.fps)
+        return build_scene(compiled.program, used).scene
+
+    def animate(self, frames: Iterable[int] | None = None) -> Iterator[tuple[int, SceneIR]]:
+        """(frame, scene) for each frame (default: the timeline's range), with its keyed parameters and seed."""
+        anim = self.animation()
+        for frame in anim.frames() if frames is None else frames:
+            yield frame, build_frame(anim, frame)[0]
+
+    def camera_at(self, frame: int) -> Camera | None:
+        """The camera at ``frame``: the project camera moved by the timeline's camera tracks."""
+        if self.camera is None or not has_camera_tracks(self.timeline):
+            return self.camera
+        return camera_at(self.timeline, frame, self.camera)
+
+
+def open(path: str | Path) -> Document:
+    """Open an .es script or a .structura project."""
+    path = Path(path)
+    if path.suffix.lower() == SUFFIX:
+        project = load_project(path)
+        return Document(project.text, path, project.seed, dict(project.params), project.camera,
+                        project.timeline or Timeline(), dict(project.render))  # fmt: skip
+    return Document(read_script(path), path)
 
 
 def build(
@@ -62,4 +123,4 @@ def export(scene: SceneIR, output: str | Path, format: str | None = None, **opti
     return export_scene(scene, Path(output), format, options)
 
 
-__all__ = ["build", "export", "render"]
+__all__ = ["Document", "build", "export", "open", "render"]

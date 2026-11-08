@@ -134,7 +134,9 @@ class SessionActions(QObject):
             return False
         split = self.w.settings.value("window/split")
         self.split_restored = isinstance(split, QByteArray) and self.w.split.restoreState(split)
-        return bool(self.w.restoreGeometry(geometry) and self.w.panels.restore(state))
+        restored = bool(self.w.restoreGeometry(geometry) and self.w.panels.restore(state))
+        QTimer.singleShot(0, self.w.fit_to_screen)  # geometry saved while a panel had grown the window
+        return restored
 
 
 def _tab_state(tab: EditorTab) -> TabState:

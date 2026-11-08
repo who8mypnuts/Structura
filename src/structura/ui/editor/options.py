@@ -21,6 +21,7 @@ class EditorOptions:
     minimap: bool = True
     sticky_scroll: bool = True
     breadcrumbs: bool = True
+    vim: bool = False
 
 
 LABELS = {
@@ -32,9 +33,10 @@ LABELS = {
     "minimap": "Minimap",
     "sticky_scroll": "Sticky scroll (pin the current rule header)",
     "breadcrumbs": "Breadcrumbs (the rule at the cursor)",
+    "vim": "Vim keybindings (normal, insert and visual modes)",
 }
 TOGGLES = ("word_wrap", "show_whitespace", "indent_guides", "rainbow_brackets", "minimap", "sticky_scroll",
-           "breadcrumbs")  # fmt: skip
+           "breadcrumbs", "vim")  # fmt: skip
 
 
 def option_specs() -> tuple[ParamSpec, ...]:
