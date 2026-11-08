@@ -17,7 +17,7 @@ from .compile.program import RuleProgram, compile_rule_set
 from .diagnostics import Diagnostic, ParseError, Severity, diagnostic
 from .inlay import Hint, inlay_hints
 from .legacy.gui_params import apply_gui_parameters
-from .legacy.parser import parse_legacy
+from .legacy.parser import parse_legacy, parse_recovering
 from .legacy.preprocessor import GuiParameter, LegacyPreprocessor, PreprocessResult
 from .lint import LintInput, define_substrings, lint
 from .position_map import PositionMap
@@ -134,9 +134,11 @@ def analyze(
     pm = PositionMap(text, source)  # parser spans refer to the text after v2 expressions were evaluated
     try:
         parsed = parse_legacy(source, fr.v2)
-    except ParseError as exc:
-        error = Diagnostic(exc.code, Severity.ERROR, exc.message, pm.span(exc.span))
-        return Analysis(version, (*diagnostics, error), parameters=tuple(pre.parameters), defines=names)
+    except ParseError:  # report every broken rule, and keep the symbols of the ones that parse
+        partial, errors = parse_recovering(source, fr.v2)
+        found = tuple(Diagnostic(e.code, Severity.ERROR, e.message, pm.span(e.span)) for e in errors)
+        rules, refs = _symbols(partial, pm)
+        return Analysis(version, (*diagnostics, *found), rules, refs, tuple(pre.parameters), defines=names)
     rules, refs = _symbols(parsed, pm)
     hints = inlay_hints(parsed, pm, fr.declarations)
     dialect = 2 if fr.v2 else 1

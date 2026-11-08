@@ -66,6 +66,8 @@ class RenderProgress:
     aovs: Aovs | None = None  # when settings.aovs
     sample_map: np.ndarray | None = None  # int32[H, W] samples per pixel (adaptive sampling varies them)
     active: float = 1.0  # the fraction of pixels still being sampled
+    film: np.ndarray | None = None  # the raw accumulation buffer (resuming a stopped render)
+    mask: np.ndarray | None = None  # uint32 pixel mask still being sampled (resuming)
 
 
 def prepare(
@@ -151,17 +153,31 @@ def launch_args(prepared: Prepared, frame: Frame) -> dict[str, Any]:
     }
 
 
+def _resumed(args: dict[str, Any], w: int, h: int, resume: RenderProgress | None) -> tuple[np.ndarray, int, float]:
+    """(samples per pixel, samples done, seconds spent): zero, or where a stopped render left off. The film and
+    the pixel mask go back into ``args``; sample indices continue, so the result equals an uninterrupted render."""
+    if resume is None or resume.film is None:
+        return np.zeros((h, w), np.int32), 0, 0.0
+    args["accum"] = resume.film
+    if resume.mask is not None:
+        args["pixel_mask"] = resume.mask
+    counts = resume.sample_map.copy() if resume.sample_map is not None else np.full((h, w), resume.samples, np.int32)
+    return counts, resume.samples, resume.seconds
+
+
 def progressive(
     scene: SceneIR | Prepared,
     settings: RenderSettings,
     backend: Backend,
     frame: Frame | None = None,
     between: Callable[[], None] | None = None,
+    resume: RenderProgress | None = None,
 ) -> Iterator[RenderProgress]:
     """Yield an updated image after every pass (render/pacing.py sizes the passes).
 
     Stops at settings.samples, at the time limit, or when adaptive sampling finds every pixel below the
-    noise threshold. ``between`` runs between the row bands of each pass (cancellation checks).
+    noise threshold. ``between`` runs between the row bands of each pass (cancellation checks). ``resume``
+    continues a stopped render of the same scene, camera and settings.
     """
     started = time.perf_counter()
     prepared = scene if isinstance(scene, Prepared) else prepare(scene)
@@ -171,10 +187,11 @@ def progressive(
     if settings.caustics == "photons":
         add_photons(args, prepared.lo, prepared.hi, settings.photon_count, settings.photon_radius, backend,
                     settings.seed)  # fmt: skip
-    aovs = render_aovs(args, backend) if settings.aovs else None
+    aovs = render_aovs(args, backend) if settings.aovs and (resume is None or resume.aovs is None) else None
+    aovs = aovs or (resume.aovs if resume is not None else None)
+    counts, done, spent = _resumed(args, w, h, resume)
     bound = backend.bind(Launch(render_module(), "render_pass", (w, h, 1), args))
-    bands, counts, active = Bands(w, h), np.zeros((h, w), np.int32), args["pixel_mask"]
-    done, pacing = 0, Pacing(settings)
+    bands, active, pacing = Bands(w, h), args["pixel_mask"], Pacing(settings)
     while done < settings.samples and active.any():
         spp = pacing.next(done)
         bound.update(sample_base=settings.seed * 1_000_003 + done, spp=spp)
@@ -182,14 +199,14 @@ def progressive(
         done += spp
         counts += active.reshape(h, w).astype(np.int32) * spp
         accum = bound.read("accum")
-        seconds = time.perf_counter() - started
+        seconds = spent + time.perf_counter() - started
         if settings.noise_threshold > 0 and done >= settings.adaptive_min_samples:
             active = active_mask(accum, w, h, settings.noise_threshold) & active
             bound.update(pixel_mask=active)
         if 0 < settings.time_limit <= seconds:
             active = np.zeros_like(active)
         image = film_image(accum, w, h)
-        yield RenderProgress(image, done, seconds, aovs, counts.copy(), float(active.mean()))
+        yield RenderProgress(image, done, seconds, aovs, counts.copy(), float(active.mean()), accum, active)
 
 
 def render(

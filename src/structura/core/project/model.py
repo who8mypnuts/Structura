@@ -35,6 +35,7 @@ class Project:
     render: dict[str, Any] = field(default_factory=dict)  # Render Settings overrides
     thumbnail_png_b64: str = ""
     timeline: Timeline | None = None  # keyframes (docs/16 §2); None: no animation
+    bookmarks: dict[str, Camera] = field(default_factory=dict)  # saved views (Camera panel)
     reserved: dict[str, Any] = field(default_factory=dict)  # sections this version keeps but does not edit
 
 
@@ -48,7 +49,7 @@ def _vec3(value: Any, default: tuple[float, float, float]) -> tuple[float, float
     return default
 
 
-def _camera(data: Any) -> Camera | None:
+def camera_from_dict(data: Any) -> Camera | None:
     if not isinstance(data, dict) or "eye" not in data or "target" not in data:
         return None
     focus = data.get("focus_distance")
@@ -73,6 +74,8 @@ def to_json(project: Project, dialect: int = 1) -> str:
     }  # fmt: skip
     if project.timeline is not None:
         data["timeline"] = timeline_dict(project.timeline)
+    if project.bookmarks:
+        data["camera_bookmarks"] = {name: _camera_json(camera) for name, camera in project.bookmarks.items()}
     return json.dumps(data, indent=2) + "\n"
 
 
@@ -89,11 +92,19 @@ def from_json(text: str, base: Path) -> Project:
         text=source, linked=linked, seed=int(data.get("seed", 0)),
         auto_increment_seed=bool(data.get("auto_increment_seed", False)),
         params={str(k): float(v) for k, v in (data.get("params") or {}).items()},
-        camera=_camera(data.get("camera")), camera_lock_to_script=bool(data.get("camera_lock_to_script", False)),
+        camera=camera_from_dict(data.get("camera")),
+        camera_lock_to_script=bool(data.get("camera_lock_to_script", False)),
         render=dict(data.get("render") or {}), thumbnail_png_b64=str(data.get("thumbnail_png_b64", "")),
         timeline=timeline_from(data["timeline"]) if data.get("timeline") else None,
-        reserved={k: data[k] for k in RESERVED if k in data},
+        reserved={k: data[k] for k in RESERVED if k in data}, bookmarks=_bookmarks(data.get("camera_bookmarks")),
     )  # fmt: skip
+
+
+def _bookmarks(data: Any) -> dict[str, Camera]:
+    if not isinstance(data, dict):
+        return {}
+    cameras = {str(name): camera_from_dict(value) for name, value in data.items()}
+    return {name: camera for name, camera in cameras.items() if camera is not None}
 
 
 def load(path: Path) -> Project:

@@ -206,6 +206,22 @@ map as a heatmap AOV.
   - "File ▸ Open from render…" restores the complete project from a PNG or EXR.
   - This extends 1.5's "autosave EisenScript with seed and camera" feature.
 
+### 8.1 Render reports (added in M10)
+
+A render report describes one finished render in full (`render/report/`): script (hash, lines, rules,
+parameters), geometry (kinds with triangles if baked, bounds, density, instance size range, mirrored and
+sheared instances), build statistics, the resolved camera (also heading/pitch, both fields of view, 35 mm
+focal length), settings, lighting and environment, the material table, image statistics (exposure, dynamic
+range, clipping, sample distribution, coverage, visible objects and kinds from the AOVs, depth range),
+performance (time, samples/s, passes, BVH nodes/leaves/depth/memory), the system, and a reproducing command
+line. A thumbnail, an RGB + luminance histogram and the dominant-colour palette are included.
+
+`ReportInputs` → `build_report()` → `Report` (format-free) → writers: text, Markdown (+ preview image), HTML
+(one file), JSON, CSV; PDF and ODT via Qt's document engine (`services/report_documents.py`). The GUI
+(Render ▸ Save Render Report…, the render queue) and the CLI (`structura render --report FILE`) share it.
+Render jobs attach `RenderDetails` (render/details.py) to their updates so the report states what was
+actually rendered.
+
 ## 9. Render view (UI summary; full UX in [14](14-ui-ux.md))
 
 - Zoom/pan image viewer (1:1, fit, pixel inspector with HDR values);
@@ -213,6 +229,12 @@ map as a heatmap AOV.
 - exposure and view-transform controls that apply live, without re-rendering;
 - progress: spp, elapsed time, ETA, rays/s; pause/resume/stop; region select;
 - "Render to file" queue.
+
+> **As built:** all of the above except a rays/s readout (the render report has samples/s). Pause is Stop;
+> **Resume** continues from the kept film, pixel mask and sample map with the same sample indices, so the
+> result equals an uninterrupted render (`progressive(..., resume=…)`). Added: presets (Draft / Standard / Final / Print 4K), Save (Save As dialog),
+> Report…, and the render queue (Render ▸ Add to Render Queue…, its own panel, optional PDF report per
+> render).
 
 ## 10. Module layout
 

@@ -6,17 +6,19 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QObject, Slot
-from PySide6.QtGui import QTextCharFormat, QTextCursor
-from PySide6.QtWidgets import QColorDialog, QFileDialog, QInputDialog, QMenu, QMessageBox
+from PySide6.QtGui import QAction, QTextCharFormat, QTextCursor
+from PySide6.QtWidgets import QFileDialog, QInputDialog, QMenu, QMessageBox
 
 from ..core.lang.refactor import format_script, rename_rule, rule_occurrences
 from ..core.project.model import SUFFIX
 from ..core.text_file import read_script
 from ..services.recent import RecentFiles
 from .documents import EditorTab
+from .editor.color_edit import ColorEdit, color_token_at
 from .editor.editing import toggle_comment
 from .editor.snippet_session import insert_snippet
-from .editor.swatches import color_of
+from .i18n import tr
+from .save_paths import SavePaths, with_extension
 from .theming import qcolor
 
 if TYPE_CHECKING:
@@ -24,6 +26,8 @@ if TYPE_CHECKING:
 
 SCRIPT_FILTER = f"EisenScript (*.es);;Structura project (*{SUFFIX});;All files (*)"
 OPEN_FILTER = f"Scripts and projects (*.es *{SUFFIX});;{SCRIPT_FILTER}"
+EDITOR_MENU = ("edit.definition", "edit.peek", "edit.references", "edit.rename", "edit.quick_fix", "edit.comment",
+               "edit.format")  # fmt: skip
 
 
 class DocumentActions(QObject):
@@ -32,6 +36,7 @@ class DocumentActions(QObject):
         self.w = window
         window.tabs.tab_added.connect(self.on_tab_added)
         self.recent = RecentFiles(window.settings)
+        self.paths = SavePaths(window.settings)
         window.tabs.external_change.connect(self.on_external_change)
 
     def current(self) -> EditorTab | None:
@@ -80,12 +85,23 @@ class DocumentActions(QObject):
             tab.save()
             self.w.show_message(f"Saved {tab.path.name}")
 
+    def open_example(self, path: Path) -> EditorTab:
+        """A bundled example opens as an unsaved copy (Save As offers its name; the original stays untouched)."""
+        tab = self.w.tabs.new_document(read_script(path))
+        tab.suggested_name = path.name
+        tab.editor.document().setModified(False)
+        tab.retitle()
+        self.w.tabs.setTabText(self.w.tabs.indexOf(tab), tab.title)
+        return tab
+
     def save_as(self) -> None:
         tab = self.current()
         if tab is None:
             return
-        name, _ = QFileDialog.getSaveFileName(self.w, "Save script", str(tab.path or "untitled.es"), SCRIPT_FILTER)
-        if name:
+        suggestion = tab.path or self.paths.suggest("script", tab.suggested_name or "untitled.es")
+        answer = self.paths.ask(self.w, "script", tr("Save Script"), suggestion, SCRIPT_FILTER.split(";;"))
+        if answer is not None:
+            name = str(with_extension(answer[0], (".es", SUFFIX)))
             tab.save(Path(name))
             self.w.tabs.watch(tab)
             self.w.tabs.setTabText(self.w.tabs.currentIndex(), tab.title)
@@ -152,7 +168,7 @@ class DocumentActions(QObject):
         new, ok = QInputDialog.getText(self.w, "Rename rule", f"New name for '{name}':", text=name)
         if ok and new and new != name:
             try:
-                self._replace_all(tab, rename_rule(tab.text(), name, new))
+                self.replace_text(tab, rename_rule(tab.text(), name, new))
             except ValueError as exc:
                 self.w.show_message(str(exc))
 
@@ -161,7 +177,7 @@ class DocumentActions(QObject):
         if tab is not None:
             formatted = format_script(tab.text())
             if formatted != tab.text():
-                self._replace_all(tab, formatted)
+                self.replace_text(tab, formatted)
 
     def find_references(self) -> None:
         tab = self.current()
@@ -174,7 +190,7 @@ class DocumentActions(QObject):
         tab.editor.set_selections("find", [tab.editor.selection_for(a, b, fmt) for a, b in spans])
         self.w.show_message(f"{len(spans)} occurrence{'s' if len(spans) != 1 else ''} of '{word}'")
 
-    def _replace_all(self, tab: EditorTab, text: str) -> None:
+    def replace_text(self, tab: EditorTab, text: str) -> None:
         """Replace the whole text as one undo step, keeping the cursor position."""
         cursor = tab.editor.textCursor()
         position = cursor.position()
@@ -189,6 +205,7 @@ class DocumentActions(QObject):
     def on_tab_added(self, tab: EditorTab) -> None:
         tab.editor.definition_requested.connect(self.go_to_definition)
         tab.editor.color_requested.connect(self.pick_color)
+        tab.editor.menu_extender = self.extend_menu
 
     @Slot(str)
     def go_to_definition(self, name: str) -> None:
@@ -211,13 +228,18 @@ class DocumentActions(QObject):
 
     @Slot(int, str)
     def pick_color(self, start: int, text: str) -> None:
+        """Edit the colour literal at ``start`` (or insert one when ``text`` is empty) with a live preview."""
         tab = self.current()
-        initial = color_of(text)
-        if tab is None or initial is None:
-            return
-        chosen = QColorDialog.getColor(initial, self.w, "Colour")
-        if chosen.isValid():
-            cursor = tab.editor.textCursor()
-            cursor.setPosition(start)
-            cursor.setPosition(start + len(text), QTextCursor.MoveMode.KeepAnchor)
-            cursor.insertText(chosen.name())
+        if tab is not None:
+            ColorEdit(tab.editor, start, text, self.w).open()
+
+    def pick_color_at_cursor(self) -> None:
+        tab = self.current()
+        if tab is not None:
+            position = tab.editor.textCursor().position()
+            self.pick_color(*(color_token_at(tab.editor, position) or (position, "")))
+
+    def extend_menu(self, menu: QMenu, before: QAction) -> None:
+        """The editor's context menu: the language commands above the standard edit actions."""
+        for command_id in EDITOR_MENU:
+            menu.insertAction(before, self.w.registry.action(command_id))

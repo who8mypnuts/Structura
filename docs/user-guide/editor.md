@@ -6,12 +6,19 @@
   functions, and snippets. Tab or Enter accepts; snippet fields are visited with Tab.
 - **Signature help** shows an operator's or function's arguments while you type them.
 - **Hover** a word for its documentation; hover a rule call to highlight the objects it made in the viewport.
-- **Diagnostics** underline errors and warnings as you type; the **Problems** dock lists them. **Ctrl+.**
-  offers quick fixes (create a missing rule, fix a spelling, convert an alias …).
+- **Diagnostics** underline errors and warnings as you type; the **Problems** panel lists them — every broken
+  rule at once, while the rules that parse stay available to the outline and completion. **Ctrl+.** offers
+  quick fixes (create a missing rule, fix a spelling, convert an alias …).
 - **Inlay hints** show loop counts and the material a tag resolves to.
 - **Inline sliders** appear after `#define … (float:a-b)` and `#param` lines, mirrored in the Parameters dock.
 - **Alt+drag** over a number scrubs it (Shift = fine, Ctrl = coarse).
-- **Ctrl+click** a colour to pick it with a colour dialog.
+- **Colours:** right-click a colour (`#f80`, `#FF8800`, `red`, also inside `#define` lines) and choose **Pick
+  Colour…**; the script follows the picker live, **Cancel** restores it, and the change is one undo step. The
+  new value keeps the literal's style (three-digit hex when possible, upper or lower case, a colour name when
+  the choice is exactly one). Right-click elsewhere for **Insert Colour…**; **Ctrl+Shift+C** does either at the
+  cursor, and **Ctrl+click** a colour also opens the picker.
+- The **context menu** also has Go to Definition, Peek, Find References, Rename, Quick Fix, Toggle Comment and
+  Format Document.
 
 ## Navigating
 
@@ -54,4 +61,5 @@ The breadcrumb bar above the editor shows the rule you are in; the Outline dock 
 - **View ▸ Edit Theme…** changes any colour with a live preview, checks contrast, and saves your own themes.
 - **File ▸ Keyboard Shortcuts…** (Ctrl+K Ctrl+S): presets (Structura, Structure Synth 1.5, VS Code-like) and
   your own bindings; conflicts are marked.
-- **File ▸ Preferences…** (Ctrl+,): fonts and sizes, editor options, language, viewport engine, render device.
+- **File ▸ Preferences…** (Ctrl+,): fonts and sizes, reduced motion, editor options, language, viewport engine
+  and mouse controls (Structura, Structure Synth 1.5, Blender), render device.

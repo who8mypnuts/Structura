@@ -7,13 +7,15 @@ from __future__ import annotations
 
 import logging
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any
 
 from PySide6.QtCore import QObject, Signal, Slot
 
 from ..core.lang.analysis import Analysis
+from ..core.scene.ir import SceneIR
 from ..core.scene.settings import settings_from_events
+from ..core.scene.view_filter import ViewFilter
 from ..preview.instances import PreviewScene, preview_scene
 from ..services.build import BuildOutcome, BuildProgress, BuildRequest, BuildService
 from ..services.jobs import ErrorInfo, FunctionJob, JobContext, JobRunner, Lane
@@ -30,21 +32,25 @@ class PreviewReady:
     doc_id: str
     outcome: BuildOutcome
     preview: PreviewScene
+    shown: SceneIR  # the scene as the viewport shows it (recoloured by the colour-by mode)
+    recolor: bool = False  # only the colours changed (no new build)
 
 
 class Workbench(QObject):
     analysis_shown = Signal(object, object)  # EditorTab, Analysis
     build_started = Signal(object)  # EditorTab
     build_progress = Signal(object, object)  # EditorTab, BuildProgress
-    scene_ready = Signal(object, object, object, object, bool)  # tab, BuildOutcome, PreviewScene, Camera|None, frame
+    scene_ready = Signal(object, object, object, bool)  # tab, PreviewReady, Camera | None, frame
+    recolored = Signal(object, object)  # tab, PreviewReady: the colour-by mode changed
     message = Signal(str)
 
     def __init__(self, tabs: DocumentTabs, runner: JobRunner) -> None:
-        super().__init__()
+        super().__init__(tabs)  # destroyed with the tabs: late results of closed windows go nowhere
         self.tabs, self.runner = tabs, runner
         self.language = LanguageService(runner)
         self.builds = BuildService(runner)
         self.live = True
+        self.view = ViewFilter()  # colour-by, X-ray and isolation of the viewport (renders and exports: as built)
         self._build_after_analysis: set[str] = set()
         self._build_if_changed: set[str] = set()  # timeline frames: rebuild only when the program changed
         tabs.tab_edited.connect(self.on_edited)
@@ -135,8 +141,26 @@ class Workbench(QObject):
     def on_build_finished(self, doc_id: str, outcome: object) -> None:
         if not isinstance(outcome, BuildOutcome):
             return
-        job = FunctionJob(f"preview {doc_id}", Lane.IO, _preview_job(doc_id, outcome), key=f"preview:{doc_id}")
+        self.view = replace(self.view, isolate=None)  # an isolated set belongs to the previous build
+        job = FunctionJob(f"preview {doc_id}", Lane.IO, _preview_job(doc_id, outcome, self.view),
+                          key=f"preview:{doc_id}")  # fmt: skip
         self.runner.submit(job).finished.connect(self.on_preview_ready)
+
+    @property
+    def color_by(self) -> str:
+        return self.view.color_by
+
+    def set_color_by(self, mode: str) -> None:
+        self.set_view(replace(self.view, color_by=mode))
+
+    def set_view(self, view: ViewFilter) -> None:
+        """Show the current scene through ``view`` (the preview is rebuilt on the io lane)."""
+        self.view = view
+        tab = self.tabs.current()
+        if tab is not None and tab.outcome is not None:
+            job = _preview_job(tab.doc_id, tab.outcome, view, recolor=True)
+            handle = self.runner.submit(FunctionJob(f"colour {tab.doc_id}", Lane.IO, job, key=f"preview:{tab.doc_id}"))
+            handle.finished.connect(self.on_preview_ready)
 
     @Slot(object)
     def on_preview_ready(self, ready: object) -> None:
@@ -145,13 +169,17 @@ class Workbench(QObject):
         tab = self.tab(ready.doc_id)
         if tab is None:
             return
+        if ready.recolor:
+            if tab.outcome is ready.outcome:  # not superseded by a newer build
+                self.recolored.emit(tab, ready)
+            return
         tab.outcome = ready.outcome
         camera, frame = None, False
         if not tab.camera_applied:  # first build: a project's camera, the script camera, or frame the structure
             view = settings_from_events(ready.outcome.scene.events)
             camera = tab.initial_camera or (view.view.camera() if view.has_view else None)
             frame, tab.camera_applied = camera is None, True
-        self.scene_ready.emit(tab, ready.outcome, ready.preview, camera, frame)
+        self.scene_ready.emit(tab, ready, camera, frame)
 
     @Slot(str, object)
     def on_build_failed(self, doc_id: str, info: object) -> None:
@@ -183,16 +211,20 @@ class Workbench(QObject):
         self.analyze(tab, immediate=True)
 
     def set_parameter(self, name: str, value: float) -> None:
+        self.set_parameters({name: value})
+
+    def set_parameters(self, values: dict[str, float]) -> None:
         tab = self.tabs.current()
         if tab is not None:
-            tab.params[name] = value
+            tab.params.update(values)
             self._build_after_analysis.add(tab.doc_id)
             self.analyze(tab, immediate=True)
 
 
-def _preview_job(doc_id: str, outcome: BuildOutcome) -> Any:
+def _preview_job(doc_id: str, outcome: BuildOutcome, view: ViewFilter, recolor: bool = False) -> Any:
     def run(ctx: JobContext) -> PreviewReady:
         ctx.check_cancelled()
-        return PreviewReady(doc_id, outcome, preview_scene(outcome.scene))
+        shown = view.apply(outcome.scene)
+        return PreviewReady(doc_id, outcome, preview_scene(shown), shown, recolor)
 
     return run

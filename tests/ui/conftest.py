@@ -27,8 +27,11 @@ def window(
 ) -> Iterator[MainWindow]:
     if "preview" not in request.node.name:
         monkeypatch.setenv("STRUCTURA_PREVIEW", "off")  # keep the CPU renderer out of unrelated tests
+    monkeypatch.setenv("STRUCTURA_THUMBNAILS", "off")  # no example-gallery renders behind every test
     register_fonts()
-    w = MainWindow(SettingsService(tmp_path / "settings.ini"))
+    settings = SettingsService(tmp_path / "settings.ini")
+    settings.set_value("appearance/reduce_motion", True)  # camera moves and toasts apply at once in tests
+    w = MainWindow(settings)
     qtbot.addWidget(w, before_close_func=_discard_edits)  # no "unsaved changes" dialog at teardown
     w.show()
     qtbot.wait(30)  # the first layout passes (dock sizes, the editor split) are start-up work, not stalls

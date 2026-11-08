@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 from PySide6.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout, QWidget
 
 from ...compute.select import NAMES
@@ -18,12 +20,24 @@ def preference_specs() -> tuple[ParamSpec, ...]:
     return (
         ParamSpec("appearance/theme", ParamType.ENUM, "structura-dark", "Theme", choices=tuple(theme_ids())),
         ParamSpec("appearance/ui_size", ParamType.INT, 10, "Interface font size", range=(7, 24)),
+        ParamSpec("appearance/reduce_motion", ParamType.BOOL, False, "Reduce motion (no fades or animations)"),
         ParamSpec("appearance/language", ParamType.ENUM, "system", "Language (restart)", choices=tuple(available())),
         *option_specs(),
         *SESSION_SPECS,
         ParamSpec("editor/live_build", ParamType.BOOL, True, "Rebuild while typing"),
+        ParamSpec(
+            "viewport/controls",
+            ParamType.ENUM,
+            "structura",
+            "Viewport controls",
+            choices=("structura", "legacy", "blender"),
+        ),
         ParamSpec("viewport/backend", ParamType.ENUM, "auto", "Viewport (restart)", choices=("auto", "gpu", "cpu")),
         ParamSpec("render/device", ParamType.ENUM, "auto", "Render device", choices=NAMES),
+        ParamSpec(
+            "render/cpu_threads", ParamType.INT, 0, "CPU threads (0 = all cores)", range=(0, os.cpu_count() or 1)
+        ),
+        ParamSpec("paths/output", ParamType.STRING, "", "Default folder for new files (empty: Documents/Structura)"),
     )
 
 

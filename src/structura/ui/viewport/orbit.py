@@ -31,6 +31,7 @@ class OrbitController:
     DOLLY_STEP = 0.88
 
     def __init__(self, camera: Camera | None = None) -> None:
+        self.trackball = False  # True: orbit about the camera's own axes (Structure Synth 1.5), no pole stop
         self.set_camera(camera or Camera((0.0, 0.0, 10.0), (0.0, 0.0, 0.0)))
 
     def set_camera(self, camera: Camera) -> None:
@@ -53,10 +54,11 @@ class OrbitController:
 
     def orbit(self, dx: float, dy: float) -> None:
         yaw, pitch = -dx * self.ORBIT_SPEED, -dy * self.ORBIT_SPEED
-        self.forward, self.up = rotate(self.forward, WORLD_UP, yaw), rotate(self.up, WORLD_UP, yaw)
+        axis = self.up.copy() if self.trackball else WORLD_UP
+        self.forward, self.up = rotate(self.forward, axis, yaw), rotate(self.up, axis, yaw)
         right = self.right
         new_forward, new_up = rotate(self.forward, right, pitch), rotate(self.up, right, pitch)
-        if abs(float(np.dot(new_forward, WORLD_UP))) < 0.995:  # stop short of the poles
+        if self.trackball or abs(float(np.dot(new_forward, WORLD_UP))) < 0.995:  # turntable: stop at the poles
             self.forward, self.up = new_forward, new_up
         self._orthonormalise()
 
@@ -78,3 +80,20 @@ class OrbitController:
         self.forward /= np.linalg.norm(self.forward)
         self.up = self.up - self.forward * np.dot(self.up, self.forward)
         self.up /= np.linalg.norm(self.up) or 1.0
+
+    # -- first-person (fly) ------------------------------------------------------------------------------------
+    @property
+    def eye(self) -> np.ndarray:
+        eye: np.ndarray = self.target - self.forward * self.distance
+        return eye
+
+    def look(self, dx: float, dy: float) -> None:
+        """Turn the camera about its eye (the target moves), as when flying."""
+        eye = self.eye
+        self.orbit(dx, dy)
+        self.target = eye + self.forward * self.distance
+
+    def fly(self, right: float, up: float, forward: float) -> None:
+        """Move eye and target together, in steps of a twentieth of the viewing distance."""
+        step = self.distance * 0.05
+        self.target = self.target + (self.right * right + self.up * up + self.forward * forward) * step

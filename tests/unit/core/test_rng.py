@@ -29,3 +29,18 @@ def test_get_int_n_masks_and_rejects() -> None:
             if raw <= 359:
                 break
         assert value == raw
+
+
+def test_cpu_thread_preference_applies_inside_parallel_sections() -> None:
+    import numba  # noqa: PLC0415
+
+    from structura.core.jit import parallel_section, set_cpu_threads  # noqa: PLC0415
+
+    set_cpu_threads(1)
+    try:
+        with parallel_section():
+            assert numba.get_num_threads() == 1
+    finally:
+        set_cpu_threads(0)
+    with parallel_section():
+        assert numba.get_num_threads() == numba.config.NUMBA_NUM_THREADS

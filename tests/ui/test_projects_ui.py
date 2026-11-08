@@ -41,3 +41,16 @@ def test_save_project_then_open_it_restores_seed_overrides_and_camera(
     qtbot.waitUntil(lambda: opened.outcome is not None and opened.camera_applied, timeout=20000)
     restored = other.viewport.camera()
     assert np.allclose(restored.eye, camera.eye, atol=1e-4) and restored.fov_y_deg == pytest.approx(28.0)
+
+
+def test_open_from_render_restores_script_seed_and_settings(window: MainWindow, tmp_path: Path) -> None:
+    from structura.cli.main import main  # noqa: PLC0415
+
+    script = tmp_path / "scene.es"
+    script.write_text("set raytracer::max-threads 1\n{ color #f80 } sphere\n")
+    out = tmp_path / "scene.png"
+    argv = ["render", str(script), "-o", str(out), "--size", "24x16", "--device", "cpu", "--seed", "9"]
+    assert main([*argv, "--integrator", "ao", "--samples", "2"]) == 0
+    tab = window.projects.open_render(out)
+    assert tab is not None and tab.text() == script.read_text() and tab.seed == 9
+    assert tab.initial_camera is not None and tab.display_name == "scene.es" and tab.path is None

@@ -5,8 +5,10 @@ It keeps the EisenScript grammar language and adds a GPU-accelerated, Sunflow-de
 It also adds a modern code editor, app-wide theming, and export to mesh, USD, glTF and Blender formats.
 
 This folder started as the **planning set**: what would be built, how, and in what order. The plan has since
-been implemented milestone by milestone. [PROGRESS.md](PROGRESS.md) records what was built and every deviation,
-and [22-implementation-notes.md](22-implementation-notes.md) gives the status of each milestone. The
+been implemented milestone by milestone (M0–M10). [PROGRESS.md](PROGRESS.md) records what was built and every
+deviation, and [22-implementation-notes.md](22-implementation-notes.md) gives the status of each milestone, the
+refinements of the plan, and the **backlog** of planned items that are not built. Documents 00–21 keep the
+original plan; where the program differs they carry "As built" notes. The
 [user guide](user-guide/README.md) describes the finished program, and [reference/language.md](reference/language.md)
 is the generated language reference.
 
@@ -38,7 +40,7 @@ is the generated language reference.
 | 19 | [Roadmap](19-roadmap.md) | Phases, milestones, acceptance criteria |
 | 20 | [Risks](20-risks.md) | Risk register and mitigations |
 | 21 | [Brand & Logo](21-brand-and-logo.md) | Logo concept, construction, colours, usage |
-| 22 | [Implementation Notes](22-implementation-notes.md) | Where the code refines or departs from the plan, and why; the status of every milestone |
+| 22 | [Implementation Notes](22-implementation-notes.md) | Milestone status, where the code refines or departs from the plan, owner checks, and the backlog |
 | — | [Progress Log](PROGRESS.md) | What has been executed so far, and what is next |
 | — | [Architecture Decision Records](adr/README.md) | The key decisions and their alternatives |
 

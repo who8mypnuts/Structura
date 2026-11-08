@@ -3,9 +3,13 @@ diagnostic squiggles and editing helpers each live in their own module."""
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 from PySide6.QtCore import QEvent, QMimeData, QRect, Qt, Signal
 from PySide6.QtGui import (
+    QAction,
     QColor,
+    QContextMenuEvent,
     QKeyEvent,
     QMouseEvent,
     QPainter,
@@ -17,20 +21,20 @@ from PySide6.QtGui import (
     QTextOption,
     QWheelEvent,
 )
-from PySide6.QtWidgets import QPlainTextEdit, QTextEdit, QWidget
+from PySide6.QtWidgets import QMenu, QPlainTextEdit, QTextEdit, QWidget
 
 from ...core.lang.analysis import Analysis
 from ...core.lang.diagnostics import Diagnostic, Severity
-from ...core.lang.highlight import lex_line
 from ...themes.model import Theme
 from ..fonts import CODE_FAMILY, code_font
 from ..i18n import tr
 from ..theming import qcolor
 from .brackets import match_bracket
+from .color_edit import color_token_at
 from .decorations import paint_fold_placeholders, paint_indent_guides
 from .folding import Folding
 from .gutter import Gutter
-from .highlighter import EisenHighlighter, lexer_state
+from .highlighter import EisenHighlighter
 from .inlays import paint_inlays
 from .inline_params import InlineParams
 from .keys import handle_key
@@ -41,7 +45,7 @@ from .options import EditorOptions
 from .scrubber import Scrubber
 from .snippet_session import SnippetSession
 from .sticky import StickyHeaders
-from .swatches import color_of, paint_swatches
+from .swatches import paint_swatches
 
 DIAG_ROLE = {Severity.ERROR: "diag.error", Severity.WARNING: "diag.warning", Severity.INFO: "diag.info"}
 
@@ -49,7 +53,7 @@ DIAG_ROLE = {Severity.ERROR: "diag.error", Severity.WARNING: "diag.warning", Sev
 class CodeEditor(QPlainTextEdit):
     cursor_moved = Signal(int, int)  # line, column (1-based)
     definition_requested = Signal(str)  # Ctrl+click / F12 on a rule name
-    color_requested = Signal(int, str)  # Ctrl+click on a colour literal: (start position, text)
+    color_requested = Signal(int, str)  # pick a colour literal: (start, text); text "" inserts at start
     analysis_changed = Signal()
     hovered = Signal(int)  # text position under the mouse (no button pressed); -1 when the mouse leaves
 
@@ -87,6 +91,7 @@ class CodeEditor(QPlainTextEdit):
         self.sticky = StickyHeaders(self)
         self.inline_params = InlineParams(self)
         self._press_position = 0
+        self.menu_extender: Callable[[QMenu, QAction], None] | None = None  # adds commands to the menu
         self._column_anchor: int | None = None
         self.set_theme(theme)
         self.set_font_size(code_font().pointSize())
@@ -254,19 +259,34 @@ class CodeEditor(QPlainTextEdit):
         if not ctrl:
             self.multi.clear()
         if mods & Qt.KeyboardModifier.ControlModifier:
-            start, word = self.word_at(position)
-            if word and color_of(word) is not None and (word.startswith("#") or self._is_color_token(start)):
-                self.color_requested.emit(start, word)
+            literal = color_token_at(self, position)
+            if literal is not None:
+                self.color_requested.emit(*literal)
                 return
+            _, word = self.word_at(position)
             if word:
                 self.definition_requested.emit(word.split("::")[0])
                 return
         super().mousePressEvent(event)
 
-    def _is_color_token(self, start: int) -> bool:
-        block = self.document().findBlock(start)
-        tokens, _ = lex_line(block.text(), lexer_state(block.previous().userState()))
-        return any(s == start - block.position() and role == "color" for s, _, role in tokens)
+    def contextMenuEvent(self, event: QContextMenuEvent) -> None:  # noqa: N802
+        """The standard edit menu, with the colour picker and the language commands on top."""
+        position = self.cursorForPosition(event.pos()).position()
+        if not self.textCursor().hasSelection():
+            cursor = self.textCursor()
+            cursor.setPosition(position)
+            self.setTextCursor(cursor)  # commands like Go to Definition act where the user clicked
+        menu = self.createStandardContextMenu(event.pos())
+        first = menu.actions()[0]  # Undo: the standard menu is never empty
+        literal = color_token_at(self, position)
+        pick = QAction(tr("Pick Colour…") if literal else tr("Insert Colour…"), menu)
+        pick.triggered.connect(lambda: self.color_requested.emit(*(literal or (position, ""))))
+        menu.insertAction(first, pick)
+        if self.menu_extender is not None:
+            self.menu_extender(menu, first)
+        menu.insertSeparator(first)
+        menu.exec(event.globalPos())
+        menu.deleteLater()
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:  # noqa: N802
         if self._column_anchor is not None:

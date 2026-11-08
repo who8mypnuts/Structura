@@ -30,6 +30,24 @@ PATHS = {
     "file": '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/>',
     "frame": '<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/>',
     "x": '<path d="M7 7l10 10M17 7L7 17"/>',
+    "info": '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
+    "layers": '<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
+    "activity": '<path d="M3 12h4l3-8 4 16 3-8h4"/>',
+    "sphere": '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12c3 2.5 14 2.5 17 0"/><path d="M9 5.5c-2 2-2 11 0 13"/>',
+    "clock": '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    "book": '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h7"/>',
+    "list": '<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/>'
+    '<circle cx="4.5" cy="18" r="1"/>',
+    "sliders": '<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/>'
+    '<circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
+    "grid": '<rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/>'
+    '<rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/>',
+    "aperture": '<circle cx="12" cy="12" r="9"/><path d="M14.3 3.3L9.5 11.6M20.6 9.5h-9.6M18.6 17.8l-4.8-8.3'
+    'M9.7 20.7l4.8-8.3M3.4 14.5h9.6M5.4 6.2l4.8 8.3"/>',
+    "alert": '<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>',
+    "terminal": '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M12 15h5"/>',
+    "chart": '<path d="M4 20h16M7 16v-5M12 16V7M17 16v-8"/>',
+    "film": '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/>',
     "cube": '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/>',
 }
 

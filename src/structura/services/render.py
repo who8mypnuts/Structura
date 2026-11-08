@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from collections.abc import Callable
 from dataclasses import dataclass, replace
 
@@ -14,6 +15,7 @@ from ..core.scene.camera import Camera
 from ..core.scene.ir import SceneIR
 from ..render.api import RenderProgress, prepare_with_frame, progressive
 from ..render.denoise import denoise_with
+from ..render.details import RenderDetails, render_details
 from ..render.output import to_display
 from ..render.settings import RenderSettings
 from .jobs import FunctionJob, JobContext, JobHandle, JobRunner, Lane
@@ -30,6 +32,7 @@ class RenderRequest:
     tag_presets: bool = False
     denoise: str | None = None  # a render.denoise method, run on the compute lane once the render finishes
     display: tuple[float, str] | None = None  # (exposure, view): also make the 8-bit display image in the job
+    resume: RenderProgress | None = None  # continue a stopped render (same scene, camera and settings)
 
 
 @dataclass(frozen=True)
@@ -41,6 +44,9 @@ class RenderUpdate:
     denoiser: str = ""  # the method that produced ``denoised``
     display: np.ndarray | None = None  # uint8 (H, W, 3) for RenderRequest.display, made off the GUI thread
     display_for: tuple[float, str] | None = None  # the (exposure, view) ``display`` was made with
+    details: RenderDetails | None = None  # what the render used (reports)
+    denoised_display: np.ndarray | None = None  # uint8 display image of ``denoised`` (for ``display_for``)
+    passes: int = 0
 
     @property
     def fraction(self) -> float:
@@ -70,16 +76,23 @@ def _display(image: np.ndarray, display: tuple[float, str] | None) -> np.ndarray
 def render_job(req: RenderRequest, backends: DeviceBackends) -> Callable[[JobContext], RenderUpdate]:
     def run(ctx: JobContext) -> RenderUpdate:
         backend = backends.get(req.device)
+        started = time.perf_counter()
         prepared, frame = prepare_with_frame(req.scene, req.settings, req.tag_presets, req.camera)
+        details = render_details(prepared, frame, time.perf_counter() - started)
         ctx.check_cancelled()
         update = None
-        for result in progressive(prepared, req.settings, backend, frame, ctx.check_cancelled):
+        results = progressive(prepared, req.settings, backend, frame, ctx.check_cancelled, req.resume)
+        for passes, result in enumerate(results, 1):
             result.image.flags.writeable = False
             update = RenderUpdate(result, f"{backend.name} {backend.device_name}".strip(), req.settings.samples,
-                                  display=_display(result.image, req.display), display_for=req.display)  # fmt: skip
+                                  display=_display(result.image, req.display), display_for=req.display,
+                                  details=details, passes=passes)  # fmt: skip
             ctx.partial(update)
             ctx.check_cancelled()
-        assert update is not None
+        if update is None:  # a resumed render that had already finished: nothing more to sample
+            assert req.resume is not None
+            update = RenderUpdate(req.resume, f"{backend.name} {backend.device_name}".strip(), req.settings.samples,
+                                  details=details)  # fmt: skip
         return update
 
     return run
@@ -89,7 +102,8 @@ def denoise_job(update: RenderUpdate, method: str) -> Callable[[JobContext], Ren
     def run(ctx: JobContext) -> RenderUpdate:
         image, used = denoise_with(update.progress.image, update.progress.aovs, method)
         image.flags.writeable = False
-        return replace(update, denoised=image, denoiser=used)
+        shown = _display(image, update.display_for)  # tone-mapped here, not on the GUI thread
+        return replace(update, denoised=image, denoiser=used, denoised_display=shown)
 
     return run
 

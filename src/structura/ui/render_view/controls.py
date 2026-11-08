@@ -19,6 +19,7 @@ from ...render.aov_display import CHANNELS
 from ...render.denoise import METHODS
 from ...render.settings import AUTO_PASSES, INTEGRATORS, VIEWS, RenderSettings
 from ..i18n import tr
+from .presets import BY_NAME, CUSTOM, PRESETS, image_size
 
 DENOISE_OFF = "off"
 
@@ -37,10 +38,18 @@ class RenderControls:
     def __init__(self) -> None:
         self.render_button, self.stop_button = QPushButton(tr("Render")), QPushButton(tr("Stop"))
         self.save_button, self.snapshot_button = QPushButton(tr("Save…")), QPushButton(tr("A/B"))
+        self.resume_button = QPushButton(tr("Resume"))
+        self.resume_button.setToolTip(tr("Continue the stopped render where it left off"))
+        self.resume_button.setEnabled(False)
+        self.report_button = QPushButton(tr("Report…"))
+        self.report_button.setToolTip(tr("Save a detailed report of the render: PDF, HTML, Markdown, text, JSON, CSV"))
         self.snapshot_button.setToolTip(
             tr("Snapshot the current image and compare it with the next render (drag the split; click again to clear)")
         )
         self.render_button.setProperty("accent", True)
+        self.preset = _combo([*(p.name for p in PRESETS), CUSTOM], "Standard",
+                             tr("Render preset: samples, image size, noise threshold and denoising"))  # fmt: skip
+        self.preset.setAccessibleName(tr("Render preset"))
         self.integrator = _combo(sorted(INTEGRATORS), "path", tr("Integrator"))
         self.device = _combo(NAMES, "auto", tr("Compute device"))
         self.samples = QSpinBox()
@@ -66,9 +75,14 @@ class RenderControls:
         # status text changes while rendering: it is clipped rather than allowed to widen the window
         self.info.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
         self.info.setMinimumWidth(80)
+        self.preset.currentTextChanged.connect(self.apply_preset)
+        self.samples.valueChanged.connect(self._samples_edited)
+        self.apply_preset(self.preset.currentText())
 
     def widgets(self) -> tuple[QWidget, ...]:
-        return (self.render_button, self.stop_button, self.save_button, self.snapshot_button, self.integrator,
+        return (self.render_button, self.stop_button, self.resume_button, self.save_button, self.report_button,
+                self.snapshot_button,
+                self.preset, self.integrator,
                 self.samples, self.device, self.denoise, self.exposure, self.view_box, self.channel,
                 self.progress, self.info, self.pixel)  # fmt: skip
 
@@ -81,11 +95,30 @@ class RenderControls:
             bar.addWidget(widget)
         return bar
 
+    def apply_preset(self, name: str) -> None:
+        preset = BY_NAME.get(name)
+        if preset is None:
+            return
+        self.samples.blockSignals(True)
+        self.samples.setValue(preset.samples)
+        self.samples.blockSignals(False)
+        self.denoise.setCurrentText(preset.denoise)
+
+    def _samples_edited(self) -> None:
+        preset = BY_NAME.get(self.preset.currentText())
+        if preset is not None and preset.samples != self.samples.value():
+            self.preset.setCurrentText(CUSTOM)
+
+    def image_size(self, viewport: tuple[int, int]) -> tuple[int, int]:
+        preset = BY_NAME.get(self.preset.currentText())
+        return image_size(viewport, preset.long_edge if preset else None)
+
     def settings(self, width: int, height: int) -> RenderSettings:
-        n = self.samples.value()
+        preset = BY_NAME.get(self.preset.currentText())
         return RenderSettings(
-            width=width, height=height, samples=n, samples_per_pass=AUTO_PASSES,
+            width=width, height=height, samples=self.samples.value(), samples_per_pass=AUTO_PASSES,
             integrator=self.integrator.currentText(), aovs=True,
+            noise_threshold=preset.noise_threshold if preset else 0.0,
         )  # fmt: skip
 
     def denoise_method(self) -> str | None:

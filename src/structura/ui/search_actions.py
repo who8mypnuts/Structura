@@ -6,12 +6,10 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from PySide6.QtCore import QObject, Qt, Slot
-from PySide6.QtWidgets import QDockWidget
+from PySide6.QtCore import QObject, Slot
 
 from ..core.text_file import read_script
 from ..core.text_search import script_files
-from .i18n import tr
 from .panels.search import SearchPanel
 
 if TYPE_CHECKING:
@@ -25,19 +23,12 @@ class SearchActions(QObject):
         super().__init__(window)
         self.w = window
         self.panel = SearchPanel()
-        self.dock = QDockWidget(tr("Search", "Panels"), window)
-        self.dock.setObjectName("dock-search")
-        self.dock.setWidget(self.panel)
-        window.addDockWidget(Qt.DockWidgetArea.BottomDockWidgetArea, self.dock)
-        window.tabifyDockWidget(window.docks["Problems"], self.dock)
-        window.docks["Problems"].raise_()  # tabifying made Search the visible tab; Problems comes first
-        window.docks["Search"] = self.dock
+        self.dock = window.panels.add("Search", self.panel)
         self.panel.texts_wanted.connect(self.run)
         self.panel.open_match.connect(self.open_match)
 
     def show(self) -> None:
-        self.dock.show()
-        self.dock.raise_()
+        self.w.panels.show("Search")
         self.panel.focus_query()
 
     def sources(self) -> tuple[dict[str, str], dict[str, str]]:

@@ -3,15 +3,50 @@
 Structura has two engines:
 
 - the **viewport** (OpenGL): instant, interactive, for building and framing. **View ▸ Look** switches
-  between Studio, Legacy (Structure Synth's look) and Clay;
+  between Studio, Legacy (Structure Synth's look), Clay and Technical (flat colours with dark edges);
 - the **precision renderer** in the **Render** tab (F9): a path tracer and three faster integrators on the
   GPU (CUDA, OpenCL or wgpu), or on all CPU cores with the same result.
 
+## The viewport
+
+- **View ▸ Colour By** shows the structure coloured by how it was made — generation (a colour-blind-safe
+  cividis ramp), call site, tag, primitive kind or random — instead of its own colours. Renders and exports
+  always use the script's colours.
+- **View ▸ Overlays:** a ground grid under the structure (OpenGL viewport), the axis gizmo, the bounding box,
+  and the object counts. A warning badge appears while the script has errors: the viewport keeps showing the
+  last good build.
+- **View ▸ Standard Views** (front, back, left, right, top, bottom, isometric) and the **Camera** panel: the
+  camera in numbers (position, target, up, field of view, aperture, focus), saved views, and **Copy to
+  Script**, which writes the camera into the script (`set translation/rotation/pivot/scale` in v1 scripts, a
+  `camera { }` block in v2).
+- The **Inspector** panel describes the object you clicked (kind, generation, tag, colour, position, size,
+  the line that made it) and selects everything alike: the same call site, tag, generation or kind.
+  **Isolate Selection** hides everything else in the viewport; **View ▸ Show All** brings it back.
+- **View ▸ X-Ray** makes the structure see-through in the viewport.
+- **View ▸ Rendered View** (Ctrl+Alt+V) path-traces the viewport itself with the script's render settings,
+  refining while the camera rests — like Blender's rendered view.
+- **Alt+click** a surface to focus the camera there (depth of field in renders); **Shift+F** frames the
+  clicked object.
+- If OpenGL 3.3 is not available, the viewport draws with the render kernels instead (on the GPU when CUDA,
+  OpenCL or wgpu is there): the badge says "CUDA preview" or "CPU preview" and a banner explains why once.
+
 ## The Render view
 
-The tool bar: **Render** (F9), **Stop**, **Save…**, integrator, samples per pixel, device, denoiser, exposure,
-view transform, and the channel to show. A render refines progressively; exposure and view transform apply
-to the finished image without rendering again.
+The tool bar: **Render** (F9), **Stop**, **Save…**, **Report…**, **A/B** compare, the **preset**, integrator,
+samples per pixel, device, denoiser, exposure, view transform, and the channel to show. A render refines
+progressively; exposure and view transform apply to the finished image without rendering again.
+
+| Preset | Samples | Long edge | Noise threshold |
+|--------|---------|-----------|-----------------|
+| Draft | 16 | 960 px | — |
+| Standard | 128 | 1280 px | 0.02 |
+| Final | 1024 | 1920 px | 0.005 |
+| Print 4K | 2048 | 3840 px | 0.003 |
+
+**Stop** pauses a render; **Resume** continues it from the samples it had (the result is the same as an
+uninterrupted render). The image keeps the viewport's aspect. Changing the samples by hand switches to **Custom** (the viewport's
+size, at most 1280 px). Opening a Structure Synth script with raytracer settings offers, once, to render it
+with the **legacy look** (the `classic` integrator) or the modern path tracer.
 
 | Integrator | Use |
 |------------|-----|
@@ -62,8 +97,47 @@ render { integrator path samples 512 noise_threshold 0.01 filter mitchell ground
 Objects with an emissive material light the scene (and are sampled as lights). A tag named like a preset
 (`box::gold`) uses that preset.
 
+The **Materials** panel lists the tags of the built structure and the material each renders with (declared,
+a preset named like the tag, or the default). Choose a preset, change colours and values with a live swatch,
+and **Write to Script** adds or updates the tag's `material` block. The **Lights** panel lists the `light`
+blocks and adds new ones (sun, point, sphere, spot, area) placed around the structure. Both offer to convert a
+Structure Synth (v1) script to v2 first; it builds the same.
+
 ## Saving
 
-**Save…** writes PNG, JPEG, WebP, TIFF (display-referred, with the current exposure and view transform) or
-EXR (linear, with the channels). PNG and EXR files carry the script, seed, camera and settings, so a render
-can be reproduced.
+**Save…** (Ctrl+Alt+S) opens a Save As dialog and writes PNG, JPEG, WebP, TIFF (display-referred, with the
+current exposure and view transform) or EXR (linear, with the channels). PNG and EXR files carry the script,
+seed, camera and settings, so a render can be reproduced — **File ▸ Open from Render…** reopens them.
+
+## Render reports
+
+**Report…** (or **Render ▸ Save Render Report…**) writes everything about the render, for your notes, a
+client, or a forum post:
+
+- **at a glance:** resolution, objects, samples, time, integrator, device, a preview, the histogram and the
+  palette of dominant colours;
+- **script:** file, dialect, lines, rule definitions, SHA-256, seed, parameter values;
+- **geometry:** objects by kind with triangles if baked, generations, bounding box, extent, density, instance
+  size range, mirrored and sheared instances, distinct colours, tags, memory;
+- **build:** time, throughput, rule applications, generations against `maxdepth`, objects against
+  `maxobjects`, culling;
+- **camera:** position, target, direction, heading and pitch, field of view both ways, the 35 mm focal length,
+  depth of field;
+- **render settings, lighting and environment, and the material table;**
+- **image:** exposure, dynamic range in stops, clipped and crushed pixels, samples per pixel (min / mean /
+  max), pixels that converged early, **coverage**, how many objects are actually **visible**, depth range;
+- **performance:** render and preparation time, samples per second, passes, BVH nodes, leaves, depth and
+  memory;
+- **system** and a **command line** that renders the same image with `structura render`.
+
+Formats: **PDF**, **HTML** (one file, images inlined, light and dark), **Markdown** (with a preview image
+beside it), **plain text**, **JSON** (every value, machine-readable), **CSV** (one row per value) and
+**OpenDocument** (`.odt`). `structura render … --report report.pdf` writes the same report from the command
+line.
+
+## The render queue
+
+**Render ▸ Add to Render Queue…** (Ctrl+Shift+F9) asks for a file and queues the current view with the tool
+bar's settings. Queued renders run one after another while you keep working, and each is saved when it
+finishes — with a PDF report next to it if **Write a PDF report with each render** is ticked in the **Render
+Queue** panel. The panel shows progress and time; cancel, remove or show a render in its folder.

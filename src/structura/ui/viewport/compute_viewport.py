@@ -5,38 +5,51 @@ Lower resolution while moving, refined when idle."""
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 import numpy as np
 from PySide6.QtCore import QPoint, QRect, Qt, QTimer, Signal, Slot
-from PySide6.QtGui import QColor, QImage, QMouseEvent, QPainter, QPaintEvent, QWheelEvent
+from PySide6.QtGui import QColor, QImage, QKeyEvent, QMouseEvent, QPainter, QPaintEvent, QWheelEvent
 from PySide6.QtWidgets import QWidget
 
 from ...core.scene.camera import Camera
 from ...core.scene.ir import SceneIR
+from ...render.api import script_settings
 from ...render.output import to_display
-from ...render.settings import RenderSettings
+from ...render.settings import AUTO_PASSES, RenderSettings
 from ...services.render import RenderRequest, RenderService, RenderUpdate
+from ..i18n import tr
+from .navigation import Navigator, numpad_view
 from .orbit import OrbitController
+from .viewport_widget import CLICK_SLOP
 
 DOC = "viewport-cpu"
 IDLE_MS = 250
 DISPLAY = (0.0, "soft")  # made by the render job, so the GUI thread only wraps it in a QImage
+RENDERED_SAMPLES = 64
 
 
 class ComputeViewport(QWidget):
     picked = Signal(object)
     camera_changed = Signal(object)
     device_changed = Signal(str)  # the device the preview runs on, e.g. "cuda NVIDIA GeForce GTX 1660"
+    clicked = Signal(QPoint, bool)  # widget position, Alt held: the host picks on the CPU
+    frame_requested = Signal(bool)  # F: frame all; Shift+F: frame the selection
+    view_requested = Signal(str)  # a keypad standard view (navigation.numpad_view)
 
     def __init__(self, renders: RenderService, parent: QWidget | None = None, device: str = "auto") -> None:
         super().__init__(parent)
         self.renders = renders
         self.orbit = OrbitController()
+        self.navigator = Navigator(self.orbit)
         self.scene: SceneIR | None = None
         self.enabled = True  # False: never render (tests, STRUCTURA_PREVIEW=off)
+        self.rendered = False  # True: the Rendered view (path tracing) instead of the quick preview
+        self.display = DISPLAY
         self.device = device  # compute.select name; "auto" = the best available (GPU first)
         self.device_label = ""
         self.image: QImage | None = None
-        self._last: QPoint | None = None
+        self._press: QPoint | None = None
         self._idle = QTimer(self)
         self._idle.setSingleShot(True)
         self._idle.setInterval(IDLE_MS)
@@ -44,6 +57,8 @@ class ComputeViewport(QWidget):
         renders.progress.connect(self._on_update)
         renders.finished.connect(self._on_update)
         self.setMinimumSize(160, 120)
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)  # fly keys
+        self.setAccessibleName(tr("Viewport"))
 
     def set_scene(self, scene: SceneIR | None, camera: Camera | None = None) -> None:
         self.scene = scene
@@ -59,9 +74,17 @@ class ComputeViewport(QWidget):
         return self.orbit.camera()
 
     def _settings(self, fast: bool) -> RenderSettings:
+        """Preview: the quick 'preview' integrator. Rendered view: the script's own render settings, path traced
+        progressively (one sample while moving, RENDERED_SAMPLES when the camera rests)."""
         scale = 0.5 if fast else 1.0
         w, h = max(8, int(self.width() * scale)), max(8, int(self.height() * scale))
-        return RenderSettings(width=w, height=h, samples=1 if fast else 4, samples_per_pass=1, integrator="preview")
+        if not self.rendered or self.scene is None:
+            return RenderSettings(width=w, height=h, samples=1 if fast else 4, samples_per_pass=1, integrator="preview")
+        base = script_settings(self.scene)
+        integrator = "classic" if base.integrator == "classic" else "path"
+        samples = 1 if fast else RENDERED_SAMPLES
+        return replace(base, width=w, height=h, samples=samples, samples_per_pass=AUTO_PASSES, frame=False, aovs=False,
+                       integrator=integrator)  # fmt: skip
 
     def _request(self, fast: bool) -> None:
         if not self.enabled:
@@ -72,7 +95,8 @@ class ComputeViewport(QWidget):
             return
         settings = self._settings(fast)
         camera = self.orbit.camera()
-        self.renders.request(RenderRequest(DOC, self.scene, settings, self.device, camera=camera, display=DISPLAY))
+        self.display = (0.0, settings.view_transform) if self.rendered else DISPLAY
+        self.renders.request(RenderRequest(DOC, self.scene, settings, self.device, camera=camera, display=self.display))
 
     @Slot()
     def _refine(self) -> None:
@@ -82,7 +106,7 @@ class ComputeViewport(QWidget):
     def _on_update(self, doc: str, update: object) -> None:
         if doc != DOC or not isinstance(update, RenderUpdate):
             return
-        rgb = update.display if update.display is not None else to_display(update.progress.image, *DISPLAY)
+        rgb = update.display if update.display is not None else to_display(update.progress.image, *self.display)
         rgb = np.ascontiguousarray(rgb)
         h, w, _ = rgb.shape
         self.image = QImage(rgb.data, w, h, 3 * w, QImage.Format.Format_RGB888).copy()
@@ -112,25 +136,34 @@ class ComputeViewport(QWidget):
 
     def badge_text(self) -> str:
         backend = self.device_label.split(" ")[0] if self.device_label else ""
-        return "CPU preview" if backend in ("", "cpu") else f"{backend.upper()} preview"
+        kind = "rendered" if self.rendered else "preview"
+        return f"CPU {kind}" if backend in ("", "cpu") else f"{backend.upper()} {kind}"
 
     def mousePressEvent(self, event: QMouseEvent) -> None:  # noqa: N802
-        self._last = event.position().toPoint()
+        self._press = event.position().toPoint()
+        self.navigator.press(event)
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:  # noqa: N802
-        if self._last is None:
-            return
-        pos = event.position().toPoint()
-        d, self._last = pos - self._last, pos
-        if event.modifiers() & Qt.KeyboardModifier.ShiftModifier or event.buttons() & Qt.MouseButton.MiddleButton:
-            self.orbit.pan(d.x(), d.y())
-        else:
-            self.orbit.orbit(d.x(), d.y())
-        self._moved()
+        if self.navigator.move(event):
+            self._moved()
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:  # noqa: N802
-        self._last = None
+        pos = event.position().toPoint()
+        if self._press is not None and (pos - self._press).manhattanLength() <= CLICK_SLOP:
+            self.clicked.emit(pos, bool(event.modifiers() & Qt.KeyboardModifier.AltModifier))
+        self._press = None
+        self.navigator.release()
 
     def wheelEvent(self, event: QWheelEvent) -> None:  # noqa: N802
-        self.orbit.dolly(event.angleDelta().y() / 120.0)
+        self.navigator.wheel(event.angleDelta().y() / 120.0)
         self._moved()
+
+    def keyPressEvent(self, event: QKeyEvent) -> None:  # noqa: N802
+        if self.navigator.key(event):
+            self._moved()
+        elif (view := numpad_view(event)) is not None:
+            self.view_requested.emit(view)
+        elif event.key() == Qt.Key.Key_F:
+            self.frame_requested.emit(bool(event.modifiers() & Qt.KeyboardModifier.ShiftModifier))
+        else:
+            super().keyPressEvent(event)

@@ -4,19 +4,17 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import replace
-from pathlib import Path
 
 import numpy as np
 from PySide6.QtCore import QRect, Signal, Slot
 from PySide6.QtGui import QImage
-from PySide6.QtWidgets import QFileDialog, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QVBoxLayout, QWidget
 
 from ...core.scene.camera import Camera
 from ...core.scene.ir import SceneIR
 from ...render.aov_display import channel_preview
 from ...render.api import RenderProgress
-from ...render.metadata import render_metadata
-from ...render.output import save_image, to_display
+from ...render.output import to_display
 from ...render.settings import RenderSettings
 from ...services.jobs import ErrorInfo
 from ...services.render import RenderRequest, RenderService, RenderUpdate
@@ -25,11 +23,13 @@ from .image_view import ImageView
 from .regions import eta, merge_base, merged
 
 DOC = "render-view"
-RenderSource = Callable[[], tuple[SceneIR, Camera, RenderSettings, str] | None]
+RenderInput = tuple[SceneIR, Camera, RenderSettings, str]  # scene, camera, settings, script text
+RenderSource = Callable[[], RenderInput | None]
 
 
 class RenderView(QWidget):
     status = Signal(str)
+    started = Signal()  # a render (or region render) was requested; ``source`` holds what it renders
 
     def __init__(self, renders: RenderService, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -45,13 +45,14 @@ class RenderView(QWidget):
         self.last: RenderUpdate | None = None
         self._base: RenderUpdate | None = None  # region renders are pasted into this result
         self.request_source: RenderSource | None = None
+        self.source: RenderInput | None = None  # of the last render started
         self._connect()
 
     def _connect(self) -> None:
         c = self.controls
         c.render_button.clicked.connect(self.start)
         c.stop_button.clicked.connect(self.stop)
-        c.save_button.clicked.connect(self.save_dialog)
+        c.resume_button.clicked.connect(self.resume)
         c.exposure.valueChanged.connect(self._redisplay)
         c.view_box.currentTextChanged.connect(self._redisplay)
         c.channel.currentTextChanged.connect(self._redisplay)
@@ -72,14 +73,20 @@ class RenderView(QWidget):
         if source is None:
             self.status.emit("Nothing to render yet: build the script first (F5).")
             return
-        scene, camera, settings, script = source
-        self._script = script
-        self._base = merge_base(self.last, settings, region)
-        settings = replace(settings, region=region if self._base is not None else None)
+        self._base = merge_base(self.last, source[2], region)
+        self.controls.resume_button.setEnabled(False)
         self.controls.progress.setValue(0)
-        device, denoise = self.controls.device.currentText(), self.controls.denoise_method()
-        display = (self.controls.exposure.value(), self.controls.view_transform())
-        self.renders.request(RenderRequest(DOC, scene, settings, device, camera, denoise=denoise, display=display))
+        self.renders.request(self.make_request(source, region if self._base is not None else None))
+        self.source = source
+        self.started.emit()
+
+    def make_request(self, source: RenderInput, region: tuple[int, int, int, int] | None = None) -> RenderRequest:
+        """A render of ``source`` with the tool bar's device, denoiser and display settings."""
+        scene, camera, settings, _ = source
+        c = self.controls
+        display = (c.exposure.value(), c.view_transform())
+        return RenderRequest(DOC, scene, replace(settings, region=region), c.device.currentText(), camera,
+                             denoise=c.denoise_method(), display=display)  # fmt: skip
 
     @Slot(QRect)
     def render_region(self, rect: QRect) -> None:
@@ -104,6 +111,19 @@ class RenderView(QWidget):
     @Slot()
     def stop(self) -> None:
         self.renders.cancel(DOC)
+        last = self.last
+        resumable = last is not None and last.fraction < 1.0 and last.progress.film is not None
+        self.controls.resume_button.setEnabled(resumable and self._base is None)  # not region renders
+
+    @Slot()
+    def resume(self) -> None:
+        """Continue the stopped render: same scene, camera and settings, from the samples it had."""
+        if self.source is None or self.last is None or self.last.progress.film is None or self.last.fraction >= 1:
+            return
+        self.controls.resume_button.setEnabled(False)
+        request = replace(self.make_request(self.source), resume=self.last.progress)
+        self.renders.request(request)
+        self.status.emit(f"Resuming at {self.last.progress.samples} spp")
 
     @Slot(str, object)
     def _on_update(self, doc: str, update: object) -> None:
@@ -154,8 +174,10 @@ class RenderView(QWidget):
         if preview is not None:
             return to_display(preview, 0.0, "standard")
         wanted = (c.exposure.value(), c.view_transform())
-        if image is p.image and self.last.display is not None and self.last.display_for == wanted:
-            return self.last.display  # made by the render job: no per-pass tone mapping on the GUI thread
+        if self.last.display_for == wanted:  # made by the render or denoise job: no tone mapping here
+            made = self.last.display if image is p.image else self.last.denoised_display
+            if made is not None and (image is p.image or image is self.last.denoised):
+                return made
         return to_display(image, *wanted)
 
     @Slot()
@@ -173,25 +195,3 @@ class RenderView(QWidget):
         if doc == DOC and isinstance(info, ErrorInfo):
             self.controls.info.setText("Render failed")
             self.status.emit(info.message)
-
-    def save(self, path: Path, camera: Camera, settings: RenderSettings) -> None:
-        image = self.shown_image()
-        if image is None or self.last is None:
-            return
-        meta = render_metadata(settings, camera, getattr(self, "_script", None))
-        aovs = self.last.progress.aovs
-        c = self.controls
-        save_image(image, path, c.exposure.value(), c.view_transform(), meta, aovs.layers() if aovs else None)
-
-    @Slot()
-    def save_dialog(self) -> None:
-        if self.last is None:
-            return
-        name, _ = QFileDialog.getSaveFileName(
-            self, "Save render", "render.png", "Images (*.png *.jpg *.webp *.tif *.exr)"
-        )
-        if name and self.request_source is not None:
-            source = self.request_source()
-            if source is not None:
-                self.save(Path(name), source[1], source[2])
-                self.status.emit(f"Saved {name}")

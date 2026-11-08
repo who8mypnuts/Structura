@@ -134,3 +134,15 @@ def test_fair_lock_serves_waiting_threads_first() -> None:
         order.append("owner")
     waiter.join()
     assert order == ["waiter", "owner"]
+
+
+def test_a_resumed_render_equals_an_uninterrupted_one() -> None:
+    settings = replace(BASE, samples=24, samples_per_pass=8, noise_threshold=0.0)
+    prepared = prepare(_scene())
+    whole = render(prepared, settings, CpuBackend())
+    first = next(iter(progressive(prepared, settings, CpuBackend())))  # stopped after the first pass
+    assert first.samples == 8 and first.film is not None
+    *_, resumed = progressive(prepared, settings, CpuBackend(), resume=first)
+    assert resumed.samples == 24 and resumed.seconds >= first.seconds
+    assert np.abs(resumed.image - whole.image).max() < 1e-5
+    assert np.array_equal(resumed.sample_map, whole.sample_map)

@@ -14,7 +14,9 @@ from PySide6.QtWidgets import QFileDialog, QMessageBox
 from ..core.animation.timeline import Timeline
 from ..core.project import model
 from ..core.project.model import SUFFIX, Project
+from ..render.metadata import project_from_metadata, read_metadata
 from .documents import EditorTab
+from .save_paths import SavePaths
 
 if TYPE_CHECKING:
     from .app_window import MainWindow
@@ -42,10 +44,29 @@ class ProjectActions(QObject):
         self.w.docs.recent.add(path)
         return tab
 
-    def apply(self, tab: EditorTab, project: Project, path: Path) -> None:
+    def open_render(self, path: Path) -> EditorTab | None:
+        """File ▸ Open from Render: a new tab with the script, seed, parameters, camera and render settings
+        that made an image (PNG or EXR written by Structura)."""
+        try:
+            project = project_from_metadata(read_metadata(path))
+        except (OSError, ValueError, KeyError) as exc:
+            QMessageBox.warning(self.w, "Cannot open the render's script", f"{path.name}: {exc}")
+            return None
+        tab = self.w.tabs.new_document(project.text)
+        self.apply(tab, project, None)
+        tab.suggested_name = path.with_suffix(".es").name
+        tab.retitle()
+        return tab
+
+    def open_render_dialog(self) -> None:
+        name, _ = QFileDialog.getOpenFileName(self.w, "Open from Render", "", "Renders (*.png *.exr)")
+        if name:
+            self.open_render(Path(name))
+
+    def apply(self, tab: EditorTab, project: Project, path: Path | None) -> None:
         tab.project_path = path
         tab.seed, tab.params, tab.render_overrides = project.seed, dict(project.params), dict(project.render)
-        tab.initial_camera = project.camera
+        tab.initial_camera, tab.bookmarks = project.camera, dict(project.bookmarks)
         tab.timeline, tab.frame = project.timeline or Timeline(), (project.timeline or Timeline()).start
         tab.retitle()
         self.w.on_tab_changed(tab)
@@ -58,7 +79,7 @@ class ProjectActions(QObject):
             text=tab.text(), linked=linked, seed=tab.seed, params=dict(tab.params),
             camera=self.w.viewport.camera() if tab.outcome is not None else tab.initial_camera,
             render=dict(tab.render_overrides), thumbnail_png_b64=self._thumbnail(),
-            timeline=tab.timeline if tab.timeline != Timeline() else None,
+            timeline=tab.timeline if tab.timeline != Timeline() else None, bookmarks=dict(tab.bookmarks),
         )  # fmt: skip
 
     def save(self, tab: EditorTab, path: Path | None = None) -> bool:
@@ -78,9 +99,13 @@ class ProjectActions(QObject):
         tab = tab or self.w.tabs.current()
         if tab is None:
             return False
-        suggestion = tab.project_path or (tab.path.with_suffix(SUFFIX) if tab.path else Path("untitled" + SUFFIX))
-        name, _ = QFileDialog.getSaveFileName(self.w, "Save project", str(suggestion), PROJECT_FILTER)
-        return bool(name) and self.save(tab, Path(name).with_suffix(SUFFIX))
+        paths = SavePaths(self.w.settings)
+        stem = Path(tab.suggested_name).stem if tab.suggested_name else "untitled"
+        suggestion = tab.project_path or (
+            tab.path.with_suffix(SUFFIX) if tab.path else paths.suggest("project", stem + SUFFIX)
+        )
+        answer = paths.ask(self.w, "project", "Save project", suggestion, PROJECT_FILTER.split(";;"))
+        return answer is not None and self.save(tab, answer[0].with_suffix(SUFFIX))
 
     def _thumbnail(self) -> str:
         image = self.w.viewport.grab().toImage()

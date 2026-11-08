@@ -69,10 +69,10 @@ def _tr_calls() -> set[tuple[str, str]]:
 
 
 def _fixed() -> set[tuple[str, str]]:
-    window = (UI / "app_window.py").read_text(encoding="utf-8")
+    panels = (UI / "dock_layout.py").read_text(encoding="utf-8")
     menus = re.search(r"MENU_ORDER = \(([^)]*)\)", (UI / "menus.py").read_text(encoding="utf-8"))
     names = re.findall(r'"([^"]+)"', menus.group(1)) if menus else []
-    return ({("Panels", t) for t in re.findall(r'\("([^"]+)", self\.\w+\)', window)}
+    return ({("Panels", t) for t in re.findall(r'Panel\("([^"]+)"', panels)}
             | {("Menus", m) for m in [*names, "Open Recent", "Timeline"]})  # fmt: skip
 
 

@@ -168,3 +168,48 @@ def parse_legacy(text: str, v2: bool = False) -> Program:
     """Tokenize and parse preprocessed text (v1 grammar, plus the v2 operators when ``v2``). Raises ParseError
     on the first error (1.5 behaviour)."""
     return LegacyParser(tokenize(text), v2).program()
+
+
+MAX_ERRORS = 50
+
+
+class RecoveringParser(LegacyParser):
+    """The editor's parser (docs/12 §2.2): after an error it notes it and resumes at the next 'rule', so the
+    Problems panel lists every broken rule at once and the rules that do parse stay known (outline,
+    completion, go to definition). The first error is always the one the strict parser reports. Only
+    analysis uses it; builds still go through the strict parser (1.5 behaviour)."""
+
+    def __init__(self, tokens: list[Token], v2: bool = False) -> None:
+        super().__init__(tokens, v2)
+        self.errors: list[ParseError] = []
+
+    def program(self) -> Program:
+        top: list[Action] = []
+        rules: list[RuleDef] = []
+        while self.tok.kind is not Kind.END and len(self.errors) < MAX_ERRORS:
+            start = self.pos
+            try:
+                if self.tok.kind is Kind.RULE:
+                    rules.append(self.rule())
+                elif self.tok.kind in (Kind.SET, *_ACTION_START):
+                    top.append(self.statement())
+                else:
+                    self.expect(Kind.END, "Unexpected symbol found. At this scope only RULE and SET statements are "
+                                          "allowed.")  # fmt: skip
+            except ParseError as exc:
+                self.errors.append(exc)
+                self._resume(start)
+        return Program(tuple(top), tuple(rules), self.depth_first)
+
+    def _resume(self, start: int) -> None:
+        """Skip to the next 'rule' keyword (rules never nest, so it always starts a top-level rule)."""
+        self.pos = start
+        self.advance()
+        while self.tok.kind not in (Kind.RULE, Kind.END):
+            self.advance()
+
+
+def parse_recovering(text: str, v2: bool = False) -> tuple[Program, list[ParseError]]:
+    """Every syntax error (up to MAX_ERRORS) and the program made of what parsed."""
+    parser = RecoveringParser(tokenize(text), v2)
+    return parser.program(), parser.errors

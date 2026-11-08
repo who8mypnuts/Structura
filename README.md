@@ -11,7 +11,9 @@
 - A code editor with:
   - semantic highlighting, completion with docs, signature help, hover (including rule probabilities) and inlay hints;
   - go to definition, rename and format;
-  - number scrubbing (Alt+drag), colour swatches, and 61 snippets;
+  - number scrubbing (Alt+drag), colour swatches with a live colour picker (right-click a colour), and 61
+    snippets;
+  - error recovery: every broken rule is reported at once;
   - 40 themes (6 Nord variants), plus VS Code and base16 import.
 - Two render engines:
   - the **preview engine** (GLSL: instancing, sphere impostors, SSAO, shadows, order-independent
@@ -20,6 +22,11 @@
     spot/rect lights, emissive geometry, HDRI and sun-sky, depth of field and bokeh, adaptive sampling,
     AOVs, denoising, ground/shadow catcher, fog, and Structure Synth's classic look). One kernel source
     runs on **CUDA, OpenCL, WGSL and the CPU (Numba)**.
+- A studio window: an activity rail of side panels (Files, Examples gallery with thumbnails, Outline,
+  Parameters, Camera with saved views, Inspector, Materials, Lights, Variations, Render Settings),
+  workspaces (Code, Explore, Render, Present), a welcome page, toasts, a render queue and an Activity panel.
+- **Render reports** with every statistic about a render — geometry, camera, settings, image statistics,
+  visible objects, BVH and performance — as PDF, HTML, Markdown, text, JSON, CSV or ODT.
 - Animation: a timeline with keyed parameters, seed and camera, v2 `time` expressions, and frame/video
   rendering.
 - Exports: OBJ (+MTL), PLY, STL (watertight union, CSG markers), 3MF (instanced, colour), glTF/GLB
@@ -46,14 +53,15 @@ uv pip install --python .venv/bin/python -e ".[dev]"
 
 - **First launch is slow** (up to a minute): Numba compiles the builder and renderer kernels once, then
   caches them.
-- **No 3D viewport / "CPU preview" badge:** the viewport needs desktop OpenGL 3.3. Structura probes the
-  driver before creating the window and falls back to the CPU preview, logging one line that explains why.
-  Run `structura doctor` from your desktop session to see every OpenGL format tried and the result, and
-  include its output in bug reports.
+- **"CUDA preview" / "CPU preview" badge:** the OpenGL viewport needs desktop OpenGL 3.3. Structura probes the
+  driver before creating the window; without it the viewport draws with the render kernels (on the GPU when
+  CUDA, OpenCL or wgpu is available). Run `structura doctor` from your desktop session to see every OpenGL
+  format tried, and include its output in bug reports.
 - **Force a backend:** `STRUCTURA_PREVIEW=cpu structura-gui`, or `gpu` to try OpenGL even when the probe
-  failed.
-- **Linux, Wayland:** if OpenGL fails under Wayland but works under X11 (some NVIDIA setups), run through
-  XWayland with `QT_QPA_PLATFORM=xcb structura-gui`.
+  failed; `STRUCTURA_PREVIEW_DEVICE=cuda|opencl|wgpu|cpu` picks the device of the compute preview.
+- **Linux, Wayland:** Structura asks for desktop OpenGL explicitly (Qt would otherwise pick OpenGL ES on
+  NVIDIA). If native Wayland still has no OpenGL, it restarts itself once on XWayland and remembers that;
+  `QT_QPA_PLATFORM=xcb structura-gui` forces it.
 - **Linux, X11:** Qt ≥ 6.5 needs `libxcb-cursor0` (Debian/Ubuntu: `sudo apt install libxcb-cursor0`).
 
 ## Command line
@@ -63,11 +71,17 @@ structura lint   spiral.es                                # diagnostics with lin
 structura build  spiral.es --seed 3                       # object counts and stats
 structura render spiral.es -o spiral.png --samples 256 --integrator path --device auto
 structura render legacy.es -o legacy.png --integrator classic       # the Structure Synth 1.5 look
+structura render spiral.es -o spiral.png --report spiral.pdf --report spiral.json   # render reports
 structura export spiral.es -o spiral.usdz                 # .obj .ply .stl .glb .usd[a|c|z] .py .pov .sc …
 structura export spiral.es -o spiral.stl --option watertight=true --option unit_scale=10
+structura export spiral.es -o spiral.usdc --preset "Omniverse"     # options saved in the export sheet
+structura template spiral.es --template Sunflow-Colored -o spiral.sc
 structura animate anim.es -o frames/f.png --frames 0:96 --video anim.mp4    # v2: frame, time, fps
 structura run "JavaScript - Movie.es" --limit 10          # Structure Synth '#javascript' scripts
 structura doctor                                          # Qt platform, OpenGL and compute devices
+structura devices                                         # the compute devices; which one 'auto' picks
+structura theme list                                      # also: theme check FILE, theme import FILE
+structura spiral.es                                       # open scripts or projects in the app
 ```
 
 Devices: `auto` picks CUDA, then an OpenCL GPU, then a wgpu GPU, then the multithreaded CPU backend.

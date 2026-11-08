@@ -93,6 +93,18 @@ flowchart LR
 - **"Render in viewport":** the viewport can display the *precision engine's* progressive output for the same
   camera (Blender-style rendered view). The preview engine then only draws overlays.
 
+> **As built (M10):** looks Studio, Legacy, Clay, Flat and **Technical** (flat colour, dark edges from depth and
+> normal discontinuities in the composite pass). **Colour-by** modes (authored, generation on a cividis ramp,
+> call site, tag, kind, random; `core/scene/color_by.py`) recolour the scene on the io lane and re-upload —
+> one path for both viewports — instead of a uniform switch. A **ground grid** is drawn analytically in the
+> composite shader (plane under the structure, depth-tested against the G-buffer, fading with distance and at
+> grazing angles). **X-ray** and **isolation** go through the same path (`core/scene/view_filter.py`): X-ray
+> lowers every alpha so the OIT passes show the structure through itself; isolated sets collapse the other
+> frames to a point, which keeps row numbers (provenance, picking) valid. **Rendered View** (View ▸ Rendered
+> View, Ctrl+Alt+V) switches the viewport to the compute viewport with the script's render settings and the
+> path tracer (one sample while moving, 64 when still), on the best compute device. Not built: adaptive
+> quality while moving.
+
 ## 6. Picking & provenance
 
 1. On click or hover-pause, re-render the id pass (R32UI) if stale. Read a 5×5 region through a **pixel
@@ -104,6 +116,12 @@ flowchart LR
 4. Selection sets (by rule, tag or generation) are a per-instance flag bit, updated with `glBufferSubData`
    on the meta attribute. Outlines are drawn in post.
 5. Alt+click sets the render camera's focus distance from the picked depth.
+
+> **As built:** the GPU viewport reads the id attachment on click (§2.4 of docs/22). The compute preview, which
+> has no id buffer, picks with an exact CPU ray cast against every instance's unit cube (`preview/pick.py`,
+> on the compute lane); Alt+click uses the same cast to set the camera's focus distance in both viewports.
+> The **Inspector** panel fills in on every pick, and selects alike objects (same call site, tag, generation
+> or kind) by tinting them. Selection outlines and "Show ancestry" trace rebuilds are not built.
 
 ## 7. Camera controls
 
@@ -120,6 +138,14 @@ flowchart LR
 - Turntable (default) or trackball (legacy) orbit; animated transitions (200 ms).
 - **Copy camera to script** writes 1.5 `set` lines (v1) or a `camera {}` block (v2) via the exact mapping in
   [07](07-scene-model.md) §5.
+
+> **As built (M10):** `ui/viewport/navigation.py` maps mouse buttons to orbit / pan / zoom-roll / fly for the
+> three presets in the table (Preferences ▸ Viewport controls), shared by both viewports. Fly is RMB + W A S
+> D / Q E. F frames everything, Shift+F the selection. Standard views (front … isometric) are View ▸
+> Standard Views, buttons in the Camera panel, and keypad 1 / 3 / 7 (Ctrl: the opposite side) and 5
+> (isometric). Camera moves glide over 200 ms (`camera_motion.py`) unless Reduce motion is on. Orbit is
+> turntable, and trackball with the Structure Synth controls. Copy Camera to Script is
+> `core/scene/camera_script.py`, the exact inverse of the 1.5 view mapping.
 
 ## 8. Overlays & HUD
 
@@ -171,6 +197,11 @@ A watchdog still covers platforms where the GL widget is created but never initi
 
 A badge names the device ("CUDA preview", "CPU preview"), and the status bar shows it too. The feature set
 is otherwise identical.
+
+> **As built (M10):** overlays are a transparent QPainter widget over either viewport
+> (`ui/viewport/overlay.py`): axis gizmo, dashed bounding box, object-count HUD, and a badge while the script
+> has errors (the last good build stays visible). The ground grid is in the GL composite pass. View ▸
+> Overlays toggles each; the choice is saved. No fps or GPU-memory HUD.
 
 ## 10. Screenshots
 

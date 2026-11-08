@@ -118,3 +118,9 @@ class SceneIR:
 
     def count(self, kind: PrimitiveKind) -> int:
         return int(np.count_nonzero(self.kind == kind))
+
+    def kind_counts(self) -> dict[str, int]:
+        """{kind name: count} for the kinds present, most frequent first ("box", "sphere", …)."""
+        kinds, counts = np.unique(self.kind, return_counts=True)
+        pairs = sorted(zip(kinds.tolist(), counts.tolist(), strict=True), key=lambda kc: (-kc[1], kc[0]))
+        return {PrimitiveKind(k).name.lower(): int(c) for k, c in pairs}

@@ -18,6 +18,7 @@ from PySide6.QtWidgets import QWidget
 from ...core.scene.camera import Camera
 from ...preview.instances import PreviewScene
 from ...preview.options import PreviewOptions
+from .navigation import Navigator, numpad_view
 from .orbit import OrbitController
 
 CLICK_SLOP = 4  # pixels a press may move and still count as a click (pick)
@@ -27,19 +28,22 @@ class ViewportWidget(QOpenGLWidget):
     picked = Signal(object)  # SceneIR row or None
     gl_failed = Signal(str)  # the host switches to the CPU preview
     camera_changed = Signal(object)  # Camera
+    clicked = Signal(QPoint, bool)  # widget position, Alt held (Alt+click focuses the camera there)
+    frame_requested = Signal(bool)  # F: frame all; Shift+F: frame the selection
+    view_requested = Signal(str)  # a keypad standard view (navigation.numpad_view)
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setMinimumSize(160, 120)
         self.orbit = OrbitController()
+        self.navigator = Navigator(self.orbit)
         self.options = PreviewOptions()
         self.renderer: Any = None
         self._scene: PreviewScene | None = None
         self._scene_dirty = False
         self._highlight: tuple[np.ndarray | None, int] | None = None
         self._press: QPoint | None = None
-        self._last: QPoint | None = None
         self._refine = QTimer(self)
         self._refine.setInterval(16)
         self._refine.timeout.connect(self.update)
@@ -112,29 +116,22 @@ class ViewportWidget(QOpenGLWidget):
         self.update()
 
     def mousePressEvent(self, event: QMouseEvent) -> None:  # noqa: N802
-        self._press = self._last = event.position().toPoint()
+        self._press = event.position().toPoint()
+        self.navigator.press(event)
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:  # noqa: N802
-        if self._last is None:
-            return
-        pos = event.position().toPoint()
-        delta = pos - self._last
-        self._last = pos
-        buttons, mods = event.buttons(), event.modifiers()
-        if buttons & Qt.MouseButton.MiddleButton or (mods & Qt.KeyboardModifier.ShiftModifier):
-            self.orbit.pan(delta.x(), delta.y())
-        elif mods & Qt.KeyboardModifier.AltModifier:
-            self.orbit.dolly(-delta.y() / 40.0)
-            self.orbit.roll(delta.x() * 0.005)
-        elif buttons & (Qt.MouseButton.LeftButton | Qt.MouseButton.RightButton):
-            self.orbit.orbit(delta.x(), delta.y())
-        self._camera_moved()
+        if self.navigator.move(event):
+            self._camera_moved()
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:  # noqa: N802
         pos = event.position().toPoint()
         if self._press is not None and (pos - self._press).manhattanLength() <= CLICK_SLOP:
-            self.pick_at(pos)
-        self._press = self._last = None
+            if event.modifiers() & Qt.KeyboardModifier.AltModifier:
+                self.clicked.emit(pos, True)
+            else:
+                self.pick_at(pos)
+        self._press = None
+        self.navigator.release()
 
     def pick_at(self, pos: QPoint) -> None:
         if self.renderer is None:
@@ -146,11 +143,15 @@ class ViewportWidget(QOpenGLWidget):
         self.picked.emit(row)
 
     def wheelEvent(self, event: QWheelEvent) -> None:  # noqa: N802
-        self.orbit.dolly(event.angleDelta().y() / 120.0)
+        self.navigator.wheel(event.angleDelta().y() / 120.0)
         self._camera_moved()
 
     def keyPressEvent(self, event: Any) -> None:  # noqa: N802
-        if event.key() == Qt.Key.Key_F:
-            self.frame_all()
+        if self.navigator.key(event):
+            self._camera_moved()
+        elif (view := numpad_view(event)) is not None:
+            self.view_requested.emit(view)
+        elif event.key() == Qt.Key.Key_F:
+            self.frame_requested.emit(bool(event.modifiers() & Qt.KeyboardModifier.ShiftModifier))
         else:
             super().keyPressEvent(event)

@@ -40,7 +40,8 @@ class QuickOpen(PickerPopup):
             for path in paths:
                 if path.resolve() not in seen:
                     seen.add(path.resolve())
-                    entries.append((path.name, f"{group} · {path.parent.name}", ("file", str(path))))
+                    kind = "example" if group == "example" else "file"
+                    entries.append((path.name, f"{group} · {path.parent.name}", (kind, str(path))))
         return entries
 
     def _rules(self) -> list[Entry]:
@@ -67,5 +68,7 @@ class QuickOpen(PickerPopup):
                 self.w.tabs.setCurrentWidget(tab)
         elif kind == "file":
             self.w.docs.open_file(Path(value))
+        elif kind == "example":
+            self.w.docs.open_example(Path(value))
         elif kind == "at" and (tab := self.w.tabs.current()) is not None:
             tab.editor.go_to(int(value))

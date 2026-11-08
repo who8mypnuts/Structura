@@ -9,6 +9,7 @@ from pathlib import Path
 from ...core.build.api import build_scene
 from ...core.errors import StructuraError
 from ...export.api import EXPORTERS, export_scene, find_exporter
+from ...export.presets import load_preset
 from .common import EXIT_OK, EXIT_SCRIPT_ERROR, EXIT_USAGE, add_script_arguments, compile_or_report
 
 HELP = "export a script's structure (OBJ, PLY, STL, glTF, USD, Blender, templates)"
@@ -19,6 +20,7 @@ def register(p: argparse.ArgumentParser) -> None:
     p.add_argument("-o", "--output", type=Path, required=True, help="output file; the extension picks the format")
     p.add_argument("--format", choices=sorted(EXPORTERS), help="exporter (default: from the extension)")
     p.add_argument("--option", action="append", default=[], metavar="KEY=VALUE", help="exporter option")
+    p.add_argument("--preset", help="options saved from the export sheet (Save Preset…); --option values win")
     p.add_argument("--list-options", action="store_true", help="show the chosen exporter's options and exit")
 
 
@@ -35,7 +37,8 @@ def _options(items: list[str]) -> dict[str, str]:
 def run(args: argparse.Namespace) -> int:
     try:
         exporter = find_exporter(args.output, args.format)
-        options = _options(args.option)
+        preset = load_preset(exporter.name, args.preset) if getattr(args, "preset", None) else {}
+        options = {**preset, **_options(args.option)}
     except ValueError as exc:
         print(f"export: {exc}", file=sys.stderr)
         return EXIT_USAGE

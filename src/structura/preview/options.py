@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 RGB = tuple[float, float, float]
-LOOKS = {"studio": 0, "legacy": 1, "clay": 2, "flat": 3}
+LOOKS = {"studio": 0, "legacy": 1, "clay": 2, "flat": 3, "technical": 4}
 
 
 @dataclass(frozen=True)
@@ -23,6 +23,8 @@ class PreviewOptions:
     sky: RGB = (0.55, 0.62, 0.75)
     ground: RGB = (0.20, 0.19, 0.18)
     key: RGB = (0.95, 0.92, 0.86)
+    grid: bool = False  # the ground grid under the structure
+    grid_color: RGB = (0.5, 0.5, 0.5)  # linear
 
     @property
     def look_index(self) -> int:

@@ -19,6 +19,7 @@ from PySide6.QtWidgets import QMessageBox
 from ..core.params import ParamSpec, ParamType
 from ..core.text_file import TextFile
 from ..services.session import SessionState, SessionStore, TabState
+from .dock_layout import LAYOUT_VERSION
 from .documents import EditorTab
 
 if TYPE_CHECKING:
@@ -122,7 +123,7 @@ class SessionActions(QObject):
         self.recovery.clear()
         self.timer.stop()
         self.w.settings.set_value("window/geometry", self.w.saveGeometry())
-        self.w.settings.set_value("window/state", self.w.saveState())
+        self.w.settings.set_value("window/state", self.w.saveState(LAYOUT_VERSION))
         self.w.settings.set_value("window/split", self.w.split.saveState())
         return True
 
@@ -133,7 +134,7 @@ class SessionActions(QObject):
             return False
         split = self.w.settings.value("window/split")
         self.split_restored = isinstance(split, QByteArray) and self.w.split.restoreState(split)
-        return bool(self.w.restoreGeometry(geometry) and self.w.restoreState(state))
+        return bool(self.w.restoreGeometry(geometry) and self.w.panels.restore(state))
 
 
 def _tab_state(tab: EditorTab) -> TabState:

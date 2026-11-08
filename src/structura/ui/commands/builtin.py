@@ -6,7 +6,10 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 from ...core.lang.catalog import snippets
+from ...core.scene.color_by import MODES
+from ..dock_layout import PANELS
 from ..editor.options import LABELS, TOGGLES
+from ..workspaces import WORKSPACES
 from .registry import Command, CommandRegistry
 
 if TYPE_CHECKING:
@@ -20,6 +23,8 @@ def _file(w: MainWindow, has_tab: Predicate) -> list[Command]:
     return [
         Command("file.new", "New Script", d.new_script, "Ctrl+N", "File", 0),
         Command("file.open", "Open…", d.open_dialog, "Ctrl+O", "File", 0),
+        Command("file.open_render", "Open from Render…", w.projects.open_render_dialog, "", "File", 0,
+                tip="Reopen the script, seed, parameters, camera and settings stored in a PNG or EXR render"),
         Command("file.quick_open", "Quick Open…", w.quick_open.open, "Ctrl+P", "File", 0,
                 tip="Open tabs, recent files and examples · @ rules · : line"),
         Command("file.save", "Save", d.save, "Ctrl+S", "File", 1, enabled=has_tab),
@@ -28,6 +33,8 @@ def _file(w: MainWindow, has_tab: Predicate) -> list[Command]:
                 tip="Reload from disk, discarding unsaved edits"),
         Command("file.save_project", "Save Project As…", w.projects.save_as, "", "File", 1, enabled=has_tab,
                 tip="Save the script with its seed, parameters, camera and render settings (.structura)"),
+        Command("file.export_as", "Export As…", w.exports.start, "Ctrl+E", "File", 1,
+                enabled=has_tab, tip="Export the structure: choose the folder, file name and format"),
         Command("file.close", "Close Tab", d.close_tab, "Ctrl+W", "File", 1, enabled=has_tab),
         Command("file.preferences", "Preferences…", w.dialogs.preferences, "Ctrl+,", "File", 8),
         Command("file.keymap", "Keyboard Shortcuts…", w.dialogs.edit_keymap, "Ctrl+K, Ctrl+S", "File", 8),
@@ -43,6 +50,8 @@ def _edit(w: MainWindow, has_tab: Predicate) -> list[Command]:
                 tip="Search the open scripts and the current folder"),
         Command("edit.replace", "Replace…", lambda: d.open_find(True), "Ctrl+H", "Edit", 0, enabled=has_tab),
         Command("edit.comment", "Toggle Line Comment", d.toggle_comment, "", "Edit", 1, enabled=has_tab),
+        Command("edit.pick_color", "Pick Colour…", d.pick_color_at_cursor, "Ctrl+Shift+C", "Insert", 9,
+                enabled=has_tab, tip="Edit the colour at the cursor, or insert one (also: right-click a colour)"),
         Command("edit.definition", "Go to Definition", d.definition_under_cursor, "F12", "Edit", 1, enabled=has_tab),
         Command("edit.rename", "Rename Rule…", d.rename_rule, "F2", "Edit", 1, enabled=has_tab),
         Command("edit.references", "Find References", d.find_references, "Shift+F12", "Edit", 1, enabled=has_tab),
@@ -64,10 +73,25 @@ def _view_help(w: MainWindow, has_tab: Predicate) -> list[Command]:
     return [
         Command("view.palette", "Command Palette", w.command_palette.open, "Ctrl+Shift+P", "View", 0),
         Command("view.frame_all", "Frame All", w.viewport.frame_all, "", "View", 1, tip="Frame the structure"),
+        Command("view.frame_selection", "Frame Selection", w.viewport.frame_selection, "", "View", 1,
+                tip="Frame the object you clicked (Shift+F in the viewport)"),
+        Command("view.camera_to_script", "Copy Camera to Script", w.cameras.copy_to_script, "", "View", 1,
+                enabled=has_tab, tip="Write the viewport camera into the script (v1 'set' lines or a v2 camera block)"),
+        *(Command(f"view.camera_{name}", title, _viewer(w, name), "", "View", 1, submenu="Standard Views")
+          for name, title in VIEW_TITLES.items()),
         Command("view.fullscreen", "Full Screen", w.dialogs.toggle_fullscreen, "F11", "View", 1),
-        Command("view.look_studio", "Look: Studio", lambda: w.set_look("studio"), "", "View", 2),
-        Command("view.look_legacy", "Look: Legacy", lambda: w.set_look("legacy"), "", "View", 2),
-        Command("view.look_clay", "Look: Clay", lambda: w.set_look("clay"), "", "View", 2),
+        Command("view.look_studio", "Look: Studio", lambda: w.build_actions.set_look("studio"), "", "View", 2),
+        Command("view.look_legacy", "Look: Legacy", lambda: w.build_actions.set_look("legacy"), "", "View", 2),
+        Command("view.look_clay", "Look: Clay", lambda: w.build_actions.set_look("clay"), "", "View", 2),
+        Command("view.xray", "X-Ray", w.build_actions.toggle_xray, "", "View", 2, checkable=True,
+                checked=lambda: w.workbench.view.xray, tip="See through the structure (the viewport only)"),
+        Command("view.rendered", "Rendered View", lambda: w.viewport.set_rendered(not w.viewport.rendered),
+                "Ctrl+Alt+V", "View", 2, checkable=True, checked=lambda: w.viewport.rendered,
+                tip="Path-trace the viewport with the script's render settings (as in Blender's rendered view)"),
+        Command("view.show_all", "Show All", lambda: w.build_actions.isolate(None), "", "View", 2,
+                tip="Show the objects hidden by Isolate Selection (Inspector)"),
+        Command("view.look_technical", "Look: Technical", lambda: w.build_actions.set_look("technical"), "", "View", 2,
+                tip="Flat colours with dark edges"),
         Command("view.theme", "Choose Theme…", w.dialogs.choose_theme, "Ctrl+K, Ctrl+T", "View", 3),
         Command("view.theme_edit", "Edit Theme…", w.dialogs.edit_theme, "", "View", 3,
                 tip="Colours, contrast and syntax styles of the current theme"),
@@ -78,9 +102,46 @@ def _view_help(w: MainWindow, has_tab: Predicate) -> list[Command]:
     ]  # fmt: skip
 
 
+COLOR_TITLES = {"authored": "Authored Colours", "generation": "Generation", "call site": "Call Site", "tag": "Tag",
+                "kind": "Primitive Kind", "random": "Random"}  # fmt: skip
+
+
+def _color_by(w: MainWindow, mode: str) -> tuple[Callable[[], None], Callable[[], bool]]:
+    return (lambda: w.build_actions.set_color_by(mode)), (lambda: w.workbench.color_by == mode)
+
+
+OVERLAY_TITLES = {"grid": "Ground Grid", "axes": "Axis Gizmo", "bounds": "Bounding Box", "hud": "Object Counts"}
+
+
+def _overlay(w: MainWindow, name: str) -> tuple[Callable[[], None], Callable[[], bool]]:
+    return (lambda: w.build_actions.toggle_overlay(name)), (lambda: w.build_actions.overlay_on(name))
+
+
+def _colors(w: MainWindow, has_tab: Predicate) -> list[Command]:
+    commands = []
+    for mode in MODES:
+        handler, current = _color_by(w, mode)
+        commands.append(Command(f"view.color_{mode.replace(' ', '_')}", COLOR_TITLES[mode], handler, "", "View", 2,
+                                checkable=True, checked=current, submenu="Colour By"))  # fmt: skip
+    for name, title in OVERLAY_TITLES.items():
+        handler, on = _overlay(w, name)
+        commands.append(Command(f"view.overlay_{name}", title, handler, "", "View", 2, checkable=True, checked=on,
+                                submenu="Overlays"))  # fmt: skip
+    return commands
+
+
+VIEW_TITLES = {"front": "Front", "back": "Back", "right": "Right", "left": "Left", "top": "Top", "bottom": "Bottom",
+               "iso": "Isometric"}  # fmt: skip
+
+
+def _viewer(w: MainWindow, name: str) -> Callable[[], None]:
+    return lambda: w.cameras.standard_view(name)
+
+
 def _build_render(w: MainWindow, has_tab: Predicate) -> list[Command]:
+    b = w.build_actions
     live = Command(
-        "build.live", "Live Build", w.toggle_live, menu="Build", checkable=True,
+        "build.live", "Live Build", b.toggle_live, menu="Build", checkable=True,
         checked=lambda: w.workbench.live, tip="Rebuild while typing",
     )  # fmt: skip
     return [
@@ -89,13 +150,21 @@ def _build_render(w: MainWindow, has_tab: Predicate) -> list[Command]:
         Command("build.cancel", "Cancel Build", _canceller(w), "", "Build", 0, tip="Stop the build or script"),
         Command("build.run_js", "Run JavaScript", w.scripts.run, "F7", "Build", 0, enabled=w.scripts.can_run,
                 tip="Run this '#javascript' script (Builder API); files go next to the script"),
-        Command("build.seed_random", "Randomise Seed", w.random_seed, "Ctrl+Shift+R", "Build", 1, tip="Random seed"),
-        Command("build.seed_next", "Seed +1", w.next_seed, "Alt+Right", "Build", 1, tip="Next seed"),
-        Command("build.seed_prev", "Seed −1", w.previous_seed, "Alt+Left", "Build", 1),
-        Command("build.variations", "Explore Seed Variations", w.explore_variations, "Ctrl+Shift+V", "Build", 2),
-        Command("render.start", "Render", w.start_render, "F9", "Render", 0, tip="Render the current view (F9)"),
+        Command("build.seed_random", "Randomise Seed", b.random_seed, "Ctrl+Shift+R", "Build", 1, tip="Random seed"),
+        Command("build.seed_next", "Seed +1", b.next_seed, "Alt+Right", "Build", 1, tip="Next seed"),
+        Command("build.seed_prev", "Seed −1", b.previous_seed, "Alt+Left", "Build", 1),
+        Command("build.variations", "Explore Seed Variations", b.explore_variations, "Ctrl+Shift+V", "Build", 2),
+        Command("build.snapshot", "Take Snapshot", w.history_actions.take, "Ctrl+Alt+H", "Build", 2, enabled=has_tab,
+                tip="Keep the script, seed, parameters and camera in the History panel"),
+        Command("render.start", "Render", w.render_actions.start_render, "F9", "Render", 0,
+                tip="Render the current view (F9)"),
         Command("render.stop", "Stop Render", w.render_view.stop, "", "Render", 0),
-        Command("render.save", "Save Render…", w.render_view.save_dialog, "", "Render", 1),
+        Command("render.queue", "Add to Render Queue…", w.render_actions.queue_render, "Ctrl+Shift+F9", "Render", 0,
+                enabled=has_tab, tip="Render the current view later, into a file, while you keep working"),
+        Command("render.save", "Save Render…", w.render_actions.save_render, "Ctrl+Alt+S", "Render", 1,
+                tip="Save the rendered image (PNG, EXR with AOVs, JPEG, …)"),
+        Command("render.report", "Save Render Report…", w.render_actions.save_report, "", "Render", 1,
+                tip="Everything about the render: scene, camera, settings, image statistics, performance"),
         Command("render.animation", "Render Animation…", w.animations.render, "", "Render", 2, enabled=has_tab,
                 tip="Render the timeline's frames (and a video) with the precision engine"),
         Command("render.animation_stop", "Stop Animation", w.animations.cancel, "", "Render", 2),
@@ -157,6 +226,37 @@ def _editor(w: MainWindow, has_tab: Predicate) -> list[Command]:
     return commands
 
 
+def _workspace(w: MainWindow, name: str) -> tuple[Callable[[], None], Callable[[], bool]]:
+    return (lambda: w.workspaces.switch(name)), (lambda: w.workspaces.current == name and not w.workspaces.presenting)
+
+
+def _workspaces(w: MainWindow, has_tab: Predicate) -> list[Command]:
+    commands = []
+    for ws in WORKSPACES:
+        handler, current = _workspace(w, ws.name)
+        commands.append(Command(f"view.workspace_{ws.name.lower()}", ws.name, handler, ws.shortcut, "View", 7,
+                                checkable=True, checked=current, submenu="Workspace"))  # fmt: skip
+    reset = Command("view.reset_layout", "Reset Layout", w.workspaces.reset_layout, "", "View", 7, submenu="Workspace",
+                    tip="Put every panel back where it started")  # fmt: skip
+    present = Command("view.present", "Present", w.workspaces.present, "Ctrl+4", "View", 7, checkable=True,
+                      checked=lambda: bool(w.workspaces.presenting), submenu="Workspace",
+                      tip="Only the image, full screen (Esc returns)")  # fmt: skip
+    return [*commands, present, reset]
+
+
+def _panel_toggle(w: MainWindow, title: str) -> tuple[Callable[[], None], Callable[[], bool]]:
+    return (lambda: w.panels.toggle(title)), (lambda: w.panels.visible(title))
+
+
+def _panels(w: MainWindow, has_tab: Predicate) -> list[Command]:
+    commands = []
+    for panel in PANELS:
+        handler, visible = _panel_toggle(w, panel.title)
+        commands.append(Command(panel.command_id, panel.title, handler, panel.shortcut, "View", 6, checkable=True,
+                                checked=visible, submenu="Panels"))  # fmt: skip
+    return commands
+
+
 def _inserter(w: MainWindow, text: str) -> Callable[[], None]:
     return lambda: w.docs.insert_text(text)
 
@@ -185,6 +285,6 @@ def register_builtin(registry: CommandRegistry, w: MainWindow) -> None:
     def has_tab() -> bool:
         return w.tabs.current() is not None
 
-    for group in (_file, _edit, _editor, _view_help, _build_render, _exports, _snippets):
+    for group in (_file, _edit, _editor, _view_help, _colors, _panels, _workspaces, _build_render, _exports, _snippets):
         for command in group(w, has_tab):
             registry.register(command)

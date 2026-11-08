@@ -1,0 +1,119 @@
+"""Render reports (docs/09 §8.1): the facts they collect and every output format."""
+
+from __future__ import annotations
+
+import csv
+import io
+import json
+import zipfile
+from functools import cache
+from pathlib import Path
+
+import numpy as np
+import pytest
+
+from structura.compute.cpu import CpuBackend
+from structura.core.build.api import build_scene
+from structura.core.lang.api import compile_script
+from structura.render.api import prepare_with_frame, progressive
+from structura.render.details import bvh_stats, render_details
+from structura.render.report.collect import ReportInputs, build_report
+from structura.render.report.image_stats import histogram, palette
+from structura.render.report.model import Report
+from structura.render.report.text_writers import sparkline
+from structura.render.report.writers import FORMATS, write_text_report
+from structura.render.settings import RenderSettings
+from structura.services.report_documents import write_report
+
+SCRIPT = "set background #fff\n{ s 0.5 color #c33 } sphere\n4 * { x 1.5 color #36c } box::shiny\n"
+
+
+@cache
+def _inputs() -> ReportInputs:
+    build = build_scene(compile_script(SCRIPT).program, 5)
+    settings = RenderSettings(width=48, height=32, samples=4, samples_per_pass=0, frame=True, aovs=True)
+    prepared, frame = prepare_with_frame(build.scene, settings)
+    details = render_details(prepared, frame, 0.1)
+    results = list(progressive(prepared, settings, CpuBackend(), frame))
+    return ReportInputs(build.scene, results[-1], details, "cpu Numba", len(results), script=SCRIPT,
+                        script_path=Path("/scenes/demo.es"), seed=5, params={"size": 2.0}, build=build.stats,
+                        outputs=(Path("/renders/demo.png"),), environment={"Qt": "6.12.0"})  # fmt: skip
+
+
+@cache
+def _report() -> Report:
+    return build_report(_inputs())
+
+
+def _values(key: str) -> dict[str, object]:
+    return {r.label: r.value for r in _report().section(key).rows}
+
+
+def test_the_report_describes_scene_render_and_image() -> None:
+    report = _report()
+    keys = [s.key for s in report.sections]
+    assert keys == ["script", "geometry", "build", "camera", "settings", "lighting", "materials", "image",
+                    "performance", "system", "reproduce"]  # fmt: skip
+    geometry, image, perf = _values("geometry"), _values("image"), _values("performance")
+    assert geometry["Objects"] == 5 and _values("script")["Seed"] == 5
+    assert report.section("geometry").tables[0].rows[0][:2] == ("box", "4")  # most frequent kind first
+    assert 0 < image["Visible objects"] <= 5 and 0.0 < image["Coverage"] < 1.0  # type: ignore[operator]
+    assert perf["BVH nodes / leaves"][0] >= 1 and perf["Samples reached"] == 4  # type: ignore[index]
+    assert {m[0] for m in report.section("materials").tables[0].rows} >= {"shiny"}
+    assert "--seed 5" in str(_values("reproduce")["Command line"]) and "--size 48x32" in str(
+        _values("reproduce")["Command line"]
+    )
+    assert dict(report.highlights)["Objects"] == "5" and report.thumbnail is not None
+
+
+def test_image_statistics() -> None:
+    display = np.zeros((4, 8, 3), np.uint8)
+    display[:, :2] = (255, 0, 0)
+    swatches = palette(display)
+    assert [s.hex for s in swatches] == ["#000000", "#ff0000"] and swatches[0].share == pytest.approx(0.75)
+    h = histogram(display)
+    assert h.shape == (64, 4) and h.max() == 1.0 and h[0, 1] == 1.0  # green: all zero
+
+
+def test_bvh_stats_count_nodes_leaves_and_depth() -> None:
+    build = build_scene(compile_script("10 * { x 1 } box\n").program)
+    prepared, _ = prepare_with_frame(build.scene, RenderSettings(frame=True))
+    stats = bvh_stats(prepared.bvh)
+    assert stats.nodes == 2 * stats.leaves - 1 and stats.depth >= 2 and stats.max_leaf_size <= 4
+
+
+@pytest.mark.parametrize("suffix", [".txt", ".md", ".html", ".json", ".csv"])
+def test_text_formats(tmp_path: Path, suffix: str) -> None:
+    files = write_text_report(_report(), tmp_path / f"r{suffix}")
+    text = files[0].read_text(encoding="utf-8")
+    assert "demo.es" in text and "BVH" in text
+    if suffix == ".json":
+        data = json.loads(text)
+        assert data["sections"]["geometry"]["values"]["Objects"] == 5
+    if suffix == ".csv":
+        rows = list(csv.reader(io.StringIO(text)))
+        assert rows[0] == ["section", "property", "value", "raw", "note"] and len(rows) > 50
+    if suffix == ".md":
+        assert files[1].name == "r-preview.png" and "![Render preview](r-preview.png)" in text
+    if suffix == ".html":
+        assert text.startswith("<!DOCTYPE html>") and "data:image/png;base64," in text
+
+
+def test_pdf_and_odt(tmp_path: Path, qapp: object) -> None:  # qapp: a QApplication, as the UI tests need
+    pdf = write_report(_report(), tmp_path / "r.pdf")[0]
+    assert pdf.read_bytes().startswith(b"%PDF") and pdf.stat().st_size > 10_000
+    odt = write_report(_report(), tmp_path / "r.odt")[0]
+    with zipfile.ZipFile(odt) as z:
+        assert "demo.es" in z.read("content.xml").decode("utf-8")
+
+
+def test_every_listed_format_can_be_written(tmp_path: Path, qapp: object) -> None:
+    for suffix in FORMATS:
+        assert write_report(_report(), tmp_path / f"all{suffix}")[0].exists()
+    with pytest.raises(ValueError, match="unsupported"):
+        write_text_report(_report(), tmp_path / "r.docx")
+
+
+def test_sparkline_shows_tones() -> None:
+    line = sparkline(_report())
+    assert len(line) == 32 and line.strip()

@@ -20,7 +20,9 @@ def test_typing_a_script_builds_it_live(qtbot: QtBot, window: MainWindow) -> Non
     qtbot.waitUntil(lambda: tab.outcome is not None and len(tab.outcome.scene) == expected, timeout=60000)
     assert window.status.labels["objects"].text() == f"{expected} objects"
     assert window.stats.labels["Objects"].text().startswith(str(expected))
-    assert [window.outline.topLevelItem(i).text(0) for i in range(window.outline.topLevelItemCount())] == ["r"]
+    assert [window.outline.tree.topLevelItem(i).text(0) for i in range(window.outline.tree.topLevelItemCount())] == [
+        "r"
+    ]
 
 
 def test_errors_reach_the_editor_and_the_problems_panel(qtbot: QtBot, window: MainWindow) -> None:
@@ -37,7 +39,7 @@ def test_seed_changes_rebuild(qtbot: QtBot, window: MainWindow) -> None:
     tab.editor.setPlainText("R\nrule R w 1 { box }\nrule R w 1 { sphere }\n")
     qtbot.waitUntil(lambda: tab.outcome is not None, timeout=60000)
     first = tab.outcome
-    window.next_seed()
+    window.build_actions.next_seed()
     qtbot.waitUntil(lambda: tab.outcome is not first, timeout=60000)
     assert tab.seed == 1 and window.header.seed.value() == 1
 
@@ -151,3 +153,21 @@ def test_convert_to_v2_rewrites_the_script_in_one_undo_step(window: MainWindow) 
     assert tab.text().startswith("#version 2\nrule tube_rule")
     tab.editor.undo()
     assert tab.text() == "rule tube { box }\ntube\n"
+
+
+def test_parameter_variations_adopt_and_expand(qtbot: QtBot, window: MainWindow) -> None:
+    tab = window.docs.new_script()
+    tab.editor.setPlainText("#define n 6 (int:2-12)\n#define s 1 (float:0.5-2)\nn * { x s } box\n")
+    qtbot.waitUntil(lambda: tab.analysis is not None and tab.analysis.ok and tab.analysis.version == tab.version,
+                    timeout=20000)  # fmt: skip
+    explorer = window.variations
+    explorer.mode.setCurrentIndex(explorer.mode.findData("params"))
+    window.registry.trigger("build.variations")
+    assert explorer.cell_params[0] == {"n": 6.0, "s": 1.0}  # the first cell is the current state
+    assert all(2 <= p["n"] <= 12 and p["n"] == int(p["n"]) for p in explorer.cell_params if p)
+    qtbot.waitUntil(lambda: all(not b.icon().isNull() for b in explorer.cells), timeout=120000)
+    chosen = explorer.cell_params[4]
+    explorer.cells[4].click()
+    assert tab.params == chosen
+    explorer.expand(4)
+    assert explorer.cell_params[0] == chosen and explorer._spread == 0.125

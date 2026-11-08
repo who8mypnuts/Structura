@@ -82,7 +82,7 @@ def _xwayland() -> list[str]:
     return ["", "XWayland (tried because native Wayland failed):", *probed, f"  => {verdict}"]
 
 
-def _compute() -> list[str]:
+def compute_lines() -> list[str]:
     from ...compute.base import BackendUnavailableError  # noqa: PLC0415
     from ...compute.select import NAMES, select_backend  # noqa: PLC0415
 
@@ -101,6 +101,6 @@ def run(args: argparse.Namespace) -> int:
     if args.opengl_only:
         print("\n".join(_opengl()))
         return 0
-    sections = [_environment(), _opengl()] + ([] if args.no_compute else [_compute()])
+    sections = [_environment(), _opengl()] + ([] if args.no_compute else [compute_lines()])
     print("\n\n".join("\n".join(section) for section in sections))
     return 0

@@ -1,0 +1,55 @@
+# Structura render report
+
+Generated {{ d.generated }} · Structura {{ d.version }}{% if d.script_name %} · {{ d.script_name }}{% endif %}
+
+## Summary
+
+| | |
+|---|---|
+| Resolution | {{ d.width }} × {{ d.height }} |
+| Device | {{ d.device or "—" }} |
+| Samples | {{ "{:,}".format(d.achieved_samples) }} / {{ "{:,}".format(d.target_samples) }} |
+| Render time | {{ "%.2f"|format(d.seconds) }} s ({{ "%.2f"|format(d.samples_per_second) }} samples/s) |
+| Still sampling | {{ "%.1f%%"|format(d.active * 100) }} |
+| Denoiser | {{ d.denoiser or "off" }} |
+| Objects | {{ "{:,}".format(d.objects) }} |
+| Build seed / Render seed | {{ d.build_seed }} / {{ d.render_seed }} |
+{% if d.script_sha256 %}| Script SHA-256 | `{{ d.script_sha256 }}` |
+{% endif %}
+## Scene
+
+| | |
+|---|---|
+{% for label, value in d.build %}| {{ label }} | {{ value }} |
+{% endfor %}| Bounds | ({{ "%.4g, %.4g, %.4g"|format(*d.bounds_lo) }}) – ({{ "%.4g, %.4g, %.4g"|format(*d.bounds_hi) }}) |
+
+### Primitives by kind
+
+| Kind | Count |
+|---|---|
+{% for kind, count in d.by_kind.items() %}| {{ kind }} | {{ "{:,}".format(count) }} |
+{% endfor %}
+{% if d.scene_stats %}### Render-ready scene
+
+| | |
+|---|---|
+| Primitives sent to the renderer | {{ "{:,}".format(d.scene_stats.render_primitives) }} |
+| Triangles | {{ "{:,}".format(d.scene_stats.triangles) }} |
+| BVH nodes | {{ "{:,}".format(d.scene_stats.bvh_nodes) }} |
+| Materials | {{ d.scene_stats.materials }} |
+| Emitters (lights) | {{ d.scene_stats.emitters }} |
+
+{% endif %}
+{% if d.camera %}## Camera
+
+| | |
+|---|---|
+{% for label, value in d.camera %}| {{ label }} | {{ value }} |
+{% endfor %}
+{% endif %}
+## Render settings
+
+| | |
+|---|---|
+{% for label, value in d.settings %}| {{ label }} | {{ value }} |
+{% endfor %}

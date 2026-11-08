@@ -9,15 +9,16 @@ detail is in [PROGRESS.md](PROGRESS.md).
 | Milestone | Status | Notes |
 |-----------|--------|-------|
 | M0 Foundations & brand | ✅ done | Gates: ruff, mypy --strict, import-linter, size limits |
-| M1 Language core v1 | ✅ done | 616/616 golden builds; bit-exact box records. The tolerant CST parser is not started: analysis uses the strict parser and reports the first error |
+| M1 Language core v1 | ✅ done | 616/616 golden builds; bit-exact box records. The tolerant parser became a *recovering* parser for the editor (§2.8); builds keep the strict 1.5 parser |
 | M2 SKL + precision engine | ✅ done | Five SKL targets, four compute backends, χ² and furnace tests, example renders |
-| M3 App shell + preview + editor basics | ✅ done | The GPU viewport is verified headless (EGL); the CPU preview is used on headless Qt platforms |
-| M4 Export v1 | ✅ done | 252/252 template and 75/75 OBJ goldens byte-identical; 8 exporters (11 with M8's 3MF, X3D and VRML97) |
-| M5 Editor pro + themes | ✅ done | The docs/12 checklist P0+P1: folding, multi-cursor, minimap, sticky scroll, split view, session/recovery, project files, linter + quick fixes, generated reference (F1), peek, breadcrumbs, provenance hover, snippets with tab stops, theme editor, keymaps, per-theme screenshot tests. Not done: Find in Files, Quick Open (Ctrl+P), Vim keybindings (P2) |
-| M6 Precision engine v2 | ✅ done | Done: point/sphere/spot/rect lights, emissive-geometry NEE, HDRI + Preetham sun-sky with importance sampling, orthographic/spherical/fisheye cameras, polygonal bokeh, region render, 8 reconstruction filters, view transforms (AgX default), AOVs + multi-layer EXR, denoising (OIDN or À-Trous), adaptive sampling with a noise threshold and sample map, time limit, banded dispatch (cancellable within ~30 ms) with a fair parallel-Numba lock, ground plane and shadow catcher, the Render Settings panel, BVH speedups. Open: owner benchmark on the GTX 1660 |
-| M7 v2, animation, scripting | ✅ done | Done: v2 blocks, expressions, `#param`, animation variables + `structura animate`, Python API, the `#javascript` bridge, the Variation Explorer. Done too: `mat` operator, v2 primitives (cylinder, cone, torus, ellipsoid, tube), whole-word v2 defines, `convert --to v2` (CLI + Edit menu), the timeline (keyed parameters, seed and camera; scrub, play, Render Animation; saved in projects; `animate` reads projects) |
-| M8 Export v2 | ✅ done | Done: 3MF (instanced components or baked), X3D / VRML97 (DEF/USE with exact affine Transforms), glTF `EXT_mesh_gpu_instancing`, USD (PointInstancers, flattened mode, matrix shear policy), POV-Ray 3.8 / Sunflow / Mitsuba 3 scene writers (Jinja2), CSG markers evaluated with manifold3d, Blender Geometry Nodes instancing (owner to verify in Blender), fog, photon-mapped sun caustics |
-| M9 Hardening & 1.0 | 🟡 started | Done: kernel warm-up (CLI + start-up job), i18n infrastructure (tr, catalogues, pseudo-locale, language preference), accessible names + scan test, packaging scripts (PyInstaller, AppImage, Flatpak, Inno Setup, DMG) and CI workflows, user guide, benchmark suite and first optimisations. Open: owner benchmarks and installer runs, real translations, screen-reader pass |
+| M3 App shell + preview + editor basics | ✅ done | GPU viewport verified on the owner's GTX 1660 (Wayland, after the desktop-GL fix of M9 part 3); compute preview everywhere else |
+| M4 Export v1 | ✅ done | 252/252 template and 75/75 OBJ goldens byte-identical; 14 exporters with M8 |
+| M5 Editor pro + themes | ✅ done | The docs/12 P0 and P1 checklists, including Find in Files, Quick Open and the colour picker (M10). P2 items are in the backlog (§4) |
+| M6 Precision engine v2 | ✅ done | Every docs/09–10 feature except tiled bucket rendering (replaced by progressive + adaptive, §2.5) and pause/resume. Owner benchmark on the GTX 1660 still to be sent |
+| M7 v2, animation, scripting | ✅ done | v2 blocks, expressions, `#param`, timeline, `#javascript` bridge, Python API, Variation Explorer, v2 primitives, `convert --to v2` |
+| M8 Export v2 | ✅ done | 3MF, X3D/VRML, glTF instancing, USD policies, POV-Ray/Sunflow/Mitsuba writers, CSG, Blender GN (owner to verify in Blender), fog, photon caustics |
+| M9 Hardening & 1.0 | 🟡 mostly done | Done: warm-up, i18n (English + German + pseudo), accessibility names, packaging scripts and CI, user guide, benchmark suite, UI-stall watchdog, GPU preview on NVIDIA/Wayland, cached CUDA binaries, time-paced passes. Open: the owner checks of §3 (installers, benchmarks, screen reader, native German review) |
+| M10 Studio completion | ✅ done | The docs/14 window and panels, render reports, Save As flows, viewport colour modes, X-ray, isolation and overlays, navigation presets, render queue, pause/resume, History snapshots, export presets — see PROGRESS.md "M10" |
 
 ## 2. Refinements and deviations
 
@@ -84,21 +85,57 @@ detail is in [PROGRESS.md](PROGRESS.md).
   unchanged.
 - `#param` of type color, bool and enum becomes a plain define for now.
 
+### 2.8 Editor ([12](12-editor.md))
+
+- **Recovering parser instead of a CST parser.** When the strict 1.5 parser fails, the analysis re-parses
+  with `RecoveringParser`, which notes each error and resumes at the next `rule` (rules never nest). The
+  Problems panel then lists every broken rule, and the rules that parse keep feeding the outline, completion
+  and go-to-definition. Builds still use the strict parser, so behaviour stays identical to 1.5. A full
+  lossless CST (for refactorings) was not needed for any P0/P1 feature.
+- **Colour picker:** non-modal `QColorDialog` with a live preview in the text; Cancel undoes; one undo step;
+  the literal's style (hex length, case, names) is kept.
+
+### 2.9 Window and panels ([14](14-ui-ux.md))
+
+- **Activity rail + one side panel at a time**, instead of tabified side docks, whose tab labels became
+  unreadable ("Exa…", "Ou…") at side-bar widths. Docks stay real `QDockWidget`s (movable, floatable, saved
+  in the layout); a tabified bottom dock hides its own title bar because the tab names it.
+- **Export sheet = Save As dialog + `ExportDialog`.** The native Save As dialog lists every format and
+  decides it; the dialog that follows shows the full destination, the contents and the options. No live
+  file-size estimate (backlog).
+- **Materials and Lights panels edit the script** (v2 `material`/`light` blocks) rather than holding
+  overrides outside it: the script stays the single source of truth, and renders and exports agree.
+- **Colour-by modes recolour on the CPU** (io lane) and re-upload, instead of a shader uniform. It is one
+  implementation for both viewports (the compute preview renders the recoloured scene).
+- **Ground grid in the composite shader** (analytic plane, depth-tested against the G-buffer). Gizmo,
+  bounds and HUD are a QPainter overlay shared by both viewports.
+- **Render presets** set samples, image size (long edge, viewport aspect), noise threshold and denoising.
+  The Render Settings panel's own noise threshold wins over the preset's.
+- **Render queue** uses the device lane's FIFO: queued renders simply run after each other; an interactive
+  F9 render waits behind them.
+
+### 2.10 Render reports ([09](09-renderer.md) §8)
+
+- Not in the original plan (owner request). `render/report/` collects a format-independent `Report`
+  (sections of rows with raw values, display text and notes, plus thumbnail, histogram and palette).
+  Writers: text, Markdown, HTML, JSON, CSV (Qt-free); PDF and ODT through `QTextDocument`
+  (`services/report_documents.py`). The HTML sticks to tables and attributes that Qt's engine understands,
+  and keeps browser-only CSS in a media query Qt ignores, so one HTML source serves the browser, the PDF and
+  the ODT.
+- Render jobs attach `RenderDetails` (resolved camera and settings, BVH figures, materials, lights,
+  preparation time) to their updates, so reports describe exactly what was rendered.
+
 ## 3. Hardware checks for the owner
 
 1. `pytest -m gpu` and the full parity suite. The `device` fixture includes CUDA, so every parity test also
    runs on the GTX 1660.
 2. `python -m tools.bench.render_throughput --device cuda --size 1920x1080` (spike S2: ≥ 5 spp/s at
    1080p).
-3. Launch `structura-gui` on a desktop and check the GPU viewport. It has been verified through a real X
-   server (Xvfb: GLX and EGL on llvmpipe) and on Wayland (headless mutter, Mesa), but not yet with an NVIDIA
-   driver.
-4. Run `structura doctor` in the desktop session and keep its output. The first report (Wayland, GTX 1660,
-   driver 615.71, Qt 6.12) showed "Failed to create context: 3009" and "OpenGL ES only". The cause: Qt's EGL
-   code picks an OpenGL ES config on NVIDIA unless desktop OpenGL is requested explicitly. The probe now
-   requests it. If native Wayland still fails, the app retries on XWayland automatically, and `doctor`
-   prints the XWayland result as well. Expected now: "OpenGL 3.3 core: ok" on Wayland, or at least on
-   XWayland.
+3. ✅ **Done (owner):** the GPU viewport runs on the GTX 1660 under Wayland after the desktop-OpenGL fix
+   (M9 part 3), and GPU rendering works.
+4. ✅ **Done (owner):** `structura doctor` on Wayland. The first report showed "Failed to create context:
+   3009" / "OpenGL ES only" because Qt's EGL code picks an OpenGL ES config on NVIDIA unless desktop OpenGL
+   is requested; the probe now requests it, with an automatic XWayland retry as a fallback.
 5. `python -m tools.bench.suite` (all budgets of docs/18 §8; writes `bench-results.json`). Send the JSON file.
 6. Run the UI tests with the reference budget: `STRUCTURA_STALL_MS=50 pytest tests/ui`.
 7. Build the installers on each OS with `packaging/build.py` and the platform wrapper (`packaging/README.md`).
@@ -107,3 +144,23 @@ detail is in [PROGRESS.md](PROGRESS.md).
 8. Blender 4.2 LTS: run an exported `.py` in both geometry modes (`baked`, `instanced`). The Geometry Nodes
    path (spike S5) is written against the 4.2 API but has not been executed.
 9. Screen-reader pass (NVDA, VoiceOver) and a review of the German translation by a native speaker.
+10. (M10) Look at the activity rail, workspaces and the Examples gallery at your screen size; save a render
+    report as PDF and HTML and check them in your viewers; export with the Sunflow-Colored template to see the
+    'runAfter' prompt.
+
+## 4. Backlog — planned but not built
+
+These items are in the plan documents but not in the program. None blocks 1.0 functionality; each has a
+workaround.
+
+| Item | Plan | Notes / workaround |
+|------|------|--------------------|
+| Tiled bucket renderer with bucket order | [09](09-renderer.md) §5.2 | Progressive rendering with adaptive sampling covers the same ground |
+| Adaptive viewport quality (quarter-res SSAO while moving) | [08](08-viewport.md) §5 | Accumulation AA converges when the camera stops |
+| "Show ancestry" trace rebuild; selection outlines in the compute preview | [08](08-viewport.md) §6 | Inspector selections tint alike objects (GPU viewport); Isolate Selection |
+| Console severity icons; Outline listing of materials and parameters | [14](14-ui-ux.md) §3 | Console severity filter and search; the Materials and Parameters panels |
+| Live file-size estimate in the export sheet | [14](14-ui-ux.md) §5.5 | The sheet shows the object counts |
+| Template export sheet extras: template editor tab, output preview, "autosave script" | [15](15-export.md) §5.2 | Template export and its 'runAfter' command work |
+| Vim keybindings; extract/inline-rule refactorings; hover thumbnails of rules | [12](12-editor.md) §2 (P2) | P2 by plan (post-1.0) |
+| Preferences: autosave interval, memory guard, kernel-cache reset, sectioned layout | [14](14-ui-ux.md) §7 | CPU threads and the default folder are in Preferences; `structura warmup` rebuilds kernels |
+| Windows/macOS signed installers, PyPI release | [19](19-roadmap.md) M9 | Scripts exist (packaging/); the owner builds and signs them |

@@ -62,3 +62,12 @@ def build_scene(program: RuleProgram, seed: int = 0) -> BuildResult:
     while not session.step(SLICE_BUDGET):
         pass
     return BuildResult(scene_of(session), session.stats())
+
+
+def build_capped(program: RuleProgram, seed: int, max_objects: int, budget: int = SLICE_BUDGET) -> SceneIR:
+    """Build until the program finishes or ``max_objects`` have been emitted (thumbnails and variation grids
+    only need a recognisable structure)."""
+    session = BuildSession(program, seed)
+    while not session.step(budget) and session.emitted < max_objects:
+        pass
+    return scene_of(session)

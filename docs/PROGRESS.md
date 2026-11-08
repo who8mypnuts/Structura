@@ -1,16 +1,25 @@
 # Progress Log
 
 Living record of execution against the roadmap ([19](19-roadmap.md), [ADR-0014](adr/0014-agent-driven-execution.md)).
-The newest entries are at the top.
+Entries are in the order the work was done (oldest first); the milestone headings say where each belongs.
+The current status of every milestone, the deviations from the plan and the remaining backlog are in
+[22-implementation-notes.md](22-implementation-notes.md).
 
 ## Status overview
 
-| Milestone | Status | Notes |
-|-----------|--------|-------|
-| M0 Foundations & brand | ✅ done | Repo skeleton, gates, logo/brand |
-| M1 Language core v1 | 🟡 core done | Golden-exact builder. Remaining: CLI, legacy OBJ/template export, buffer pool; the tolerant CST parser moves to M3 (editor) |
-| M2 SKL + precision engine | ⏳ next | |
-| M3–M9 | ⏳ | |
+| Milestone | Status |
+|-----------|--------|
+| M0 Foundations & brand | ✅ done |
+| M1 Language core v1 | ✅ done |
+| M2 SKL + precision engine | ✅ done |
+| M3 App shell + preview + editor basics | ✅ done |
+| M4 Export v1 | ✅ done |
+| M5 Editor pro + themes | ✅ done |
+| M6 Precision engine v2 | ✅ done (owner benchmark pending) |
+| M7 v2, animation, scripting | ✅ done |
+| M8 Export v2 | ✅ done (Blender Geometry Nodes run pending) |
+| M9 Hardening & 1.0 | 🟡 owner checks pending (installers, benchmarks, screen reader, German review) |
+| M10 Studio completion | ✅ done |
 
 ---
 
@@ -994,3 +1003,91 @@ and GPU renders were slow.
 - **Workarounds for the current build:**
   - `QT_QPA_PLATFORM=xcb structura-gui` for the viewport;
   - `structura warmup --device cuda` to compile the CUDA kernels once.
+
+## M9 (part 3, confirmed) — owner check
+
+The owner confirmed that the GPU viewport and GPU rendering now work on the GTX 1660 under Linux (Wayland).
+
+## M10 — Studio completion (owner feedback round 3)
+
+The owner asked for: the documentation cleaned up with done and open items marked; readable tabs in the
+library (side) panel; render reports in several formats; Save As dialogs for every export; a colour picker
+on hex colours in the editor; and the rest of the plan. Everything below is tested (UI suite with the stall
+watchdog, unit, parity and golden suites).
+
+### Requested items
+
+- **Readable side panels** (`ui/dock_layout.py`). The five tabified side docks had tabs elided to "Exa…",
+  "Ou…". They are now shown one at a time, chosen from an **activity rail** of icons at the window's left
+  edge (tooltips carry the names and shortcuts); the side panel's own title bar names it at full size; the
+  active icon collapses the side bar. Bottom panels keep tabs, moved to the top, and a tabified dock hides
+  its redundant title bar. View ▸ Panels lists every panel with its shortcut.
+- **Colour picker** (`ui/editor/color_edit.py`): right-click a colour ▸ Pick Colour… (also Ctrl+click,
+  Ctrl+Shift+C, Insert Colour… elsewhere). Hex literals anywhere (also in `#define` lines) and colour names.
+  The script follows the picker live; Cancel restores; one undo step; the literal's style is kept. The
+  editor's context menu also gained the language commands.
+- **Save As for exports** (`ui/save_paths.py`, `ui/dialogs/export_dialog.py`): File ▸ Export As… (Ctrl+E)
+  lists every format in the native Save As dialog; the chosen type (or a typed extension) decides the format;
+  the export sheet shows the full destination (Change…), the contents and the options. Every Save As (scripts,
+  projects, renders, reports, queued renders) starts in the folder last used for that kind, else next to the
+  script, else *Documents/Structura* (*Pictures/Structura* for images) — never the working directory.
+- **Render reports** (`render/report/`, `services/report_documents.py`): PDF, HTML, Markdown, text, JSON,
+  CSV and ODT, from the Render view (Report…), the render queue, and `structura render --report`. Sections:
+  script, geometry, build, camera, settings, lighting, materials, image statistics (incl. coverage and
+  visible objects from the AOVs), performance (incl. BVH figures), system, and a reproducing command line;
+  plus thumbnail, histogram and palette. One HTML source serves browsers and Qt's PDF/ODT engine.
+
+### The rest of the plan (docs/14, docs/08, docs/12, docs/15, docs/16)
+
+- **Window:** workspaces (Code, Explore, Render, Present) with remembered layouts and Reset Layout; a
+  welcome page (start actions, recent files, theme thumbnails, the render device); toasts with Show in
+  Folder; banners (legacy raytracer look offer, compute-preview fallback); the stale-scene badge.
+- **Panels:** Files (folder view that follows the script; new, rename, delete; opens renders' scripts),
+  Examples gallery (thumbnails rendered once on the compute lane and cached; group filter; examples open as
+  unsaved copies), Camera (numbers, standard views, saved views kept in projects, Copy Camera to Script),
+  Inspector (picked object, go to source, select same call site/tag/generation/kind), Materials (tags,
+  presets, live swatch, writes v2 `material` blocks), Lights (adds, finds and removes v2 `light` blocks placed
+  around the structure), Render Queue, Activity; Console filters and search; the Outline groups ambiguous
+  rules with their chances.
+- **Viewport:** colour-by modes (generation/cividis, call site, tag, kind, random), a ground grid in the
+  composite shader, the Technical look, a QPainter overlay (gizmo, bounds, HUD) over both viewports,
+  navigation presets (Structura, Structure Synth 1.5, Blender) with RMB + WASD fly, standard views, animated
+  camera moves (Reduce motion turns them off), CPU picking for the compute preview, Alt+click focus, Frame
+  Selection.
+- **Render view:** presets (Draft, Standard, Final, Print 4K); the render queue; denoised results are
+  tone-mapped in the denoise job (a 0.6 s GUI stall found by the watchdog).
+- **Editor:** a recovering parser for the analysis — every broken rule is reported and the others keep their
+  symbols; builds keep the strict 1.5 parser.
+- **Export:** export presets (sheet and `--preset`); template 'runAfter' commands with confirmation, output
+  in the Console.
+- **CLI:** `theme list/check/import`, `devices`, `template`, `structura FILE`; File ▸ Open from Render.
+- **Refactoring:** `BuildActions` and `RenderActions` took the seed, look, colour and render-source logic out
+  of `MainWindow` (class limit 300 lines); the Workbench is parented to the tabs so late results of a closed
+  window go nowhere.
+
+### Later in M10
+
+- **Pause / resume:** `RenderProgress` keeps the film, pixel mask and sample map; `progressive(resume=…)`
+  continues with the same sample indices (tested: equal to an uninterrupted render). Stop, then Resume in the
+  Render view.
+- **History panel:** snapshots (text, seed, parameters, camera, thumbnail) per tab; restore is one undo step.
+- **Parameter variations:** the Variation Explorer varies the `#define` sliders (±25 % of their ranges);
+  Expand Around This halves the spread around a cell.
+- **Rendered View** (Ctrl+Alt+V): the viewport path-traces with the script's settings (the compute viewport
+  with the path integrator); **keypad** standard views.
+- **X-ray and isolation** (`core/scene/view_filter.py`), **trackball** orbit for the Structure Synth controls,
+  **animated** camera moves, **Build Stats** termination reasons and generation histogram, Preferences for
+  **CPU threads** (applied in every parallel section) and the **default folder**.
+
+### Documentation
+
+- [22-implementation-notes.md](22-implementation-notes.md): status table (M10 added), refinements §2.8–2.10,
+  and §4 **Backlog** — every planned item that is not built, with its workaround.
+- Status notes ("As built") in docs 08, 09, 12, 14, 15, 16 and 19; this log's status table; the user guide
+  (getting started, rendering, exporting, editor, command line, troubleshooting); README and CHANGELOG.
+
+### Owner checks added
+
+- Look at the side panels, workspaces and the Examples gallery on your screen (the sandbox screen is small).
+- Render a report as PDF and HTML and check the layout in your viewers.
+- Template export with Sunflow-Colored: the 'runAfter' prompt, with `SUNFLOW` set or not.

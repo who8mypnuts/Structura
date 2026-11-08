@@ -66,3 +66,21 @@ def test_size_and_v_aliases_are_accepted() -> None:
 def test_rejected_like_structure_synth(source: str) -> None:
     with pytest.raises(ParseError):
         parse_legacy(source)
+
+
+def test_the_editor_sees_every_broken_rule_and_keeps_the_good_ones() -> None:
+    from structura.core.lang.analysis import analyze  # noqa: PLC0415
+    from structura.core.lang.legacy.parser import parse_legacy, parse_recovering  # noqa: PLC0415
+
+    text = "R1\nrule R1 { { x 1 } R2 box }\nrule R2 { { q 1 } box }\nrule R3 { sphere\nrule R4 { R1 }\n"
+    program, errors = parse_recovering(text)
+    assert [r.name for r in program.rules] == ["r1", "r4"] and len(errors) == 2  # names are case-insensitive
+    with pytest.raises(ParseError) as strict:
+        parse_legacy(text)
+    assert errors[0].message == strict.value.message  # the first error is the strict parser's
+    analysis = analyze(text)
+    assert not analysis.ok and [d.code for d in analysis.diagnostics if d.severity.name == "ERROR"] == [
+        errors[0].code,
+        errors[1].code,
+    ]
+    assert {r.name for r in analysis.rules} == {"r1", "r4"}

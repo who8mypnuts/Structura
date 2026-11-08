@@ -118,6 +118,12 @@ export and build option is available with identical names and defaults (DRY).
 | `structura devices` | List compute adapters and limits | |
 | `structura warmup` | Precompile Numba kernels and WGSL pipelines | (run by installers) |
 
+> **As built (M10):** every command above exists. `theme` has `list`, `check [--strict]` and `import`;
+> `devices` lists the compute backends (the same probe as `doctor`); `template` is `export --format template`
+> with 1.5's wording; `structura FILE…` (or no arguments) starts the GUI. Added: `structura doctor` (Qt
+> platform, OpenGL probe including XWayland, compute devices), `render --report FILE` (repeatable; `.pdf
+> .html .md .txt .json .csv .odt`) and `export --preset NAME`.
+
 Conventions:
 
 - Progress goes to stderr (a TTY bar, or JSON lines with `--progress json`). Results go to stdout.

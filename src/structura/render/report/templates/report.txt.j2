@@ -1,0 +1,45 @@
+{% macro row(label, value, width=30) -%}
+{{ label }} {{ "." * (width - label|length) }} {{ value }}
+{%- endmacro %}
+STRUCTURA RENDER REPORT
+========================
+Generated {{ d.generated }}  ·  Structura {{ d.version }}{% if d.script_name %}  ·  {{ d.script_name }}{% endif %}
+
+SUMMARY
+-------
+{{ row("Resolution", "%d x %d"|format(d.width, d.height)) }}
+{{ row("Device", d.device or "—") }}
+{{ row("Samples", "{:,} / {:,}".format(d.achieved_samples, d.target_samples)) }}
+{{ row("Render time", "%.2f s (%.2f samples/s)"|format(d.seconds, d.samples_per_second)) }}
+{{ row("Still sampling", "%.1f%%"|format(d.active * 100)) }}
+{{ row("Denoiser", d.denoiser or "off") }}
+{{ row("Objects", "{:,}".format(d.objects)) }}
+{{ row("Build / render seed", "%s / %s"|format(d.build_seed, d.render_seed)) }}
+{% if d.script_sha256 %}{{ row("Script SHA-256", d.script_sha256) }}
+{% endif %}
+SCENE
+-----
+{% for label, value in d.build %}{{ row(label, value) }}
+{% endfor %}{{ row("Bounds", "(%.4g, %.4g, %.4g) to (%.4g, %.4g, %.4g)"|format(*(d.bounds_lo + d.bounds_hi))) }}
+
+Primitives by kind:
+{% for kind, count in d.by_kind.items() %}  {{ row(kind, "{:,}".format(count), 20) }}
+{% endfor %}
+{% if d.scene_stats %}RENDER-READY SCENE
+------------------
+{{ row("Primitives sent to the renderer", "{:,}".format(d.scene_stats.render_primitives), 36) }}
+{{ row("Triangles", "{:,}".format(d.scene_stats.triangles), 36) }}
+{{ row("BVH nodes", "{:,}".format(d.scene_stats.bvh_nodes), 36) }}
+{{ row("Materials", d.scene_stats.materials, 36) }}
+{{ row("Emitters (lights)", d.scene_stats.emitters, 36) }}
+
+{% endif %}
+{% if d.camera %}CAMERA
+------
+{% for label, value in d.camera %}{{ row(label, value) }}
+{% endfor %}
+{% endif %}
+RENDER SETTINGS
+----------------
+{% for label, value in d.settings %}{{ row(label, value, 34) }}
+{% endfor %}

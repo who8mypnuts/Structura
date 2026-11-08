@@ -52,6 +52,7 @@ U2→M5, R2→M6, L2/A→M7, E2/R3→M8, H→M9.
 | **M7** | EisenScript v2, animation & scripting | v2 dialect; `convert --to v2`; timeline/keyframes; animation render + video; legacy `#javascript` bridge; Python API; Variation Explorer | Spec examples build; the 3 corpus JS scripts run |
 | **M8** | Export v2 + caustics/fog | 3MF, X3D/VRML, glTF instanced, USD flatten/matrix policies, Blender GN (S5), Jinja exporters, CSG markers; photon caustics; fog | Validators; reference scenes |
 | **M9** | Hardening & 1.0 | Performance tuning to budgets on the GTX 1660; accessibility; i18n; user guide and generated reference; installers (Windows, macOS, Linux) + PyPI | Release checklist ([18](18-testing-and-quality.md) §10); goals G1–G10 verified |
+| **M10** | Studio completion (added after owner feedback) | The rest of the docs/14 window: activity rail, workspaces, welcome page, Files/Camera/Inspector/Materials/Lights/Render Queue/Activity panels, toasts and banners; viewport colour modes, overlays, navigation presets, CPU picking; Save As flows; render reports; export presets; recovering parser | UI suite green (stall watchdog on); owner review of the window |
 
 ```mermaid
 flowchart LR
@@ -74,4 +75,6 @@ earlier where the dependencies above allow.
 
 ## 5. Current status
 
-See [PROGRESS.md](PROGRESS.md).
+M0–M8 and M10 are done; M9 waits on the owner's hardware and platform checks. The status table, the
+deviations from this plan and the backlog of planned-but-unbuilt items are in
+[22-implementation-notes.md](22-implementation-notes.md); the chronological log is [PROGRESS.md](PROGRESS.md).

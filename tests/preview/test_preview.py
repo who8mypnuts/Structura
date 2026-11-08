@@ -110,3 +110,28 @@ def test_highlight_tints_only_the_highlighted_rows(setup: tuple[PreviewRenderer,
     sphere, box = (H // 2, W // 2), (H // 2, W // 4)
     assert after[sphere][0] > before[sphere][0] + 30  # pulled towards the orange highlight colour
     assert np.abs(after[box] - before[box]).max() <= 2  # other rows untouched
+
+
+def test_ground_grid_shows_below_the_structure_only(setup: tuple[PreviewRenderer, Any, Camera]) -> None:
+    renderer, fbo, camera = setup
+    above = Camera((camera.eye[0], camera.eye[1] + 6.0, camera.eye[2]), camera.target)  # looking down on the grid
+    bg = (0.0, 0.0, 0.0)
+    plain = PreviewOptions(background_top=bg, background_bottom=bg, ssao=False, shadows=False)
+    renderer.render(above, fbo, (W, H), plain, accumulate=False)
+    without = _image(fbo).astype(int)
+    renderer.render(above, fbo, (W, H), PreviewOptions(**{**plain.__dict__, "grid": True}), accumulate=False)
+    with_grid = _image(fbo).astype(int)
+    changed = np.abs(with_grid - without).max(axis=2) > 8
+    background = np.array([[renderer.pick(x, y) is None for x in range(W)] for y in range(H)])
+    assert changed[background].mean() > 0.02  # lines on the empty ground
+    assert changed[H // 2, W // 2] == 0 or not background[H // 2, W // 2]  # the sphere hides the grid
+
+
+def test_technical_look_draws_edges(setup: tuple[PreviewRenderer, Any, Camera]) -> None:
+    renderer, fbo, camera = setup
+    renderer.render(camera, fbo, (W, H), PreviewOptions(look="flat"), accumulate=False)
+    flat = _image(fbo).astype(int)
+    renderer.render(camera, fbo, (W, H), PreviewOptions(look="technical"), accumulate=False)
+    technical = _image(fbo).astype(int)
+    darker = flat.max(axis=2) - technical.max(axis=2) > 80
+    assert darker.sum() > 10  # outlines where the flat look has colour

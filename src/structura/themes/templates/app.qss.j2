@@ -8,8 +8,11 @@ QMainWindow::separator:hover { background: {{ c("ui.accent") }}; }
 QToolTip { background: {{ c("ui.bg.raised") }}; color: {{ c("ui.fg") }}; border: 1px solid {{ c("ui.border") }}; padding: {{ pad }}px; border-radius: 6px; }
 
 /* Docks & splitters */
-QDockWidget { titlebar-close-icon: none; color: {{ c("ui.fg.muted") }}; }
-QDockWidget::title { background: {{ c("ui.bg.alt") }}; padding: {{ pad }}px {{ pad * 2 }}px; text-transform: uppercase; font-size: {{ ui_size - 1 }}pt; border-bottom: 1px solid {{ c("ui.border") }}; }
+QDockWidget { titlebar-close-icon: none; color: {{ c("ui.fg") }}; }
+QDockWidget::title { background: {{ c("ui.bg.alt") }}; padding: {{ (pad * 1.5) | int }}px {{ pad * 3 }}px; font-weight: 600; border-bottom: 1px solid {{ c("ui.border") }}; }
+QToolBar#ActivityRail { background: {{ c("toolbar.bg") }}; border: none; border-right: 1px solid {{ c("ui.border") }}; padding: {{ pad }}px {{ (pad / 2) | int }}px; spacing: {{ pad }}px; }
+QToolBar#ActivityRail QToolButton { padding: {{ pad * 2 }}px; border-radius: 8px; border: none; border-left: 2px solid transparent; }
+QToolBar#ActivityRail QToolButton:checked { background: {{ c("ui.pressed") }}; border-left: 2px solid {{ c("ui.accent") }}; border-top-left-radius: 0; border-bottom-left-radius: 0; }
 QSplitter::handle { background: {{ c("ui.border") }}; }
 QSplitter::handle:horizontal { width: 1px; }
 QSplitter::handle:vertical { height: 1px; }
@@ -37,7 +40,7 @@ QStatusBar::item { border: none; }
 /* Tabs */
 QTabWidget::pane { border: none; border-top: 1px solid {{ c("ui.border") }}; }
 QTabBar { background: {{ c("ui.bg.alt") }}; qproperty-drawBase: 0; }
-QTabBar::tab { background: {{ c("ui.bg.alt") }}; color: {{ c("tab.inactive.fg") }}; padding: {{ (pad * 1.5) | int }}px {{ pad * 3 }}px; border: none; border-right: 1px solid {{ c("ui.border") }}; }
+QTabBar::tab { background: {{ c("ui.bg.alt") }}; color: {{ c("tab.inactive.fg") }}; padding: {{ (pad * 1.5) | int }}px {{ pad * 3 }}px; border: none; border-right: 1px solid {{ c("ui.border") }}; border-top: 2px solid transparent; }
 QTabBar::tab:selected { background: {{ c("tab.active.bg") }}; color: {{ c("tab.active.fg") }}; border-top: 2px solid {{ c("ui.accent") }}; }
 QTabBar::tab:hover:!selected { background: {{ c("ui.hover") }}; }
 QTabBar::close-button { subcontrol-position: right; border-radius: 4px; margin: 2px;{% if assets.close %} image: url({{ assets.close }});{% endif %} }
@@ -90,4 +93,7 @@ QLabel#Brand { font-weight: 600; font-size: {{ ui_size + 1 }}pt; background: tra
 QWidget#CommandPalette { background: {{ c("ui.bg.raised") }}; border: 1px solid {{ c("ui.border.strong") }}; border-radius: 8px; }
 QLabel#Muted { color: {{ c("ui.fg.muted") }}; background: transparent; }
 QFrame#Banner { background: {{ c("ui.bg.raised") }}; border-bottom: 1px solid {{ c("ui.border") }}; }
+QFrame#Banner QLabel { background: transparent; }
+QFrame#ToastFrame { background: transparent; }
+QFrame#ToastFrame QPushButton { padding: {{ pad }}px {{ pad * 2 }}px; }
 QLabel#Toast { background: {{ c("ui.bg.raised") }}; border: 1px solid {{ c("ui.border.strong") }}; border-radius: 8px; padding: {{ pad * 2 }}px {{ pad * 3 }}px; }

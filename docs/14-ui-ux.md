@@ -36,6 +36,13 @@
 ```
 
 - **Left activity rail:** Files (project explorer), Outline, Examples, Parameters. Each is a collapsible dock.
+
+> **As built (M10):** the rail is a vertical icon tool bar at the window's left edge (`ui/dock_layout.py`). It
+> holds every side panel — Files, Examples, Outline, Parameters, Camera, Inspector, Materials, Lights,
+> Variations, Render Settings — and shows **one at a time** at full size; the active icon collapses the side
+> bar. The "right sidebar" of property sheets was folded into the same rail: a second side bar would have
+> squeezed the editor and viewport on laptop screens. Bottom panels are tabs along the top of the panel; a
+> tabified dock hides its own title bar. View ▸ Panels lists all panels; Activity is hidden by default.
 - **Centre:** the editor tab area and the view tab area (Viewport / Render), in a splitter. Either can be
   maximised (`Ctrl+Shift+M`).
 - **Right sidebar:** contextual property sheets (Inspector, Materials, Render Settings, Environment & Lights,
@@ -52,26 +59,31 @@
 | **Render** | Render view large, Render Settings + Environment visible, Render Queue |
 | **Present** | Full-screen viewport or render, with all chrome hidden (`F11`) |
 
+> **As built (M10):** `ui/workspaces.py`. Code, Explore and Render are Ctrl+1 … Ctrl+3 and a menu in the
+> header; each remembers its layout across sessions (first visit: the preset above). Present is Ctrl+4 (Esc
+> returns); F11 stays plain full screen. View ▸ Workspace ▸ Reset Layout restores the default docks.
+
 ## 3. Panels
 
-| Panel | Contents |
-|-------|----------|
-| Files | Project tree, open editors, file operations; `.structura`, `.es`, includes, templates |
-| Outline | Rules (ambiguous alternatives grouped, with weights and %), materials, params, v2 blocks; click to navigate; filter box |
-| Examples | Gallery grid with **thumbnails** (generated once by the `preview` integrator and cached), search, tags (Tutorials, Classic, Community); double-click opens a copy |
-| Parameters | `#define … (float/int)` and `#param` controls: sliders, spin boxes, colour buttons, toggles, enums; per-parameter keyframe toggle ([16](16-animation-scripting-cli.md)); reset-to-default |
-| Inspector | Picked-object info ([08](08-viewport.md) §6): kind, tag, material, generation, size, source link, "Show ancestry", "Select all from rule/tag/generation", "Hide/isolate" |
-| Materials | Tags found in the scene → material assignment; editor for principled parameters with a live preview swatch (`preview` render of a sphere+box); preset picker; "Write as v2 `material` block" |
-| Render Settings | **Generated from registry ParamSpecs** ([02](02-architecture.md) §6.2): integrator, samples, noise threshold, size, filter, bounces, denoise, view transform, exposure, device |
-| Environment & Lights | Environment type (colour/gradient/HDRI/sun-sky) with HDRI browser and rotation; light list with add/remove; sun position widget (azimuth/elevation dial) |
-| Camera | Numeric eye/target/up/fov/aperture/focus, projection type, **camera bookmarks** (saved views), "Copy camera to script" (v1 or v2 syntax), lock to script |
-| Problems | Diagnostics across open documents ([12](12-editor.md) §7) |
-| Console | Log with severity filters, search, copy; structured build/render statistics |
-| Build Stats | Counts by primitive kind; per-generation histogram; termination reasons (1.5 parity); timings per phase; memory; estimated vs actual object count |
-| Render Queue | Queued/running/finished renders and exports, with progress, ETA, open/reveal buttons |
-| Timeline | Animation tracks ([16](16-animation-scripting-cli.md)) |
-| Activity | All Jobs with lane, state and duration (a debug aid, hidden by default) |
-| **Variation Explorer** | §5.3 |
+| Panel | Contents | Status |
+|-------|----------|--------|
+| Files | Project tree, open editors, file operations; `.structura`, `.es`, includes, templates | ✅ (folder view, new/rename/delete, follows the script) |
+| Outline | Rules (ambiguous alternatives grouped, with weights and %), materials, params, v2 blocks; click to navigate; filter box | ✅ |
+| Examples | Gallery grid with **thumbnails** (generated once by the `preview` integrator and cached), search, tags (Tutorials, Classic, Community); double-click opens a copy | ✅ gallery with cached thumbnails, group filter; opens copies |
+| Parameters | `#define … (float/int)` and `#param` controls: sliders, spin boxes, colour buttons, toggles, enums; per-parameter keyframe toggle ([16](16-animation-scripting-cli.md)); reset-to-default | ✅ |
+| Inspector | Picked-object info ([08](08-viewport.md) §6): kind, tag, material, generation, size, source link, "Show ancestry", "Select all from rule/tag/generation", "Hide/isolate" | ✅ info, go to source, select same call site/tag/generation/kind, isolate / show all; no ancestry |
+| Materials | Tags found in the scene → material assignment; editor for principled parameters with a live preview swatch (`preview` render of a sphere+box); preset picker; "Write as v2 `material` block" | ✅ tags, presets, live swatch, writes v2 blocks |
+| Render Settings | **Generated from registry ParamSpecs** ([02](02-architecture.md) §6.2): integrator, samples, noise threshold, size, filter, bounces, denoise, view transform, exposure, device | ✅ |
+| Environment & Lights | Environment type (colour/gradient/HDRI/sun-sky) with HDRI browser and rotation; light list with add/remove; sun position widget (azimuth/elevation dial) | ✅ Lights panel (v2 light blocks); environment and sun in Render Settings |
+| Camera | Numeric eye/target/up/fov/aperture/focus, projection type, **camera bookmarks** (saved views), "Copy camera to script" (v1 or v2 syntax), lock to script | ✅ numbers, standard views, saved views, Copy to Script; no lock-to-script |
+| Problems | Diagnostics across open documents ([12](12-editor.md) §7) | ✅ |
+| Console | Log with severity filters, search, copy; structured build/render statistics | ✅ |
+| Build Stats | Counts by primitive kind; per-generation histogram; termination reasons (1.5 parity); timings per phase; memory; estimated vs actual object count | ✅ counts, termination reasons, generation histogram, time (no per-phase timings) |
+| Render Queue | Queued/running/finished renders and exports, with progress, ETA, open/reveal buttons | ✅ (renders only; exports run directly) |
+| Timeline | Animation tracks ([16](16-animation-scripting-cli.md)) | ✅ |
+| Activity | All Jobs with lane, state and duration (a debug aid, hidden by default) | ✅ |
+| **Variation Explorer** | §5.3 | ✅ seeds and parameters, Expand Around This |
+
 
 ## 4. Commands, menus, shortcuts
 
@@ -86,6 +98,12 @@
 There are no hand-built duplicate `QAction`s (DRY).
 
 ### 4.1 Menu structure
+
+> **As built:** the menus follow this table, with these differences. File has Export As… (Ctrl+E) and
+> Open from Render…; Render has Add to Render Queue… (Ctrl+Shift+F9) and Save Render Report…; View has
+> Panels, Workspace, Colour By, Overlays, Standard Views and Copy Camera to Script. "Save as Legacy .es",
+> "Render (Legacy Look)" as a separate command, "Build Limits…" and "Show Ancestry" are not built (the
+> legacy look is the `classic` integrator in the Render tab).
 
 | Menu | Items (abridged) |
 |------|------------------|
@@ -123,6 +141,10 @@ A welcome page appears in the editor area: New, Open, Open Example, Recent, a th
 thumbnails (Structura Dark/Light, Nord, Nord Light), and the detected compute device ("GPU: … ✓" or "CPU mode:
 … cores"). The kernel warm-up runs in the background with a status-bar indicator.
 
+> **As built (M10):** `ui/welcome.py` shows New, Open, Browse Examples, recent files, the four theme
+> thumbnails and the render device (probed on the device lane); it fills the editor area whenever no script is
+> open.
+
 ### 5.2 Opening a legacy file
 
 1. Drag `Menger.es` in. It opens in v1 mode, and the status bar says "EisenScript v1 (Structure Synth 1.5
@@ -143,10 +165,20 @@ thumbnails (Structura Dark/Light, Nord, Nord Light), and the detected compute de
 - A snapshot strip (history) lets the user compare and restore earlier states. Each snapshot records the
   script hash, seed, params, camera and a thumbnail.
 
+> **As built:** seed variations as described; the snapshot strip is the **History** panel (Build ▸ Take
+> Snapshot, Ctrl+Alt+H: text, seed, parameters, camera and a viewport thumbnail; restore is one undo step).
+> The Variation Explorer varies **seeds** or **parameters** (the `#define` sliders, ±25 % of each range around
+> the current values, the first cell being the current state); right-click a cell ▸ Expand Around This halves
+> the spread around it.
+
 ### 5.4 Final render
 
 Render workspace → choose a preset (*Draft / Standard / Final / Print 4K*) → `F9` → watch the tiles → the
 denoised result appears → *Save* (PNG/EXR, metadata embedded) or *Add to queue*.
+
+> **As built:** presets Draft / Standard / Final / Print 4K in the Render tab; the render queue; progressive
+> rendering instead of tiles ([09](09-renderer.md) §5.2). Save writes PNG/EXR with metadata; Report… writes a
+> render report.
 
 ### 5.5 Export to Blender / USD
 
@@ -161,6 +193,10 @@ Export ▸ USD… opens a side sheet (not a modal dialog) with:
 The export runs as a Job, and a toast links to "Reveal in folder". Blender script export is analogous
 ([15](15-export.md)).
 
+> **As built:** a Save As dialog (all formats, remembered folders) followed by the export sheet
+> (`ui/dialogs/export_dialog.py`: destination, contents, presets, options). It is a short modal dialog, not a
+> side sheet; no live size estimate yet. Exports run as jobs; a toast offers "Show in Folder".
+
 ## 6. Feedback & notifications
 
 | Mechanism | Use |
@@ -171,6 +207,11 @@ The export runs as a Job, and a toast links to "Reveal in folder". Blender scrip
 | Banners (top of the relevant view) | Persistent conditions: CPU fallback, stale scene, legacy-mode hints |
 | Panel badges | Problems count, Render Queue count |
 | Modal dialogs | Only for destructive confirmations (unsaved changes) and fatal errors |
+
+> **As built:** status bar segments, toasts (`ui/widgets/toast.py`, stackable, 4 s, Reduce motion), banners
+> (`ui/banners.py`: legacy raytracer look, compute-preview fallback), the stale-scene badge in the viewport,
+> and Problems count in the panel title. There is no progress ring in the viewport (the status bar shows
+> build progress).
 
 ## 7. Preferences
 
@@ -183,6 +224,10 @@ The sections are generated from `SettingsService` ParamSpecs:
 - Rendering (device, CPU threads, memory guard %, denoiser, default preset);
 - Paths (library/include paths, templates, HDRIs, output folder);
 - Advanced (logging level, kernel cache, reset layout).
+
+> **As built:** one form generated from ParamSpecs (`ui/dialogs/preferences.py`): theme, interface size,
+> reduce motion, language, editor options, session, live build, viewport controls and engine, render device.
+> Sections, paths and advanced settings are backlog ([22](22-implementation-notes.md) §4).
 
 ## 8. Accessibility & internationalisation
 

@@ -22,6 +22,7 @@ from .editor.code_editor import CodeEditor
 from .editor.completion import CompletionController
 from .editor.find_bar import FindBar
 from .editor.signature import SignatureHelp
+from .panels.history import Snapshot
 
 NEW_SCRIPT = """// A new Structura script (EisenScript v1, Structure Synth compatible)
 set maxdepth 20
@@ -52,6 +53,9 @@ class EditorTab(QWidget):
         self.params: dict[str, float] = {}
         self.timeline = Timeline()  # keyframes (docs/16 §2); saved in the project
         self.frame = 0  # the timeline's current frame
+        self.bookmarks: dict[str, Camera] = {}  # saved views (Camera panel); saved in the project
+        self.snapshots: list[Snapshot] = []  # History panel (kept for the session)
+        self.suggested_name = ""  # an unsaved copy's name (examples): shown in the tab and offered by Save As
         self.render_overrides: dict[str, object] = {}  # Render Settings edits over the script's values
         self.project_path: Path | None = None  # the .structura file this tab was opened from or saved to
         self.initial_camera: Camera | None = None  # a project's camera, used instead of the script's at first
@@ -128,7 +132,7 @@ class EditorTab(QWidget):
     @property
     def display_name(self) -> str:
         source = self.project_path or self.path
-        return source.name if source else "Untitled"
+        return source.name if source else (self.suggested_name or "Untitled")
 
     @property
     def title(self) -> str:

@@ -73,3 +73,22 @@ def framed(camera: Camera, lo: np.ndarray, hi: np.ndarray, aspect: float, margin
     forward, _, up = camera.basis
     eye = centre - forward * distance
     return replace(camera, eye=_vec(eye), target=_vec(centre), up=_vec(up))
+
+
+STANDARD_VIEWS: dict[str, tuple[Vec3, Vec3]] = {  # name → (direction from the centre to the eye, up)
+    "front": ((0.0, 0.0, 1.0), (0.0, 1.0, 0.0)),
+    "back": ((0.0, 0.0, -1.0), (0.0, 1.0, 0.0)),
+    "right": ((1.0, 0.0, 0.0), (0.0, 1.0, 0.0)),
+    "left": ((-1.0, 0.0, 0.0), (0.0, 1.0, 0.0)),
+    "top": ((0.0, 1.0, 0.0), (0.0, 0.0, -1.0)),
+    "bottom": ((0.0, -1.0, 0.0), (0.0, 0.0, 1.0)),
+    "iso": ((0.577350269, 0.577350269, 0.577350269), (0.0, 1.0, 0.0)),
+}
+
+
+def standard_view(name: str, lo: np.ndarray, hi: np.ndarray, aspect: float, fov_y_deg: float = LEGACY_FOV) -> Camera:
+    """Look at the bounding box [lo, hi] along a principal axis (or the isometric diagonal), framed."""
+    direction, up = STANDARD_VIEWS[name]
+    centre = (np.asarray(lo, np.float64) + np.asarray(hi, np.float64)) / 2
+    start = Camera(_vec(centre + np.asarray(direction)), _vec(centre), up, fov_y_deg)
+    return framed(start, lo, hi, aspect)

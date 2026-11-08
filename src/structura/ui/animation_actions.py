@@ -30,7 +30,7 @@ class AnimationActions(QObject):
     def animation(self, samples: int) -> Animation | None:
         """The current tab as an Animation: its timeline, seed, parameters, the viewport camera, and the
         Render view's size and integrator with the Render Settings overrides."""
-        tab, source = self.w.tabs.current(), self.w.render_source()
+        tab, source = self.w.tabs.current(), self.w.render_actions.render_source()
         if tab is None or source is None:
             return None
         _, camera, settings, text = source

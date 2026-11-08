@@ -1,7 +1,22 @@
 # Exporting
 
-**Export ▸** lists every format; each opens a dialog with the format's options (the same options the command
-line takes with `--option KEY=VALUE`). Exports run in the background.
+**File ▸ Export As…** (Ctrl+E) opens a Save As dialog that lists every format; the chosen file type (or a typed
+extension) decides the format. **Export ▸ <format>…** does the same for one format. The dialog starts in the
+folder you last exported to (else next to the script, else *Documents/Structura*).
+
+The **export sheet** that follows shows:
+
+- **Save to:** the full path, with **Change…** to pick another;
+- **Contents:** the objects by kind;
+- **Preset:** saved option sets for this format — **Save Preset…** keeps the current options under a name
+  (`structura export --preset NAME` uses the same presets);
+- the format's **options** (the same options the command line takes with `--option KEY=VALUE`).
+
+Exports run in the background; a toast says when the file is written, with **Show in Folder**.
+
+**Render templates** (Structure Synth's `.rendertemplate` files) can name a program to run on the exported file
+(Sunflow-Colored runs Sunflow through `%SUNFLOW%`). Structura shows the command, with any environment variable
+that is not set, and runs it only if you agree (once per command and session). Its output goes to the Console.
 
 ## Formats
 

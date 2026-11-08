@@ -43,6 +43,20 @@ otherwise.
 - `set maxobjects` caps a runaway script; the Build Stats dock shows counts and timings.
 - Renders of huge scenes need GPU memory; the CPU renderer uses system memory instead.
 
+## The Examples gallery shows grey tiles
+
+Thumbnails are rendered once, one at a time in the background, and cached (in the `structura/thumbnails`
+folder of your user cache directory). The first time, the gallery fills in over a minute or two. With
+`STRUCTURA_PREVIEW=off` no thumbnails are made.
+
+## Where did my file go?
+
+Save As dialogs start in the folder last used for that kind of file, else next to the script, else in
+*Documents/Structura* (*Pictures/Structura* for renders). The toast after saving has **Show in Folder**, and
+the Console logs every path written.
+
 ## Reporting a problem
 
-**Help ▸ About** shows the version. Include the output of `structura doctor` and, if possible, the script.
+**Help ▸ About** shows the version. Include the output of `structura doctor` and, if possible, the script. A
+**render report** (Render ▸ Save Render Report…, or `structura render … --report report.txt`) records the
+settings, the device and the system in one file.

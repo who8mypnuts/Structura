@@ -199,6 +199,12 @@ The successor to `TemplateExportDialog`. Every 1.5 feature is kept:
 The first time a template's command runs, the user confirms the command, because templates can execute
 arbitrary programs.
 
+> **As built:** template export (all bundled templates, byte-identical to 1.5) and the **post-process
+> command** (`export/templates/run_after.py` expands `$FILE`, `%VAR%`, `$VAR`, `${VAR}`; the confirmation shows
+> the expanded command and any unset variable; `ui/processes.py` runs it with a non-blocking `QProcess` and
+> pipes its output to the Console). The template picker is the exporter's "template" option. Not built: the
+> template editor tab, the output preview, and "autosave script with seed and camera".
+
 ### 5.3 Bundled templates
 
 The 12 legacy templates, unchanged, plus updated versions: POV-Ray 3.8 (modern finish, radiosity, CSG-aware)
@@ -217,6 +223,13 @@ and Sunflow (AO, Colored, Ultimate) fixed to include `grid`/`line`/`dot`/`triang
 - Any export sheet can "Save preset…". Presets are TOML files of ParamSpec values.
 - `structura export scene.es --format usd --preset "Omniverse instanced" -o out.usdc` uses exactly the same
   exporter and options ([16](16-animation-scripting-cli.md) §5).
+
+> **As built (M10):** `export/presets.py` stores presets per exporter in the user config folder
+> (`export-presets/<exporter>/<name>.toml`); the export sheet lists and saves them and `--preset` reads them
+> (`--option` values override). The GUI flow is Save As (every format listed; the chosen type or a typed
+> extension decides the exporter; folders remembered per kind) → export sheet (`ui/dialogs/export_dialog.py`:
+> full destination with Change…, contents, preset, options) → an ExportService job → a toast with Show in
+> Folder.
 
 ## 8. Performance targets (1M boxes, reference machine)
 

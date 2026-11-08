@@ -57,3 +57,12 @@ def test_the_timeline_round_trips_and_unknown_sections_survive(tmp_path: Path) -
     loaded = model.load(tmp_path / "p.structura")
     assert loaded.timeline == timeline and loaded.reserved == {"lights": [{"name": "key"}]}
     assert Project("box").timeline is None
+
+
+def test_camera_bookmarks_round_trip(tmp_path: Path) -> None:
+    from structura.core.project.model import Project, from_json, to_json  # noqa: PLC0415
+    from structura.core.scene.camera import Camera  # noqa: PLC0415
+
+    views = {"hero": Camera((1.0, 2.0, 3.0), (0.0, 0.0, 0.0), fov_y_deg=30.0)}
+    project = from_json(to_json(Project("box\n", bookmarks=views)), tmp_path)
+    assert project.bookmarks == views

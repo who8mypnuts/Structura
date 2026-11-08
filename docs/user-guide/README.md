@@ -6,13 +6,13 @@ Structura.
 
 | Page | What it covers |
 |------|----------------|
-| [Getting started](getting-started.md) | Installing, the window, your first structure in five minutes |
+| [Getting started](getting-started.md) | Installing, the window (activity rail, workspaces, welcome page), your first structure |
 | [Writing scripts](writing-scripts.md) | EisenScript in one page: rules, transformations, colours, v2 additions |
 | [The editor](editor.md) | Completion, diagnostics, quick fixes, navigation, multi-cursor, themes and keymaps |
-| [Rendering](rendering.md) | The viewport, the Render view, integrators, materials, lights, denoising, saving images |
+| [Rendering](rendering.md) | The viewport, the Render view, presets, materials and lights, denoising, saving, render reports, the queue |
 | [Animation](animation.md) | The timeline, keyframes, expressions with `time`, rendering frames and videos |
 | [Exporting](exporting.md) | Mesh, scene and text formats; 3D printing; Blender; USD |
-| [Command line](command-line.md) | `structura build / render / export / animate / convert / run / doctor / warmup` |
+| [Command line](command-line.md) | `structura build / render / export / template / animate / convert / run / doctor / devices / theme / warmup` |
 | [Troubleshooting](troubleshooting.md) | GPUs and drivers, Wayland, kernel caches, denoiser, performance |
 
 The complete language reference is generated from the same tables the editor uses:

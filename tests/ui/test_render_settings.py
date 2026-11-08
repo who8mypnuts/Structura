@@ -97,3 +97,15 @@ def test_region_renders_paste_into_the_last_image_and_ab_snapshots(window: MainW
     assert view.view.snapshot is not None
     view.inspect(1, 2)
     assert view.controls.pixel.text() == "1 2: 0.2 0.2 0.2"
+
+
+def test_render_presets_set_samples_size_and_noise_threshold(window: MainWindow) -> None:
+    controls = window.render_view.controls
+    controls.preset.setCurrentText("Print 4K")
+    assert controls.samples.value() == 2048 and controls.image_size((800, 600)) == (3840, 2880)
+    assert controls.settings(64, 48).noise_threshold == 0.003
+    controls.preset.setCurrentText("Draft")
+    assert controls.image_size((600, 800)) == (720, 960)  # the long edge follows the viewport's orientation
+    controls.samples.setValue(77)
+    assert controls.preset.currentText() == "Custom" and controls.settings(64, 48).noise_threshold == 0.0
+    assert controls.image_size((2000, 1000)) == (1280, 640)  # Custom: the viewport, capped

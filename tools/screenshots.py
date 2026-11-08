@@ -1,11 +1,16 @@
 """Reproducible screenshots for the docs (docs/screenshots): the main window in several themes and the
 GL preview engine rendered headless.
 
-    QT_QPA_PLATFORM=offscreen PYTHONPATH=src:. python -m tools.screenshots
+    PYTHONPATH=src:. python -m tools.screenshots
+
+The window shots use Qt's offscreen platform with a 1920×1200 virtual screen (so the window gets its real
+default size) unless QT_QPA_PLATFORM is set.
 """
 
 from __future__ import annotations
 
+import json
+import os
 import sys
 import tempfile
 from pathlib import Path
@@ -37,10 +42,10 @@ def window_shots(app: object) -> None:
         for theme, script in (("nord", "Default.es"), ("structura-dark", "Nouveau.es"), ("github-light", "Menger.es")):
             w = MainWindow(SettingsService(Path(tmp) / f"{theme}.ini"))
             w.themes.set_theme(theme)
-            w.resize(1600, 960)
             w.show()
-            w.docs.open_file(EXAMPLES / script)
-            _wait(app, 12000)
+            w.docs.open_example(EXAMPLES / script)
+            w.panels.show("Examples")
+            _wait(app, 20000)
             w.grab().save(str(OUT / f"window-{theme}.png"))
             for i in range(w.tabs.count()):
                 w.tabs.widget(i).editor.document().setModified(False)  # type: ignore[union-attr]
@@ -78,8 +83,20 @@ def preview_shots() -> None:
     Image.fromarray(grid).save(OUT / "preview-engine.png")
 
 
+SCREEN = {"screens": [{"name": "docs", "x": 0, "y": 0, "width": 1920, "height": 1200, "logicalDpi": 96,
+                       "logicalBaseDpi": 96, "dpr": 1}]}  # fmt: skip
+
+
+def _virtual_screen() -> None:
+    if "QT_QPA_PLATFORM" not in os.environ:
+        config = Path(tempfile.gettempdir()) / "structura-screenshots-screen.json"
+        config.write_text(json.dumps(SCREEN), encoding="utf-8")
+        os.environ["QT_QPA_PLATFORM"] = f"offscreen:configfile={config}"
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
+    _virtual_screen()
     preview_shots()
     app = create_app(sys.argv)
     window_shots(app)

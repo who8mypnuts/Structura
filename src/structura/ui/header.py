@@ -10,7 +10,7 @@ from pathlib import Path
 
 from PySide6.QtCore import QEvent, QSize, Qt, Signal
 from PySide6.QtGui import QPixmap, QResizeEvent
-from PySide6.QtWidgets import QHBoxLayout, QLabel, QSpinBox, QToolButton, QWidget
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QMenu, QSpinBox, QToolButton, QWidget
 
 from ..themes.model import Theme
 from .commands.registry import CommandRegistry
@@ -21,6 +21,7 @@ BRAND = Path(__file__).resolve().parents[1] / "resources" / "brand"
 MAX_SEED = 2**31 - 1
 PRIMARY = frozenset({"play", "zap", "image"})  # Build, Live Build, Render keep their labels longest
 ICONS_ONLY = 2
+WORKSPACE_COMMANDS = ("view.workspace_code", "view.workspace_explore", "view.workspace_render", "view.present")
 
 
 class HeaderBar(QWidget):
@@ -57,8 +58,27 @@ class HeaderBar(QWidget):
         for command_id, glyph in (("build.seed_random", "dice"), ("build.seed_next", "plus")):
             layout.addWidget(self._button(command_id, glyph))
         layout.addStretch(1)
+        layout.addWidget(self._workspace_button())
         for command_id, glyph in (("render.start", "image"), ("view.frame_all", "frame"), ("view.palette", "command")):
             layout.addWidget(self._button(command_id, glyph))
+
+    def _workspace_button(self) -> QToolButton:
+        """Workspace: Code ▾ — the workspace commands in a menu."""
+        self.workspace = QToolButton()
+        self.workspace.setAccessibleName(tr("Workspace"))
+        self.workspace.setToolTip(tr("Workspace (Ctrl+1 … Ctrl+4)"))
+        self.workspace.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        menu = QMenu(self.workspace)
+        for command_id in WORKSPACE_COMMANDS:
+            menu.addAction(self.registry.action(command_id))
+        self.workspace.setMenu(menu)
+        self.set_workspace("Code")
+        return self.workspace
+
+    def set_workspace(self, name: str) -> None:
+        self.workspace.setText(tr(name, "Commands"))
+        self._widths.clear()
+        self.updateGeometry()
 
     def _button(self, command_id: str, glyph: str) -> QToolButton:
         button = QToolButton()

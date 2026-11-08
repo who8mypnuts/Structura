@@ -16,6 +16,7 @@ from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import Any, cast
 
+import numba
 from numba import njit
 
 PACKAGE = Path(__file__).resolve().parents[1]
@@ -80,6 +81,13 @@ class FairLock:
 
 
 _PARALLEL = FairLock()
+_THREADS = [0]  # 0: every core Numba was started with (Preferences ▸ CPU threads)
+
+
+def set_cpu_threads(count: int) -> None:
+    """The number of threads parallel kernels use from now on (0 = all); applied in each parallel section,
+    because Numba's thread count is a per-thread setting."""
+    _THREADS[0] = max(0, int(count))
 
 
 @contextlib.contextmanager
@@ -88,4 +96,6 @@ def parallel_section() -> Iterator[None]:
     safe for concurrent parallel regions (docs/04 §6). Callers keep each section short (one render band, one
     filter pass) so that lanes interleave fairly."""
     with _PARALLEL:
+        available = int(getattr(numba.config, "NUMBA_NUM_THREADS", 1))
+        numba.set_num_threads(min(_THREADS[0], available) if _THREADS[0] else available)
         yield

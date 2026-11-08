@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Structura render report{% if d.script_name %} — {{ d.script_name }}{% endif %}</title>
+<style>
+  body { font-family: -apple-system, "Segoe UI", Roboto, sans-serif; background: #11141a; color: #e6e9f0;
+         margin: 0; padding: 32px; }
+  .sheet { max-width: 880px; margin: 0 auto; }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  .byline { color: #8790a3; margin-bottom: 28px; font-size: 13px; }
+  h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .04em; color: #6fd3c7; margin: 28px 0 10px;
+       border-bottom: 1px solid #2a3040; padding-bottom: 6px; }
+  h3 { font-size: 13px; color: #8790a3; margin: 16px 0 6px; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 4px; }
+  td, th { padding: 5px 10px; text-align: left; border-bottom: 1px solid #1f2430; font-size: 13px; }
+  td:first-child, th:first-child { color: #9aa4ba; width: 42%; }
+  .summary td:first-child { color: #8790a3; }
+  .summary td:last-child { font-weight: 600; }
+  code { background: #1b2030; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+  /* Two side-by-side tables, the plain (pre-flexbox) way: QTextDocument (the PDF export) supports table
+     layout but not CSS grid or flexbox. */
+  .cols { width: 100%; }
+  .cols > tr > td { vertical-align: top; width: 50%; border: none; padding: 0 12px 0 0; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <h1>Structura render report</h1>
+  <div class="byline">Generated {{ d.generated }} · Structura {{ d.version }}{% if d.script_name %} · {{ d.script_name }}{% endif %}</div>
+
+  <h2>Summary</h2>
+  <table class="summary">
+    <tr><td>Resolution</td><td>{{ d.width }} × {{ d.height }}</td></tr>
+    <tr><td>Device</td><td>{{ d.device or "—" }}</td></tr>
+    <tr><td>Samples</td><td>{{ "{:,}".format(d.achieved_samples) }} / {{ "{:,}".format(d.target_samples) }}</td></tr>
+    <tr><td>Render time</td><td>{{ "%.2f"|format(d.seconds) }} s ({{ "%.2f"|format(d.samples_per_second) }} samples/s)</td></tr>
+    <tr><td>Still sampling</td><td>{{ "%.1f%%"|format(d.active * 100) }}</td></tr>
+    <tr><td>Denoiser</td><td>{{ d.denoiser or "off" }}</td></tr>
+    <tr><td>Objects</td><td>{{ "{:,}".format(d.objects) }}</td></tr>
+    <tr><td>Build seed / Render seed</td><td>{{ d.build_seed }} / {{ d.render_seed }}</td></tr>
+    {% if d.script_sha256 %}<tr><td>Script SHA-256</td><td><code>{{ d.script_sha256 }}</code></td></tr>{% endif %}
+  </table>
+
+  <h2>Scene</h2>
+  <table class="cols"><tr><td>
+    <table>
+      {% for label, value in d.build %}<tr><td>{{ label }}</td><td>{{ value }}</td></tr>
+      {% endfor %}<tr><td>Bounds</td><td>({{ "%.4g, %.4g, %.4g"|format(*d.bounds_lo) }}) – ({{ "%.4g, %.4g, %.4g"|format(*d.bounds_hi) }})</td></tr>
+    </table>
+  </td><td>
+    <table>
+      <tr><th>Kind</th><th>Count</th></tr>
+      {% for kind, count in d.by_kind.items() %}<tr><td>{{ kind }}</td><td>{{ "{:,}".format(count) }}</td></tr>
+      {% endfor %}
+    </table>
+  </td></tr></table>
+
+  {% if d.scene_stats %}<h3>Render-ready scene</h3>
+  <table>
+    <tr><td>Primitives sent to the renderer</td><td>{{ "{:,}".format(d.scene_stats.render_primitives) }}</td></tr>
+    <tr><td>Triangles</td><td>{{ "{:,}".format(d.scene_stats.triangles) }}</td></tr>
+    <tr><td>BVH nodes</td><td>{{ "{:,}".format(d.scene_stats.bvh_nodes) }}</td></tr>
+    <tr><td>Materials</td><td>{{ d.scene_stats.materials }}</td></tr>
+    <tr><td>Emitters (lights)</td><td>{{ d.scene_stats.emitters }}</td></tr>
+  </table>{% endif %}
+
+  {% if d.camera %}<h2>Camera</h2>
+  <table>
+    {% for label, value in d.camera %}<tr><td>{{ label }}</td><td>{{ value }}</td></tr>
+    {% endfor %}
+  </table>{% endif %}
+
+  <h2>Render settings</h2>
+  <table class="cols"><tr><td>
+    <table>
+      {% for label, value in d.settings[:(d.settings|length + 1) // 2] %}<tr><td>{{ label }}</td><td>{{ value }}</td></tr>
+      {% endfor %}
+    </table>
+  </td><td>
+    <table>
+      {% for label, value in d.settings[(d.settings|length + 1) // 2:] %}<tr><td>{{ label }}</td><td>{{ value }}</td></tr>
+      {% endfor %}
+    </table>
+  </td></tr></table>
+</div>
+</body>
+</html>

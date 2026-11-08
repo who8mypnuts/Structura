@@ -6,6 +6,7 @@ in tests and thumbnails). All calls happen on the thread that owns that context.
 
 from __future__ import annotations
 
+import math
 from typing import Any
 
 import moderngl
@@ -20,6 +21,11 @@ from .programs import Programs
 from .targets import ShadowTarget, Targets
 
 ACCUMULATE = 16  # jittered frames averaged when the view is still (docs/08 §5 "accumulation AA")
+
+
+def grid_step(radius: float) -> float:
+    """Minor grid spacing: a power of ten so that major lines (×10) are roughly a scene radius apart."""
+    return float(10.0 ** math.floor(math.log10(max(radius, 1e-6)))) / 10.0
 
 
 def halton(i: int, base: int) -> float:
@@ -297,7 +303,20 @@ class PreviewRenderer:
         prog["u_exposure"].value = options.exposure
         prog["u_selected"].value = 0 if options.selected is None else options.selected + 1
         prog["u_select_color"].value = tuple(float(v) ** 2.2 for v in options.select_color)
+        self._grid_uniforms(prog, options)
         self._vaos["composite"].render(moderngl.TRIANGLES, vertices=3)
+
+    def _grid_uniforms(self, prog: Any, options: PreviewOptions) -> None:
+        """The ground grid lies under the structure, with a step that keeps about ten major cells across it."""
+        scene = self.scene
+        prog["u_grid"].value = int(options.grid and scene is not None)
+        if scene is None:
+            return
+        lo, hi = np.asarray(scene.lo, np.float64), np.asarray(scene.hi, np.float64)
+        radius = max(float(np.linalg.norm(hi - lo)) / 2.0, 1e-3)
+        prog["u_grid_plane"].value = (float(lo[1]), float((lo[0] + hi[0]) / 2), float((lo[2] + hi[2]) / 2), radius * 6)
+        prog["u_grid_step"].value = grid_step(radius)
+        prog["u_grid_color"].value = options.grid_color
 
     # -- picking ---------------------------------------------------------------------------------------
     def pick(self, x: int, y: int) -> int | None:

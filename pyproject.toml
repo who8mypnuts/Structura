@@ -107,7 +107,8 @@ include_external_packages = true
 name = "Layers"
 type = "layers"
 layers = [
-  "structura.app | structura.cli",
+  "structura.cli",  # `structura FILE…` hands over to the GUI entry point
+  "structura.app",
   "structura.ui",
   "structura.services",
   "structura.render | structura.preview | structura.export | structura.scripting",

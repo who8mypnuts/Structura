@@ -5,7 +5,20 @@ semantic versioning. The detailed record, with every deviation from the plan, is
 
 ## [Unreleased] — 0.1.0
 
-The first complete implementation of the plan in [docs/](docs/README.md) (milestones M0–M8, M9 in progress).
+The first complete implementation of the plan in [docs/](docs/README.md) (milestones M0–M8 and M10; M9 waits
+on the owner's platform checks).
+
+### Window and workflow (M10)
+
+- An activity rail: one readable side panel at a time (Files, Examples, Outline, Parameters, Camera,
+  Inspector, Materials, Lights, Variations, Render Settings); bottom panels with tabs on top.
+- Workspaces (Code, Explore, Render, Present) that remember their layouts; Reset Layout.
+- A welcome page; toasts with Show in Folder; banners; an Activity panel of background jobs.
+- An Examples gallery with cached thumbnails; examples open as copies.
+- Save As dialogs everywhere, starting in remembered folders (never the program's folder).
+- File ▸ Export As… with every format, an export sheet (destination, contents, presets, options), export
+  presets shared with `structura export --preset`, and template 'runAfter' commands (after confirmation).
+- File ▸ Open from Render: reopen the script and settings stored in a PNG or EXR.
 
 ### Language
 
@@ -24,7 +37,10 @@ The first complete implementation of the plan in [docs/](docs/README.md) (milest
 
 - Semantic highlighting, completion, signature help, hover and inlay hints.
 - Diagnostics with quick fixes, rename, format, peek and references.
-- Folding, multiple cursors, minimap, sticky scroll, split view, number scrubbing and colour pickers.
+- Folding, multiple cursors, minimap, sticky scroll, split view and number scrubbing.
+- A colour picker on right-click (live preview, one undo step, the literal's style kept) and a context menu
+  with the language commands.
+- Every broken rule is reported at once (a recovering parser for the editor).
 - Snippets with tab stops.
 - Sessions with crash recovery.
 - 40 themes with a theme editor, keymap presets and an editor for them.
@@ -42,7 +58,16 @@ The first complete implementation of the plan in [docs/](docs/README.md) (milest
   - ground and shadow catcher, fog, and photon-mapped caustics;
   - AgX, ACES and filmic view transforms.
 - Render view: live exposure and view transform, channels, denoise, zoom and pan, pixel inspector, A/B
-  compare, region re-render.
+  compare, region re-render, presets (Draft, Standard, Final, Print 4K), and a render queue.
+- Render reports (PDF, HTML, Markdown, text, JSON, CSV, ODT) with geometry, camera, settings, image
+  statistics, visible objects, BVH and performance figures; `structura render --report`.
+- Viewport: colour-by modes, a ground grid, a technical look, gizmo/bounds/HUD overlays, navigation presets
+  (Structura, Structure Synth 1.5, Blender) with a fly mode, standard views, animated camera moves, the Camera
+  panel with saved views and Copy Camera to Script, the Inspector, CPU picking in the compute preview and
+  Alt+click focus.
+- The GPU viewport works on NVIDIA under Wayland (desktop OpenGL requested explicitly; XWayland fallback); the
+  no-OpenGL fallback draws on the GPU with CUDA/OpenCL/wgpu. CUDA kernels are cached as machine code, and
+  render passes are paced by GPU time.
 
 ### Animation
 
@@ -61,3 +86,4 @@ The first complete implementation of the plan in [docs/](docs/README.md) (milest
 - A non-blocking GUI (job lanes, fair parallel sections, banded dispatch) with a UI-stall watchdog.
 - Kernel warm-up, i18n (German and a pseudo-locale) and accessible names.
 - Packaging scripts for Windows, macOS and Linux; CI workflows; a user guide.
+- CLI: `theme list/check/import`, `devices`, `template`, and `structura FILE` to open the app.

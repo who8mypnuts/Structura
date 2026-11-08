@@ -42,6 +42,12 @@ flowchart LR
 
 P0 = required for the first editor milestone (phase U1), P1 = for 1.0, P2 = post-1.0 candidate.
 
+> **Status:** every P0 and P1 item is built (M3, M5, M10), including Find in Files, Quick Open and the colour
+> picker. The P2 items are not built. Error tolerance is a *recovering* parser rather than a lossless CST
+> ([22](22-implementation-notes.md) §2.8): after a syntax error the analysis resumes at the next `rule`, so all
+> broken rules are reported and the rest keep their symbols. The editor's context menu carries the language
+> commands (definition, peek, references, rename, quick fix, comment, format) and Pick / Insert Colour.
+
 ### 2.1 Core editing
 
 | Feature | P |
@@ -60,7 +66,7 @@ P0 = required for the first editor milestone (phase U1), P1 = for 1.0, P2 = post
 | Zoom (`Ctrl+wheel`), font and ligature settings | P0 |
 | External change detection and reload prompt; autosave and crash recovery ([07](07-scene-model.md) §8) | P0 |
 | Encoding detection: UTF-8, with a fallback to Windows-1252/Latin-1 for legacy files, plus a status-bar indicator. All 155 corpus scripts are valid UTF-8, but Structure Synth's own `notes.txt`/`changelog.txt` are Latin-1, so user files written on Windows may be too. | P0 |
-| Vim keybindings | P2 |
+| Vim keybindings | P2 — not built |
 
 ### 2.2 Language intelligence
 
@@ -74,7 +80,7 @@ P0 = required for the first editor milestone (phase U1), P1 = for 1.0, P2 = post
 | Rename rule / tag / define (`F2`) | CST-based rewrite | P1 |
 | Document outline (rules, materials, params) and breadcrumbs | Semantic model | P0 |
 | Quick fixes (`Ctrl+.`): create missing rule, add `maxdepth`, replace `size`→`s` for 1.5 compatibility, convert defines to `#param` (v2), add `#version 2` when v2 syntax is used | Linter fixes | P1 |
-| Refactorings: extract transforms into a new rule, inline rule, convert `{…} R` ↔ `1 * {…} R` | CST | P2 |
+| Refactorings: extract transforms into a new rule, inline rule, convert `{…} R` ↔ `1 * {…} R` | CST | P2 — not built |
 | **Inlay hints:** ambiguous-rule probabilities, effective loop counts (e.g. `⟶ 27 children`), resolved material names on tags, estimated object count next to top-level calls | Semantic model + static estimate | P1 |
 | Formatter (`Shift+Alt+F`): idempotent, comment-preserving, configurable indentation; optional format-on-save | CST printer | P1 |
 | Semantic colouring of undefined rules (error colour) vs defined ones, unused rules dimmed | Semantic model | P0 |
@@ -86,12 +92,12 @@ P0 = required for the first editor milestone (phase U1), P1 = for 1.0, P2 = post
 |---------|-----------|---|
 | **Live rebuild** | Toggle (default on). It rebuilds after a clean analysis ([04](04-concurrency-model.md) §4). On errors, the last good scene stays visible with a "stale" badge. | P0 |
 | **Number scrubbing** | Alt+drag over any number changes it (Shift = fine, Ctrl = coarse). Integers stay integers. Each change triggers a preview-budget rebuild, and release triggers a full build. All changes form one undo step. | P0 |
-| **Colour swatches & picker** | Inline swatches after colour tokens (`#f80`, `red`). Clicking opens a colour picker that writes back in the token's original format (named colour → hex only if needed). | P0 |
+| **Colour swatches & picker** | Inline swatches after colour tokens (`#f80`, `red`). Clicking opens a colour picker that writes back in the token's original format (named colour → hex only if needed). | P0 — ✅ right-click ▸ Pick Colour…, Ctrl+click, Ctrl+Shift+C; live preview, one undo step (M10) |
 | **Inline parameter sliders** | `#define x 1 (float:0-2)` and `#param` lines show a slider in the gutter overlay; the Parameters panel mirrors it | P1 |
 | **Provenance jump** | Clicking in the viewport flashes the call site ([08](08-viewport.md) §6). The reverse also works: hovering an action highlights its instances in the viewport. | P0 |
 | **Seed controls** | The seed box and dice button (randomise), auto-increment option (1.5 behaviour) | P0 |
 | **Snippets** | All 1.5 context-menu snippets, plus pattern snippets (spiral, tree, grid3d, sphere-shell, Menger, …) with tab stops | P0 |
-| Structure preview | Hovering a rule name shows a thumbnail of that rule built alone (background `preview` render, cached) | P2 |
+| Structure preview | Hovering a rule name shows a thumbnail of that rule built alone (background `preview` render, cached) | P2 — not built |
 
 ## 3. Completion contexts
 
