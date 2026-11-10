@@ -1,5 +1,5 @@
-"""Examples panel (docs/14 §3): a gallery of the bundled legacy and community scripts with thumbnails, a group
-filter and search. Double-click opens a copy (the bundled files stay untouched).
+"""Examples panel (docs/14 §3): a gallery of the bundled v2 showcase, legacy and community scripts with
+thumbnails, a group filter and search. Double-click opens a copy (the bundled files stay untouched).
 
 Thumbnails are rendered once by the 'preview' integrator (render/thumbnail.py), one short compute-lane job
 at a time so other work interleaves, and cached on disk by script content. Cached ones are read on the io
@@ -27,10 +27,12 @@ from ..i18n import tr
 
 RESOURCES = Path(__file__).resolve().parents[2] / "resources"
 SOURCES = (  # (group, folder, sub-folders become their own groups)
+    ("Structura v2", RESOURCES / "examples" / "v2", False),  # materials, glass, lights, lenses, looks
     ("Classic", RESOURCES / "legacy" / "examples", True),
     ("Community", RESOURCES / "examples" / "community", False),
 )
 TILE = (104, 78)  # two columns fit the side bar
+STYLE = 2  # thumbnail rendering version (2: the script's own camera, sky and look): new tiles when it changes
 CACHE = Path(platformdirs.user_cache_dir("structura")) / "thumbnails"
 ALL = "All"
 
@@ -45,7 +47,7 @@ def example_files() -> list[tuple[str, Path]]:
 
 
 def cache_file(path: Path) -> Path:
-    digest = hashlib.sha1(path.read_bytes() + f"|{__version__}|{TILE}".encode()).hexdigest()
+    digest = hashlib.sha1(path.read_bytes() + f"|{__version__}|{TILE}|{STYLE}".encode()).hexdigest()
     return CACHE / f"{digest}.png"
 
 
@@ -72,7 +74,7 @@ def _load_cached(paths: list[Path]) -> Any:
 def _render(path: Path) -> Any:
     def run(ctx: JobContext) -> tuple[Path, np.ndarray]:
         try:
-            rgb, _ = script_thumbnail(path.read_text(encoding="utf-8", errors="replace"), TILE)
+            rgb, _ = script_thumbnail(path.read_text(encoding="utf-8", errors="replace"), TILE, script_view=True)
         except Exception:  # a script that does not build still gets a (blank) tile
             rgb = np.zeros((TILE[1], TILE[0], 3), np.uint8)
         CACHE.mkdir(parents=True, exist_ok=True)

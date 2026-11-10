@@ -66,3 +66,16 @@ def test_v1_scripts_are_untouched() -> None:
     assert compile_script("{ x 1 } box").program.declarations is None
     with pytest.raises(ParseError):
         compile_script(text)
+
+
+def test_rand_in_expressions_draws_like_random_brackets() -> None:
+    from structura.core.build.api import build_scene  # noqa: PLC0415
+    from structura.core.lang.analysis import analyze  # noqa: PLC0415
+    from structura.core.lang.api import compile_script  # noqa: PLC0415
+
+    def x_of(text: str) -> float:
+        return float(build_scene(compile_script(text, seed=3).program, 3).scene.xform[0, 0, 3])
+
+    drawn = x_of("#version 2\n{ x (rand(2, 4) * 10) } box\n")
+    assert 20 <= drawn <= 40 and drawn == x_of("#version 2\n{ x (random[2,4] * 10) } box\n")
+    assert [d.code for d in analyze("#version 2\n{ x (rand(1, pi)) } box\n").diagnostics] == ["E016"]

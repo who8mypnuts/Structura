@@ -59,7 +59,7 @@ Built-in shapes; 'box::tag' selects a material or render class.
 |---|---|---|
 | `box` | `box` | Solid unit cube [0,1]³. |
 | `sphere` | `sphere` | Sphere centred in the unit cube; radius from the transformed z half-extent (always round). |
-| `cylinder` | `cylinder` | Cylinder along the local x axis (v2). In Structure Synth 1.5 compatibility mode it draws nothing. |
+| `cylinder` | `cylinder` | Capped cylinder along the local x axis, from (0,.5,.5) to (1,.5,.5), radius 0.5 in y and z. Structure Synth 1.5 counted it but drew nothing; Structura draws it (1.5 template exports still omit it). |
 | `mesh` | `mesh` | Quad tube swept from the parent's frame to the current frame. |
 | `line` | `line` | Line from (0,.5,.5) to (1,.5,.5). |
 | `dot` | `dot` | Point at the unit-cube centre. |
@@ -128,15 +128,16 @@ Top-level blocks of EisenScript v2 ('#version 2').
 | `material · specular` | `specular ‹0..1›` | Dielectric specular level (0.5 = IOR 1.5). |
 | `material · ior` | `ior ‹number›` | Index of refraction. |
 | `material · transmission` | `transmission ‹0..1›` | Glass-like transmission. |
-| `material · transmission_roughness` | `transmission_roughness ‹0..1›` | Roughness of the transmitted lobe. |
+| `material · transmission_roughness` | `transmission_roughness ‹0..1›` | Roughness of glass (refraction and its reflection); 0 uses roughness. |
 | `material · emission` | `emission ‹colour strength›` | Emitted light: a colour and a strength. |
 | `material · opacity` | `opacity ‹state \| 0..1›` | Alpha; 'state' (the default) uses the structure's alpha. |
 | `material · coat` | `coat ‹0..1›` | Clear-coat layer weight. |
 | `material · coat_roughness` | `coat_roughness ‹0..1›` | Clear-coat roughness. |
-| `material · anisotropy` | `anisotropy ‹-1..1›` | Anisotropic stretch of the highlight. |
+| `material · anisotropy` | `anisotropy ‹-1..1›` | Stretches the highlight along the object's local x axis (brushed metal); negative values stretch it across. |
+| `material · anisotropy_rotation` | `anisotropy_rotation ‹0..1›` | Turns the anisotropy direction about the normal (1 = a full turn). |
 | `material · attenuation_color` | `attenuation_color ‹colour›` | Volume absorption colour of transmissive materials. |
-| `material · attenuation_distance` | `attenuation_distance ‹number›` | Distance at which the absorption reaches the attenuation colour. |
-| `material · thin_walled` | `thin_walled ‹bool›` | Treat transmissive surfaces as thin shells (no refraction offset). |
+| `material · attenuation_distance` | `attenuation_distance ‹number›` | Inside glass, white light becomes the attenuation colour after this distance (world units; Beer–Lambert). |
+| `material · thin_walled` | `thin_walled ‹bool›` | Thin shells and panes: light passes straight through without bending or absorption. |
 | `light` | `light { key value … }` | A named light: 'light NAME { type … }'. The first sun light also drives the sky. |
 | `light · type` | `type ‹sun \| point \| sphere \| spot \| rect›` | Kind of light. rect: a one-sided rectangle facing its target (soft, area-sampled shadows). |
 | `light · direction` | `direction ‹[x y z]›` | sun: the direction the light travels. |
@@ -157,24 +158,47 @@ Top-level blocks of EisenScript v2 ('#version 2').
 | `environment · intensity` | `intensity ‹number›` | hdri, sunsky: brightness multiplier. |
 | `environment · turbidity` | `turbidity ‹1.7..10›` | sunsky: haze (2 = very clear, 3 = clear, 6+ = hazy). |
 | `environment · ground` | `ground ‹colour›` | sunsky: the ground colour below the horizon. |
+| `environment · sun` | `sun ‹name›` | sunsky: the sun light that drives the sky (default: the first sun light). |
 | `environment · color` | `color ‹colour›` | color: the uniform colour (#fff gives the white-studio look). |
 | `environment · top` | `top ‹colour›` | gradient: zenith colour. |
 | `environment · bottom` | `bottom ‹colour›` | gradient: nadir colour. |
-| `camera` | `camera { key value … }` | The view; overrides the legacy 'set translation/rotation/pivot/scale' lines (W113). |
+| `camera` | `camera { key value … }` | The view and the lens; overrides the legacy 'set translation/rotation/pivot/scale' lines (W113). Set a focal length and an f-stop like a photographer, or a field of view and an aperture radius. |
 | `camera · type` | `type ‹perspective \| orthographic \| spherical \| fisheye›` | Projection. |
 | `camera · position` | `position ‹[x y z]›` | Eye position. |
 | `camera · target` | `target ‹[x y z]›` | Point looked at. |
 | `camera · up` | `up ‹[x y z]›` | Up vector. |
 | `camera · fov` | `fov ‹degrees›` | Vertical field of view (fisheye: across the image height). |
-| `camera · height` | `height ‹number›` | orthographic: visible height in world units. |
-| `camera · aperture` | `aperture ‹number›` | Lens radius for depth of field; 0 is a pinhole. |
-| `camera · focus` | `focus ‹auto \| number›` | Focus distance; auto focuses on the target. |
+| `camera · focal_length` | `focal_length ‹number›` | Focal length in millimetres (sets the field of view through the sensor): 14 ultra-wide, 50 normal, 135 telephoto. |
+| `camera · lens` | `lens ‹name›` | A lens as a photographer writes it: "85mm f/1.8", "24mm", "f/2", or a preset: 14mm, 24mm, 35mm, 50mm, 85mm, 135mm, 200mm, 100mm (macro). |
+| `camera · sensor` | `sensor ‹full-frame \| aps-c \| mft \| 1inch \| phone \| medium-format \| super35 \| WxH mm›` | Sensor size (default full-frame, 36x24 mm): relates the focal length to the field of view and the depth of field. |
+| `camera · fstop` | `fstop ‹number›` | Aperture as an f-number (f/1.4 shallow … f/22 deep); depth of field then follows the focal length and the scale. |
+| `camera · aperture` | `aperture ‹number›` | Lens radius in world units (instead of an f-stop); 0 is a pinhole. |
+| `camera · focus` | `focus ‹auto \| hyperfocal \| number›` | Focus distance; auto focuses on the target, hyperfocal keeps everything from half that distance to infinity sharp. |
+| `camera · scale` | `scale ‹number›` | World units per metre (default 1): how big the structure is for the f-stop. A 20-unit structure with scale 100 is 20 cm across. |
 | `camera · blades` | `blades ‹int›` | Aperture blades: 3 or more give polygonal bokeh (0: round). |
 | `camera · blade_rotation` | `blade_rotation ‹degrees›` | Rotation of the aperture polygon (also written blade-rotation). |
+| `camera · bokeh_bias` | `bokeh_bias ‹-1..1›` | Light across the bokeh discs: -1 soft centre, 0 even, 1 bright rims. |
+| `camera · anamorphic` | `anamorphic ‹0.25..4›` | Width / height of the aperture: above 1 gives oval, horizontally stretched bokeh (anamorphic lenses). |
+| `camera · shift` | `shift ‹[x y]›` | Lens shift in frame heights: [0 0.1] moves the view up without tilting the camera (straight verticals). |
+| `camera · tilt` | `tilt ‹[x y]›` | Tilt of the focus plane in degrees about the camera's x and y axes (Scheimpflug): miniature looks, or a sharp plane along a receding structure. |
+| `camera · height` | `height ‹number›` | orthographic: visible height in world units. |
+| `camera · mapping` | `mapping ‹equidistant \| equisolid \| stereographic›` | fisheye: how angles map to the image (equidistant is the default). |
 | `render` | `render { key value … }` | Render settings; override 'set raytracer::…' lines (W113). |
 | `render · integrator` | `integrator ‹path \| ao \| classic \| preview›` | path: physically based; ao: ambient occlusion; classic: Structure Synth 1.5's look; preview: fast. |
 | `render · samples` | `samples ‹int›` | Samples per pixel. |
 | `render · size` | `size ‹WxH›` | Output size in pixels, e.g. 1920x1080. |
+| `render · view` | `view ‹auto \| agx \| standard \| soft \| aces \| filmic›` | View transform from scene light to screen colours (auto: AgX, or standard for the classic integrator). |
+| `render · exposure` | `exposure ‹-10..10›` | Exposure in stops, applied when the image is shown and saved. |
+| `render · denoise` | `denoise ‹off \| auto \| oidn \| atrous›` | Denoise the finished render: auto uses Open Image Denoise when it is available, else the À-Trous filter. |
+| `render · look` | `look ‹off \| subtle \| neon \| cinematic \| studio›` | A finishing look (bloom, vignette, grading) applied when the image is shown and saved; the keys below adjust it. |
+| `render · bloom` | `bloom ‹0..2›` | Light spilling around highlights and emitters: 0 off, 0.05 subtle, 0.3 neon. Only light above bloom_threshold blooms. |
+| `render · bloom_threshold` | `bloom_threshold ‹0..100›` | Linear brightness above which light blooms (default 1). |
+| `render · bloom_radius` | `bloom_radius ‹0..1›` | How far bloom spreads: 0 tight halo … 1 wide glow (default 0.5). |
+| `render · vignette` | `vignette ‹0..1›` | Darken the corners: 0 off … 1 strong. |
+| `render · temperature` | `temperature ‹-1..1›` | White balance: −1 cool (blue) … 1 warm (amber). |
+| `render · saturation` | `saturation ‹0..2›` | Colour saturation: 0 grey, 1 as rendered, 2 vivid. |
+| `render · contrast` | `contrast ‹0..2›` | Contrast around mid grey, after the view transform (1 = as rendered). |
+| `render · lut` | `lut ‹"path.cube"›` | A 3D colour look-up table (.cube, relative to the script) applied last, for a film or brand grade. |
 | `render · filter` | `filter ‹box \| triangle \| gaussian \| blackman-harris \| mitchell \| catmull-rom \| bspline \| lanczos \| sinc›` | Pixel reconstruction filter (importance-sampled; box is a plain jitter inside the pixel). |
 | `render · max_bounces` | `max_bounces ‹int›` | Maximum path length (also written max-bounces). |
 | `render · diffuse_bounces` | `diffuse_bounces ‹int›` | path: at most this many diffuse bounces (within max_bounces). |
@@ -249,11 +273,12 @@ Problems reported while you type.
 | `E015` | `E015 · error` | Parameter type mismatch (v2). A '#param' default does not fit its type or range, or a parameter is used where its type does not fit (a colour where a number is needed, or the other way round). |
 | `E016` | `E016 · error` | Expression error (v2). A '( expression )' uses an unknown name, divides by zero or is malformed. |
 | `E017` | `E017 · error` | Invalid v2 block. A material, light, environment, camera or render block has an unknown key or a bad value. |
+| `E018` | `E018 · error` | v2 primitive in a v1 script. cone, torus, ellipsoid and tube are EisenScript v2 primitives: the script needs '#version 2' on its first line. |
 | `W101` | `W101 · warning` | Rule is never referenced. No call, retirement or top-level statement uses this rule. |
 | `W102` | `W102 · warning` | Rule is unreachable. The rule is only called from rules that the top level never reaches. |
 | `W103` | `W103 · warning` | #define replaces text inside other words (v1). Structure Synth 1.5 substitutes defines inside longer identifiers too; v2 substitutes whole words only. |
 | `W104` | `W104 · warning` | Recursive #define. A define refers to itself; substitution stops after 100 rounds. |
-| `W105` | `W105 · warning` | cylinder draws nothing in v1. Structure Synth 1.5 counts cylinders as objects but never draws them; '#version 2' draws them. |
+| `W105` | `W105 · info` | cylinder was invisible in Structure Synth 1.5. Structure Synth 1.5 counted cylinders as objects but never drew them. Structura draws them in every dialect; the 1.5 template and OBJ exports still leave them out, as 1.5 did. |
 | `W106` | `W106 · info` | Alias not valid in Structure Synth 1.5. 'size' and 'v' are accepted here but Structure Synth 1.5 rejects them. |
 | `W108` | `W108 · info` | Recursion bounded only by the default maxdepth. A recursive rule has no maxdepth and the script sets no 'set maxdepth': the default (1000) applies. |
 | `W109` | `W109 · warning` | 'set rng old' is obsolete. The Mersenne Twister is always used. |
@@ -261,6 +286,9 @@ Problems reported while you type.
 | `W112` | `W112 · info` | Tag has no material (v2). No material block has this tag's name and it is not a built-in preset: the default material is used. |
 | `W113` | `W113 · warning` | Legacy settings overridden by a v2 block. A camera or render block overrides the equivalent 'set' commands. |
 | `W114` | `W114 · warning` | v2 syntax without '#version 2'. Blocks, #param and ( expressions ) need '#version 2' on the first line. |
+| `W115` | `W115 · warning` | Unknown key in a v2 block. The block has no such key (a typo?); the line is ignored. The language reference lists every key. |
+| `W116` | `W116 · warning` | '#version 2' is not the first line. Only a '#version 2' on the first non-blank line selects EisenScript v2; anywhere else the script stays v1 (Structure Synth 1.5). |
+| `W117` | `W117 · warning` | v2 block value out of range. The number is outside the range the key documents; the renderer clamps it or uses it as given. |
 | `W120` | `W120 · warning` | Unknown preprocessor command. A line starting with '#' is not #define, #param, #version or #javascript. |
 | `W121` | `W121 · warning` | Malformed #define slider. A '#define NAME value (float:a-b)' slider could not be parsed. |
 | `I204` | `I204 · info` | JavaScript script. A '#javascript' script drives the Builder API. It is not built live; run it with Build ▸ Run JavaScript (F7). |

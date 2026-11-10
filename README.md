@@ -11,7 +11,7 @@
 - A code editor with:
   - semantic highlighting, completion with docs, signature help, hover (including rule probabilities) and inlay hints;
   - go to definition, rename and format;
-  - number scrubbing (Alt+drag), colour swatches with a live colour picker (right-click a colour), and 61
+  - number scrubbing (Alt+drag), colour swatches with a live colour picker (right-click a colour), and 74
     snippets;
   - error recovery: every broken rule is reported at once;
   - 40 themes (6 Nord variants), plus VS Code and base16 import.
@@ -19,20 +19,28 @@
   - the **preview engine** (GLSL: instancing, sphere impostors, SSAO, shadows, order-independent
     transparency, picking with jump-to-source, accumulation AA), with a CPU fallback;
   - the **precision engine** (Sunflow-derived path tracing with a principled BSDF, MIS, sun/point/sphere/
-    spot/rect lights, emissive geometry, HDRI and sun-sky, depth of field and bokeh, adaptive sampling,
+    spot/rect lights, emissive geometry, HDRI and sun-sky, glass with coloured absorption, adaptive sampling,
     AOVs, denoising, ground/shadow catcher, fog, and Structure Synth's classic look). One kernel source
     runs on **CUDA, OpenCL, WGSL and the CPU (Numba)**.
+- A **photographic camera**: lens presets and focal lengths on real sensors, f-stops that blur like a real
+  lens at the scene's scale, focus pulls, bokeh (blades, bias, anamorphic), shift and tilt, orthographic,
+  360° and fisheye projections — simple by default, everything on demand.
+- **Looks** (bloom, vignette, white balance, grading, `.cube` LUTs) and seven one-click **lighting rigs**.
 - A studio window: an activity rail of side panels (Files, Examples gallery with thumbnails, Outline,
   Parameters, Camera with saved views, Inspector, Materials, Lights, Variations, Render Settings),
   workspaces (Code, Explore, Render, Present), a welcome page, toasts, a render queue and an Activity panel.
-- **Render reports** with every statistic about a render — geometry, camera, settings, image statistics,
-  visible objects, BVH and performance — as PDF, HTML, Markdown, text, JSON, CSV or ODT.
-- Animation: a timeline with keyed parameters, seed and camera, v2 `time` expressions, and frame/video
-  rendering.
+- **Render reports** with every statistic about a render — geometry, camera and lens, settings, lights,
+  image statistics, visible objects, BVH, per-pass timings, device and memory — as PDF, HTML, Markdown,
+  text, JSON, CSV or ODT, saved beside the image (and on every render if you like).
+- **Crash recovery**: a recovery snapshot a few seconds after every edit, backups before every save, and an
+  error banner with a log instead of a silent failure.
+- Animation: a timeline with keyed parameters, seed, camera and focus, v2 `time` expressions, one-click
+  turntables and camera paths through saved views, and frame/video rendering.
 - Exports: OBJ (+MTL), PLY, STL (watertight union, CSG markers), 3MF (instanced, colour), glTF/GLB
   (optionally `EXT_mesh_gpu_instancing`), USD/USDZ (instanced), X3D and VRML97 (DEF/USE), a Blender script
-  (meshes or Geometry Nodes), POV-Ray 3.8, Sunflow and Mitsuba 3 scenes, and every Structure Synth render
-  template (byte-identical to 1.5).
+  (meshes or Geometry Nodes), POV-Ray 3.8, Sunflow and Mitsuba 3 scenes, MeshLab projects, and every
+  Structure Synth render template (byte-identical to 1.5). **PyMeshLab** cleans meshes on export (weld,
+  print-ready repair, decimation, smoothing, remeshing) and checks them (watertight, manifold, holes).
 
 The [user guide](docs/user-guide/README.md) explains everything; the planning and progress documents are in
 [docs/](docs/README.md).
@@ -41,7 +49,9 @@ The [user guide](docs/user-guide/README.md) explains everything; the planning an
 
 ## Install and run
 
-Python 3.12. Every dependency is required, so all features work the same everywhere.
+Python 3.12 or newer (3.12–3.14 are tested). Every dependency is required, so all features work the same
+everywhere. On Linux, PyMeshLab needs `libopengl0` (Debian/Ubuntu: `sudo apt install libopengl0`) and
+glibc 2.35 or newer.
 
 ```bash
 uv venv --python 3.12 .venv
@@ -76,7 +86,9 @@ structura export spiral.es -o spiral.usdz                 # .obj .ply .stl .glb 
 structura export spiral.es -o spiral.stl --option watertight=true --option unit_scale=10
 structura export spiral.es -o spiral.usdc --preset "Omniverse"     # options saved in the export sheet
 structura template spiral.es --template Sunflow-Colored -o spiral.sc
+structura render spiral.es -o spiral.png --lens "85mm f/1.8" --focus auto --look cinematic  # lens and look
 structura animate anim.es -o frames/f.png --frames 0:96 --video anim.mp4    # v2: frame, time, fps
+structura animate spiral.es -o turn/f.png --turntable 6 --video spin.mp4     # a seamless orbit
 structura run "JavaScript - Movie.es" --limit 10          # Structure Synth '#javascript' scripts
 structura doctor                                          # Qt platform, OpenGL and compute devices
 structura devices                                         # the compute devices; which one 'auto' picks

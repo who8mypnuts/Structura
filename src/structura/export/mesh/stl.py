@@ -12,6 +12,7 @@ from ...core.params import ParamSpec, ParamType
 from ..base import Exporter, ExportJob, ExportReport, register
 from ..csg import CSG_OPTION, export_mesh
 from ..solids import instance_solids, triangles, union
+from .meshlab import MESHLAB_OPTIONS
 
 RECORD = np.dtype([("n", "<f4", 3), ("v", "<f4", (3, 3)), ("attr", "<u2")])
 
@@ -42,6 +43,7 @@ class StlExporter(Exporter):
         ParamSpec("watertight", ParamType.BOOL, False, "Watertight union (manifold3d)"),
         ParamSpec("on_plate", ParamType.BOOL, True, "Place on the build plate (min z = 0)"),
         CSG_OPTION,
+        *MESHLAB_OPTIONS,
     )
 
     def write(self, job: ExportJob, path: Path) -> ExportReport:

@@ -20,6 +20,7 @@ from ...core.params import ParamSpec, ParamType
 from ..affine_instances import AffineGroup, affine_groups
 from ..base import Exporter, ExportJob, ExportReport, register
 from ..csg import CSG_OPTION, export_mesh, has_markers
+from .meshlab import MESHLAB_OPTIONS
 
 NS = "http://schemas.microsoft.com/3dmanufacturing/core/2015/02"
 CONTENT_TYPES = (
@@ -134,13 +135,14 @@ class ThreeMfExporter(Exporter):
         ParamSpec("lod", ParamType.ENUM, "medium", "Sphere detail", choices=("low", "medium", "high", "ultra")),
         ParamSpec("unit_scale", ParamType.FLOAT, 10.0, "Millimetres per unit", range=(1e-6, 1e6)),
         ParamSpec("on_plate", ParamType.BOOL, True, "Place on the build plate (min z = 0)"),
-        ParamSpec("instancing", ParamType.BOOL, True, "Instanced components (smaller files)"),
+        ParamSpec("instancing", ParamType.BOOL, True, "Instanced components (smaller files; off with a clean-up)"),
         CSG_OPTION,
+        *MESHLAB_OPTIONS,
     )
 
     def write(self, job: ExportJob, path: Path) -> ExportReport:
         o = job.options
-        if o["instancing"] and not (o["csg"] and has_markers(job.scene)):
+        if o["instancing"] and o["cleanup"] == "none" and not (o["csg"] and has_markers(job.scene)):
             return self._instanced(job, path)
         mesh, warnings = export_mesh(job)
         job.check()

@@ -82,7 +82,7 @@ class BuilderHost:
         if self.samples:
             settings = replace(settings, samples=self.samples)
         result = render(scene, replace(settings, samples_per_pass=AUTO_PASSES), self.backend)
-        save_image(result.image, path, 0.0, "standard")
+        save_image(result.image, path)
         self.info(f"raytraced {path.name}")
 
     def render_template(self, scene: Any, template: str, path: Path) -> None:

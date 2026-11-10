@@ -109,6 +109,7 @@ def test_doctor_reports_the_probe() -> None:
     assert result.returncode == 0, result.stderr[-2000:]
     assert "OpenGL preview" in result.stdout and "OpenGL 3.3 core" in result.stdout
     assert "Qt platform: offscreen" in result.stdout
+    assert "PyMeshLab" in result.stdout and "Open Image Denoise" in result.stdout  # the libraries section
 
 
 def test_every_requested_format_is_desktop_opengl() -> None:

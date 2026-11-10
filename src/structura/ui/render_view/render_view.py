@@ -14,15 +14,17 @@ from ...core.scene.camera import Camera
 from ...core.scene.ir import SceneIR
 from ...render.aov_display import channel_preview
 from ...render.api import RenderProgress
-from ...render.output import to_display
+from ...render.output import Display, to_display
 from ...render.settings import RenderSettings
 from ...services.jobs import ErrorInfo
 from ...services.render import RenderRequest, RenderService, RenderUpdate
+from ..i18n import tr
 from .controls import RenderControls
 from .image_view import ImageView
 from .regions import eta, merge_base, merged
 
 DOC = "render-view"
+LARGE = 1_500_000  # pixels: a new exposure, view or look for a bigger image is tone-mapped on the compute lane
 RenderInput = tuple[SceneIR, Camera, RenderSettings, str]  # scene, camera, settings, script text
 RenderSource = Callable[[], RenderInput | None]
 
@@ -32,6 +34,7 @@ class RenderView(QWidget):
     started = Signal()  # a render (or region render) was requested; ``source`` holds what it renders
     render_requested = Signal()  # the Render button (the window decides: final presets ask where to save first)
     finished = Signal()  # the render (and its denoising) is complete; ``last`` holds it
+    activity = Signal(str)  # "Rendering 43 %" (the status bar and the window title); "" when it ends
 
     def __init__(self, renders: RenderService, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -57,12 +60,15 @@ class RenderView(QWidget):
         c.resume_button.clicked.connect(self.resume)
         c.exposure.valueChanged.connect(self._redisplay)
         c.view_box.currentTextChanged.connect(self._redisplay)
+        c.look.currentTextChanged.connect(self._redisplay)
         c.channel.currentTextChanged.connect(self._redisplay)
         c.denoise.currentTextChanged.connect(self.denoise_changed)
+        self.renders.phase.connect(self._on_phase)
         self.renders.progress.connect(self._on_update)
         self.renders.finished.connect(self._on_update)
         self.renders.finished.connect(self._on_finished)
         self.renders.failed.connect(self._on_failed)
+        self.renders.displayed.connect(self._on_displayed)
         self.view.region_selected.connect(self.render_region)
         self.view.hovered.connect(self.inspect)
         c.snapshot_button.clicked.connect(self.toggle_snapshot)
@@ -80,7 +86,7 @@ class RenderView(QWidget):
             return
         self._base = merge_base(self.last, source[2], region)
         self.controls.resume_button.setEnabled(False)
-        self.controls.progress.setValue(0)
+        self._busy(tr("Preparing…"))
         self.renders.request(self.make_request(source, region if self._base is not None else None))
         self.source = source
         self.started.emit()
@@ -89,9 +95,13 @@ class RenderView(QWidget):
         """A render of ``source`` with the tool bar's device, denoiser and display settings."""
         scene, camera, settings, _ = source
         c = self.controls
-        display = (c.exposure.value(), c.view_transform())
         return RenderRequest(DOC, scene, replace(settings, region=region), c.device.currentText(), camera,
-                             denoise=c.denoise_method(), display=display)  # fmt: skip
+                             denoise=c.denoise_method(), display=self.display(settings))  # fmt: skip
+
+    def display(self, settings: RenderSettings | None = None) -> Display:
+        """The tool bar's exposure, view transform and look (a LUT is relative to the script's folder)."""
+        c, source = self.controls, settings or (self.source[2] if self.source is not None else None)
+        return Display(c.exposure.value(), c.view_transform(), c.post(), source.asset_dir if source else "")
 
     @Slot(QRect)
     def render_region(self, rect: QRect) -> None:
@@ -113,9 +123,22 @@ class RenderView(QWidget):
         text = "" if not inside else "{} {}: {:.4g} {:.4g} {:.4g}".format(x, y, *image[y, x])  # type: ignore[index]
         self.controls.pixel.setText(text)
 
+    def _busy(self, text: str) -> None:
+        """Before the first pass: a moving bar and what is happening (packing, the BVH, compiling kernels…)."""
+        self.controls.progress.setRange(0, 0)
+        self.controls.info.setText(text)
+        self.controls.info.setToolTip(text)
+        self.activity.emit(tr("Rendering: {text}").format(text=text))
+
+    @Slot(str, str)
+    def _on_phase(self, doc: str, text: str) -> None:
+        if doc == DOC:
+            self._busy(text)
+
     @Slot()
     def stop(self) -> None:
         self.renders.cancel(DOC)
+        self._idle()
         self.view.set_bucket(None)
         last = self.last
         resumable = last is not None and last.fraction < 1.0 and last.progress.film is not None
@@ -137,7 +160,9 @@ class RenderView(QWidget):
             return
         self.last = merged(self._base, update)
         self._redisplay()
+        self.controls.progress.setRange(0, 100)
         self.controls.progress.setValue(round(100 * update.fraction))
+        self.activity.emit(tr("Rendering {percent} %").format(percent=round(100 * update.fraction)))
         p = update.progress
         self.view.set_bucket(p.tile)
         done = (
@@ -153,12 +178,23 @@ class RenderView(QWidget):
         self.controls.info.setText(text)
         self.controls.info.setToolTip(text)
 
-    def show_image(self, image: np.ndarray, text: str) -> None:
-        """Show an image rendered elsewhere (animation frames) with the current exposure and view."""
+    def show_image(self, image: np.ndarray, text: str, fraction: float | None = None) -> None:
+        """Show an image rendered elsewhere (animation frames) with the current exposure and view; ``fraction``
+        is how far that work is (the progress bar)."""
         self.last = RenderUpdate(RenderProgress(image, 0, 0.0), "animation", 1)
         self._redisplay()
         self.controls.info.setText(text)
         self.controls.info.setToolTip(text)
+        if fraction is not None:
+            self.controls.progress.setRange(0, 100)
+            self.controls.progress.setValue(round(100 * fraction))
+            self.activity.emit("" if fraction >= 1.0 else tr("Animation {percent} %").format(
+                percent=round(100 * fraction)))  # fmt: skip
+
+    def _idle(self) -> None:
+        if self.controls.progress.maximum() == 0:
+            self.controls.progress.setRange(0, 100)
+        self.activity.emit("")
 
     @Slot()
     def denoise_changed(self) -> None:
@@ -185,12 +221,15 @@ class RenderView(QWidget):
         preview = channel_preview(c.channel.currentText(), p.aovs, p.sample_map)
         if preview is not None:
             return to_display(preview, 0.0, "standard")
-        wanted = (c.exposure.value(), c.view_transform())
+        wanted = self.display()
         if self.last.display_for == wanted:  # made by the render or denoise job: no tone mapping here
             made = self.last.display if image is p.image else self.last.denoised_display
             if made is not None and (image is p.image or image is self.last.denoised):
                 return made
-        return to_display(image, *wanted)
+        if image.shape[0] * image.shape[1] > LARGE:
+            self.renders.redisplay(DOC, self.last, wanted)
+            return None  # the current picture stays until the job has made the new one (_on_displayed)
+        return wanted.apply(image)
 
     @Slot()
     def _redisplay(self) -> None:
@@ -203,12 +242,22 @@ class RenderView(QWidget):
         self.view.set_image(QImage(rgb.data, w, h, 3 * w, QImage.Format.Format_RGB888).copy())
 
     @Slot(str, object)
+    def _on_displayed(self, doc: str, update: object) -> None:
+        """A redisplay() result: shown if it is still of the last render (a new pass replaces it anyway)."""
+        last = self.last
+        if doc == DOC and isinstance(update, RenderUpdate) and last is not None and update.progress is last.progress:
+            self.last = update
+            self._redisplay()
+
+    @Slot(str, object)
     def _on_finished(self, doc: str, update: object) -> None:
         if doc == DOC and isinstance(update, RenderUpdate):
+            self._idle()
             self.finished.emit()
 
     @Slot(str, object)
     def _on_failed(self, doc: str, info: object) -> None:
         if doc == DOC and isinstance(info, ErrorInfo):
+            self._idle()
             self.controls.info.setText("Render failed")
             self.status.emit(info.message)

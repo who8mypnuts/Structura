@@ -129,7 +129,7 @@ def legacy_aliases(inp: LintInput) -> list[Diagnostic]:
 def v1_cylinders(inp: LintInput) -> list[Diagnostic]:
     if inp.dialect != 1:
         return []
-    message = "cylinder draws nothing in Structure Synth 1.5 mode ('#version 2' draws it)"
+    message = "Structure Synth 1.5 did not draw cylinders (Structura does; 1.5 template exports omit them)"
     calls = (c for c in _calls(inp.program) if c.target.split("::")[0] == "cylinder")
     return [diagnostic("W105", message, inp.span(c.span)) for c in calls]
 

@@ -44,6 +44,20 @@ def test_lights_panel_adds_finds_and_removes_light_blocks(qtbot: QtBot, window: 
     assert scene.declarations is not None
 
 
+def test_lights_panel_applies_lighting_rigs(qtbot: QtBot, window: MainWindow) -> None:
+    tab = window.docs.new_script()
+    tab.editor.setPlainText("#version 2\n3 * { x 1.5 } box\n")
+    qtbot.waitUntil(lambda: tab.outcome is not None and window.viewport.bounds() is not None, timeout=30000)
+    window.light_actions.apply_rig("Studio softbox")
+    assert "light rig_key {" in tab.text() and "environment {" in tab.text()
+    window.light_actions.apply_rig("Night neon")  # replaces the first rig; sets the look it is made for
+    assert "rig_key" not in tab.text() and "light rig_magenta {" in tab.text()
+    assert window.render_view.controls.look.currentText() == "Neon"
+    qtbot.waitUntil(lambda: window.lights.list.count() == 3, timeout=30000)
+    tab.editor.undo()
+    assert "rig_magenta" not in tab.text() and "rig_key" in tab.text()
+
+
 def test_light_templates_build(tmp_path: object) -> None:
     import numpy as np  # noqa: PLC0415
 
@@ -54,3 +68,25 @@ def test_light_templates_build(tmp_path: object) -> None:
     blocks = "\n".join(light_text(kind, f"l{kind}", np.zeros(3), np.ones(3)) for kind in KINDS)
     declarations = build_scene(compile_script(f"#version 2\n{blocks}\nbox\n").program).scene.declarations
     assert declarations is not None and [light.type for light in declarations.lights] == list(KINDS)
+
+
+def test_lights_panel_edits_a_light_block(qtbot: QtBot, window: MainWindow) -> None:
+    tab = window.docs.new_script()
+    tab.editor.setPlainText("#version 2\nlight key { type spot position [0 4 0] target [0 0 0] cone 20 }\nbox\n")
+    panel = window.lights
+    qtbot.waitUntil(lambda: panel.list.count() == 1, timeout=30000)
+    panel.list.setCurrentRow(0)
+    assert panel.form is not None and "cone" in panel.form.widgets and "direction" not in panel.form.widgets
+    panel.form.widgets["cone"].setValue(35.0)  # type: ignore[attr-defined]
+    panel.form.widgets["position"].setText("[1 5 2]")  # type: ignore[attr-defined]
+    panel.form.widgets["position"].editingFinished.emit()  # type: ignore[attr-defined]
+    qtbot.waitUntil(lambda: "cone 35" in tab.text(), timeout=5000)
+    assert "position [1 5 2]" in tab.text() and "target [0 0 0]" in tab.text() and tab.text().count("light key") == 1
+
+
+def test_materials_panel_offers_glass_fields_but_no_debug_models(qtbot: QtBot, window: MainWindow) -> None:
+    panel = window.materials
+    models = [panel.form.widgets["model"].itemText(i) for i in range(panel.form.widgets["model"].count())]  # type: ignore[attr-defined]
+    assert "wireframe" in models and not any(m.startswith("debug") for m in models)
+    for key in ("transmission_roughness", "attenuation_distance", "thin_walled", "anisotropy", "opacity"):
+        assert key in panel.form.widgets

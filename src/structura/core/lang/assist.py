@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from ..color.names import NAMED_COLORS
 from .analysis import Analysis
@@ -17,10 +17,12 @@ from .catalog import (
     all_primitives,
     modifiers,
     operators,
+    primitives,
     raytracer_keys,
     set_commands,
     snippets,
     v2_blocks,
+    v2_primitives,
 )
 from .highlight import lex_line
 from .signatures import CONSTANTS, SIGNATURES
@@ -181,6 +183,10 @@ def complete(text: str, pos: int, analysis: Analysis | None = None) -> Completio
     else:
         context, needle = _v2_context(text, pos, line) or _context(line), prefix.lower()
     items = [i for i in _candidates(context, analysis) if i.label.lower().startswith(needle)]
+    if detect_dialect(text) == 1:  # v2-only primitives say what they need (cylinder draws in both dialects)
+        only_v2 = {p.name for p in v2_primitives()} - {p.name for p in primitives()}
+        items = [replace(i, detail=f"{i.detail} — needs '#version 2'") if i.kind == "primitive" and i.label in only_v2
+                 else i for i in items]  # fmt: skip
     start = pos - (len(needle) if context == "preprocessor" else len(prefix))
     return Completions(tuple(items), start, prefix)
 

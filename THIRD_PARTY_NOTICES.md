@@ -8,8 +8,8 @@ Structura is MIT licensed. It bundles or depends on the following third-party ma
 |-----------|----------|---------|-----------|
 | Structure Synth 1.5 templates & examples (unmodified data) | `src/structura/resources/legacy/` | LGPL-2.1 or GPL-3 | Mikael Hvidtfeldt Christensen (Syntopia) and contributors |
 | Structure Synth community code samples | `src/structura/resources/examples/community/` | MIT | Respective authors |
-| Inter typeface | `src/structura/resources/fonts/Inter*.ttf` | SIL OFL 1.1 | The Inter Project Authors |
-| JetBrains Mono typeface | `src/structura/resources/fonts/JetBrainsMono*.ttf` | SIL OFL 1.1 | The JetBrains Mono Project Authors |
+| Inter typeface 4.1 | `src/structura/resources/fonts/Inter*.ttf` | SIL OFL 1.1 | The Inter Project Authors (sources: `fonts/SOURCES.md`, fetched by `tools/fetch_fonts.py`) |
+| JetBrains Mono typeface 2.251 | `src/structura/resources/fonts/JetBrainsMono*.ttf` | SIL OFL 1.1 | The JetBrains Mono Project Authors (sources: `fonts/SOURCES.md`) |
 
 ## Ported algorithms
 
@@ -24,6 +24,13 @@ PySide6 (LGPL-3), numpy (BSD-3), numba/llvmlite (BSD-2), ModernGL (MIT), wgpu-py
 pocl (MIT), cuda-python and NVRTC (NVIDIA licence; redistribution per the CUDA EULA), usd-core (modified
 Apache-2.0), pygltflib (MIT), manifold3d (Apache-2.0), Pillow (MIT-CMU), OpenEXR (BSD-3), imageio (BSD-2),
 imageio-ffmpeg (BSD-2; ffmpeg binaries LGPL), Jinja2 (BSD-3), platformdirs (MIT), tomli-w (MIT), psutil (BSD-3).
+
+**PyMeshLab (GPL-3.0)** — MeshLab's filters as a Python library, used for mesh clean-up and mesh checks on
+export (`export/mesh/meshlab.py`). It is a required dependency by the owner's decision (ADR-0010, amendment
+1), imported only when a clean-up or check runs; no MeshLab code is copied into Structura, whose own source
+stays MIT. Distributions that *bundle* PyMeshLab (the installers) carry GPL-3 software and must meet its terms
+for that component (its licence text and an offer of its source). On Linux its wheels need `libOpenGL.so.0`
+(`libopengl0`) and glibc ≥ 2.35.
 
 ## Theme palettes
 

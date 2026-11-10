@@ -51,7 +51,7 @@ from .layout import (
 )
 
 RULE_CUSTOM, RULE_AMBIGUOUS = 0, 1
-PRIM_CYLINDER, PRIM_MESH, PRIM_TEMPLATE, PRIM_TRIANGLE = 2, 3, 7, 8  # PRIM_CYLINDER: v1's, draws nothing
+PRIM_MESH, PRIM_TEMPLATE, PRIM_TRIANGLE = 3, 7, 8  # catalog ids (v1's cylinder, id 2, is drawn like v2's)
 PRIM_CONE, PRIM_TORUS, PRIM_TUBE = 10, 11, 13  # v2 primitives with a bracket parameter (catalog ids)
 OP_EVENT, OP_ERROR, OP_MAXDEPTH, OP_MAXOBJECTS, OP_MINSIZE, OP_MAXSIZE = 1, 2, 3, 4, 5, 6
 OP_SEED_INT, OP_SEED_INITIAL, OP_SYNCRANDOM, OP_COLORPOOL = 7, 8, 9, 10
@@ -171,8 +171,8 @@ def emit(tables, r: int, work, outbuf, ctl) -> int:  # type: ignore[no-untyped-d
     prim = tables.rule_prim[r]
     if prim != PRIM_TEMPLATE:
         ctl[ST_OBJECTS] += 1
-        if prim == PRIM_CYLINDER or (prim == PRIM_MESH and work.i[0, I_HASPREV] == 0):
-            return RUNNING  # counted, but Structure Synth 1.5 draws nothing
+        if prim == PRIM_MESH and work.i[0, I_HASPREV] == 0:
+            return RUNNING  # counted, but Structure Synth 1.5 draws nothing (a mesh needs a previous frame)
     n, f = ctl[ST_NOUT], work.f
     tag = tables.rule_tag[r]
     outbuf.kind[n], outbuf.tag[n], outbuf.src[n], outbuf.gen[n], outbuf.aux[n] = (

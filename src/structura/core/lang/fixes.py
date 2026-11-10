@@ -113,6 +113,21 @@ def _add_version(text: str, d: Diagnostic) -> QuickFix | None:
     return QuickFix("Add '#version 2' (EisenScript v2)", (TextEdit(0, 0, "#version 2\n"),))
 
 
+def _rename_key(text: str, d: Diagnostic) -> QuickFix | None:
+    """W115: replace a misspelt block key with the suggestion its message makes."""
+    assert d.span is not None
+    match = re.search(r"did you mean '([\w-]+)'", d.message)
+    if match is None:
+        return None
+    return QuickFix(f"Change to '{match.group(1)}'", (TextEdit(d.span.start, d.span.end, match.group(1)),))
+
+
+def _move_version(text: str, d: Diagnostic) -> QuickFix | None:
+    assert d.span is not None
+    start, end = _line_bounds(text, d.span.start)
+    return QuickFix("Move '#version 2' to the first line", (TextEdit(0, 0, "#version 2\n"), TextEdit(start, end, "")))
+
+
 FIXERS: dict[str, Callable[[str, Diagnostic], QuickFix | None]] = {
     "create_rule": _create_rule,
     "remove_rule": _remove_rule,
@@ -120,6 +135,8 @@ FIXERS: dict[str, Callable[[str, Diagnostic], QuickFix | None]] = {
     "add_maxdepth": _add_maxdepth,
     "remove_line": _remove_line,
     "add_version": _add_version,
+    "move_version": _move_version,
+    "rename_key": _rename_key,
 }
 
 

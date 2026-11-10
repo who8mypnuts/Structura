@@ -11,7 +11,6 @@ from ...core.scene.material import Material
 from ..scene_model import ExportSceneModel
 
 ROOT = "/Structura"
-VERTICAL_APERTURE = 20.25  # mm (USD's default horizontal aperture × 3/4)
 
 
 def new_stage(path: str, model: ExportSceneModel) -> Usd.Stage:
@@ -68,12 +67,19 @@ def display_colors(prim: UsdGeom.Imageable, rgba: np.ndarray, interpolation: str
 
 def camera(stage: Usd.Stage, model: ExportSceneModel) -> None:
     cam = model.camera
+    lens = cam.lens
     usd_cam = UsdGeom.Camera.Define(stage, f"{ROOT}/Camera")
-    focal = 0.5 * VERTICAL_APERTURE / math.tan(math.radians(cam.fov_y_deg) / 2)
-    usd_cam.CreateFocalLengthAttr(focal)
-    usd_cam.CreateVerticalApertureAttr(VERTICAL_APERTURE)
-    usd_cam.CreateHorizontalApertureAttr(VERTICAL_APERTURE * model.aspect)
+    sensor_h = lens.sensor_mm[1]  # the camera's own sensor: focal length, apertures and shift in mm
+    usd_cam.CreateFocalLengthAttr(cam.focal_length_mm)
+    usd_cam.CreateVerticalApertureAttr(sensor_h)
+    usd_cam.CreateHorizontalApertureAttr(sensor_h * model.aspect)
+    usd_cam.CreateHorizontalApertureOffsetAttr(lens.shift[0] * sensor_h)
+    usd_cam.CreateVerticalApertureOffsetAttr(lens.shift[1] * sensor_h)
     usd_cam.CreateFocusDistanceAttr(float(cam.focus * model.unit_scale))
+    if cam.aperture_radius > 0 and math.isfinite(cam.fstop):
+        usd_cam.CreateFStopAttr(float(cam.fstop))
+    if lens.projection == "orthographic":
+        usd_cam.CreateProjectionAttr(UsdGeom.Tokens.orthographic)
     eye = model.points(np.asarray(cam.eye, np.float32)[None])[0]
     target = model.points(np.asarray(cam.target, np.float32)[None])[0]
     up = model.directions(np.asarray(cam.up, np.float32)[None])[0]

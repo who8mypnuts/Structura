@@ -1,0 +1,135 @@
+# Lighting rigs (PLAN F3): complete lighting set-ups the Lights panel writes into a v2 script in one step.
+#
+# Placement is relative to the structure: 'at' is an offset from the centre of its bounding box in bounding
+# radii (x right, y up, z towards the default camera); 'size' (rect) and 'radius' (sphere) are in radii too.
+# 'irradiance' is how much light reaches the centre (the sun's default is 3): the power is worked out from the
+# distance, so a rig looks the same on a tiny or a huge structure. Every light faces the centre.
+# 'look' is the Render tool bar's look the rig is meant for (render/post.py LOOKS), or absent.
+
+[[rig]]
+name = "Studio softbox"
+doc = "A large soft key, a cool fill and a rim light against a dark backdrop: clean product lighting."
+environment = { type = "color", color = "#1b1c1f" }
+[[rig.light]]
+name = "key"
+type = "rect"
+at = [-1.6, 1.6, 2.0]
+size = [1.6, 1.6]
+irradiance = 2.6
+color = "#fff4e8"
+[[rig.light]]
+name = "fill"
+type = "rect"
+at = [2.4, 0.4, 1.6]
+size = [2.2, 2.2]
+irradiance = 0.7
+color = "#e8f0ff"
+[[rig.light]]
+name = "rim"
+type = "rect"
+at = [0.8, 1.8, -2.2]
+size = [1.0, 1.0]
+irradiance = 1.6
+color = "#ffffff"
+
+[[rig]]
+name = "Sunset"
+doc = "A low, warm sun under a clear evening sky: long shadows and golden light."
+environment = { type = "sunsky", turbidity = 4.0, sun = "rig_sun" }
+[[rig.light]]
+name = "sun"
+type = "sun"
+direction = [0.75, -0.18, -0.62]
+intensity = 2.6
+angle = 1.2
+color = "#ffb27a"
+
+[[rig]]
+name = "Overcast"
+doc = "A bright, even sky and one huge soft source above: gentle shadows, every detail readable."
+environment = { type = "gradient", top = "#dfe4ea", bottom = "#6d7075" }
+[[rig.light]]
+name = "sky"
+type = "rect"
+at = [0.0, 3.0, 0.4]
+size = [6.0, 6.0]
+irradiance = 1.0
+color = "#f2f5fa"
+
+[[rig]]
+name = "White studio"
+doc = "A white seamless studio: light from everywhere and a soft key from above-front."
+environment = { type = "color", color = "#ffffff" }
+[[rig.light]]
+name = "key"
+type = "rect"
+at = [-1.2, 2.2, 1.8]
+size = [2.0, 2.0]
+irradiance = 1.4
+color = "#ffffff"
+
+[[rig]]
+name = "Night neon"
+doc = "Magenta and cyan glows with a violet rim in the dark; made for the Neon look."
+environment = { type = "color", color = "#06070c" }
+look = "Neon"
+[[rig.light]]
+name = "magenta"
+type = "sphere"
+at = [-1.8, 0.6, 1.2]
+radius = 0.12
+irradiance = 2.2
+color = "#ff2bd6"
+[[rig.light]]
+name = "cyan"
+type = "sphere"
+at = [1.8, 0.9, 0.8]
+radius = 0.12
+irradiance = 2.2
+color = "#18e0ff"
+[[rig.light]]
+name = "rim"
+type = "spot"
+at = [0.0, 2.2, -2.2]
+cone = 35
+blend = 0.3
+irradiance = 1.5
+color = "#6a5cff"
+
+[[rig]]
+name = "Top light"
+doc = "One soft source straight above in the dark: sculptural, dramatic shading."
+environment = { type = "color", color = "#0c0c0d" }
+[[rig.light]]
+name = "top"
+type = "rect"
+at = [0.0, 2.4, 0.0]
+size = [1.6, 1.6]
+irradiance = 3.0
+color = "#ffffff"
+
+[[rig]]
+name = "Rim light"
+doc = "Two strips behind the structure outline its silhouette; a faint fill keeps the front readable."
+environment = { type = "color", color = "#08090b" }
+[[rig.light]]
+name = "rim_left"
+type = "rect"
+at = [-2.0, 0.8, -2.0]
+size = [0.8, 2.0]
+irradiance = 2.4
+color = "#dfe9ff"
+[[rig.light]]
+name = "rim_right"
+type = "rect"
+at = [2.0, 0.8, -2.0]
+size = [0.8, 2.0]
+irradiance = 2.4
+color = "#dfe9ff"
+[[rig.light]]
+name = "fill"
+type = "rect"
+at = [0.0, 0.4, 3.0]
+size = [2.0, 2.0]
+irradiance = 0.3
+color = "#ffffff"

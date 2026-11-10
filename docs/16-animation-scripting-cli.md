@@ -161,3 +161,10 @@ structura/cli/
   main.py  commands/{lint,build,render,export,template,animate,run,convert,theme,devices,warmup}.py
   paramspec_argparse.py   # ParamSpec → argparse generator
 ```
+
+> **As built (M12, owner review):** `core/animation/paths.py` writes camera paths as ordinary keys — a
+> turntable (every frame keyed on the orbit, so linear interpolation stays on the circle; the range is one
+> seamless loop) and a smooth path through saved views. `structura animate --turntable [SECONDS] --turns N`;
+> `render`/`animate` take `--look`, `--bloom`, `--vignette`, `--lut`; `render` takes the lens options
+> (`--lens`, `--fstop`, `--focus`, `--camera-from IMAGE`, …). Camera tracks include `camera:focus` and
+> `camera:fstop` (focus pulls).

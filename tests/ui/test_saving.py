@@ -138,7 +138,7 @@ def test_export_sheet_saves_and_loads_presets(
     dialog.form.set_values({"unit_scale": 1.0})
     dialog.presets.setCurrentIndex(dialog.presets.findData("Inches"))
     dialog._load_preset()
-    assert dialog.form.values()["unit_scale"] == 25.4 and dialog.presets.count() == 2
+    assert dialog.form.values()["unit_scale"] == 25.4 and dialog.presets.count() == 3  # —, Inches, the built-in
 
 
 def test_template_run_after_asks_once_then_runs(
@@ -204,7 +204,8 @@ def test_the_template_sheet_describes_previews_edits_and_autosaves(
 def test_blender_exports_offer_open_in_blender(
     window: MainWindow, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    from structura.ui import blender_app, export_actions  # noqa: PLC0415
+    from structura.ui import export_actions  # noqa: PLC0415
+    from structura.ui import external_apps as blender_app  # noqa: PLC0415
 
     fake = tmp_path / "blender"
     fake.write_text("")
@@ -217,6 +218,7 @@ def test_blender_exports_offer_open_in_blender(
     window.exports._offer_blender(script)
     toast = window.toasts.toasts[-1]
     assert toast.button is not None and toast.button.text() == "Open in Blender"
+    assert "Blender was not found" not in window.status.currentMessage()
     toast.button.click()
     assert started == [(str(fake), ["--python", str(script)])]
     monkeypatch.setattr(export_actions, "find_blender", lambda _configured: None)

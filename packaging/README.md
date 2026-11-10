@@ -21,6 +21,16 @@ Everything here runs from the project root with the project's virtual environmen
    the user's cache folder (`NUMBA_CACHE_DIR`, set in `structura/__init__.py` for frozen apps).
 3. Smoke test: `structura --version`, `structura doctor`, and a 32×24 headless render.
 
+## PyMeshLab (GPL-3.0)
+
+PyMeshLab is a required dependency (mesh clean-up and Check Mesh; ADR-0010 amendment 1) and is bundled like
+every other dependency. Its Linux wheels need glibc ≥ 2.35 and `libOpenGL.so.0` on the target system: the
+AppImage must either bundle `libOpenGL.so.0` (from libglvnd) or list `libopengl0` as a requirement; the
+Flatpak runtime provides it. Because PyMeshLab is GPL-3, each installer must carry its licence text and an
+offer of its source (put both in the installer's `licenses/` folder). To ship an installer without it, add
+`pymeshlab` to `excludes` in `packaging/pyinstaller/structura.spec`; clean-up and Check Mesh then say that
+PyMeshLab is unavailable.
+
 ## Open Image Denoise
 
 Put the OIDN 2.x shared libraries (`OpenImageDenoise*`, `tbb*`) into `src/structura/resources/oidn/` before

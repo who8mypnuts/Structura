@@ -10,6 +10,7 @@ import numpy as np
 from ...core.build.driver import BuildStats
 from ...core.geometry.unit_shapes import unit_box, unit_cylinder, unit_sphere, unit_torus
 from ...core.scene.ir import PrimitiveKind, SceneIR
+from ...core.scene.vectors import fmt_vec
 from ..pack import box_bounds
 from .model import Row, Section, Table, row
 
@@ -23,7 +24,7 @@ def _triangles_per_instance() -> dict[PrimitiveKind, int]:
 
 
 def _vec(v: np.ndarray) -> str:
-    return "(" + ", ".join(f"{round(float(c), 3) + 0.0:.3f}" for c in v) + ")"  # + 0.0: no "-0.000"
+    return fmt_vec(v, ".3f")
 
 
 def script_section(text: str | None, path: Path | None, seed: int, params: dict[str, float]) -> Section:

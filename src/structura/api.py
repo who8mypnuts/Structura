@@ -29,6 +29,7 @@ from .core.project.model import SUFFIX
 from .core.project.model import load as load_project
 from .core.scene.camera import Camera
 from .core.scene.ir import SceneIR
+from .core.scene.lens import Lens
 from .core.text_file import read_script
 from .export.api import export_scene
 from .export.base import ExportReport
@@ -107,14 +108,19 @@ def render(
     output: str | Path | None = None,
     device: str = "auto",
     camera: Camera | None = None,
+    lens: Lens | None = None,
     **settings: Any,
 ) -> RenderProgress:
-    """Render ``scene`` (script settings, then ``settings`` overrides such as samples=, integrator=, width=)."""
+    """Render ``scene`` (script settings, then ``settings`` overrides such as samples=, integrator=, width=).
+    ``camera`` replaces the script's camera; ``lens`` replaces its lens (``Lens(fstop=2.8)`` …); ``post=`` a
+    render.post look (``LOOKS["Neon"]``, ``PostSettings(bloom=0.1)``) finishes the saved image."""
     config = replace(script_settings(scene), **settings)
     prepared, frame = prepare_with_frame(scene, config, camera=camera)
+    if lens is not None:
+        frame = replace(frame, camera=replace(frame.camera, lens=lens))
     *_, result = progressive(prepared, config, select_backend(device), frame)
     if output is not None:
-        save_image(result.image, Path(output), 0.0, config.view_transform, render_metadata(config, frame.camera))
+        save_image(result.image, Path(output), config.display, render_metadata(config, frame.camera))
     return result
 
 
@@ -123,4 +129,4 @@ def export(scene: SceneIR, output: str | Path, format: str | None = None, **opti
     return export_scene(scene, Path(output), format, options)
 
 
-__all__ = ["Document", "build", "export", "open", "render"]
+__all__ = ["Camera", "Document", "Lens", "build", "export", "open", "render"]

@@ -14,6 +14,9 @@ from PySide6.QtWidgets import QMessageBox
 from ..compute.cpu import CpuBackend
 from ..core.build.api import build_scene
 from ..core.lang.api import compile_script
+from ..core.lang.v2.block_check import known_keys
+from ..core.lang.v2.block_form import block_specs, block_text, entries_of
+from ..core.scene.light_rigs import apply_rig, rigs
 from ..core.scene.light_script import free_name, light_text
 from ..core.scene.material import Material
 from ..core.scene.material_script import material_text, with_material
@@ -97,6 +100,8 @@ class LightActions(QObject):
         panel.add_requested.connect(self.add)
         panel.remove_requested.connect(self.remove)
         panel.go_to_requested.connect(self.go_to)
+        panel.edit_requested.connect(self.edit)
+        panel.rig_requested.connect(self.apply_rig)
         window.workbench.scene_ready.connect(self._scene_ready)
 
     @Slot(object, object, object, bool)
@@ -104,14 +109,34 @@ class LightActions(QObject):
         if tab is self.w.tabs.current():
             self.w.lights.show_lights(ready.outcome.scene.declarations)
 
-    @Slot(str)
-    def add(self, kind: str) -> None:
+    def _v2_target(self) -> tuple[EditorTab, tuple[np.ndarray, np.ndarray]] | None:
+        """The current tab (converted to v2 if the user agrees) and its structure's bounds; None: explained."""
         tab, bounds = self.w.tabs.current(), self.w.viewport.bounds()
         if tab is None or bounds is None:
             self.w.show_message(tr("Build the script first (F5)."))
-            return
+            return None
         if tab.dialect != 2 and not self._convert():
+            return None
+        return tab, bounds
+
+    @Slot(str)
+    def apply_rig(self, name: str) -> None:
+        """Lights panel ▸ Lighting Rig: the rig's lights and environment, replacing an earlier rig's."""
+        target, rig = self._v2_target(), rigs().get(name)
+        if target is None or rig is None:
             return
+        tab, bounds = target
+        self.w.docs.replace_text(tab, apply_rig(tab.text(), rig, *bounds))
+        if rig.look:
+            self.w.render_view.controls.look.setCurrentText(rig.look)
+        self.w.show_message(tr("Lighting rig '{name}' applied (Undo reverts it)").format(name=tr(name)))
+
+    @Slot(str)
+    def add(self, kind: str) -> None:
+        target = self._v2_target()
+        if target is None:
+            return
+        tab, bounds = target
         name = free_name(kind, block_names(tab.text(), "light"))
         self.w.docs.replace_text(tab, put_block(tab.text(), "light", name, light_text(kind, name, *bounds)))
         self.w.show_message(tr("Light '{name}' added to the script").format(name=name))
@@ -129,6 +154,16 @@ class LightActions(QObject):
         tab = self.w.tabs.current()
         if tab is not None:
             self.w.docs.replace_text(tab, remove_block(tab.text(), "light", name))
+
+    @Slot(str, dict)
+    def edit(self, name: str, edited: dict[str, object]) -> None:
+        """The Lights panel's form: rewrite the light block with the edited values."""
+        tab = self.w.tabs.current()
+        if tab is None or block_span(tab.text(), "light", name) is None:
+            return
+        kind = str(edited.get("type", "sun"))
+        entries = {"type": kind, **entries_of(block_specs("light", kind), edited, known_keys("light"))}
+        self.w.docs.replace_text(tab, put_block(tab.text(), "light", name, block_text("light", name, entries)))
 
     @Slot(str)
     def go_to(self, name: str) -> None:

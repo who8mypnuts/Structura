@@ -17,6 +17,7 @@ from ...compute.select import NAMES, select_backend
 from ...core.build.api import BuildResult, build_scene
 from ...core.build.driver import BuildStats
 from ...core.errors import StructuraError
+from ...core.scene.camera import Camera
 from ...core.scene.ir import SceneIR
 from ...render.api import RenderProgress, prepare_with_frame, progressive, script_settings
 from ...render.denoise import METHODS, denoise_with
@@ -30,6 +31,8 @@ from ...render.report.writers import FORMATS as REPORT_FORMATS
 from ...render.settings import AUTO_PASSES, BUCKET_ORDERS, INTEGRATORS, SAMPLERS, SEQUENCES, VIEWS, RenderSettings
 from ...services.report_documents import write_report
 from .common import EXIT_OK, EXIT_SCRIPT_ERROR, EXIT_USAGE, add_script_arguments, compile_or_report, parse_params
+from .lens_args import add_lens_arguments, apply_lens_arguments
+from .post_args import add_post_arguments, post_override
 
 HELP = "render a script to an image"
 EXIT_DEVICE = 3
@@ -48,28 +51,34 @@ def register(p: argparse.ArgumentParser) -> None:
     p.add_argument("--integrator", choices=sorted(INTEGRATORS), help="default: the script's, else path")
     p.add_argument("--device", choices=NAMES, default="auto")
     p.add_argument("--frame", action="store_true", help="fit the structure instead of using the script camera")
-    p.add_argument("--exposure", type=float, default=0.0, help="exposure in stops")
+    p.add_argument("--exposure", type=float, help="exposure in stops (default: the script's, else 0)")
     p.add_argument("--tag-presets", action="store_true", help="tags named like a material preset use it (box::glass)")
     p.add_argument("--no-embed-script", action="store_true", help="do not store the script text in the image")
-    p.add_argument("--view", choices=VIEWS, default="auto", help="view transform (auto: standard for classic)")
+    p.add_argument(
+        "--view", choices=VIEWS, help="view transform (default: the script's, else auto: AgX, standard for classic)"
+    )
     p.add_argument("--aovs", action="store_true", help="EXR: add albedo, normal (N), depth (Z), alpha and id layers")
     p.add_argument("--noise-threshold", type=float, help="adaptive sampling: stop pixels below this error (0.01)")
     p.add_argument("--sampler", choices=SAMPLERS, help="progressive (whole image in passes) or tiled (buckets)")
     p.add_argument("--bucket-order", choices=BUCKET_ORDERS, help="tiled: the order of the buckets (hilbert)")
     p.add_argument("--sequence", choices=SEQUENCES, help="sample numbers: random (default) or halton")
     p.add_argument("--time-limit", type=float, help="stop after this many seconds")
-    p.add_argument("--denoise", choices=METHODS, help="denoise the result (auto: Open Image Denoise, else À-Trous)")
+    p.add_argument(
+        "--denoise",
+        choices=("off", *METHODS),
+        help="denoise the result (auto: Open Image Denoise, else À-Trous; default: the script's)",
+    )
     p.add_argument("--report", type=Path, action="append", default=[], metavar="FILE",
                    help="also write a render report (.pdf .html .md .txt .json .csv .odt); repeatable")  # fmt: skip
+    add_lens_arguments(p)
+    add_post_arguments(p)
 
 
 def _overrides(args: argparse.Namespace) -> dict[str, Any]:
-    out: dict[str, Any] = {
-        "frame": args.frame,
-        "seed": args.seed,
-        "view": args.view,
-        "aovs": args.aovs or bool(args.denoise),
-    }
+    out: dict[str, Any] = {"frame": args.frame, "seed": args.seed}
+    for key in ("view", "exposure", "denoise"):
+        if getattr(args, key) is not None:
+            out[key] = getattr(args, key)
     if args.integrator:
         out["integrator"] = args.integrator
     if args.size:
@@ -82,9 +91,16 @@ def _overrides(args: argparse.Namespace) -> dict[str, Any]:
     return out
 
 
+def denoiser(settings: RenderSettings) -> str | None:
+    """The denoising method the command line or the script asks for (None: none)."""
+    return settings.denoise if settings.denoise not in ("", "off") else None
+
+
 def settings_for(scene: Any, args: argparse.Namespace) -> RenderSettings:
     settings = replace(script_settings(scene), **_overrides(args), asset_dir=str(args.script.resolve().parent))
-    return replace(settings, samples_per_pass=AUTO_PASSES)
+    settings = replace(settings, **post_override(args, settings.post))
+    aovs = settings.aovs or args.aovs or denoiser(settings) is not None  # the denoiser is guided by the AOVs
+    return replace(settings, samples_per_pass=AUTO_PASSES, aovs=aovs)
 
 
 def _usage_error(args: argparse.Namespace) -> str | None:
@@ -93,6 +109,10 @@ def _usage_error(args: argparse.Namespace) -> str | None:
     for report in args.report:
         if report.suffix.lower() not in REPORT_FORMATS:
             return f"unsupported report format '{report.suffix}' (use one of {', '.join(REPORT_FORMATS)})"
+    try:
+        apply_lens_arguments(Camera((0.0, 0.0, 1.0), (0.0, 0.0, 0.0)), args)
+    except ValueError as exc:
+        return str(exc)
     if args.denoise == "oidn":
         try:
             oidn_library()
@@ -116,7 +136,8 @@ def _render(build: BuildResult, args: argparse.Namespace, backend: Backend) -> _
     settings = settings_for(build.scene, args)
     started = time.perf_counter()
     prepared, frame = prepare_with_frame(build.scene, settings, args.tag_presets)
-    details = render_details(prepared, frame, time.perf_counter() - started)
+    frame = replace(frame, camera=apply_lens_arguments(frame.camera, args))
+    details = render_details(prepared, frame, time.perf_counter() - started, backend.details())
     print(f"rendering {len(build.scene)} objects on {backend.name} {backend.device_name}", file=sys.stderr)
     result, passes = None, 0
     for passes, result in enumerate(progressive(prepared, settings, backend, frame), 1):  # noqa: B007
@@ -127,10 +148,10 @@ def _render(build: BuildResult, args: argparse.Namespace, backend: Backend) -> _
     return _Rendered(build.scene, build.stats, settings, result, details, device, passes)
 
 
-def _write_reports(r: _Rendered, args: argparse.Namespace, text: str, image: Any, denoiser: str) -> None:
+def _write_reports(r: _Rendered, args: argparse.Namespace, text: str, image: Any, method: str) -> None:
     inputs = ReportInputs(
         scene=r.scene, progress=r.result, details=r.details, device=r.device, passes=r.passes, image=image,
-        denoiser=denoiser, exposure=args.exposure, script=text, script_path=args.script.resolve(), seed=args.seed,
+        denoiser=method, script=text, script_path=args.script.resolve(), seed=args.seed,
         params=parse_params(args.param), build=r.build, outputs=(args.output.resolve(),),
     )  # fmt: skip
     report = build_report(inputs)
@@ -158,11 +179,15 @@ def run(args: argparse.Namespace) -> int:
     r = _render(build, args, backend)
     metadata = render_metadata(r.settings, r.details.camera, text, parse_params(args.param), not args.no_embed_script)
     image, method = r.result.image, ""
-    if args.denoise:
-        image, method = denoise_with(image, r.result.aovs, args.denoise)
+    if (wanted := denoiser(r.settings)) is not None:
+        try:
+            image, method = denoise_with(image, r.result.aovs, wanted)
+        except OidnUnavailableError as exc:  # the script asked for OIDN (the command line is checked up front)
+            print(f"  Open Image Denoise unavailable ({exc}); using À-Trous", file=sys.stderr)
+            image, method = denoise_with(image, r.result.aovs, "atrous")
         print(f"  denoised ({method})", file=sys.stderr)
     layers = r.result.aovs.layers() if r.result.aovs is not None and args.aovs else None
-    save_image(image, args.output, args.exposure, r.settings.view_transform, metadata, layers)
+    save_image(image, args.output, r.settings.display, metadata, layers)
     print(f"wrote {args.output}")
     if args.report:
         _write_reports(r, args, text, image, method)

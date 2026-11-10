@@ -16,6 +16,7 @@ from ..core.params import ParamSpec, ParamType
 from ..core.scene.ir import PrimitiveKind as K
 from ..core.scene.ir import SceneIR
 from .base import ExportJob
+from .mesh.meshlab import clean_up
 from .solids import as_trimesh, instance_solids, triangles, union
 
 OPERATIONS = ("union", "difference", "intersection")
@@ -89,20 +90,23 @@ def csg_mesh(scene: SceneIR, lod: str = "medium") -> tuple[TriMesh, list[str]]:
 
 
 def _subset(mesh: TriMesh, rows: np.ndarray) -> TriMesh:
-    keep = np.isin(mesh.owners, rows)
-    tris = mesh.indices[keep]
-    used, remap = np.unique(tris, return_inverse=True)
-    return TriMesh(mesh.positions[used], mesh.normals[used], mesh.colors[used],
-                   remap.reshape(-1, 3).astype(np.uint32), mesh.owners[keep])  # fmt: skip
+    return mesh.select(np.isin(mesh.owners, rows))
 
 
 CSG_OPTION = ParamSpec("csg", ParamType.BOOL, False, "Evaluate CSG markers (template::union-begin …)")
 
 
 def export_mesh(job: ExportJob) -> tuple[TriMesh, tuple[str, ...]]:
-    """The triangles a mesh exporter writes: CSG groups evaluated when asked for, else plain tessellation."""
+    """The triangles a mesh exporter writes: CSG groups evaluated when asked for, else plain tessellation;
+    then the MeshLab clean-up the options name (mesh/meshlab.py)."""
     lod = job.options["lod"]
+    warnings: list[str] = []
     if job.options.get("csg") and has_markers(job.scene):
         mesh, warnings = csg_mesh(job.scene, lod)
-        return mesh, tuple(warnings)
-    return tessellate(job.scene, TessOptions(lod=lod)), ()
+    else:
+        mesh = tessellate(job.scene, TessOptions(lod=lod))
+    cleanup = str(job.options.get("cleanup", "none"))
+    if cleanup != "none":
+        job.progress(0.0, f"MeshLab clean-up ({cleanup}) of {mesh.triangles:,} triangles")
+        mesh = clean_up(mesh, cleanup, float(job.options.get("keep", 0.5)))
+    return mesh, tuple(warnings)

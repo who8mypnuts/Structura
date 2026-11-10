@@ -44,7 +44,25 @@ Structura shows the command, with any environment variable that is not set, and 
 | POV-Ray 3.8 | `.pov` | Native shapes with matrices, finishes from materials, radiosity |
 | Sunflow | `.sc` | Instanced meshes, shaders, sun-sky — renders in the original Sunflow |
 | Mitsuba 3 | `.xml` | Shape groups and instances, principled BSDFs, meshes as PLY files |
+| MeshLab project | `.mlp` | One PLY layer per group (colour, tag or material), opens in MeshLab ready to inspect |
 | Render templates | `.pov` `.sc` `.rib` `.xml` `.txt` | Structure Synth's `.rendertemplate` files, unchanged (format "template") |
+
+## MeshLab
+
+Structura uses [PyMeshLab](https://pymeshlab.readthedocs.io) (MeshLab's filters as a library) for meshes:
+
+- **cleanup** (PLY, STL, 3MF, OBJ and the MeshLab project): `clean` welds coincident vertices and drops
+  duplicate and degenerate faces; `print-ready` also repairs non-manifold edges and vertices, closes holes and
+  orients the faces; `light` decimates to the **keep** share of the triangles; `smooth` applies Taubin
+  smoothing; `remesh` makes even triangles. Colours (and grouping by tag or material) survive.
+- Built-in presets: **MeshLab** (PLY, OBJ), **Print-ready (MeshLab)** (STL, 3MF) and **Layers by material**
+  (MeshLab project).
+- **Export ▸ Check Mesh…** measures the structure as it would be exported: triangles, whether it is
+  watertight and manifold, boundary edges, holes, volume and surface area — before you send it to a printer.
+- After a PLY, STL, OBJ or MeshLab project export, the toast offers **Open in MeshLab** (the program set in
+  Preferences ▸ Paths, else the one on your PATH or in the usual place).
+- The export sheet's **Run after export** field runs any command on the written file (`$FILE` is its path) —
+  for example `meshlabserver`, a slicer, or your own script.
 
 ## Shared options
 

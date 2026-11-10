@@ -34,10 +34,12 @@ from .layout import (
 )
 from .lights import light_sample, offset, power_heuristic, sun_pdf, sun_radiance, unoccluded
 from .microfacet import luminance
+from .models import is_special, special_radiance
 from .photons import caustic_light, is_specular
 from .sampling import cone_direction, sample01, to_local, to_world
 from .scene import NO_HIT, PRIM_U, Hit, trace
-from .surface import Surface, surface_at
+from .surface import Surface, surface_at, tangent_angle
+from .volume import exit_absorption
 
 MODEL_CONSTANT = 1
 PASS_LIMIT = 16  # extra steps allowed for opacity pass-through
@@ -164,6 +166,22 @@ def roulette(depth: u32, throughput: vec3, u: f32) -> f32:
     return 0.0 if u > q else 1.0 / q
 
 
+@func
+def ends_here(sc: SceneBufs, mat: u32, backdrop: bool) -> bool:
+    """The path stops at this surface: a shadow catcher seen by the camera, or a special (unlit) model."""
+    return (backdrop and sc.mat_f[mat + M_MODEL] == f32(MODEL_CATCHER)) or is_special(sc.mat_f, mat)
+
+
+@func
+def terminal_light(
+    sc: SceneBufs, h: Hit, s: Surface, p: vec3, rd: vec3, pixel: u32, sample_index: u32, dim: u32
+) -> vec3:
+    """What a path that ends_here sees: the backdrop × the shadows on it, or the special model's colour."""
+    if sc.mat_f[s.mat + M_MODEL] == f32(MODEL_CATCHER):
+        return caught(sc, rd, p, h.normal, pixel, sample_index, dim + 13)
+    return special_radiance(sc, h, p, rd, s, pixel, sample_index, dim + 14)
+
+
 @struct
 class Scatter:
     direct: vec3  # sunlight reaching the camera through this vertex (before the path throughput)
@@ -179,7 +197,7 @@ def scatter(
 ) -> Scatter:
     """Sun NEE at the vertex plus one BSDF-sampled continuation."""
     wo = to_local(rd * -1.0, h.normal)
-    bs = principled_setup(sc.mat_f, s, wo, h.front, alpha_floor)
+    bs = principled_setup(sc.mat_f, s, wo, h.front, alpha_floor, tangent_angle(sc, h.prim, s.mat, h.normal))
     u1 = sample01(sc.cfg, pixel, sample_index, dim)
     u2 = sample01(sc.cfg, pixel, sample_index, dim + 1)
     direct = sun_nee(sc, bs, wo, p, h.normal, u1, u2) + lights_nee(sc, bs, wo, p, h.normal, u1, u2)
@@ -238,6 +256,7 @@ def path_radiance(o: vec3, d: vec3, max_bounces: u32, pixel: u32, sample_index: 
         if h.prim == NO_HIT:
             radiance = radiance + throughput * escaped(sc, rd, backdrop, last_pdf, caustic == 2.0)
             break
+        throughput = throughput * exit_absorption(sc.mat_f, sc.prim_u, h.prim, h.front, h.t)  # inside glass
         dim = u32(32) + u32(step) * 16
         s = surface_at(sc, h.prim)
         p = ro + rd * h.t
@@ -246,8 +265,8 @@ def path_radiance(o: vec3, d: vec3, max_bounces: u32, pixel: u32, sample_index: 
             exclude = sc.prim_u[h.prim * PRIM_U + 2]
             continue
         exclude = u32(NO_HIT)
-        if backdrop and sc.mat_f[s.mat + M_MODEL] == f32(MODEL_CATCHER):  # seen directly: background × shadow
-            radiance = radiance + throughput * caught(sc, rd, p, h.normal, pixel, sample_index, dim + 13)
+        if ends_here(sc, s.mat, backdrop):  # a shadow catcher seen directly, or wireframe / ao / a debug view
+            radiance = radiance + throughput * terminal_light(sc, h, s, p, rd, pixel, sample_index, dim)
             break
         radiance = radiance + throughput * surface_light(sc, s, h, ro, rd, last_pdf)
         if sc.mat_f[s.mat + M_MODEL] == f32(MODEL_CONSTANT) or bounces(lobes) >= max_bounces:

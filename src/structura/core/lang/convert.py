@@ -1,13 +1,11 @@
 """Migrate a Structure Synth 1.5 (v1) script to EisenScript v2 (docs/16 §5 'structura convert --to v2').
 
-v2 changes three things that can alter a v1 script's meaning, and the converter keeps the v1 result:
+v2 changes two things that can alter a v1 script's meaning, and the converter keeps the v1 result:
 
 - ``#define`` and GUI parameters replace whole words in v2, substrings in v1. Lines where the two differ get
   the v1 substitution written out (a note lists them; those lines lose their slider link).
 - v2 adds primitives (cone, torus, ellipsoid, tube) and the 'mat' operator. v1 rules with those names are
   renamed, with every reference.
-- 'cylinder' draws nothing in v1 but a cylinder in v2. Calls are kept and reported, because dropping them would
-  change 'set maxobjects' counting.
 """
 
 from __future__ import annotations
@@ -77,14 +75,6 @@ def _rename_rules(lines: list[str], notes: list[str]) -> None:
         notes.append(f"rule '{name}' renamed to '{new}' ('{name}' is a v2 keyword)")
 
 
-def _cylinder_note(lines: list[str], notes: list[str]) -> None:
-    pattern = _word("cylinder")
-    found = [i + 1 for i, line in enumerate(lines) if not line.startswith("#") and pattern.search(line)]
-    if found:
-        where = ", ".join(str(n) for n in found[:8]) + (" …" if len(found) > 8 else "")
-        notes.append(f"'cylinder' draws a cylinder in v2 (it drew nothing in 1.5): line {where}")
-
-
 def convert_to_v2(text: str) -> Conversion:
     """The v2 form of a v1 script (v2 scripts come back unchanged, with no notes)."""
     if detect_dialect(text) == 2:
@@ -94,6 +84,5 @@ def convert_to_v2(text: str) -> Conversion:
     notes: list[str] = []
     _bake_substrings(lines, _defines(text), notes)
     _rename_rules(lines, notes)
-    _cylinder_note(lines, notes)
     notes.insert(0, "added '#version 2'")
     return Conversion(newline.join([HEADER, *lines]), tuple(notes))

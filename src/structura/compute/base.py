@@ -142,6 +142,12 @@ class Backend(Protocol):
 
     def run(self, launch: Launch) -> dict[str, np.ndarray]: ...
 
+    def details(self) -> dict[str, str]: ...
+
+
+def mib(size: int) -> str:
+    return f"{size / 2**20:,.0f} MiB"
+
 
 class BackendBase(ABC):
     """Shared ``run`` = bind, dispatch once, read back."""
@@ -155,6 +161,10 @@ class BackendBase(ABC):
 
     def run(self, launch: Launch) -> dict[str, np.ndarray]:
         return self.bind(launch).run()
+
+    def details(self) -> dict[str, str]:
+        """What a render report says about the device (driver, memory, …): label → text."""
+        return {}
 
 
 def uniform_block(launch: Launch, scalars: Mapping[str, np.generic]) -> bytes:

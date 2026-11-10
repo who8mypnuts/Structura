@@ -2,30 +2,16 @@
 
 from __future__ import annotations
 
-from structura.kernels.skl import INF, PI, dot, f32, func, max, max3, u32, vec3
+from structura.kernels.skl import INF, PI, dot, func, max, max3, u32, vec3
 
 from .buffers import SceneBufs
 from .camera import cfg3
-from .layout import AO_DIRECT, AO_DIST, EPS, N_LIGHTS, SUN_COS, SUN_DIR, SUN_IRRADIANCE
-from .lights import light_sample, offset, unoccluded
-from .sampling import cone_direction, cosine_hemisphere, rand01
-from .scene import NO_HIT, TRACE_ANY, Hit, trace
+from .layout import AO_DIRECT, AO_DIST, N_LIGHTS, SUN_COS, SUN_DIR, SUN_IRRADIANCE
+from .lights import light_sample, unoccluded
+from .models import ambient_occlusion, is_special, special_radiance
+from .sampling import cone_direction, rand01
+from .scene import Hit
 from .surface import surface_at
-
-
-@func
-def ambient_occlusion(
-    p: vec3, n: vec3, samples: u32, max_dist: f32, pixel: u32, sample_index: u32, dim: u32, sc: SceneBufs
-) -> f32:
-    """Fraction of cosine-weighted rays that escape within max_dist (1 = fully open)."""
-    open_rays = 0.0
-    o = offset(p, n, sc.cfg[EPS])
-    for i in range(samples):
-        d = cosine_hemisphere(n, rand01(pixel, sample_index, dim + 2 * i), rand01(pixel, sample_index, dim + 2 * i + 1))
-        h = trace(o, d, 0.0, max_dist, u32(TRACE_ANY), u32(NO_HIT), sc)
-        if h.prim == NO_HIT:
-            open_rays += 1.0
-    return open_rays / f32(max(samples, u32(1)))
 
 
 @func
@@ -50,6 +36,8 @@ def shade_first_hit(
     """'preview' (mode 0) and 'ao' (mode 1) shading of a primary hit."""
     p = o + d * h.t
     s = surface_at(sc, h.prim)
+    if is_special(sc.mat_f, s.mat):
+        return special_radiance(sc, h, p, d, s, pixel, sample_index, u32(40))
     occ = ambient_occlusion(p, h.normal, ao_samples, sc.cfg[AO_DIST], pixel, sample_index, u32(10), sc)
     if mode == 1:
         lit = direct_lambert(sc, p, h.normal, pixel, sample_index) if sc.cfg[AO_DIRECT] != 0.0 else vec3(0.0)

@@ -149,7 +149,7 @@ class ViewportHost(QStackedWidget):
     def _picked_cpu(self, result: PickResult) -> None:
         if result.focus:
             if result.distance is not None:
-                self.set_camera(replace(self.camera(), focus_distance=result.distance))
+                self.set_camera(self.camera().focused_at(result.distance))
         else:
             self.picked.emit(result.row)
 
@@ -233,6 +233,11 @@ class ViewportHost(QStackedWidget):
     def move_camera(self, camera: Camera) -> None:
         """Glide to ``camera`` (standard views, framing, saved views)."""
         self.motion.move(self.camera(), camera)
+
+    def selected_row(self) -> int | None:
+        """The SceneIR row of the clicked object, if one is selected."""
+        row = self._options.selected
+        return row if self.scene is not None and row is not None and 0 <= row < len(self.scene) else None
 
     def frame_selection(self) -> None:
         """Frame the selected (clicked) object; everything when nothing is selected."""

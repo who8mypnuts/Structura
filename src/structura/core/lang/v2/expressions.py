@@ -2,7 +2,8 @@
 
 Allowed: numbers, + − * / % ^ (power), unary minus, parentheses, the constants pi/tau/e and the functions
 sin cos tan asin acos atan atan2 (degrees, like 'rx'), sqrt pow exp log abs min max clamp floor ceil
-round mix. Comments, '#' lines and '[…]' arguments are left alone.
+round mix. Comments, '#' lines and '[…]' arguments are left alone. 'rand(a, b)' with two numbers was already
+replaced by the preprocessor (a draw from the random[a,b] stream).
 """
 
 from __future__ import annotations
@@ -46,6 +47,8 @@ def _eval(node: ast.AST, names: dict[str, float]) -> float:
         return {**CONSTANTS, **names}[node.id]
     if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id in FUNCTIONS:
         return float(FUNCTIONS[node.func.id](*(_eval(a, names) for a in node.args)))
+    if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "rand":
+        raise ValueError("rand(a, b) takes two plain numbers (the preprocessor draws it, like random[a,b])")
     raise ValueError(f"unsupported expression element: {ast.unparse(node)}")
 
 

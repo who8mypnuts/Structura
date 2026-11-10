@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import numpy as np
 from PySide6.QtCore import QObject, Slot
 from PySide6.QtWidgets import QInputDialog
 
@@ -32,7 +33,29 @@ class CameraActions(QObject):
         panel.bookmark_chosen.connect(window.viewport.move_camera)
         panel.bookmark_deleted.connect(self.delete_view)
         panel.lock_toggled.connect(self.lock_to_script)
+        panel.focus_selection.connect(self.focus_on_selection)
         window.tabs.current_tab_changed.connect(self._tab_changed)
+        window.workbench.scene_ready.connect(self._scene_ready)
+
+    @Slot(object, object, object, bool)
+    def _scene_ready(self, tab: EditorTab, *_: object) -> None:
+        bounds = self.w.viewport.bounds()
+        if tab is self.w.tabs.current() and bounds is not None:  # the lens's "structure size" helper
+            self.w.camera_panel.lens.set_scene_size(float(np.linalg.norm(np.subtract(bounds[1], bounds[0]))))
+
+    @Slot()
+    def focus_on_selection(self) -> None:
+        """Focus at the selected object's centre (its distance along the view direction)."""
+        tab, row = self.w.tabs.current(), self.w.viewport.selected_row()
+        if tab is None or tab.outcome is None or row is None:
+            self.w.show_message(tr("Click an object in the viewport first, then focus on it."))
+            return
+        x = tab.outcome.scene.xform[row]
+        centre = x[:, 3] + 0.5 * x[:, :3].sum(axis=1)
+        camera = self.w.viewport.camera()
+        distance = float(np.dot(centre - np.asarray(camera.eye), camera.basis[0]))
+        if distance > 0:
+            self.w.viewport.set_camera(camera.focused_at(distance))
 
     @Slot(object)
     def _tab_changed(self, tab: EditorTab | None) -> None:

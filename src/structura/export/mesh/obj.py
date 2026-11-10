@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+from collections.abc import Iterator
 from pathlib import Path
 
 import numpy as np
@@ -12,8 +13,10 @@ from ...core.geometry.trimesh import TriMesh
 from ...core.params import ParamSpec, ParamType
 from ...core.scene.material import Material
 from ..base import Exporter, ExportJob, ExportReport, register
+from ..csg import export_mesh
 from .ascii import face_rows, float_rows
 from .grouping import GROUPINGS, group_keys, hex_color
+from .meshlab import MESHLAB_OPTIONS
 
 COMMON = (
     ParamSpec("lod", ParamType.ENUM, "medium", "Sphere detail", choices=("low", "medium", "high", "ultra")),
@@ -50,22 +53,31 @@ class ObjExporter(Exporter):
         ParamSpec("grouping", ParamType.ENUM, "color", "Group by", choices=GROUPINGS),
         ParamSpec("vertex_colors", ParamType.BOOL, True, "Vertex colours (v x y z r g b)"),
         ParamSpec("normals", ParamType.BOOL, True, "Normals"),
+        *MESHLAB_OPTIONS,
     )
 
     def write(self, job: ExportJob, path: Path) -> ExportReport:
-        o, model = job.options, job.model
+        model = job.model
         mtl_path = path.with_suffix(".mtl")
         groups: dict[str, Material | None] = {}
         counts = {"vertices": 0, "triangles": 0}
         with path.open("wb") as out:
             out.write(f"# Structura OBJ export\nmtllib {mtl_path.name}\n".encode())
-            for chunk in iter_tessellate(job.scene, TessOptions(lod=o["lod"])):
+            for chunk in self._chunks(job):
                 job.check()
                 self._chunk(out, chunk, job, groups, counts)
                 job.progress(0.0, f"{counts['triangles']:,} triangles")
         by_name = {m.name: m for m in model.materials.materials}
         mtl_path.write_text("".join(_mtl(g, by_name.get(g)) for g in groups), encoding="utf-8")
         return ExportReport(path, (path, mtl_path), counts)
+
+    @staticmethod
+    def _chunks(job: ExportJob) -> Iterator[TriMesh]:
+        """Tessellation chunks as they come (streamed), or one cleaned-up mesh (a clean-up needs it all)."""
+        if job.options["cleanup"] == "none":
+            yield from iter_tessellate(job.scene, TessOptions(lod=job.options["lod"]))
+            return
+        yield export_mesh(job)[0]
 
     def _chunk(self, out: io.BufferedIOBase, chunk: TriMesh, job: ExportJob, groups: dict, counts: dict) -> None:  # type: ignore[type-arg]
         if not chunk.triangles:

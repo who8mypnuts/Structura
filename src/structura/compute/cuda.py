@@ -21,7 +21,7 @@ except ImportError:  # pragma: no cover
 
 from ..kernels.skl import ir
 from ..kernels.skl.emit.cuda import CudaEmitter
-from .base import BackendBase, BackendUnavailableError, Bound, Launch
+from .base import BackendBase, BackendUnavailableError, Bound, Launch, mib
 
 CACHE = Path(platformdirs.user_cache_dir("structura")) / "cuda"
 
@@ -176,6 +176,12 @@ class CudaBackend(BackendBase):
         name = _check(driver.cuDeviceGetName(128, self.device), "cuDeviceGetName")  # pragma: no cover
         self.device_name = bytes(name).split(b"\0")[0].decode()  # pragma: no cover
         self._functions: dict[tuple[int, str], tuple[ir.Module, Any]] = {}  # pragma: no cover
+
+    def details(self) -> dict[str, str]:  # pragma: no cover - needs an NVIDIA GPU
+        memory = _check(driver.cuDeviceTotalMem(self.device), "cuDeviceTotalMem")
+        version = int(_check(driver.cuDriverGetVersion(), "cuDriverGetVersion"))
+        return {"Compute capability": f"{self.capability // 10}.{self.capability % 10}", "Memory": mib(int(memory)),
+                "CUDA driver": f"{version // 1000}.{version % 1000 // 10}"}  # fmt: skip
 
     def activate(self) -> None:  # pragma: no cover - needs an NVIDIA GPU
         """Make the primary context current on the calling thread (render workers run off the GUI thread)."""

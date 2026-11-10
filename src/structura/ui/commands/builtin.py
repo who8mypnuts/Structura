@@ -22,6 +22,8 @@ def _file(w: MainWindow, has_tab: Predicate) -> list[Command]:
     d = w.docs
     return [
         Command("file.new", "New Script", d.new_script, "Ctrl+N", "File", 0),
+        Command("file.new_v2", "New v2 Script", d.new_v2_script, "Ctrl+Alt+N", "File", 0,
+                tip="A script in EisenScript v2: materials, lights, environment and render blocks"),
         Command("file.open", "Open…", d.open_dialog, "Ctrl+O", "File", 0),
         Command("file.open_render", "Open from Render…", w.projects.open_render_dialog, "", "File", 0,
                 tip="Reopen the script, seed, parameters, camera and settings stored in a PNG or EXR render"),
@@ -38,6 +40,10 @@ def _file(w: MainWindow, has_tab: Predicate) -> list[Command]:
         Command("file.export_as", "Export As…", w.exports.start, "Ctrl+E", "File", 1,
                 enabled=has_tab, tip="Export the structure: choose the folder, file name and format"),
         Command("file.close", "Close Tab", d.close_tab, "Ctrl+W", "File", 1, enabled=has_tab),
+        Command("file.recover_declined", "Restore Declined Recovery", w.session.restore_declined, "", "File", 7,
+                submenu="Recover", tip="The scripts of a crashed session whose recovery you declined"),
+        Command("file.open_backups", "Open Backups Folder", w.session.open_backups, "", "File", 7, submenu="Recover",
+                tip="Earlier versions of every script you saved (the last 20 of each)"),
         Command("file.preferences", "Preferences…", w.dialogs.preferences, "Ctrl+,", "File", 8),
         Command("file.keymap", "Keyboard Shortcuts…", w.dialogs.edit_keymap, "Ctrl+K, Ctrl+S", "File", 8),
         Command("file.quit", "Quit", w.close, "Ctrl+Q", "File", 9),
@@ -118,7 +124,8 @@ def _color_by(w: MainWindow, mode: str) -> tuple[Callable[[], None], Callable[[]
     return (lambda: w.build_actions.set_color_by(mode)), (lambda: w.workbench.color_by == mode)
 
 
-OVERLAY_TITLES = {"grid": "Ground Grid", "axes": "Axis Gizmo", "bounds": "Bounding Box", "hud": "Object Counts"}
+OVERLAY_TITLES = {"grid": "Ground Grid", "axes": "Axis Gizmo", "bounds": "Bounding Box", "hud": "Object Counts",
+                  "focus": "Focus Planes (depth of field)"}  # fmt: skip
 
 
 def _overlay(w: MainWindow, name: str) -> tuple[Callable[[], None], Callable[[], bool]]:
@@ -199,9 +206,15 @@ def _render(w: MainWindow, has_tab: Predicate) -> list[Command]:
                 tip="Save the rendered image (PNG, EXR with AOVs, JPEG, …) and a report beside it"),
         Command("render.report", "Save Render Report…", w.render_actions.save_report, "", "Render", 1,
                 tip="Everything about the render: scene, camera, settings, image statistics, performance"),
+        Command("render.copy_report", "Copy Report as Markdown", w.render_actions.copy_report, "", "Render", 1,
+                tip="The last render's report on the clipboard, ready for a forum post or a bug report"),
         Command("render.animation", "Render Animation…", w.animations.render, "", "Render", 2, enabled=has_tab,
                 tip="Render the timeline's frames (and a video) with the precision engine"),
         Command("render.animation_stop", "Stop Animation", w.animations.cancel, "", "Render", 2),
+        Command("render.turntable", "Turntable…", w.animations.turntable, "", "Render", 2, enabled=has_tab,
+                tip="Orbit the current view in a seamless loop: keys the timeline, then renders the animation"),
+        Command("render.camera_path", "Camera Path from Saved Views…", w.animations.camera_path, "", "Render", 2,
+                enabled=has_tab, tip="Key a smooth camera path through the Camera panel's saved views"),
     ]  # fmt: skip
 
 
@@ -304,11 +317,22 @@ def _exporter(w: MainWindow, name: str) -> Callable[[], None]:
 
 def _exports(w: MainWindow, has_tab: Predicate) -> list[Command]:
     shortcuts = {"template": "F6"}  # F6 = template export, as in 1.5
-    return [
+    check = Command(
+        "export.check_mesh",
+        "Check Mesh…",
+        w.exports.check_mesh,
+        "",
+        "Export",
+        2,
+        enabled=has_tab,
+        tip="Is the structure a watertight, manifold mesh? (MeshLab's measures: holes, parts, volume)",
+    )
+    formats = [
         Command(f"export.{e.name}", f"{e.title}…", _exporter(w, e.name), shortcuts.get(e.name, ""), "Export",
                 1 if e.name in ("template", "obj-legacy") else 0, enabled=has_tab)
         for e in w.exports.exporters()
     ]  # fmt: skip
+    return [*formats, check]
 
 
 def register_builtin(registry: CommandRegistry, w: MainWindow) -> None:

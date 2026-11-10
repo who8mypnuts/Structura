@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import time
 from collections.abc import Callable, Iterator, Mapping
 from dataclasses import dataclass, replace
 from functools import cache
@@ -21,13 +22,13 @@ from ..kernels.skl.frontend import compile_module
 from .aovs import render_aovs
 from .bands import Bands
 from .bvh import Bvh, build_bvh
-from .config import Frame, config, scene_frame
+from .config import Frame, config, scene_frame, with_legacy_dof
 from .declarations import declared_settings
 from .emitters import Emitters, pack_emitters
 from .environment import settings_environment
 from .film import active_mask, initial_mask, new_film
 from .ground import Ground, with_ground
-from .kernels.layout import N_EMITTERS
+from .kernels.layout import MAX_GENERATION, N_EMITTERS
 from .kernels.passes import render_pass
 from .legacy import with_legacy
 from .lights import pack_lights
@@ -39,6 +40,12 @@ from .photons import add_photons
 from .progress import RenderProgress, RenderRun
 from .settings import INTEGRATORS, RenderSettings
 from .tiled import tiled_passes
+
+Phase = Callable[[str], None]  # told what a render is doing before its first pass ("Building the BVH…")
+
+
+def _quiet(_text: str) -> None:
+    return None
 
 
 @cache
@@ -62,7 +69,7 @@ class Prepared:
 
 def prepare(
     scene: SceneIR, declared: Mapping[str, Material] | None = None, tag_presets: bool = False,
-    ground: Ground | None = None,
+    ground: Ground | None = None, phase: Phase = _quiet,
 ) -> Prepared:  # fmt: skip
     """Pack, build the BVH and resolve materials (declared ones, then presets named like a tag if enabled).
 
@@ -73,6 +80,7 @@ def prepare(
         declared, tag_presets = {**scene.declarations.materials, **(declared or {})}, True
     scene_settings = settings_from_events(scene.events)
     materials = resolve_materials(scene.tags, scene_settings.raytracer, declared, tag_presets)
+    phase(f"Packing {len(scene):,} objects…")
     packed = pack_scene(scene, PackOptions(material_of_tag=materials.by_tag))
     if len(packed):
         lo, hi = packed.lo.min(axis=0), packed.hi.max(axis=0)
@@ -80,18 +88,22 @@ def prepare(
         lo, hi = np.full(3, -1.0, np.float32), np.full(3, 1.0, np.float32)
     if ground is not None:
         packed, materials = with_ground(packed, materials, ground, len(scene), lo, hi)
+    phase(f"Building the BVH over {len(packed):,} primitives…")
     bvh = build_bvh(packed.lo, packed.hi)
     emitters = pack_emitters(packed, pack_materials(materials), scene.xform)
     return Prepared(packed, bvh, materials, emitters, scene_settings, scene.declarations, lo, hi)
 
 
 def prepare_with_frame(
-    scene: SceneIR, settings: RenderSettings, tag_presets: bool = False, camera: Camera | None = None
-) -> tuple[Prepared, Frame]:
+    scene: SceneIR, settings: RenderSettings, tag_presets: bool = False, camera: Camera | None = None,
+    phase: Phase = _quiet,
+) -> tuple[Prepared, Frame]:  # fmt: skip
     """``prepare`` (with the settings' ground) and the view: ``camera``, else the script camera or framing."""
-    prepared = prepare(scene, tag_presets=tag_presets, ground=settings.ground_spec)
+    prepared = prepare(scene, tag_presets=tag_presets, ground=settings.ground_spec, phase=phase)
     frame = scene_frame(prepared.scene_settings, settings, prepared.lo, prepared.hi, prepared.declarations)
-    return prepared, frame if camera is None else replace(frame, camera=camera)
+    if camera is None:
+        return prepared, frame
+    return prepared, replace(frame, camera=with_legacy_dof(camera, settings, prepared.scene_settings))
 
 
 def script_settings(scene: SceneIR, base: RenderSettings | None = None) -> RenderSettings:
@@ -116,6 +128,7 @@ def launch_args(prepared: Prepared, frame: Frame) -> dict[str, Any]:
     env = settings_environment(st)
     cfg = config(frame)
     cfg[N_EMITTERS] = len(prepared.emitters)  # the count lives with the scene, the rest of cfg with the frame
+    cfg[MAX_GENERATION] = float(p.prim_f[:, 23].max()) if len(p) else 0.0
     return {
         "width": st.width,
         "height": st.height,
@@ -157,20 +170,28 @@ def _resumed(args: dict[str, Any], w: int, h: int, resume: RenderProgress | None
 
 
 def start_run(
-    prepared: Prepared, settings: RenderSettings, backend: Backend, frame: Frame, resume: RenderProgress | None
-) -> tuple[RenderRun, np.ndarray]:
+    prepared: Prepared, settings: RenderSettings, backend: Backend, frame: Frame, resume: RenderProgress | None,
+    phase: Phase = _quiet,
+) -> tuple[RenderRun, np.ndarray]:  # fmt: skip
     """Bind the render kernel (photons and AOVs first when asked for); returns the run and the starting film."""
     w, h = settings.width, settings.height
     args = launch_args(prepared, frame)
     if settings.caustics == "photons":
+        phase(f"Tracing {settings.photon_count:,} caustic photons…")
         add_photons(args, prepared.lo, prepared.hi, settings.photon_count, settings.photon_radius, backend,
                     settings.seed)  # fmt: skip
+    if settings.aovs and (resume is None or resume.aovs is None):
+        phase("First-hit passes (albedo, normals, depth)…")
     aovs = render_aovs(args, backend) if settings.aovs and (resume is None or resume.aovs is None) else None
     aovs = aovs or (resume.aovs if resume is not None else None)
     counts, done, spent = _resumed(args, w, h, resume)
     film = args["accum"].copy()
+    phase(f"Starting the render kernel on {backend.name} (the first render on a device compiles it)…")
+    started = time.perf_counter()
     bound = backend.bind(Launch(render_module(), "render_pass", (w, h, 1), args))
-    return RenderRun(settings, bound, args["pixel_mask"], counts, done, spent, aovs), film
+    run = RenderRun(settings, bound, args["pixel_mask"], counts, done, spent, aovs)
+    run.bind_seconds = time.perf_counter() - started
+    return run, film
 
 
 def progressive(
@@ -180,6 +201,7 @@ def progressive(
     frame: Frame | None = None,
     between: Callable[[], None] | None = None,
     resume: RenderProgress | None = None,
+    phase: Phase = _quiet,
 ) -> Iterator[RenderProgress]:
     """Yield an updated image after every pass (render/pacing.py sizes the passes), or with the tiled sampler
     after buckets (render/tiled.py).
@@ -190,7 +212,7 @@ def progressive(
     """
     prepared = scene if isinstance(scene, Prepared) else prepare(scene)
     frame = frame or scene_frame(prepared.scene_settings, settings, prepared.lo, prepared.hi, prepared.declarations)
-    run, film = start_run(prepared, settings, backend, frame, resume)
+    run, film = start_run(prepared, settings, backend, frame, resume, phase)
     if settings.sampler == "tiled":
         yield from tiled_passes(run, film, between)
         return
@@ -203,6 +225,7 @@ def _passes(run: RenderRun, between: Callable[[], None] | None) -> Iterator[Rend
     s, (w, h) = run.settings, run.size
     bands, pacing = Bands(w, h), Pacing(s)
     while run.done < s.samples and run.mask.any():
+        started = time.perf_counter()
         spp = pacing.next(run.done)
         run.bound.update(sample_base=run.sample_base(run.done), spp=spp)
         pacing.observe(spp, bands.dispatch(run.bound, between))
@@ -214,6 +237,7 @@ def _passes(run: RenderRun, between: Callable[[], None] | None) -> Iterator[Rend
             run.bound.update(pixel_mask=run.mask)
         if run.out_of_time():
             run.mask = np.zeros_like(run.mask)
+        run.pass_times.append(time.perf_counter() - started)
         yield replace(run.snapshot(accum), samples=run.done)
 
 

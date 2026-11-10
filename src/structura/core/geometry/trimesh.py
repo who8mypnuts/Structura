@@ -30,6 +30,13 @@ class TriMesh:
         z = np.zeros((0, 3), np.float32)
         return cls(z, z, np.zeros((0, 4), np.float32), np.zeros((0, 3), np.uint32), np.zeros(0, np.int64))
 
+    def select(self, faces: np.ndarray) -> TriMesh:
+        """The triangles where the boolean mask ``faces`` is set, with only the vertices they use."""
+        tris = self.indices[faces]
+        used, remap = np.unique(tris, return_inverse=True)
+        return TriMesh(self.positions[used], self.normals[used], self.colors[used],
+                       remap.reshape(-1, 3).astype(np.uint32), self.owners[faces])  # fmt: skip
+
     @classmethod
     def concat(cls, parts: list[TriMesh]) -> TriMesh:
         parts = [p for p in parts if p.triangles]

@@ -57,14 +57,23 @@ class Matrices:
 
 
 def camera_matrices(camera: Camera, aspect: float, lo: np.ndarray, hi: np.ndarray) -> Matrices:
-    """Perspective matrices with near/far planes fitted to the scene bounds [lo, hi]."""
+    """View and projection with near/far planes fitted to the scene bounds [lo, hi]: perspective (spherical and
+    fisheye lenses are previewed as perspective) or orthographic, with the lens shift as an off-axis offset —
+    the same framing the precision engine renders (render/kernels/camera.py)."""
     eye = np.asarray(camera.eye, np.float64)
     view = look_at(eye, np.asarray(camera.target, np.float64), np.asarray(camera.up, np.float64))
     centre, radius = (lo + hi) / 2.0, max(float(np.linalg.norm(hi - lo)) / 2.0, 1e-3)
     distance = float(-(view @ np.append(centre, 1.0))[2])
     far = max(distance + radius * 1.5, 1e-2)
+    shift_x, shift_y = camera.lens.shift
+    if camera.lens.projection == "orthographic":
+        proj = orthographic(camera.lens.ortho_height / 2.0, aspect, distance - radius * 1.5, far)
+        proj[0, 3], proj[1, 3] = -2.0 * shift_x / aspect, -2.0 * shift_y
+        return Matrices(view, proj, ortho=True)
     near = max(distance - radius * 1.5, far * 1e-4)
-    return Matrices(view, perspective(camera.fov_y_deg, aspect, near, far))
+    proj = perspective(camera.fov_y_deg, aspect, near, far)
+    proj[0, 2], proj[1, 2] = 2.0 * shift_x / aspect, 2.0 * shift_y
+    return Matrices(view, proj)
 
 
 def gl(m: np.ndarray) -> bytes:

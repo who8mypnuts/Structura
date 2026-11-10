@@ -20,6 +20,7 @@ detail is in [PROGRESS.md](PROGRESS.md).
 | M9 Hardening & 1.0 | 🟡 mostly done | Done: warm-up, i18n infrastructure (English UI; pseudo-locale for layout testing; German dropped at the owner's request), accessibility names, packaging scripts and CI, user guide, benchmark suite, UI-stall watchdog, GPU preview on NVIDIA/Wayland, cached CUDA binaries, time-paced passes. Open: the owner checks of §3 (installers, benchmarks, screen reader) |
 | M10 Studio completion | ✅ done | The docs/14 window and panels, render reports, Save As flows, viewport colour modes, X-ray, isolation and overlays, navigation presets, render queue, pause/resume, History snapshots, export presets — see PROGRESS.md "M10" |
 | M11 Plan completion | ✅ done | The M10 backlog and the remaining plan items: sectioned Preferences, Show Ancestry, template sheet extras, adaptive viewport quality, the tiled sampler and renderer extras, Vim/refactorings/hover previews, `#include`, typed `#param` controls, build limits and the scene cache, the JavaScript globals (in a separate process), the Python `Document` API, the remaining menu commands — see PROGRESS.md "M11" |
+| M12 Owner review | ✅ done | Glass and materials, the photographic lens, looks (post stack), lighting rigs, turntables, render progress, crash recovery, richer reports, tab handling and render frames, MeshLab, clean-up — §2.11 and PROGRESS.md "Owner review" |
 
 ## 2. Refinements and deviations
 
@@ -154,6 +155,38 @@ detail is in [PROGRESS.md](PROGRESS.md).
 - Render jobs attach `RenderDetails` (resolved camera and settings, BVH figures, materials, lights,
   preparation time) to their updates, so reports describe exactly what was rendered.
 
+### 2.11 Owner review (glass, lenses, looks, recovery)
+
+- **Cylinders draw in v1 scripts.** Structure Synth 1.5 parsed `cylinder` and drew nothing; Structura draws
+  it everywhere (owner decision). The golden comparison skips CYLINDER rows, the template engine skips v1
+  cylinders silently (1.5's templates never saw one), and `W105` became an info note. `E018` reports a v2-only
+  primitive in a v1 script, `W116` a `#version 2` that is not on the first line.
+- **Glass** follows the principled model with Beer–Lambert absorption (`kernels/volume.py`) applied on exit
+  through a transmissive surface, in the path integrator and the photon pass alike; `thin_walled` skips the
+  bending; cut-out opacity is honoured by every integrator and by the AOVs (`kernels/opacity.py`). Material
+  `model`s are evaluated in `kernels/models.py`; debug models are script-only (not offered in the panel).
+- **The lens** lives on the camera (`core/scene/lens.py`), not in the render settings: 1 world unit = 1 m by
+  default, `scale` changes it; the kernel gained shift, tilt (a tilted focus plane via `focus_normal`),
+  bokeh bias, anamorphic squeeze and fisheye mappings (cfg slots 76–83). Projects moved to format 2 (the
+  lens in the camera; older projects are migrated). Legacy `raytracer::dof` still resolves against the view.
+- **The post stack** (`render/post.py`, `render/lut.py`) runs where the image is displayed or saved
+  (`render/output.Display`), never on the radiance: EXR stays linear, every change is live, and one
+  `Display` value (exposure, view transform, post, asset folder) travels from the tool bar, the script or the
+  command line to every writer. Bloom adds exactly intensity × the light above the threshold.
+- **Lighting rigs** are data (`core/scene/light_rigs.toml`): offsets and sizes in bounding radii, and an
+  *irradiance at the centre* from which the power follows, so a rig looks the same at any scale.
+- **Recovery:** the session file doubles as the recovery snapshot; `CrashGuard` (a running lock with the
+  PID) tells a crash from a clean exit. Snapshots follow edits after 5 s; unhandled exceptions in slots and
+  threads reach an error banner (`ui/error_reporting.py`) and the rotating log (`app/diagnostics.py`).
+- **Reports:** backends describe their device (`Backend.details()`); progress carries per-pass and kernel
+  times; reports add lens, lights, memory and the look, and the reproduce command repeats `--camera-from`,
+  the exposure and the look.
+- **MeshLab:** PyMeshLab (GPL-3, ADR-0010 amendment 1) is imported lazily for clean-up presets and Check
+  Mesh; the `.mlp` exporter writes one PLY layer per group.
+- **Found and fixed:** `analyze()` raised on a token the v1 tokenizer rejects (now E004); `rand(a, b)` was
+  documented but not implemented; the user guide's v2 example did not compile (a loop followed by a
+  transform list — the documentation's v2 examples are now compiled by a test).
+
 ## 3. Hardware checks for the owner
 
 1. `pytest -m gpu` and the full parity suite. The `device` fixture includes CUDA, so every parity test also
@@ -178,6 +211,12 @@ detail is in [PROGRESS.md](PROGRESS.md).
     'runAfter' prompt.
 11. (M11) Render with Image sampler = tiled on the GTX 1660 (the CUDA bucket read-back only runs there); try
     Vim mode and the refactorings (Ctrl+Alt+R); run a `#javascript` movie script from the window and cancel it.
+12. (Owner review) On the GTX 1660: `pytest tests/parity -m gpu` (the new glass absorption, opacity, lens
+    shift/tilt/bias/anamorphic and fisheye paths compile for CUDA in the sandbox — `tests/parity/
+    test_cuda_compile.py` — but have only run on the CPU backend); render the *Structura v2* examples; try a
+    turntable with video; apply each lighting rig to one of your scripts.
+13. (Owner review) Decide the installers' PyMeshLab licensing (ADR-0010 amendment 1) before the first public
+    installer; on Linux check the AppImage finds `libOpenGL.so.0`.
 
 ## 4. Backlog — planned but not built
 

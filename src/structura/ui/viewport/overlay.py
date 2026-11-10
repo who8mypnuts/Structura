@@ -1,6 +1,7 @@
 """Viewport overlays (docs/08 §8) drawn with QPainter over either viewport (GPU or compute): the axis gizmo,
-the bounding box of the structure and a HUD with the object counts. The widget is transparent to the mouse;
-orbiting and picking go to the viewport underneath."""
+the bounding box of the structure, a HUD with the object counts, and the depth-of-field guide (the focus
+plane, and the near and far limits of the sharp range, when the camera's lens has depth of field). The widget
+is transparent to the mouse; orbiting and picking go to the viewport underneath."""
 
 from __future__ import annotations
 
@@ -8,12 +9,13 @@ from dataclasses import dataclass
 
 import numpy as np
 from PySide6.QtCore import QPointF, QRectF, Qt
-from PySide6.QtGui import QColor, QFont, QPainter, QPaintEvent, QPen
+from PySide6.QtGui import QColor, QFont, QPainter, QPainterPath, QPaintEvent, QPen
 from PySide6.QtWidgets import QWidget
 
 from ...core.scene.camera import Camera
 from ...preview.camera import camera_matrices
 from ..i18n import tr
+from ..render_view.presets import guide_rect
 
 AXES = ((np.array([1.0, 0.0, 0.0]), "X", QColor(230, 80, 80)), (np.array([0.0, 1.0, 0.0]), "Y", QColor(110, 200, 90)),
         (np.array([0.0, 0.0, 1.0]), "Z", QColor(90, 140, 240)))  # fmt: skip
@@ -26,6 +28,7 @@ class Overlays:
     axes: bool = True
     bounds: bool = False
     hud: bool = True
+    focus: bool = True
 
 
 def project(camera: Camera, size: tuple[int, int], lo: np.ndarray, hi: np.ndarray, points: np.ndarray) -> np.ndarray:
@@ -48,6 +51,7 @@ class ViewportOverlay(QWidget):
         self.camera: Camera | None = None
         self.bounds: tuple[np.ndarray, np.ndarray] | None = None
         self.hud = ""
+        self.frame: tuple[float, str] | None = None  # the render frame's aspect and size label (the frame guide)
         self.stale = False  # the script has errors: the viewport shows the last good build
         self.selected: np.ndarray | None = None  # corners of the selected instance (compute preview only)
         self.accent = QColor(255, 158, 38)
@@ -65,15 +69,38 @@ class ViewportOverlay(QWidget):
         self.camera = camera
         self.update()
 
+    def set_frame(self, aspect: float | None, label: str = "") -> None:
+        """Show the render frame (a letterbox over the rest of the view); None hides it."""
+        self.frame = (aspect, label) if aspect else None
+        self.update()
+
+    def _frame_guide(self, painter: QPainter) -> None:
+        assert self.frame is not None
+        aspect, label = self.frame
+        x, y, w, h = guide_rect(aspect, (self.width(), self.height()))
+        outside = QPainterPath()
+        outside.addRect(QRectF(self.rect()))
+        inside = QPainterPath()
+        inside.addRect(QRectF(x, y, w, h))
+        painter.fillPath(outside.subtracted(inside), QColor(0, 0, 0, 110))
+        painter.setPen(QPen(self.accent, 1.2))
+        painter.drawRect(QRectF(x, y, w, h))
+        if label:
+            painter.drawText(QRectF(x + 6, y + h - 22, w - 12, 18), Qt.AlignmentFlag.AlignRight, label)
+
     def paintEvent(self, event: QPaintEvent) -> None:  # noqa: N802
         if self.camera is None:
             return
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        if self.frame is not None:
+            self._frame_guide(painter)
         if self.options.bounds and self.bounds is not None:
             self._bounds(painter)
         if self.selected is not None:
             self._box(painter, self.selected, QPen(self.accent, 2.0))
+        if self.options.focus and self.bounds is not None and self.camera.aperture_radius > 0:
+            self._focus_planes(painter)
         if self.options.axes:
             self._axes(painter)
         if self.options.hud and self.hud:
@@ -107,6 +134,33 @@ class ViewportOverlay(QWidget):
         for a, b in EDGES:
             if np.isfinite(px[[a, b]]).all():
                 painter.drawLine(QPointF(*px[a]), QPointF(*px[b]))
+
+    def _plane(self, painter: QPainter, centre: np.ndarray, normal: np.ndarray, half: float, pen: QPen) -> None:
+        """A square of half-size ``half`` in the plane through ``centre`` with ``normal``."""
+        assert self.camera is not None and self.bounds is not None
+        _, right, _ = self.camera.basis
+        u = right - normal * float(np.dot(right, normal))
+        u /= np.linalg.norm(u) or 1.0
+        v = np.cross(normal, u)
+        corners = np.array([centre + (u * a + v * b) * half for a, b in ((-1, -1), (1, -1), (1, 1), (-1, 1))])
+        px = project(self.camera, (self.width(), self.height()), *self.bounds, corners)
+        if np.isfinite(px).all():
+            painter.setPen(pen)
+            painter.drawPolygon([QPointF(*p) for p in px])
+
+    def _focus_planes(self, painter: QPainter) -> None:
+        """The focus plane (solid, tilted with the lens) and the near / far limits of the sharp range (dashed)."""
+        assert self.camera is not None and self.bounds is not None
+        camera = self.camera
+        forward = camera.basis[0]
+        eye = np.asarray(camera.eye, np.float64)
+        half = float(np.linalg.norm(self.bounds[1] - self.bounds[0])) * 0.5
+        near, far = camera.sharp_range
+        faint = QPen(QColor(self.accent.red(), self.accent.green(), self.accent.blue(), 120), 1.0, Qt.PenStyle.DashLine)
+        for distance in (near, far):
+            if 0.0 < distance < 1e12:
+                self._plane(painter, eye + forward * distance, forward, half, faint)
+        self._plane(painter, eye + forward * camera.focus, camera.focus_normal, half, QPen(self.accent, 1.6))
 
     def set_selected(self, xform: np.ndarray | None) -> None:
         """Outline this instance frame (the compute preview has no outline pass of its own); None clears."""

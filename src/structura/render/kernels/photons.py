@@ -35,7 +35,8 @@ from .layout import (
 from .lights import offset
 from .sampling import cone_direction, hash_u32, orthonormal_u, orthonormal_v, rand01, to_local, to_world
 from .scene import NO_HIT, trace
-from .surface import surface_at
+from .surface import surface_at, tangent_angle
+from .volume import exit_absorption
 
 CELL_OFFSET = 1048576.0  # keeps cell indices positive (|cell| < 2^20)
 MAX_BOUNCES = 8
@@ -127,6 +128,7 @@ def photon_pass(gid: uvec3, count: u32, seed: u32, sc: SceneBufs, photons: BufRW
         h = trace(o, d, 0.0, INF, u32(0), u32(NO_HIT), sc)
         if h.prim == NO_HIT:
             return
+        flux = flux * exit_absorption(sc.mat_f, sc.prim_u, h.prim, h.front, h.t)
         s = surface_at(sc, h.prim)
         p = o + d * h.t
         if not is_specular(sc.mat_f, s.mat):
@@ -134,7 +136,7 @@ def photon_pass(gid: uvec3, count: u32, seed: u32, sc: SceneBufs, photons: BufRW
                 store_photon(photons, at, p, flux, d * -1.0)
             return
         wo = to_local(d * -1.0, h.normal)
-        bs = principled_setup(sc.mat_f, s, wo, h.front, 0.0)
+        bs = principled_setup(sc.mat_f, s, wo, h.front, 0.0, tangent_angle(sc, h.prim, s.mat, h.normal))
         dim = u32(4) + u32(bounce) * 3
         wi = bsdf_sample(bs, wo, rand01(i, seed, dim), rand01(i, seed, dim + 1), rand01(i, seed, dim + 2))
         v = bsdf_eval(bs, wo, wi)

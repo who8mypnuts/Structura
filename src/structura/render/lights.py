@@ -9,21 +9,18 @@ import math
 
 import numpy as np
 
-from ..core.color import parse_color, srgb_to_linear
+from ..core.color import linear_of
 from ..core.scene.declarations import LightSpec, SceneDeclarations, Values
+from ..core.scene.vectors import Vec3, vec3_of
 from .kernels import layout as lay
 
 
-def _vec(value: object, default: tuple[float, float, float]) -> np.ndarray:
-    if isinstance(value, tuple) and len(value) == 3:
-        return np.asarray(value, np.float32)
-    return np.asarray(default, np.float32)
+def _vec(value: object, default: Vec3) -> np.ndarray:
+    return np.asarray(vec3_of(value, default), np.float32)
 
 
 def _colour(value: object) -> np.ndarray:
-    c = parse_color(str(value)) if value is not None else None
-    rgb = np.array([c.r, c.g, c.b], np.float32) / np.float32(65535) if c else np.ones(3, np.float32)
-    return srgb_to_linear(rgb)
+    return np.asarray(linear_of(value, (1.0, 1.0, 1.0)), np.float32)
 
 
 def _rect(r: np.ndarray, v: Values, position: np.ndarray) -> None:

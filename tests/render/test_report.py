@@ -33,7 +33,7 @@ def _inputs() -> ReportInputs:
     build = build_scene(compile_script(SCRIPT).program, 5)
     settings = RenderSettings(width=48, height=32, samples=4, samples_per_pass=0, frame=True, aovs=True)
     prepared, frame = prepare_with_frame(build.scene, settings)
-    details = render_details(prepared, frame, 0.1)
+    details = render_details(prepared, frame, 0.1, CpuBackend().details())
     results = list(progressive(prepared, settings, CpuBackend(), frame))
     return ReportInputs(build.scene, results[-1], details, "cpu Numba", len(results), script=SCRIPT,
                         script_path=Path("/scenes/demo.es"), seed=5, params={"size": 2.0}, build=build.stats,
@@ -117,3 +117,44 @@ def test_every_listed_format_can_be_written(tmp_path: Path, qapp: object) -> Non
 def test_sparkline_shows_tones() -> None:
     line = sparkline(_report())
     assert len(line) == 32 and line.strip()
+
+
+def test_the_report_tells_the_lens_timings_device_and_how_to_reproduce() -> None:
+    report = _report()
+    perf = _values("performance")
+    assert perf["Kernel start"] >= 0 and len(perf["Pass time (min / mean / max)"]) == 3  # type: ignore[arg-type]
+    assert perf["Device: Threads"] and perf["Peak memory"] > 0  # type: ignore[operator]
+    assert "--camera-from /renders/demo.png" in str(_values("reproduce")["Command line"])
+    camera = _values("camera")
+    assert "Focal length" in camera and camera["Depth of field"] is False and "Scene scale" in camera
+    assert report.section("lighting").tables == ()  # no declared lights
+
+
+def test_a_lens_shows_its_depth_of_field_in_the_report() -> None:
+    from dataclasses import replace  # noqa: PLC0415
+
+    from structura.core.scene.lens import Lens  # noqa: PLC0415
+    from structura.render.report.render_sections import camera_section  # noqa: PLC0415
+
+    details = _inputs().details
+    lensed = replace(details, camera=replace(details.camera, lens=Lens(fstop=2.8, blades=6)))
+    rows = {r.label: r for r in camera_section(lensed).rows}
+    assert rows["Aperture"].text.startswith("f/2.8") and "6 blades" in rows["Bokeh"].text
+    near, far = rows["Sharp range"].value  # type: ignore[misc]
+    assert near < lensed.camera.focus < far
+
+
+def test_the_look_is_reported_and_reproduced() -> None:
+    from dataclasses import replace  # noqa: PLC0415
+
+    from structura.render.output import Display  # noqa: PLC0415
+    from structura.render.post import LOOKS, PostSettings  # noqa: PLC0415
+
+    neon = build_report(replace(_inputs(), display=Display(0.5, "agx", LOOKS["Neon"])))
+    rows = {r.label: r.value for r in neon.section("image").rows}
+    assert rows["Post: bloom"] == LOOKS["Neon"].bloom and rows["Exposure"] == 0.5
+    command = str({r.label: r.value for r in neon.section("reproduce").rows}["Command line"])
+    assert "--look neon" in command and "--exposure 0.5" in command
+    custom = build_report(replace(_inputs(), display=Display(0.0, "agx", PostSettings(vignette=0.3))))
+    command = str({r.label: r.value for r in custom.section("reproduce").rows}["Command line"])
+    assert "--look off --vignette 0.3" in command

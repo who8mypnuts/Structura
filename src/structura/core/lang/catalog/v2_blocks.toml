@@ -39,7 +39,7 @@ doc = "Glass-like transmission."
 [[block.key]]
 name = "transmission_roughness"
 value = "0..1"
-doc = "Roughness of the transmitted lobe."
+doc = "Roughness of glass (refraction and its reflection); 0 uses roughness."
 [[block.key]]
 name = "emission"
 value = "colour strength"
@@ -59,7 +59,11 @@ doc = "Clear-coat roughness."
 [[block.key]]
 name = "anisotropy"
 value = "-1..1"
-doc = "Anisotropic stretch of the highlight."
+doc = "Stretches the highlight along the object's local x axis (brushed metal); negative values stretch it across."
+[[block.key]]
+name = "anisotropy_rotation"
+value = "0..1"
+doc = "Turns the anisotropy direction about the normal (1 = a full turn)."
 [[block.key]]
 name = "attenuation_color"
 value = "colour"
@@ -67,11 +71,11 @@ doc = "Volume absorption colour of transmissive materials."
 [[block.key]]
 name = "attenuation_distance"
 value = "number"
-doc = "Distance at which the absorption reaches the attenuation colour."
+doc = "Inside glass, white light becomes the attenuation colour after this distance (world units; Beer–Lambert)."
 [[block.key]]
 name = "thin_walled"
 value = "bool"
-doc = "Treat transmissive surfaces as thin shells (no refraction offset)."
+doc = "Thin shells and panes: light passes straight through without bending or absorption."
 
 [[block]]
 name = "light"
@@ -153,6 +157,10 @@ name = "ground"
 value = "colour"
 doc = "sunsky: the ground colour below the horizon."
 [[block.key]]
+name = "sun"
+value = "name"
+doc = "sunsky: the sun light that drives the sky (default: the first sun light)."
+[[block.key]]
 name = "color"
 value = "colour"
 doc = "color: the uniform colour (#fff gives the white-studio look)."
@@ -167,7 +175,7 @@ doc = "gradient: nadir colour."
 
 [[block]]
 name = "camera"
-doc = "The view; overrides the legacy 'set translation/rotation/pivot/scale' lines (W113)."
+doc = "The view and the lens; overrides the legacy 'set translation/rotation/pivot/scale' lines (W113). Set a focal length and an f-stop like a photographer, or a field of view and an aperture radius."
 [[block.key]]
 name = "type"
 value = "perspective | orthographic | spherical | fisheye"
@@ -189,17 +197,33 @@ name = "fov"
 value = "degrees"
 doc = "Vertical field of view (fisheye: across the image height)."
 [[block.key]]
-name = "height"
+name = "focal_length"
 value = "number"
-doc = "orthographic: visible height in world units."
+doc = "Focal length in millimetres (sets the field of view through the sensor): 14 ultra-wide, 50 normal, 135 telephoto."
+[[block.key]]
+name = "lens"
+value = "name"
+doc = "A lens as a photographer writes it: \"85mm f/1.8\", \"24mm\", \"f/2\", or a preset: 14mm, 24mm, 35mm, 50mm, 85mm, 135mm, 200mm, 100mm (macro)."
+[[block.key]]
+name = "sensor"
+value = "full-frame | aps-c | mft | 1inch | phone | medium-format | super35 | WxH mm"
+doc = "Sensor size (default full-frame, 36x24 mm): relates the focal length to the field of view and the depth of field."
+[[block.key]]
+name = "fstop"
+value = "number"
+doc = "Aperture as an f-number (f/1.4 shallow … f/22 deep); depth of field then follows the focal length and the scale."
 [[block.key]]
 name = "aperture"
 value = "number"
-doc = "Lens radius for depth of field; 0 is a pinhole."
+doc = "Lens radius in world units (instead of an f-stop); 0 is a pinhole."
 [[block.key]]
 name = "focus"
-value = "auto | number"
-doc = "Focus distance; auto focuses on the target."
+value = "auto | hyperfocal | number"
+doc = "Focus distance; auto focuses on the target, hyperfocal keeps everything from half that distance to infinity sharp."
+[[block.key]]
+name = "scale"
+value = "number"
+doc = "World units per metre (default 1): how big the structure is for the f-stop. A 20-unit structure with scale 100 is 20 cm across."
 [[block.key]]
 name = "blades"
 value = "int"
@@ -208,6 +232,30 @@ doc = "Aperture blades: 3 or more give polygonal bokeh (0: round)."
 name = "blade_rotation"
 value = "degrees"
 doc = "Rotation of the aperture polygon (also written blade-rotation)."
+[[block.key]]
+name = "bokeh_bias"
+value = "-1..1"
+doc = "Light across the bokeh discs: -1 soft centre, 0 even, 1 bright rims."
+[[block.key]]
+name = "anamorphic"
+value = "0.25..4"
+doc = "Width / height of the aperture: above 1 gives oval, horizontally stretched bokeh (anamorphic lenses)."
+[[block.key]]
+name = "shift"
+value = "[x y]"
+doc = "Lens shift in frame heights: [0 0.1] moves the view up without tilting the camera (straight verticals)."
+[[block.key]]
+name = "tilt"
+value = "[x y]"
+doc = "Tilt of the focus plane in degrees about the camera's x and y axes (Scheimpflug): miniature looks, or a sharp plane along a receding structure."
+[[block.key]]
+name = "height"
+value = "number"
+doc = "orthographic: visible height in world units."
+[[block.key]]
+name = "mapping"
+value = "equidistant | equisolid | stereographic"
+doc = "fisheye: how angles map to the image (equidistant is the default)."
 
 [[block]]
 name = "render"
@@ -224,6 +272,54 @@ doc = "Samples per pixel."
 name = "size"
 value = "WxH"
 doc = "Output size in pixels, e.g. 1920x1080."
+[[block.key]]
+name = "view"
+value = "auto | agx | standard | soft | aces | filmic"
+doc = "View transform from scene light to screen colours (auto: AgX, or standard for the classic integrator)."
+[[block.key]]
+name = "exposure"
+value = "-10..10"
+doc = "Exposure in stops, applied when the image is shown and saved."
+[[block.key]]
+name = "denoise"
+value = "off | auto | oidn | atrous"
+doc = "Denoise the finished render: auto uses Open Image Denoise when it is available, else the À-Trous filter."
+[[block.key]]
+name = "look"
+value = "off | subtle | neon | cinematic | studio"
+doc = "A finishing look (bloom, vignette, grading) applied when the image is shown and saved; the keys below adjust it."
+[[block.key]]
+name = "bloom"
+value = "0..2"
+doc = "Light spilling around highlights and emitters: 0 off, 0.05 subtle, 0.3 neon. Only light above bloom_threshold blooms."
+[[block.key]]
+name = "bloom_threshold"
+value = "0..100"
+doc = "Linear brightness above which light blooms (default 1)."
+[[block.key]]
+name = "bloom_radius"
+value = "0..1"
+doc = "How far bloom spreads: 0 tight halo … 1 wide glow (default 0.5)."
+[[block.key]]
+name = "vignette"
+value = "0..1"
+doc = "Darken the corners: 0 off … 1 strong."
+[[block.key]]
+name = "temperature"
+value = "-1..1"
+doc = "White balance: −1 cool (blue) … 1 warm (amber)."
+[[block.key]]
+name = "saturation"
+value = "0..2"
+doc = "Colour saturation: 0 grey, 1 as rendered, 2 vivid."
+[[block.key]]
+name = "contrast"
+value = "0..2"
+doc = "Contrast around mid grey, after the view transform (1 = as rendered)."
+[[block.key]]
+name = "lut"
+value = "\"path.cube\""
+doc = "A 3D colour look-up table (.cube, relative to the script) applied last, for a film or brand grade."
 [[block.key]]
 name = "filter"
 value = "box | triangle | gaussian | blackman-harris | mitchell | catmull-rom | bspline | lanczos | sinc"

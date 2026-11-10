@@ -9,11 +9,11 @@ from __future__ import annotations
 
 from dataclasses import fields
 
-from .material import STATE, Material, MaterialModel, presets
+from .material import STATE, Material, MaterialModel, material_param_specs, presets
 from .script_blocks import put_block
 
-WRITTEN = ("model", "metallic", "roughness", "specular", "ior", "transmission", "transmission_roughness", "coat",
-           "coat_roughness", "anisotropy", "thin_walled")  # fmt: skip
+SPECIAL = ("emission_strength", "opacity")  # written with the emission colour / as 'state'
+WRITTEN = tuple(s.key for s in material_param_specs() if s.key not in SPECIAL)
 
 
 def _number(x: float) -> str:
@@ -36,9 +36,11 @@ def material_text(material: Material, preset: str = "") -> str:
     lines = [f"material {material.name} {{"] + ([f"  preset {preset}"] if preset in presets() else [])
     if material.base != start.base:
         lines.append(f"  base {_colour(material.base)}")
+    if material.attenuation_color != start.attenuation_color:
+        lines.append(f"  attenuation_color {_colour(material.attenuation_color)}")
     for name in WRITTEN:
         if _differs(material, start, name):
-            value = getattr(material, name)
+            value = getattr(material, name)  # an infinite attenuation distance prints 'inf' (parsed back as such)
             text = value.name.lower() if isinstance(value, MaterialModel) else str(value).lower() \
                 if isinstance(value, bool) else _number(value)  # fmt: skip
             lines.append(f"  {name} {text}")

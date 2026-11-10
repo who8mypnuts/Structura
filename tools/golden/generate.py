@@ -19,6 +19,7 @@ from pathlib import Path
 from corpus import ROOT, CorpusScript, collect
 
 EXE = Path(__file__).resolve().parent / "build/golden_dump"
+LABEL = EXE.with_name("SOURCE")  # written by build_harness.py
 OUT = ROOT / "tests/golden/data"
 SEEDS = (0, 1, 42, 1234)
 TEMPLATES = ("Sunflow-Colored", "povray", "renderman")
@@ -102,6 +103,10 @@ def process(script: CorpusScript) -> dict:
     return entry
 
 
+def _label() -> str:
+    return LABEL.read_text(encoding="utf-8").strip() if LABEL.exists() else "r312"
+
+
 def main() -> int:
     if not EXE.exists():
         print("build the harness first: python tools/golden/build_harness.py", file=sys.stderr)
@@ -110,7 +115,7 @@ def main() -> int:
     with ThreadPoolExecutor(max_workers=4) as pool:
         entries = list(pool.map(process, scripts))
     manifest = {
-        "harness": "Structure Synth r312 model/parser + Qt 5.15.13",
+        "harness": f"Structure Synth {_label()} model/parser + Qt 5.15.13",
         "seeds": SEEDS,
         "templates": TEMPLATES,
         "scripts": entries,

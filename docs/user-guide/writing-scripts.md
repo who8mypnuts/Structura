@@ -10,7 +10,8 @@ R1                                  // start: call rule R1
 rule R1 { { x 1 rz 10 } R1 box }    // R1 draws a box and calls itself, moved and turned
 ```
 
-- Primitives: `box`, `sphere`, `dot`, `line`, `grid`, `mesh`, `cylinder` (v2), `triangle[x,y,z;x,y,z;x,y,z]`.
+- Primitives: `box`, `sphere`, `dot`, `line`, `grid`, `mesh`, `cylinder` (Structure Synth 1.5 drew nothing for it;
+  Structura draws it in every script), `triangle[x,y,z;x,y,z;x,y,z]`.
 - `box::glass` adds a **tag**: it selects a material (v2) or a render class (1.5's `set raytracer::glass::…`).
 - Recursion ends at `set maxdepth N` or `set maxobjects N`, or with a rule modifier: `rule R md 20 { … }`.
 - Several rules with one name are chosen at random, by weight: `rule R w 2 { … }`.
@@ -81,7 +82,7 @@ light key { type sun direction [-1 -2 -1] intensity 3 }
 environment { type sunsky turbidity 3 }
 render { ground catcher }
 
-arms * { ry (360 / arms) } { mat shiny } Arm
+arms * { ry (360 / arms) mat shiny } Arm
 rule Arm md 30 { { y 0.9 rz 8 s 0.95 } Arm cone[0.6] }
 ```
 

@@ -21,6 +21,7 @@ The current status of every milestone, the deviations from the plan and the rema
 | M9 Hardening & 1.0 | 🟡 owner checks pending (installers, benchmarks, screen reader) |
 | M10 Studio completion | ✅ done |
 | M11 Plan completion | ✅ done |
+| M12 Owner review | ✅ done (GPU parity of the new kernel paths pending on the owner's GTX 1660) |
 
 ---
 
@@ -1167,3 +1168,69 @@ tested (unit, services, export, render, parity, UI suites with the stall watchdo
   image, report), the render starts, and the image and report are saved there when the render and its
   denoising finish. "Render Only" renders without saving.
 - Report… on its own starts beside the image saved last.
+
+---
+
+## 2026-11-09 — M12 Owner review: glass, lenses, looks, recovery, MeshLab, clean-up
+
+The owner asked eight questions (glass, EisenScript completeness, tabs, MeshLab, camera settings, crash
+recovery, render reports, progress) plus three features and five quality-of-life changes; the approved plan
+was carried out phase by phase, each closed with the full gate set.
+
+### Delivered
+
+- **Assets restored (−1/0A):** Inter 4.1 and JetBrains Mono 2.251 (`tools/fetch_fonts.py`, sources in
+  `resources/fonts/SOURCES.md`); the logo PNG/ICO/ICNS from the SVGs (`tools/brand/make_logo.py`); the golden
+  data regenerated from the Structure Synth 1.5.0 sources and Qt 5.15 headers (155 scripts, 616 runs, all
+  matching the manifest); theme screenshot baselines; translations.
+- **Clean-up (0B):** the old report stack, side bar, CPU viewport and stale tests removed; shared helpers for
+  colour values, vectors, the default sky and view resolution; Open dialogs use the remembered folders;
+  Python 3.14 in CI.
+- **Phase 1 — cylinders draw in v1** (owner decision), E018/W116, File ▸ New v2 Script, cone apex fix.
+- **Phase 2 — glass and materials:** Beer–Lambert absorption, thin-walled glass, frosted refraction,
+  anisotropy, cut-out opacity everywhere, material models; the Materials panel generated from the parameter
+  specs; the GL viewport's material approximation; a CUDA PTX compile test.
+- **Phase 3 — language:** v2 blocks checked against the catalogue (W115 with a rename fix, E017, W117);
+  `render { view exposure denoise }`; `environment { sun NAME }`; the Lights panel's property form.
+- **Phase 4 — the photographic lens** (`core/scene/lens.py`, simple and advanced editor, focus plane
+  overlay, focus/f-stop tracks, CLI lens options, USD/Blender export of the lens, project format 2).
+- **Phase 5 — progress and recovery:** render phases before the first pass, status bar and title progress;
+  CrashGuard, edit-debounced snapshots, error banner, rotating log, faulthandler, backups, File ▸ Recover.
+- **Phase 6 — tabs and frames:** close prompts, Close Others / to the Right, middle-click, tab menu; render
+  frames with a viewport guide.
+- **Phase 7 — MeshLab:** clean-up presets, Check Mesh, `.mlp` export, Open in MeshLab, Run after export;
+  `structura doctor` reports PyMeshLab and Open Image Denoise.
+- **Phase 8 — reports:** device details, pass and kernel times, lens, lights, memory, the look; reproduce
+  with `--camera-from`; Copy Report as Markdown; Keep every render.
+- **Phase 9 — features:** the post stack and looks (F1), lighting rigs (F3), turntables and camera paths
+  (F2).
+- **Phase 10 — examples and docs:** a *Structura v2* gallery group (Glass Garden, Neon Lattice, Primitives,
+  Depth of Field, Studio Product, Sunset City); the user guide, language spec, README, CHANGELOG, ADR-0010
+  amendment, third-party notices and packaging notes.
+- **Polish found while finishing:** the `preview` and `ao` integrators show the declared sky (not black) when a
+  v2 script has an environment, so the compute viewport and gallery tiles match the path tracer's backdrop;
+  gallery tiles use the script's own camera, sky and look (`render/thumbnail.py`, cache style 2); a new
+  exposure, view or look for a large image (> 1.5 MP) is tone-mapped on the compute lane
+  (`RenderService.redisplay`); animation frames rendered from the window use the Render view's exposure,
+  view and look; saved images record the exposure, view and look they were saved with; `structura doctor`
+  reports PyMeshLab and Open Image Denoise, and a missing `libOpenGL.so.0` is explained.
+- **Assets regenerated:** `docs/screenshots/` (`tools/screenshots.py`, EGL llvmpipe) and `docs/renders/`
+  (new `tools/example_renders.py`: the six v2 examples with the path tracer, three classics with the classic
+  integrator and the path tracer).
+
+### Found on the way
+
+- `analyze()` raised on a token the v1 tokenizer rejects instead of reporting E004 (the editor showed
+  nothing); fixed in `parse_recovering`.
+- `rand(a, b)` was in the language spec but not implemented; the preprocessor now rewrites it to
+  `random[a,b]` in v2 scripts.
+- The user guide's v2 example did not compile (a loop followed by a transform list is not EisenScript); a new
+  test compiles every documented v2 example.
+- The spec's render block example used `denoise true` (not a value: `off | auto | oidn | atrous`).
+- A tab-closing test relied on `setPlainText` marking the document modified (it does not).
+- The bloom pyramid's first version took seconds per 1080p frame; it now starts at half resolution.
+
+### Owner checks added
+
+See [22](22-implementation-notes.md) §3 items 12–13: GPU parity for the new kernel paths on the GTX 1660,
+and the installers' PyMeshLab licensing.

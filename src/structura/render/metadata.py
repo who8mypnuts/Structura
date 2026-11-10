@@ -8,12 +8,13 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 
 from .. import __version__
 from ..core.project.model import Project, camera_from_dict
 from ..core.scene.camera import Camera
+from .output import Display
 from .settings import RenderSettings, render_param_specs
 
 PREFIX = "structura:"
@@ -25,7 +26,12 @@ def render_metadata(
     script: str | None = None,
     params: dict[str, float] | None = None,
     embed_script: bool = True,
+    display: Display | None = None,
 ) -> dict[str, str]:
+    """The 'structura:' entries; ``display`` (the exposure, view and look the image was saved with, when not
+    the settings' own — the Render view's tool bar) is recorded in the settings."""
+    if display is not None:
+        settings = replace(settings, exposure=display.exposure, view=display.view, post=display.post)
     meta = {
         "version": __version__,
         "seed": str(settings.seed),

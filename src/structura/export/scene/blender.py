@@ -24,7 +24,6 @@ from ..affine_instances import affine_groups
 from ..base import Exporter, ExportJob, ExportReport, register
 
 TEMPLATE = Path(__file__).resolve().parent / "blender_script.py.j2"
-SENSOR_WIDTH = 36.0  # mm
 
 
 def _materials(job: ExportJob) -> list[dict[str, object]]:
@@ -40,9 +39,17 @@ def _camera(job: ExportJob) -> dict[str, object]:
     cam = job.model.camera
     eye = job.model.points(np.asarray(cam.eye, np.float32)[None])[0]
     target = job.model.points(np.asarray(cam.target, np.float32)[None])[0]
-    fov_x = 2 * math.atan(math.tan(math.radians(cam.fov_y_deg) / 2) * job.model.aspect)
-    lens = 0.5 * SENSOR_WIDTH / math.tan(fov_x / 2)
-    return {"eye": eye.tolist(), "target": target.tolist(), "lens": lens, "focus": cam.focus * job.model.unit_scale}
+    lens, aspect = cam.lens, job.model.aspect
+    spec: dict[str, object] = {
+        "eye": eye.tolist(), "target": target.tolist(), "lens": cam.focal_length_mm, "sensor_height": lens.sensor_mm[1],
+        "focus": cam.focus * job.model.unit_scale, "shift": [s / max(aspect, 1.0) for s in lens.shift],
+        "ortho_scale": lens.ortho_height * max(aspect, 1.0) * job.model.unit_scale,
+        "projection": lens.projection, "fisheye_fov": math.radians(lens.fisheye_fov_deg),
+    }  # Blender's shift and ortho scale are in fractions / lengths of the frame's larger side  # fmt: skip
+    if cam.aperture_radius > 0 and math.isfinite(cam.fstop):
+        spec["dof"] = {"fstop": cam.fstop, "blades": lens.blades, "rotation": math.radians(lens.blade_rotation_deg),
+                       "ratio": lens.anamorphic}  # fmt: skip
+    return spec
 
 
 class BlenderExporter(Exporter):

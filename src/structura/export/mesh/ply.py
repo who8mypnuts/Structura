@@ -10,6 +10,7 @@ from ...core.geometry.trimesh import TriMesh
 from ...core.params import ParamSpec
 from ..base import Exporter, ExportJob, ExportReport, register
 from ..csg import CSG_OPTION, export_mesh
+from .meshlab import MESHLAB_OPTIONS
 from .obj import COMMON
 
 VERTEX = np.dtype([("p", "<f4", 3), ("n", "<f4", 3), ("c", "u1", 4)])
@@ -44,7 +45,7 @@ class PlyExporter(Exporter):
     name = "ply"
     title = "PLY (binary)"
     extensions: tuple[str, ...] = (".ply",)
-    params: tuple[ParamSpec, ...] = (*COMMON, CSG_OPTION)
+    params: tuple[ParamSpec, ...] = (*COMMON, CSG_OPTION, *MESHLAB_OPTIONS)
 
     def write(self, job: ExportJob, path: Path) -> ExportReport:
         mesh, warnings = export_mesh(job)

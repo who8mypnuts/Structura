@@ -8,6 +8,53 @@ semantic versioning. The detailed record, with every deviation from the plan, is
 The first complete implementation of the plan in [docs/](docs/README.md) (milestones M0–M8, M10 and M11; M9
 waits on the owner's platform checks).
 
+### Owner review: glass, lenses, looks, recovery and clean-up
+
+- **Glass:** coloured glass whose colour deepens with thickness (`attenuation_color`, `attenuation_distance`,
+  also in the photon map), thin-walled panes, frosted refraction (`transmission_roughness`), anisotropic
+  highlights, cut-outs (`opacity`) in every integrator, and material `model`s (constant, wireframe, ao,
+  shadow catcher and debug views); the viewport approximates glass and metals.
+- **Camera and lens:** focal length on a chosen sensor, f-stops at the scene's scale (`scale`), focus auto /
+  hyperfocal / distance, bokeh bias and anamorphic squeeze, shift and tilt, fisheye mappings; a simple and an
+  advanced lens editor in the Camera panel, the plane of focus in the viewport, focus on selection, focus and
+  f-stop timeline tracks, lens options for `structura render`, and lens rows in render reports. Projects
+  keep the lens (project format 2; older projects are migrated).
+- **Looks:** bloom (energy-preserving), vignette, white balance, saturation, contrast and `.cube` LUTs — the
+  Render view's Look (Off, Subtle, Neon, Cinematic, Studio) applies live; `render { look … bloom … }` in
+  scripts; `--look`, `--bloom`, `--vignette`, `--lut` on the command line.
+- **Lighting rigs:** Studio softbox, Sunset, Overcast, White studio, Night neon, Top light and Rim light,
+  written by the Lights panel and sized to the structure. The Lights panel edits a light's values in a form.
+- **Turntables:** Render ▸ Turntable… (loop or eased move, height, dolly) and Camera Path from Saved Views…;
+  `structura animate --turntable`.
+- **Render progress:** what the render is doing before the first pass (device, BVH, kernels), progress in the
+  status bar and window title, the animation's progress bar.
+- **Crash recovery:** a recovery snapshot seconds after every edit (every tab's text, parameters, render
+  overrides, camera, saved views and timeline), backups before every save (File ▸ Recover), an error banner
+  instead of silent failures, a rotating log and faulthandler crash log.
+- **Render reports:** lens, declared lights, kernel start-up and per-pass times, device, peak memory, the
+  look; a reproduce command with `--camera-from`; Copy Report as Markdown; Preferences ▸ Keep every render.
+- **Tabs and frames:** Save / Don't Save / Cancel when closing a modified tab, Close Others / to the Right,
+  middle-click, a tab context menu; render frames (16:9, 1:1, 9:16 …, custom) with a guide in the viewport.
+- **MeshLab:** PyMeshLab clean-up presets on mesh export (clean, print-ready, light, smooth, remesh), Export ▸
+  Check Mesh…, MeshLab project (`.mlp`) export, Open in MeshLab, a Run-after-export command.
+- **Language:** `cylinder` draws in v1 scripts too (1.5 drew nothing); v2 blocks are checked against the
+  catalogue (W115 unknown key with a fix, E017 bad value, W117 out of range); W116 misplaced `#version 2`,
+  E018 v2 primitive in a v1 script; `render { view exposure denoise }` and `environment { sun NAME }`;
+  `rand(a, b)` in expressions (documented, now implemented); File ▸ New v2 Script; a **Structura v2** group of
+  showcase examples in the gallery.
+- **Fixed:** a symbol the tokenizer rejects (`85mm` in a v1 script) crashed the analysis instead of reporting
+  E004; cone apexes had degenerate triangles; the documented v2 examples that did not compile (a loop followed
+  by a transform list); Open dialogs ignored the remembered folders; `ProblemsPanel.count_changed` was never
+  connected; tests aborted when a QCoreApplication already existed.
+- **Clean-up:** the old report stack, the unused side bar and CPU viewport, and their tests are gone; shared
+  helpers for colours, vectors and the default sky; missing fonts, logo bitmaps and golden data restored.
+- The `preview` and `ao` integrators (the compute viewport, gallery tiles) show a v2 script's sky; gallery tiles
+  use the script's camera and look; large images are re-tone-mapped off the GUI thread; animation frames from
+  the window use the Render view's look; saved images record the look; `structura doctor` lists PyMeshLab and
+  Open Image Denoise.
+- Docs: regenerated screenshots and example renders (`tools/example_renders.py`).
+- Python 3.14 is supported (CI runs 3.12 and 3.14); PyMeshLab is a required dependency.
+
 ### Plan completion (M11)
 
 - Tall panels scroll instead of growing the window past the screen; the window stays on its screen.

@@ -15,7 +15,7 @@ from PySide6.QtWidgets import QWidget
 from ...core.scene.camera import Camera
 from ...core.scene.ir import SceneIR
 from ...render.api import script_settings
-from ...render.output import to_display
+from ...render.output import Display
 from ...render.settings import AUTO_PASSES, RenderSettings
 from ...services.render import RenderRequest, RenderService, RenderUpdate
 from ..i18n import tr
@@ -25,7 +25,7 @@ from .viewport_widget import CLICK_SLOP
 
 DOC = "viewport-cpu"
 IDLE_MS = 250
-DISPLAY = (0.0, "soft")  # made by the render job, so the GUI thread only wraps it in a QImage
+DISPLAY = Display(0.0, "soft")  # made by the render job, so the GUI thread only wraps it in a QImage
 RENDERED_SAMPLES = 64
 
 
@@ -95,7 +95,7 @@ class ComputeViewport(QWidget):
             return
         settings = self._settings(fast)
         camera = self.orbit.camera()
-        self.display = (0.0, settings.view_transform) if self.rendered else DISPLAY
+        self.display = settings.display if self.rendered else DISPLAY  # the script's exposure and look
         self.renders.request(RenderRequest(DOC, self.scene, settings, self.device, camera=camera, display=self.display))
 
     @Slot()
@@ -106,7 +106,7 @@ class ComputeViewport(QWidget):
     def _on_update(self, doc: str, update: object) -> None:
         if doc != DOC or not isinstance(update, RenderUpdate):
             return
-        rgb = update.display if update.display is not None else to_display(update.progress.image, *self.display)
+        rgb = update.display if update.display is not None else self.display.apply(update.progress.image)
         rgb = np.ascontiguousarray(rgb)
         h, w, _ = rgb.shape
         self.image = QImage(rgb.data, w, h, 3 * w, QImage.Format.Format_RGB888).copy()

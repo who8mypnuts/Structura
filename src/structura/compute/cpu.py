@@ -66,3 +66,8 @@ class CpuBackend(BackendBase):
 
     def bind(self, launch: Launch) -> Bound:
         return CpuBound(launch)
+
+    def details(self) -> dict[str, str]:
+        import numba  # noqa: PLC0415 - already loaded by the kernels
+
+        return {"Numba": numba.__version__, "Threads": str(numba.get_num_threads())}

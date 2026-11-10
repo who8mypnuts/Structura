@@ -12,7 +12,7 @@ from dataclasses import dataclass, replace
 from enum import StrEnum
 from typing import Any
 
-CAMERA_FIELDS = ("eye.x", "eye.y", "eye.z", "target.x", "target.y", "target.z", "fov")
+CAMERA_FIELDS = ("eye.x", "eye.y", "eye.z", "target.x", "target.y", "target.z", "fov", "focus", "fstop")
 
 
 class Interp(StrEnum):

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 
 import numpy as np
 
@@ -16,6 +16,7 @@ from .environment import settings_environment
 from .filters import filter_table
 from .kernels import layout as lay
 from .legacy import default_light, legacy_lens
+from .lens_config import put_lens
 from .lights import light_count
 from .settings import RenderSettings
 
@@ -49,14 +50,20 @@ def scene_frame(
         radius = float(np.linalg.norm(np.asarray(hi) - np.asarray(lo))) / 2 or 1.0
         return Frame(declared, settings, scene, radius, declared.focus / 20.0, declarations, float(lo[1]))
     world_per_view = 1.0 / scene.view.scale
-    if settings.legacy_dof is not None and settings.aperture == 0.0:
-        aperture, focus = legacy_lens(scene.view, settings.legacy_dof)
-        camera = replace(camera, aperture_radius=aperture, focus_distance=focus)
+    camera = with_legacy_dof(camera, settings, scene)
     if settings.frame or not scene.has_view:
         camera = framed(camera, lo, hi, settings.aspect)
         world_per_view = camera.focus / 20.0  # |translation z| of the default legacy view
     radius = float(np.linalg.norm(np.asarray(hi) - np.asarray(lo))) / 2 or 1.0
     return Frame(camera, settings, scene, radius, world_per_view, declarations, float(lo[1]))
+
+
+def with_legacy_dof(camera: Camera, settings: RenderSettings, scene: SceneSettings) -> Camera:
+    """'set raytracer::dof [centre, falloff]' as the camera's thin lens, unless the camera has depth of field."""
+    if settings.legacy_dof is None or camera.lens.depth_of_field:
+        return camera
+    aperture, focus = legacy_lens(scene.view, settings.legacy_dof)
+    return camera.with_lens(aperture_radius=aperture, fstop=None).focused_at(focus)
 
 
 def _put(cfg: np.ndarray, at: int, values: object) -> None:
@@ -91,8 +98,7 @@ def config(frame: Frame) -> np.ndarray:
     for at, v in ((lay.EYE, cam.eye), (lay.FORWARD, forward), (lay.RIGHT, right), (lay.UP, up)):
         _put(cfg, at, v)
     cfg[lay.TAN_HALF], cfg[lay.ASPECT] = math.tan(math.radians(cam.fov_y_deg) / 2), st.aspect
-    cfg[lay.APERTURE] = st.aperture or cam.aperture_radius
-    cfg[lay.FOCUS] = st.focus_distance or cam.focus
+    put_lens(cfg, cam)
     _put(cfg, lay.BACKGROUND, srgb_to_linear(np.asarray(frame.scene.background, np.float32)))
     cfg[lay.EPS] = 1e-4
     _put(cfg, lay.SUN_DIR, st.sun_direction)
@@ -107,13 +113,10 @@ def config(frame: Frame) -> np.ndarray:
     cfg[lay.CAUSTIC_ALPHA] = CAUSTIC_FLOOR if st.caustics in ("filtered", "photons") else 0.0
     cfg[lay.BACKDROP_SKY] = 1.0 if st.backdrop_sky else 0.0
     cfg[lay.N_LIGHTS] = light_count(frame.declarations)
-    cfg[lay.CAM_TYPE] = lay.CAMERA_TYPES.get(st.camera_type, 0)
-    cfg[lay.ORTHO_HALF], cfg[lay.FISHEYE_FOV] = st.ortho_height / 2, math.radians(st.fisheye_fov)
     table = None
     if st.filter != "box":
         table, radius = filter_table(st.filter)
         cfg[lay.FILTER_ON], cfg[lay.FILTER_RADIUS] = 1.0, radius
-    cfg[lay.BLADES], cfg[lay.BLADE_ROT] = st.blades, math.radians(st.blade_rotation_deg)
     _fog(cfg, frame)
     _sampling(cfg, st)
     env = settings_environment(st)

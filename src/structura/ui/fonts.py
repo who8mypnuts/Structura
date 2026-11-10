@@ -9,6 +9,7 @@ from PySide6.QtWidgets import QWidget
 
 FONTS = Path(__file__).resolve().parents[1] / "resources" / "fonts"
 UI_FAMILY, CODE_FAMILY = "Inter", "JetBrains Mono"
+UI_FAMILIES = ("Inter", "Inter Variable")  # Inter 4's variable font registers as "Inter Variable"
 _chosen = {"ui": UI_FAMILY, "code": CODE_FAMILY}  # the Preferences' choices (appearance/ui_font, editor/code_font)
 
 
@@ -24,8 +25,16 @@ def choose_families(ui: str, code: str) -> None:
     """Set the interface and code families; "System" means the platform's general font, an unknown code
     family falls back to the bundled JetBrains Mono."""
     system = QFontDatabase.systemFont(QFontDatabase.SystemFont.GeneralFont).family()
-    _chosen["ui"] = system if ui == "System" else (ui or UI_FAMILY)
+    _chosen["ui"] = system if ui == "System" else _installed_ui(ui or UI_FAMILY)
     _chosen["code"] = code if code and code in QFontDatabase.families() else CODE_FAMILY
+
+
+def _installed_ui(name: str) -> str:
+    """The registered family for the preference value ``name`` ("Inter" means whichever Inter is bundled)."""
+    if name != UI_FAMILY:
+        return name
+    families = set(QFontDatabase.families())
+    return next((f for f in UI_FAMILIES if f in families), UI_FAMILY)
 
 
 def ui_family() -> str:

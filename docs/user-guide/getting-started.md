@@ -68,10 +68,34 @@ what was found.
    script and more. A Save As dialog asks where; the next dialog shows the full path, what is in the file and
    the format's options.
 
+## Your first v2 scene: materials, light and a lens
+
+**File ▸ New v2 Script** (Ctrl+Alt+N) starts from a small EisenScript v2 scene with a material, glass, a sun,
+a sky and a ground. v2 adds blocks for what Structure Synth left to the renderer:
+
+```
+#version 2
+material glass { preset glass  attenuation_color #7fd0ff  attenuation_distance 3 }
+light sun { type sun  direction [-0.5 -0.9 -0.35]  intensity 3 }
+environment { type sunsky  sun sun }
+camera { position [6 4 10]  target [0 1 0]  lens 50mm  fstop 2.8  focus auto }
+render { integrator path  samples 256  ground plane  look subtle }
+{ y 1 s 2 } sphere::glass
+{ x 2.5 y 0.5 } cylinder
+```
+
+- `#version 2` must be the first line (anything before it keeps the script v1; warning W116 offers to move it).
+- The **Materials** and **Lights** panels write these blocks for you (Lights ▸ **Lighting Rig** sets up a
+  whole studio); the **Camera** panel's lens editor writes the `camera` block.
+- v2 adds `cylinder`, `cone[r]`, `torus[r]`, `ellipsoid` and `tube[r]`; `( expressions )` with `rand(a, b)`;
+  and typed `#param` sliders. See [Writing scripts](writing-scripts.md) and the
+  [language reference](../reference/language.md).
+
 ## Examples
 
-The **Examples** panel is a gallery of Structure Synth's classic examples and tutorials and the community
-scripts, with a thumbnail of each (rendered once in the background and cached). Search by name or pick a
+The **Examples** panel is a gallery of **Structura v2** showcase scenes (glass, neon and bloom, every
+primitive, depth of field, a studio rig, a sunset city), Structure Synth's classic examples and tutorials and
+the community scripts, with a thumbnail of each (rendered once in the background and cached). Search by name or pick a
 group. Double-click to open a **copy** — the bundled file stays untouched; **Save As** offers its name.
 
 **Build ▸ Explore Seed Variations** (Ctrl+Shift+V) shows nine seeds of the current script; click one to adopt

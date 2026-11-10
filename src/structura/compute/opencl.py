@@ -9,7 +9,7 @@ import numpy as np
 import pyopencl as cl
 
 from ..kernels.skl.emit.opencl import OpenCLEmitter
-from .base import BackendBase, BackendUnavailableError, Bound, Launch
+from .base import BackendBase, BackendUnavailableError, Bound, Launch, mib
 
 
 @cache
@@ -70,6 +70,11 @@ class OpenCLBackend(BackendBase):
         self.device_name = str(self.ctx.devices[0].name)
         self.is_gpu = bool(self.ctx.devices[0].type & cl.device_type.GPU)
         self._programs: dict[str, Any] = {}
+
+    def details(self) -> dict[str, str]:
+        device = self.ctx.devices[0]
+        return {"Platform": str(device.platform.name), "Driver": str(device.driver_version),
+                "Memory": mib(int(device.global_mem_size)), "Compute units": str(device.max_compute_units)}  # fmt: skip
 
     def kernel(self, launch: Launch) -> Any:
         source = OpenCLEmitter(launch.module).emit()

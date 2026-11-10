@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any
 
 import numpy as np
@@ -28,6 +28,8 @@ class RenderProgress:
     mask: np.ndarray | None = None  # uint32 pixel mask still being sampled (resuming)
     tile: Rect | None = None  # tiled sampler: the bucket rendered next (the render view marks it)
     completed: float | None = None  # tiled sampler: the fraction of buckets done (progressive: from samples)
+    pass_seconds: tuple[float, ...] = ()  # device time of every pass (or bucket) so far (reports)
+    kernel_seconds: float = 0.0  # binding the render kernel: its first compile on a device, else an upload
 
 
 @dataclass
@@ -42,6 +44,8 @@ class RenderRun:
     spent: float  # seconds of earlier sessions (resume)
     aovs: Aovs | None = None
     started: float = field(default_factory=time.perf_counter)
+    bind_seconds: float = 0.0
+    pass_times: list[float] = field(default_factory=list)
 
     @property
     def size(self) -> tuple[int, int]:
@@ -59,6 +63,7 @@ class RenderRun:
 
     def snapshot(self, accum: np.ndarray, **extra: Any) -> RenderProgress:
         w, h = self.size
-        return RenderProgress(film_image(accum, w, h), int(self.counts.max(initial=0)), self.seconds, self.aovs,
-                              self.counts.copy(), float(self.mask.mean()), accum, self.mask.copy(),
-                              **extra)  # fmt: skip
+        snapshot = RenderProgress(film_image(accum, w, h), int(self.counts.max(initial=0)), self.seconds, self.aovs,
+                                  self.counts.copy(), float(self.mask.mean()), accum, self.mask.copy(),
+                                  pass_seconds=tuple(self.pass_times), kernel_seconds=self.bind_seconds)  # fmt: skip
+        return replace(snapshot, **extra) if extra else snapshot

@@ -96,7 +96,9 @@ def unit_cylinder(segments: int = 32, top_scale: float = 1.0) -> Mesh:
             nr = ring[k] / 0.5
             nn = np.array([slope, nr[0], nr[1]])
             normals.append(nn / np.linalg.norm(nn))
-        indices += [(base, base + 2, base + 1), (base, base + 3, base + 2)]
+        indices.append((base, base + 2, base + 1))
+        if top_scale > 0:  # a cone's side quads collapse at the apex: one triangle each, no zero-area one
+            indices.append((base, base + 3, base + 2))
     for x, scale, sign in ((0.0, 1.0, -1.0), (1.0, top_scale, 1.0)):
         if scale <= 0:
             continue

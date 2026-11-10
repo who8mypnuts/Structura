@@ -12,7 +12,9 @@ ANY_BLOCK = re.compile(r"(?ms)^[ \t]*(?:material|light|environment|camera|render
 
 
 def block_pattern(kind: str, name: str) -> re.Pattern[str]:
-    return re.compile(rf"(?ms)^[ \t]*{kind}[ \t]+{re.escape(name)}[ \t]*\{{[^}}]*\}}[ \t]*\n?")
+    """A named block ('light key { … }'), or with ``name`` "" the unnamed one ('environment { … }')."""
+    gap = r"[ \t]+" if name else r"[ \t]*"
+    return re.compile(rf"(?ms)^[ \t]*{kind}{gap}{re.escape(name)}[ \t]*\{{[^}}]*\}}[ \t]*\n?")
 
 
 def block_span(text: str, kind: str, name: str) -> tuple[int, int] | None:
@@ -26,6 +28,12 @@ def put_block(text: str, kind: str, name: str, block: str) -> str:
     pattern = block_pattern(kind, name)
     if pattern.search(text):
         return pattern.sub(lambda _: block, text, count=1)
+    return append_block(text, block)
+
+
+def append_block(text: str, block: str) -> str:
+    """Add ``block`` (one or more blocks, comments allowed) after the version line and the existing blocks."""
+    block = block.rstrip("\n") + "\n"
     anchor = max((m.end() for m in (*VERSION.finditer(text), *ANY_BLOCK.finditer(text))), default=0)
     return text[:anchor] + block + text[anchor:]
 

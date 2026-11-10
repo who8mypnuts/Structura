@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import numpy as np
 import OpenEXR
 import pytest
 from PIL import Image
@@ -101,7 +102,7 @@ def test_export_presets_are_shared_with_the_export_sheet(
 
     monkeypatch.setattr(presets.platformdirs, "user_config_dir", lambda _name: str(tmp_path / "config"))
     presets.save_preset("stl", "Print 10x", {"unit_scale": 10.0, "watertight": False})
-    assert presets.preset_names("stl") == ["Print 10x"]
+    assert presets.preset_names("stl") == ["Print 10x", "Print-ready (MeshLab)"]  # with the built-in one
     out = tmp_path / "part.stl"
     assert main(["export", str(script), "-o", str(out), "--preset", "Print 10x"]) == 0 and out.stat().st_size > 84
     assert main(["export", str(script), "-o", str(out), "--preset", "missing"]) == 2
@@ -115,3 +116,54 @@ def test_run_after_commands_expand_the_file_and_variables(tmp_path: Path) -> Non
     assert out == f'"C:\\sf\\sunflow2.bat" "{tmp_path / "a.sc"}" -o "{tmp_path / "a.sc"}.png" /home/u'
     assert missing_variables(command, {"HOME": "/h"}) == ["SUNFLOW"]
     assert expand_command("%UNSET% x", tmp_path, {}) == "%UNSET% x"  # left visible
+
+
+def test_render_follows_the_script_s_view_exposure_and_denoising(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    def mean(text: str, *extra: str) -> float:
+        script, out = tmp_path / "s.es", tmp_path / "s.png"
+        script.write_text(text)
+        assert main(["render", str(script), "-o", str(out), "--size", "16x12", "--samples", "2", "--device", "cpu",
+                     "--frame", *extra]) == 0  # fmt: skip
+        return float(np.asarray(Image.open(out), np.float32).mean())
+
+    plain = "#version 2\nrender { integrator ao view standard }\nbox\n"
+    bright = "#version 2\nrender { integrator ao view standard exposure 1.5 denoise atrous }\nbox\n"
+    assert mean(bright) > mean(plain) + 5
+    assert "denoised (atrous)" in capsys.readouterr().err
+    assert abs(mean(bright, "--exposure", "0", "--denoise", "off") - mean(plain)) < 1  # the command line wins
+
+
+def test_render_look_options(tmp_path: Path) -> None:
+    def corner(*extra: str) -> float:
+        script, out = tmp_path / "s.es", tmp_path / "s.png"
+        script.write_text("#version 2\nset background #888\nrender { integrator ao view standard }\nbox\n")
+        assert main(["render", str(script), "-o", str(out), "--size", "24x16", "--samples", "1", "--device", "cpu",
+                     "--frame", *extra]) == 0  # fmt: skip
+        return float(np.asarray(Image.open(out), np.float32)[0, 0].mean())
+
+    assert corner("--vignette", "1") < corner() - 5
+    assert corner("--look", "cinematic") < corner("--look", "off")
+
+
+def test_render_lens_options_change_the_script_camera(tmp_path: Path) -> None:
+    script, out = tmp_path / "s.es", tmp_path / "s.png"
+    script.write_text("#version 2\ncamera { position [0 0 10] target [0 0 0] fov 30 }\nbox\n")
+    argv = ["render", str(script), "-o", str(out), "--size", "16x12", "--samples", "1", "--device", "cpu"]
+    assert main([*argv, "--lens", "85mm f/2", "--focus", "hyperfocal", "--shift", "0", "0.1"]) == 0
+    camera = json.loads(read_metadata(out)["camera"])
+    assert camera["lens"]["fstop"] == 2.0 and camera["lens"]["focus_mode"] == "hyperfocal"
+    assert camera["lens"]["shift"] == [0.0, 0.1] and abs(camera["fov_y_deg"] - 16.07) < 0.01  # 85 mm
+    assert main([*argv, "--sensor", "huge"]) == 2  # a usage error
+
+
+def test_render_takes_the_camera_of_an_earlier_render(tmp_path: Path) -> None:
+    script, first, second = tmp_path / "s.es", tmp_path / "a.png", tmp_path / "b.png"
+    script.write_text("#version 2\ncamera { position [3 4 10] target [0 0 0] fov 35 }\nbox\n")
+    argv = ["render", str(script), "--size", "16x12", "--samples", "1", "--device", "cpu"]
+    assert main([*argv, "-o", str(first), "--fstop", "4"]) == 0
+    script.write_text("box\n")  # the script's camera is gone; the earlier render still has it
+    assert main([*argv, "-o", str(second), "--camera-from", str(first)]) == 0
+    assert json.loads(read_metadata(second)["camera"]) == json.loads(read_metadata(first)["camera"])
+    assert main([*argv, "-o", str(second), "--camera-from", str(tmp_path / "missing.png")]) == 2

@@ -10,7 +10,7 @@ import numpy as np
 from PySide6.QtCore import Signal, Slot
 
 from ..render.animation import Animation, frame_path, render_frame
-from ..render.output import save_image, to_display
+from ..render.output import save_image
 from ..render.video import encode_video
 from .jobs import FunctionJob, JobContext, JobHandle, JobRunner, Lane
 from .jobs.tracked import TrackedJobs
@@ -45,10 +45,10 @@ def animation_job(req: AnimationRequest, backends: DeviceBackends) -> Callable[[
         for index, frame in enumerate(req.frames):
             result, settings = render_frame(req.animation, frame, backend, ctx.check_cancelled)
             path = frame_path(req.pattern, frame)
-            save_image(result.image, path, 0.0, settings.view_transform)
+            save_image(result.image, path, settings.display)
             written.append(path)
             if req.video is not None:
-                shown.append(to_display(result.image, 0.0, settings.view_transform))
+                shown.append(settings.display.apply(result.image))
             result.image.flags.writeable = False
             ctx.partial(AnimationProgress(frame, index + 1, len(req.frames), result.image, path))
             ctx.check_cancelled()

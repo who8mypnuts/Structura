@@ -9,6 +9,7 @@ from dataclasses import replace
 import numpy as np
 
 from ...core.scene.camera import Camera, framed
+from ...core.scene.vectors import as_vec3 as _vec
 
 WORLD_UP = np.array([0.0, 1.0, 0.0])
 
@@ -19,10 +20,6 @@ def rotate(v: np.ndarray, axis: np.ndarray, angle: float) -> np.ndarray:
     c, s = math.cos(angle), math.sin(angle)
     out: np.ndarray = v * c + np.cross(k, v) * s + k * np.dot(k, v) * (1 - c)
     return out
-
-
-def _vec(v: np.ndarray) -> tuple[float, float, float]:
-    return (float(v[0]), float(v[1]), float(v[2]))
 
 
 class OrbitController:

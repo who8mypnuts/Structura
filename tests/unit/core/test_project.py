@@ -11,8 +11,10 @@ from structura.core.project import migrations, model
 from structura.core.project.migrations import NewerProjectError
 from structura.core.project.model import Project
 from structura.core.scene.camera import Camera
+from structura.core.scene.lens import Lens
 
-CAMERA = Camera((1.0, 2.0, 30.0), (0.0, 0.5, 0.0), (0.0, 1.0, 0.0), 30.0, 0.1, 25.0)
+LENS = Lens(fstop=2.8, focus_mode="manual", focus_distance=25.0, blades=6, shift=(0.0, 0.1), units_per_metre=10.0)
+CAMERA = Camera((1.0, 2.0, 30.0), (0.0, 0.5, 0.0), (0.0, 1.0, 0.0), 30.0, LENS)
 
 
 def test_embedded_round_trip(tmp_path: Path) -> None:
@@ -66,3 +68,16 @@ def test_camera_bookmarks_round_trip(tmp_path: Path) -> None:
     views = {"hero": Camera((1.0, 2.0, 3.0), (0.0, 0.0, 0.0), fov_y_deg=30.0)}
     project = from_json(to_json(Project("box\n", bookmarks=views)), tmp_path)
     assert project.bookmarks == views
+
+
+def test_format_1_lens_settings_move_into_the_camera() -> None:
+    """Format 1 kept the aperture on the camera and the projection and bokeh in the Render Settings overrides."""
+    old = {"format": "structura-project", "format_version": 1, "script": {"text": "box"},
+           "camera": {"eye": [0, 0, 9], "target": [0, 0, 0], "fov_y_deg": 30, "aperture_radius": 0.2,
+                      "focus_distance": 7.5},
+           "render": {"camera_type": "fisheye", "blades": 5, "max_bounces": 3}}  # fmt: skip
+    project = model.from_json(json.dumps(old), Path())
+    assert project.render == {"max_bounces": 3} and project.camera is not None
+    lens = project.camera.lens
+    assert (lens.projection, lens.blades, lens.aperture_radius, lens.focus_distance) == ("fisheye", 5, 0.2, 7.5)
+    assert lens.focus_mode == "manual" and project.camera.focus == 7.5

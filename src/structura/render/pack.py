@@ -3,7 +3,7 @@
 Every renderable thing becomes a *primitive* with a float record (PRIM_F floats) and an int record (PRIM_U
 u32). The BVH is built over primitive world AABBs. Layouts (keep in sync with render/kernels/scene.py):
 
-  prim_f: [0:12] inverse affine (world→object) rows   [12:16] linear rgba   [16:24] shape data
+  prim_f: [0:12] inverse affine (world→object) rows   [12:16] linear rgba   [16:23] shape data   [23] generation
           sphere: centre xyz, radius   capsule: a xyz, b xyz, radius   triangle: unused
           cylinder: top radius ratio (1; cones less)   torus: tube radius (object units)
   prim_u: [0] kind   [1] material   [2] source instance row   [3] triangle row (tri_f) or 0
@@ -80,6 +80,7 @@ class _Ctx:
         u = np.zeros((len(rows), PRIM_U), np.uint32)
         rgba = self.scene.rgba[rows]
         f[:, 12:15], f[:, 15] = srgb_to_linear(rgba[:, :3]), rgba[:, 3]
+        f[:, 23] = self.scene.generation[rows]  # the debug_generation model
         by_tag = self.opt.material_of_tag
         u[:, 0], u[:, 2] = kind, rows
         u[:, 1] = by_tag[self.scene.tag[rows]] if by_tag is not None else 0

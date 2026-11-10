@@ -210,6 +210,11 @@ class RecoveringParser(LegacyParser):
 
 
 def parse_recovering(text: str, v2: bool = False) -> tuple[Program, list[ParseError]]:
-    """Every syntax error (up to MAX_ERRORS) and the program made of what parsed."""
-    parser = RecoveringParser(tokenize(text), v2)
+    """Every syntax error (up to MAX_ERRORS) and the program made of what parsed. A symbol the tokenizer
+    rejects ('85mm' in a v1 script) is the one error: nothing can be parsed around it."""
+    try:
+        tokens = tokenize(text)
+    except ParseError as exc:
+        return Program((), (), False), [exc]
+    parser = RecoveringParser(tokens, v2)
     return parser.program(), parser.errors

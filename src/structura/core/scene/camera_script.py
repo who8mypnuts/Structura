@@ -13,6 +13,8 @@ import re
 import numpy as np
 
 from .camera import LEGACY_FOV, LEGACY_SCALE, Camera, LegacyView
+from .lens import SENSORS, Lens
+from .vectors import number, script_vec
 
 V1_KEYS = ("translation", "rotation", "pivot", "scale", "perspective-angle")
 V1_LINE = re.compile(r"^[ \t]*set[ \t]+(" + "|".join(map(re.escape, V1_KEYS)) + r")\b[^\n]*\n?", re.MULTILINE | re.I)
@@ -21,13 +23,7 @@ MARKER = "// camera (Structura: Copy Camera to Script)"
 VERSION_LINE = re.compile(r"^[ \t]*#version[^\n]*\n?", re.MULTILINE)
 
 
-def _n(x: float) -> str:
-    text = f"{float(x):.6g}"
-    return "0" if text in ("-0", "0") else text
-
-
-def _list(values: object) -> str:
-    return "[" + " ".join(_n(v) for v in values) + "]"  # type: ignore[attr-defined]
+_n, _list = number, script_vec
 
 
 def legacy_view(camera: Camera) -> LegacyView:
@@ -43,15 +39,57 @@ def legacy_view(camera: Camera) -> LegacyView:
     )
 
 
+def _projection_lines(lens: Lens) -> list[str]:
+    if lens.projection == "orthographic":
+        return [f"  type orthographic  height {_n(lens.ortho_height)}"]
+    if lens.projection == "fisheye":
+        mapping = f"  mapping {lens.fisheye_mapping}" if lens.fisheye_mapping != "equidistant" else ""
+        return [f"  type fisheye  fov {_n(lens.fisheye_fov_deg)}{mapping}"]
+    return [f"  type {lens.projection}"] if lens.projection != "perspective" else []
+
+
+def _sensor(lens: Lens) -> str:
+    name = next((n for n, size in SENSORS.items() if size == lens.sensor_mm), None)
+    return name or f"{_n(lens.sensor_mm[0])}x{_n(lens.sensor_mm[1])}"
+
+
+def _lens_lines(camera: Camera) -> list[str]:
+    """The lens keys that differ from a plain pinhole, photographic where the lens is (an f-stop is set)."""
+    lens, default = camera.lens, Lens()
+    lines = _projection_lines(lens)
+    optics = (
+        []
+        if lens.projection == "fisheye"
+        else [  # fisheye: its 'fov' is the lens's field, written above
+            f"focal_length {_n(camera.focal_length_mm)}" if lens.fstop else f"fov {_n(camera.fov_y_deg)}"
+        ]
+    )
+    if lens.sensor_mm != default.sensor_mm:
+        optics.append(f"sensor {_sensor(lens)}")
+    if lens.fstop:
+        optics.append(f"fstop {_n(lens.fstop)}")
+    elif lens.aperture_radius > 0:
+        optics.append(f"aperture {_n(lens.aperture_radius)}")
+    if camera.lens.depth_of_field:
+        optics.append("focus " + {"manual": _n(camera.focus), "hyperfocal": "hyperfocal"}.get(lens.focus_mode, "auto"))
+    lines += ["  " + "  ".join(optics)] if optics else []
+    extra = [f"{key} {value}" for key, value, changed in (
+        ("scale", _n(lens.units_per_metre), lens.units_per_metre != default.units_per_metre),
+        ("blades", str(lens.blades), lens.blades != default.blades),
+        ("blade_rotation", _n(lens.blade_rotation_deg), lens.blade_rotation_deg != default.blade_rotation_deg),
+        ("bokeh_bias", _n(lens.bokeh_bias), lens.bokeh_bias != default.bokeh_bias),
+        ("anamorphic", _n(lens.anamorphic), lens.anamorphic != default.anamorphic),
+        ("shift", _list(lens.shift), lens.shift != default.shift),
+        ("tilt", _list(lens.tilt), lens.tilt != default.tilt),
+    ) if changed]  # fmt: skip
+    return [*lines, *(["  " + "  ".join(extra)] if extra else [])]
+
+
 def camera_text(camera: Camera, v2: bool) -> str:
     """The camera as script lines (no trailing blank line)."""
     if v2:
-        lines = ["camera {", f"  position {_list(camera.eye)}  target {_list(camera.target)}  up {_list(camera.up)}",
-                 f"  fov {_n(camera.fov_y_deg)}"]  # fmt: skip
-        if camera.aperture_radius > 0:
-            focus = _n(camera.focus_distance) if camera.focus_distance else "auto"
-            lines.append(f"  aperture {_n(camera.aperture_radius)}  focus {focus}")
-        return "\n".join([*lines, "}"])
+        place = f"  position {_list(camera.eye)}  target {_list(camera.target)}  up {_list(camera.up)}"
+        return "\n".join(["camera {", place, *_lens_lines(camera), "}"])
     view = legacy_view(camera)
     lines = [MARKER, f"set translation {_list(view.translation)}", f"set rotation {_list(view.rotation)}",
              f"set pivot {_list(view.pivot)}", f"set scale {_n(view.scale)}"]  # fmt: skip

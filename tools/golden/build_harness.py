@@ -2,10 +2,14 @@
 
 Copies the legacy model/parser sources into tools/golden/build/src, overlays OpenGL-free header stubs and
 compiles everything with g++ against Qt 5.15 headers extracted into tools/golden/qt (see README.md).
+
+    python tools/golden/build_harness.py                                # sample_source/…-r312-trunk
+    python tools/golden/build_harness.py --source DIR --label "1.5.0"   # e.g. the 1.5.0 release tarball
 """
 
 from __future__ import annotations
 
+import argparse
 import shutil
 import subprocess
 import sys
@@ -21,6 +25,7 @@ QT_INC = HERE / "qt/usr/include/x86_64-linux-gnu/qt5"
 QT_LIB_EXTRA = HERE / "qt/usr/lib/x86_64-linux-gnu"
 SYS_LIB = Path("/usr/lib/x86_64-linux-gnu")
 EXE = BUILD / "golden_dump"
+LABEL = BUILD / "SOURCE"  # which Structure Synth the harness was built from (generate.py writes it to the manifest)
 
 SOURCES = [
     *[
@@ -59,11 +64,11 @@ SOURCES = [
 QT_MODULES = ("QtCore", "QtGui", "QtWidgets", "QtXml")
 
 
-def copy_sources() -> None:
+def copy_sources(legacy: Path) -> None:
     if SRC.exists():
         shutil.rmtree(SRC)
     for tree in ("StructureSynth", "SyntopiaCore", "ThirdPartyCode"):
-        shutil.copytree(LEGACY / tree, SRC / tree)
+        shutil.copytree(legacy / tree, SRC / tree)
     shutil.rmtree(SRC / "SyntopiaCore/GLEngine")
     shutil.copytree(HERE / "harness/stubs/SyntopiaCore/GLEngine", SRC / "SyntopiaCore/GLEngine")
     shutil.copy(HERE / "harness/golden_dump.cpp", SRC / "golden_dump.cpp")
@@ -94,14 +99,19 @@ def link(objects: list[Path]) -> None:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source", type=Path, default=LEGACY, help="a Structure Synth source tree")
+    parser.add_argument("--label", default="r312", help="its version, recorded in the golden manifest")
+    args = parser.parse_args()
     if not QT_INC.exists():
         print("Qt 5 headers missing: see tools/golden/README.md", file=sys.stderr)
         return 1
-    copy_sources()
+    copy_sources(args.source)
     with ThreadPoolExecutor() as pool:
         objects = list(pool.map(compile_one, SOURCES))
     link(objects)
-    print(f"built {EXE}")
+    LABEL.write_text(args.label, encoding="utf-8")
+    print(f"built {EXE} from Structure Synth {args.label}")
     return 0
 
 

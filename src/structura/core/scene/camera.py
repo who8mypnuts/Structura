@@ -12,7 +12,10 @@ from dataclasses import dataclass, field, replace
 
 import numpy as np
 
-Vec3 = tuple[float, float, float]
+from .lens import Lens, focal_length_mm, fov_for, hyperfocal, pupil_radius, sharp_range
+from .vectors import Vec3
+from .vectors import as_vec3 as _vec
+
 LEGACY_TRANSLATION: Vec3 = (0.0, 0.0, -20.0)
 LEGACY_SCALE = 0.4
 LEGACY_FOV = 22.0
@@ -20,12 +23,14 @@ LEGACY_FOV = 22.0
 
 @dataclass(frozen=True)
 class Camera:
+    """Where the camera is and what it sees. ``fov_y_deg`` is the one stored measure of the field of view (the
+    focal length is derived from it and the lens's sensor); the lens holds everything else (core/scene/lens.py)."""
+
     eye: Vec3
     target: Vec3
     up: Vec3 = (0.0, 1.0, 0.0)
     fov_y_deg: float = LEGACY_FOV
-    aperture_radius: float = 0.0
-    focus_distance: float | None = None
+    lens: Lens = field(default_factory=Lens)
 
     @property
     def basis(self) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -37,8 +42,67 @@ class Camera:
         return forward, right, np.cross(right, forward)
 
     @property
+    def distance(self) -> float:
+        """From the eye to the target."""
+        return float(np.linalg.norm(np.subtract(self.target, self.eye)))
+
+    @property
+    def focal_length_mm(self) -> float:
+        return focal_length_mm(self.fov_y_deg, self.lens.sensor_mm[1])
+
+    @property
+    def aperture_radius(self) -> float:
+        """The lens's entrance-pupil radius in world units (0: a pinhole, everything sharp)."""
+        return pupil_radius(self.lens, self.focal_length_mm) if self.lens.projection == "perspective" else 0.0
+
+    @property
     def focus(self) -> float:
-        return self.focus_distance or float(np.linalg.norm(np.subtract(self.target, self.eye)))
+        """The distance in focus: the target's, a manual distance, or the hyperfocal distance."""
+        lens = self.lens
+        if lens.focus_mode == "manual" and lens.focus_distance:
+            return lens.focus_distance
+        if lens.focus_mode == "hyperfocal":
+            h = hyperfocal(lens, self.focal_length_mm)
+            if math.isfinite(h):
+                return h
+        return self.distance
+
+    @property
+    def focus_normal(self) -> np.ndarray:
+        """The focus plane's normal: the view direction, tilted about the camera's x (then y) axis (the lens tilt)."""
+        forward, right, up = self.basis
+        tx, ty = (math.radians(a) for a in self.lens.tilt)
+        n = forward * math.cos(tx) + up * math.sin(tx)
+        n = n * math.cos(ty) + right * math.sin(ty)
+        out: np.ndarray = n / (np.linalg.norm(n) or 1.0)
+        return out
+
+    @property
+    def sharp_range(self) -> tuple[float, float]:
+        """(near, far) distances of acceptable sharpness (0, inf without depth of field)."""
+        if self.aperture_radius <= 0.0:
+            return 0.0, math.inf
+        return sharp_range(self.lens, self.focal_length_mm, self.focus)
+
+    @property
+    def fstop(self) -> float:
+        """The f-number of the aperture (the lens's, or the one its radius amounts to; inf for a pinhole)."""
+        if self.lens.fstop:
+            return self.lens.fstop
+        focal_world = self.focal_length_mm / 1000.0 * self.lens.units_per_metre
+        return focal_world / (2.0 * self.aperture_radius) if self.aperture_radius > 0.0 else math.inf
+
+    def with_lens(self, **changes: object) -> Camera:
+        return replace(self, lens=replace(self.lens, **changes))  # type: ignore[arg-type]
+
+    def focused_at(self, distance: float | None) -> Camera:
+        """Focus at ``distance`` (None: back to the target)."""
+        if distance is None:
+            return self.with_lens(focus_mode="target", focus_distance=None)
+        return self.with_lens(focus_mode="manual", focus_distance=float(distance))
+
+    def with_focal_length(self, mm: float) -> Camera:
+        return replace(self, fov_y_deg=fov_for(mm, self.lens.sensor_mm[1]))
 
 
 @dataclass(frozen=True)
@@ -57,10 +121,6 @@ class LegacyView:
         up = r.T @ np.array([0.0, 1.0, 0.0])
         target = eye + forward * (abs(t[2]) / s)
         return Camera(_vec(eye), _vec(target), _vec(up), self.fov_y_deg)
-
-
-def _vec(v: np.ndarray) -> Vec3:
-    return (float(v[0]), float(v[1]), float(v[2]))
 
 
 def framed(camera: Camera, lo: np.ndarray, hi: np.ndarray, aspect: float, margin: float = 1.1) -> Camera:

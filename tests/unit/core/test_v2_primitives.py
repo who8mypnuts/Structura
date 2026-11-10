@@ -27,7 +27,8 @@ def test_v2_primitives_build_with_their_parameters() -> None:
 
 
 def test_v1_keeps_its_meaning() -> None:
-    assert len(_build("cylinder\nbox")) == 1  # Structure Synth 1.5 counts a cylinder but draws nothing
+    scene = _build("cylinder::gold\nbox")  # Structure Synth 1.5 counted a cylinder but drew nothing; Structura draws it
+    assert [K(k) for k in scene.kind] == [K.CYLINDER, K.BOX] and scene.tags[scene.tag[0]] == "gold"
     assert K(_build("rule tube { box }\ntube").kind[0]) == K.BOX  # v2 names are free rule names in v1
     with pytest.raises(UnresolvedRuleError):
         compile_script("cone")

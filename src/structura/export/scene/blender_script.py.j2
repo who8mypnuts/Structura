@@ -145,7 +145,26 @@ def instanced_cloud(col, prototypes, cloud):
 def camera(col):
     spec = SCENE["camera"]
     data = bpy.data.cameras.new("Structura Camera")
+    data.sensor_fit = "VERTICAL"  # Structura's field of view is vertical
+    data.sensor_height = spec["sensor_height"]
     data.lens = spec["lens"]
+    data.shift_x, data.shift_y = spec["shift"]
+    if spec["projection"] == "orthographic":
+        data.type = "ORTHO"
+        data.ortho_scale = spec["ortho_scale"]
+    elif spec["projection"] in ("spherical", "fisheye"):
+        data.type = "PANO"
+        if hasattr(data, "panorama_type"):  # Blender 4.2+: the panorama settings live on the camera
+            data.panorama_type = "EQUIRECTANGULAR" if spec["projection"] == "spherical" else "FISHEYE_EQUIDISTANT"
+            data.fisheye_fov = spec["fisheye_fov"]
+    dof = spec.get("dof")
+    if dof:
+        data.dof.use_dof = True
+        data.dof.focus_distance = spec["focus"]
+        data.dof.aperture_fstop = dof["fstop"]
+        data.dof.aperture_blades = dof["blades"] if dof["blades"] >= 3 else 0
+        data.dof.aperture_rotation = dof["rotation"]
+        data.dof.aperture_ratio = dof["ratio"]
     obj = bpy.data.objects.new("Structura Camera", data)
     obj.location = spec["eye"]
     direction = mathutils.Vector(spec["target"]) - mathutils.Vector(spec["eye"])

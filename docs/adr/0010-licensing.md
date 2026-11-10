@@ -41,3 +41,19 @@
 - Structura can be freely reused, including commercially.
 - Reviewers reject PRs whose code is visibly transliterated from `sample_source/structuresynth-*`.
 - Sunflow code may be ported directly, which speeds up the renderer. Sunflow's MIT notice must be retained.
+
+## Amendment 1 (owner review): PyMeshLab is a required dependency
+
+- Status: **Accepted** (project owner decision), with the consequences below for the owner to confirm.
+- Context: MeshLab integration (mesh clean-up presets on export, Check Mesh, `.mlp` projects) uses PyMeshLab,
+  which is **GPL-3.0**. Rule 7 above allows only MIT-compatible runtime dependencies *for distribution*.
+- Decision: PyMeshLab is listed in `dependencies` (every install has the same features). Structura's code
+  stays MIT: it calls PyMeshLab's public API, imports it lazily (only when a clean-up or check runs), and
+  copies no MeshLab code.
+- Consequences:
+  - `pip install structura` resolves PyMeshLab as a separate package; nothing GPL is in Structura's wheel.
+  - **Installers bundle it**, so the installer as a distribution contains GPL-3 software: ship PyMeshLab's
+    licence text and a written offer (or link) for its corresponding source with each installer. If that is
+    not acceptable for a target, exclude PyMeshLab from that installer (`packaging/pyinstaller/structura.spec`
+    `excludes`); clean-up and Check Mesh then report that PyMeshLab is unavailable, everything else works.
+  - The owner should have this reviewed before the first public installer release (docs/18 §10 checklist).

@@ -15,6 +15,7 @@ from pathlib import Path
 from ..errors import StructuraError, UnresolvedRuleError
 from ..scene.declarations import SceneDeclarations
 from .ast import CallAction, Loop, Program, RuleDef
+from .catalog import v2_primitives
 from .compile.program import RuleProgram, compile_rule_set
 from .diagnostics import Diagnostic, ParseError, Severity, diagnostic
 from .includes import Expansion, IncludeMap, expand_includes
@@ -26,7 +27,7 @@ from .lint import LintInput, define_substrings, lint
 from .position_map import PositionMap
 from .resolve import build_rule_set
 from .source import Span, is_javascript
-from .v2.front import Front, after_preprocessing, front, timeline_names, v2_syntax
+from .v2.front import Front, after_preprocessing, front, misplaced_version, timeline_names, v2_syntax
 from .v2.param_check import param_diagnostics
 
 
@@ -112,7 +113,20 @@ def _front_diagnostics(text: str, fr: Front, pre: PreprocessResult) -> list[Diag
     hint = v2_syntax(text)
     if hint is not None:
         out.append(diagnostic("W114", "v2 syntax needs '#version 2' on the first line", hint))
+    misplaced = misplaced_version(text)
+    if misplaced is not None:
+        out.append(diagnostic("W116", "'#version 2' only counts on the first line: this script is v1", misplaced))
     return out
+
+
+def _build_error(exc: ParseError | StructuraError, v2: bool) -> tuple[str, str]:
+    """(code, message) of a failed resolution; a v2 primitive used in a v1 script says what is missing."""
+    code, message = getattr(exc, "code", "E009"), exc.message
+    if isinstance(exc, UnresolvedRuleError) and not v2:
+        base = exc.name.split("::")[0].split("[")[0]
+        if base in {p.name for p in v2_primitives()}:
+            return "E018", f"'{base}' is an EisenScript v2 primitive: add '#version 2' on the first line"
+    return code, message
 
 
 def analyze(
@@ -195,7 +209,8 @@ def _analyze(
         span = pm.span(getattr(exc, "span", None))
         if isinstance(exc, UnresolvedRuleError) and exc.name in refs:
             span = refs[exc.name][0]
-        error = Diagnostic(getattr(exc, "code", "E009"), Severity.ERROR, exc.message, span)
+        code, message = _build_error(exc, fr.v2)
+        error = Diagnostic(code, Severity.ERROR, message, span)
         return Analysis(version, (*diagnostics, error), rules, refs, tuple(pre.parameters), hints=hints,
                         defines=names)  # fmt: skip
     digest = hashlib.sha1(source.encode("utf-8")).hexdigest()

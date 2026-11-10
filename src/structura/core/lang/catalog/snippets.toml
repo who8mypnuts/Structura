@@ -12,6 +12,16 @@ items = [
 ]
 
 [[snippet]]
+group = "Primitives"
+# cone, torus, ellipsoid and tube need '#version 2' on the first line; cylinder draws in every dialect.
+items = [
+  "box", "sphere", "cylinder // along the local x axis", "grid", "line", "dot", "mesh",
+  "triangle[0,0,0;1,0,0;0.5,1,0]", "box::${1:shiny}$0 // a tagged primitive (material or render class)",
+  "cone[${1:0.3}]$0 // v2: top radius ratio", "torus[${1:0.2}]$0 // v2: tube thickness", "ellipsoid // v2",
+  "tube[${1:0.1}]$0 // v2: a line with a real thickness",
+]
+
+[[snippet]]
 group = "Rule Modifiers"
 items = ["weight 1", "maxdepth 10", "maxdepth 10 > newRule"]
 

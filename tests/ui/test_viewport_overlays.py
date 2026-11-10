@@ -55,9 +55,9 @@ def test_compute_preview_picks_on_the_cpu_and_alt_click_focuses(qtbot: QtBot, wi
     qtbot.waitUntil(lambda: bool(picked), timeout=30000)
     assert picked[0] == 0
     window.viewport._clicked(centre, True)
-    qtbot.waitUntil(lambda: window.viewport.camera().focus_distance is not None, timeout=30000)
+    qtbot.waitUntil(lambda: window.viewport.camera().lens.focus_distance is not None, timeout=30000)
     camera = window.viewport.camera()
-    assert 0 < camera.focus_distance < float(np.linalg.norm(np.subtract(camera.eye, camera.target)))
+    assert camera.lens.focus_mode == "manual" and 0 < camera.focus < camera.distance
     window.viewport.select(0)
     window.registry.trigger("view.frame_selection")
 

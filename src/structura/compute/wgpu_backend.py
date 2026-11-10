@@ -96,9 +96,14 @@ class WgpuBackend(BackendBase):
 
     def __init__(self) -> None:
         self.device, info = _device()
+        self.info = dict(info)
         self.device_name = str(info.get("device", ""))
         self.is_gpu = str(info.get("adapter_type", "")).lower() not in ("cpu", "unknown")
         self._pipelines: dict[tuple[str, str], Any] = {}
+
+    def details(self) -> dict[str, str]:
+        keys = {"backend_type": "Graphics API", "vendor": "Vendor", "description": "Driver", "adapter_type": "Adapter"}
+        return {label: str(self.info[key]) for key, label in keys.items() if self.info.get(key)}
 
     def pipeline(self, source: str, launch: Launch) -> Any:
         key = (source, launch.kernel)

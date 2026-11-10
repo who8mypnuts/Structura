@@ -10,12 +10,13 @@ import re
 from dataclasses import dataclass, field, replace
 from typing import Any
 
-from ...color import parse_color
+from ...color import rgb_of
 from ...scene.declarations import LightSpec, SceneDeclarations
 from ...scene.material import STATE, Material, material_from_dict, presets
 from ..catalog import v2_blocks
 from ..diagnostics import Diagnostic, ParseError, Severity
 from ..source import Span
+from .block_check import check_block, known_entries
 
 HEADER = re.compile(r"(?m)^[ \t]*(material|light|environment|camera|render)\b[ \t]*([A-Za-z_][\w-]*)?[ \t]*\{")
 VALUE = re.compile(r'"[^"]*"|\[[^\]]*\]|#[0-9A-Fa-f]+|[^\s]+')
@@ -61,18 +62,15 @@ def parse_body(body: str) -> dict[str, Any]:
 def _rgb(value: Any) -> tuple[float, float, float] | str:
     if value == STATE:
         return STATE
-    if isinstance(value, tuple) and len(value) == 3:
-        return (float(value[0]), float(value[1]), float(value[2]))
-    c = parse_color(str(value))
-    if c is None:
+    rgb = rgb_of(value)
+    if rgb is None:
         raise ValueError(f"'{value}' is not a colour")
-    return (c.r / 65535, c.g / 65535, c.b / 65535)
+    return rgb
 
 
 def build_material(name: str, entries: dict[str, Any]) -> Material:
-    unknown = set(entries) - MATERIAL_KEYS
-    if unknown:
-        raise ValueError(f"unknown material keys: {', '.join(sorted(unknown))}")
+    """The material a block declares (unknown keys are ignored; block_check reports them)."""
+    entries = {k: v for k, v in entries.items() if k in MATERIAL_KEYS}
     start = presets().get(str(entries.get("preset", "")), Material())
     data = {k: v for k, v in entries.items() if k not in ("preset", "emission", "base", "attenuation_color")}
     if "base" in entries:
@@ -107,11 +105,14 @@ def extract_blocks(text: str) -> Extracted:
     for m in reversed(list(HEADER.finditer(text))):
         end = _closing(text, m.end() - 1)
         kind, name = m.group(1), (m.group(2) or "")
-        entries = parse_body(text[m.end() : end])
+        body = text[m.end() : end]
+        raw = parse_body(body)
+        diagnostics += check_block(kind, raw, body, m.end())
+        entries = known_entries(kind, raw)
         try:
             if kind == "material":
                 materials[name.lower()] = build_material(name.lower(), entries)
-            elif kind == "light":
+            elif kind == "light" and ("type" in entries or "type" not in raw):  # a bad type: E017, no light
                 lights.insert(0, LightSpec(name, str(entries.pop("type", "sun")), entries))
             else:
                 singles[kind] = entries

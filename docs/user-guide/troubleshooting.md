@@ -2,8 +2,14 @@
 
 ## Start with `structura doctor`
 
-It prints the Qt platform, each OpenGL configuration tried (and why one failed), and the compute devices
-(CUDA, OpenCL, wgpu, CPU) with their names.
+It prints the Qt platform, each OpenGL configuration tried (and why one failed), whether PyMeshLab and Open
+Image Denoise load, and the compute devices (CUDA, OpenCL, wgpu, CPU) with their names.
+
+## Mesh clean-up says "PyMeshLab is unavailable"
+
+PyMeshLab (mesh clean-up and Check Mesh) needs, on Linux, the system's `libOpenGL.so.0`: install
+`libopengl0` (Debian/Ubuntu) or `libglvnd` (Fedora, Arch). Its wheels also need glibc 2.35 or newer. Every
+other feature works without it.
 
 ## The viewport says "CUDA preview" or "CPU preview"
 
@@ -62,9 +68,22 @@ Save As dialogs start in the folder last used for that kind of file, else next t
 *Documents/Structura* (*Pictures/Structura* for renders). The toast after saving has **Show in Folder**, and
 the Console logs every path written.
 
+## Structura crashed — where is my work?
+
+- **Recovery:** a few seconds after every edit (and every minute — Preferences ▸ General) Structura writes a
+  recovery snapshot of every open tab: the unsaved text, parameters, render overrides, camera, saved views and
+  timeline. If Structura did not close cleanly, the next start offers to restore it. Declined it by mistake?
+  **File ▸ Recover ▸ Restore Declined Recovery**.
+- **Backups:** before a script is overwritten, the version on disk is copied to the backups folder (the last
+  20 of each file): **File ▸ Recover ▸ Open Backups Folder**.
+- **Internal errors** do not close the window: a banner says what happened (**Details**, **Copy Report**) and
+  a recovery snapshot is written at once. Everything is logged in `logs/structura.log` in Structura's data
+  folder; a hard crash (a driver, a kernel) leaves the traceback of every thread in `logs/crash.log`.
+
 ## Reporting a problem
 
 **Help ▸ About** shows the version. **Help ▸ System Report…** shows what `structura doctor` finds (Qt
 platform, OpenGL, compute devices) with a **Copy** button: include it and, if possible, the script. A
 **render report** (Render ▸ Save Render Report…, or `structura render … --report report.txt`) records the
-settings, the device and the system in one file.
+settings, the device and the system in one file; **Render ▸ Copy Report as Markdown** copies it for a post.
+The error banner's **Copy Report** includes the traceback, the log folder and the system details.

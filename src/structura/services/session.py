@@ -2,8 +2,10 @@
 folds. One format serves two purposes:
 
 - the **session**, saved on quit and restored on the next start ("hot exit": unsaved edits survive);
-- the **recovery** snapshot, written periodically while editing and deleted on a clean exit. A snapshot
-  that is still there at start-up means the previous run crashed, so recovery is offered.
+- the **recovery** snapshot, written a few seconds after every edit (and periodically) and deleted on a clean
+  exit. Whether the previous run crashed is told by its *running lock* (CrashGuard): a lock left behind by a
+  process that no longer exists. Then the recovery snapshot — every open tab, with the unsaved text, the
+  parameters, render overrides, camera, saved views and timeline — is offered.
 
 Pure data and JSON; files are written atomically (temporary file, then rename)."""
 
@@ -15,8 +17,10 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
+import psutil
+
 FORMAT = "structura-session"
-VERSION = 1
+VERSION = 2  # 2: parameters, render overrides, camera, saved views and timeline per tab
 
 
 @dataclass(frozen=True)
@@ -29,6 +33,11 @@ class TabState:
     encoding: str = "utf-8"
     newline: str = "\n"
     project: str | None = None  # the tab's .structura file
+    params: dict[str, float] = field(default_factory=dict)
+    render_overrides: dict[str, Any] = field(default_factory=dict)
+    camera: dict[str, Any] | None = None  # core.project.model.camera_to_dict
+    bookmarks: dict[str, Any] = field(default_factory=dict)  # name → camera dict
+    timeline: dict[str, Any] | None = None  # core.animation.timeline.to_dict
 
     @property
     def unsaved(self) -> bool:
@@ -44,6 +53,10 @@ class SessionState:
     @property
     def unsaved_count(self) -> int:
         return sum(t.unsaved for t in self.tabs)
+
+    @property
+    def empty(self) -> bool:
+        return not self.tabs
 
     def to_json(self) -> str:
         tabs = [asdict(t) | {"folded": list(t.folded)} for t in self.tabs]
@@ -90,3 +103,39 @@ class SessionStore:
 
     def exists(self) -> bool:
         return self.path.exists()
+
+
+class CrashGuard:
+    """A lock file for the running instance (pid inside). A lock whose process is gone means that run did not
+    shut down cleanly. A second instance keeps its own lock and recovery file, so instances never mix."""
+
+    def __init__(self, directory: Path) -> None:
+        self.directory = directory
+        self.lock = directory / "running.lock"
+        self.recovery = directory / "recovery.json"
+
+    @staticmethod
+    def _owner(lock: Path) -> int | None:
+        try:
+            return int(lock.read_text(encoding="utf-8").strip())
+        except (OSError, ValueError):
+            return None
+
+    def start(self) -> bool:
+        """Take the lock; True when the previous run crashed (its lock was left behind)."""
+        self.directory.mkdir(parents=True, exist_ok=True)
+        crashed = False
+        if self.lock.exists():
+            owner = self._owner(self.lock)
+            if owner is not None and owner != os.getpid() and psutil.pid_exists(owner):
+                self.lock = self.directory / f"running-{os.getpid()}.lock"  # another instance is running
+                self.recovery = self.directory / f"recovery-{os.getpid()}.json"
+            else:
+                crashed = True
+        self.lock.write_text(str(os.getpid()), encoding="utf-8")
+        return crashed
+
+    def stop(self) -> None:
+        """A clean exit: drop the lock and the recovery snapshot."""
+        self.lock.unlink(missing_ok=True)
+        self.recovery.unlink(missing_ok=True)

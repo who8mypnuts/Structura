@@ -36,6 +36,8 @@ class RenderDetails:
     emitters: int  # emissive primitives sampled as lights
     lights: tuple[str, ...]  # declared light types (v2 'light' blocks)
     scene_radius: float
+    device: tuple[tuple[str, str], ...] = ()  # what the backend says about its device (driver, memory …)
+    light_specs: tuple[tuple[str, str, str], ...] = ()  # (name, type, its values as the script wrote them)
 
 
 def bvh_stats(bvh: Bvh) -> BvhStats:
@@ -53,13 +55,25 @@ def bvh_stats(bvh: Bvh) -> BvhStats:
     return BvhStats(bvh.nodes, int(leaves.sum()), depth, mean, int(sizes.max(initial=0)), nbytes)
 
 
-def render_details(prepared: object, frame: Frame, prepare_seconds: float) -> RenderDetails:
-    """``prepared``: a render.api.Prepared (typed loosely to keep this module below render.api)."""
+def _light_text(values: dict[str, object]) -> str:
+    def value(v: object) -> str:
+        return "[" + " ".join(f"{float(c):g}" for c in v) + "]" if isinstance(v, tuple) else str(v)
+
+    return "  ".join(f"{k} {value(v)}" for k, v in values.items())
+
+
+def render_details(
+    prepared: object, frame: Frame, prepare_seconds: float, device: dict[str, str] | None = None
+) -> RenderDetails:
+    """``prepared``: a render.api.Prepared (typed loosely to keep this module below render.api); ``device``: the
+    backend's details()."""
     packed, bvh, table, emitters = (getattr(prepared, n) for n in ("packed", "bvh", "materials", "emitters"))
-    lights = tuple(light.type for light in frame.declarations.lights) if frame.declarations else ()
+    declared = frame.declarations.lights if frame.declarations else ()
+    lights = tuple(light.type for light in declared)
     return RenderDetails(
         camera=frame.camera, settings=frame.settings, prepare_seconds=prepare_seconds,
         primitives=int(packed.prim_u.shape[0]), triangles=int(packed.tri_f.shape[0]), bvh=bvh_stats(bvh),
         materials=tuple(table.materials), emitters=int(emitters.emit_f.shape[0]), lights=lights,
-        scene_radius=float(frame.radius),
+        scene_radius=float(frame.radius), device=tuple((device or {}).items()),
+        light_specs=tuple((light.name, light.type, _light_text(light.values)) for light in declared),
     )  # fmt: skip

@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from .documents import EditorTab
 
 
-OVERLAYS = {"grid": False, "axes": True, "bounds": False, "hud": True}  # viewport overlay → default
+OVERLAYS = {"grid": False, "axes": True, "bounds": False, "hud": True, "focus": True}  # viewport overlay → default
 
 
 class BuildActions(QObject):
@@ -95,7 +95,8 @@ class BuildActions(QObject):
         self.apply_overlays()
 
     def apply_overlays(self) -> None:
-        overlays = Overlays(self.overlay_on("axes"), self.overlay_on("bounds"), self.overlay_on("hud"))
+        overlays = Overlays(self.overlay_on("axes"), self.overlay_on("bounds"), self.overlay_on("hud"),
+                            self.overlay_on("focus"))  # fmt: skip
         self.w.viewport.set_overlays(overlays, grid=self.overlay_on("grid"))
 
     def edit_limits(self) -> None:

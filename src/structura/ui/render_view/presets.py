@@ -1,10 +1,18 @@
 """Render presets (docs/14 §5.4): Draft, Standard, Final and Print 4K. A preset sets the samples, the size of
-the image (its long edge; the aspect follows the viewport), the noise threshold and denoising. Editing the
-samples by hand turns the preset into "Custom"."""
+the image (its long edge), the noise threshold and denoising. Editing the samples by hand turns the preset into
+"Custom".
+
+The frame (PLAN QoL-2) decides the image's shape: the viewport's, the script's 'render { size }', a ratio
+(16:9 …) with the preset's long edge, or an exact custom size. A frame wider than the viewport keeps the
+viewport's horizontal view (the camera's vertical field is narrowed to fit), so the viewport's frame guide
+shows exactly what the render will contain."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import math
+from dataclasses import dataclass, replace
+
+from ...core.scene.camera import Camera
 
 CUSTOM = "Custom"
 VIEWPORT_CAP = 1280  # Custom: the viewport's size, but no larger than this
@@ -28,9 +36,48 @@ PRESETS = (
 BY_NAME = {p.name: p for p in PRESETS}
 
 
+FRAME_VIEWPORT, FRAME_SCRIPT, FRAME_CUSTOM = "Viewport", "Script", "Custom"
+RATIOS = {"16:9": 16 / 9, "3:2": 1.5, "4:3": 4 / 3, "1:1": 1.0, "4:5": 0.8, "9:16": 9 / 16}
+FRAMES = (FRAME_VIEWPORT, FRAME_SCRIPT, *RATIOS, FRAME_CUSTOM)
+
+
 def image_size(viewport: tuple[int, int], long_edge: int | None) -> tuple[int, int]:
     """The render size with the viewport's aspect: ``long_edge`` pixels along the longer side (None: the
     viewport's own size, capped at VIEWPORT_CAP)."""
     w, h = max(1, viewport[0]), max(1, viewport[1])
     scale = (long_edge or min(VIEWPORT_CAP, max(w, h))) / max(w, h)
     return max(16, round(w * scale)), max(16, round(h * scale))
+
+
+def frame_size(
+    frame: str, viewport: tuple[int, int], long_edge: int | None, script: tuple[int, int], custom: tuple[int, int]
+) -> tuple[int, int]:
+    """The render size for a FRAMES choice (the script's and custom sizes are used as they are)."""
+    if frame == FRAME_SCRIPT:
+        return script
+    if frame == FRAME_CUSTOM:
+        return custom
+    ratio = RATIOS.get(frame)
+    if ratio is None:
+        return image_size(viewport, long_edge)
+    edge = long_edge or min(VIEWPORT_CAP, max(1, *viewport))
+    return (edge, max(16, round(edge / ratio))) if ratio >= 1.0 else (max(16, round(edge * ratio)), edge)
+
+
+def fitted(camera: Camera, render_aspect: float, view_aspect: float) -> Camera:
+    """The camera a render of ``render_aspect`` uses when the viewport has ``view_aspect``: the same vertical field,
+    unless the render is wider — then the same horizontal field (the frame guide's letterbox)."""
+    if render_aspect <= view_aspect or view_aspect <= 0:
+        return camera
+    tan_half = math.tan(math.radians(camera.fov_y_deg) / 2) * view_aspect / render_aspect
+    return replace(camera, fov_y_deg=math.degrees(2 * math.atan(tan_half)))
+
+
+def guide_rect(render_aspect: float, size: tuple[int, int]) -> tuple[float, float, float, float]:
+    """(x, y, width, height) of the render frame inside a viewport of ``size`` (see fitted)."""
+    w, h = max(1, size[0]), max(1, size[1])
+    if render_aspect <= w / h:
+        width = h * render_aspect
+        return (w - width) / 2, 0.0, width, float(h)
+    height = w / render_aspect
+    return 0.0, (h - height) / 2, float(w), height

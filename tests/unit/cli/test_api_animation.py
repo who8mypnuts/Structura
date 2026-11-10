@@ -53,3 +53,38 @@ def test_build_frame_applies_keys_seed_and_frame_variables() -> None:
     moved, _ = build_frame(Animation(text, tl), 10)
     assert seed == 7 and float(moved.xform[0, 0, 3]) > float(scene.xform[0, 0, 3])  # k: 1 → 2
     assert np.isclose(scene.xform[0, 0, 0], np.cos(np.radians(50)), atol=1e-6)  # 'rz (frame * 10)' at frame 5
+
+
+def test_animate_turntable_loops_around_the_structure(tmp_path: Path) -> None:
+    script = tmp_path / "still.es"
+    script.write_text("#version 2\nrender { integrator preview size 24x16 }\n{ x 1 } box\n{ s 0.5 } sphere\n")
+    argv = ["animate", str(script), "-o", str(tmp_path / "t.png"), "--samples", "1", "--fps", "8"]
+    assert main([*argv, "--device", "cpu", "--turntable", "0.5"]) == 0
+    images = [np.asarray(Image.open(tmp_path / f"t_{i:04d}.png")) for i in range(4)]
+    assert not (tmp_path / "t_0004.png").exists()  # 0.5 s at 8 fps: four frames, one loop
+    assert not np.array_equal(images[0], images[2])  # half a turn: the box is on the other side
+
+
+def test_turntable_and_saved_view_paths() -> None:
+    from structura.core.animation.camera import camera_at  # noqa: PLC0415
+    from structura.core.animation.paths import Turntable, path_through, turntable  # noqa: PLC0415
+    from structura.core.animation.timeline import Timeline  # noqa: PLC0415
+    from structura.core.scene.camera import Camera  # noqa: PLC0415
+
+    base = Camera((0.0, 3.0, 10.0), (0.0, 1.0, 0.0))
+    tl = turntable(Timeline().set_key("camera:fov", 0, 30.0), base, Turntable(frames=8, elevation_deg=0.0))
+    assert (tl.start, tl.end) == (0, 7) and tl.track("camera:fov") is not None  # lens tracks stay
+    eyes = [np.asarray(camera_at(tl, f, base).eye) for f in range(8)]
+    radii = [np.linalg.norm((e - base.target)[[0, 2]]) for e in eyes]
+    assert np.allclose(radii, radii[0]) and np.allclose([e[1] for e in eyes], 1.0)  # a level circle
+    np.testing.assert_allclose(eyes[4], [0.0, 1.0, -np.hypot(10.0, 2.0)], atol=1e-9)  # half way round
+    views = [base, Camera((10.0, 3.0, 0.0), (0.0, 0.0, 0.0), fov_y_deg=50.0)]
+    path = path_through(Timeline(), views, 24, start=10)
+    assert (path.start, path.end) == (10, 34) and camera_at(path, 34, base).fov_y_deg == 50.0
+    assert path_through(Timeline(), views[:1], 24) == Timeline()  # one view is no path
+    eased = turntable(Timeline(), base, Turntable(frames=9, turns=0.5, ease=True, zoom=0.5))
+    ends = [np.asarray(camera_at(eased, f, base).eye) - base.target for f in (0, 8)]
+    np.testing.assert_allclose(ends[1], ends[0] * [-0.5, 0.5, -0.5], atol=1e-9)  # half a turn, half the distance
+    steps = [np.linalg.norm(np.asarray(camera_at(eased, f + 1, base).eye) - camera_at(eased, f, base).eye)
+             for f in range(8)]  # fmt: skip
+    assert steps[0] < steps[4] and steps[7] < steps[4]  # gentle start and stop

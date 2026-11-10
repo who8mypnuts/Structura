@@ -33,7 +33,7 @@ def _capture_directory(monkeypatch: pytest.MonkeyPatch) -> dict[str, str]:
     """Stand in for the native Save dialog: records the suggested path, answers "cancelled"."""
     seen: dict[str, str] = {}
 
-    def fake(_parent: Any, _title: str, directory: str, _filter: str) -> tuple[str, str]:
+    def fake(_parent: Any, _title: str, directory: str, *_rest: Any) -> tuple[str, str]:
         seen["directory"] = directory
         return "", ""
 
@@ -71,20 +71,31 @@ def test_save_project_as_suggests_the_script_s_folder(
 def test_save_render_suggests_the_script_s_folder(
     window: MainWindow, qtbot: QtBot, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    from structura.ui import render_actions  # noqa: PLC0415
+
     folder = _open_script(window, qtbot, tmp_path)
-    window.render_view.last = RenderUpdate(RenderProgress(np.zeros((4, 4, 3), np.float32), 1, 0.1), "cpu", 1)
-    seen = _capture_directory(monkeypatch)
-    window.render_view.save_dialog()
-    assert Path(seen["directory"]).parent == folder
+    tab = window.tabs.current()
+    assert tab is not None and tab.outcome is not None
+    image = np.zeros((4, 4, 3), np.float32)
+    window.render_view.last = RenderUpdate(RenderProgress(image, 1, 0.1), "cpu", 1)
+    window.render_view.source = (tab.outcome.scene, window.viewport.camera(), RenderSettings(4, 4), tab.text())
+    seen: list[Path] = []
+    monkeypatch.setattr(render_actions, "choose_output", lambda *a, **k: seen.append(a[2]))
+    window.render_actions.save_render()
+    assert seen and seen[0].parent == folder and seen[0].name == "spire.png"
 
 
 def test_render_report_suggests_the_script_s_folder(
     window: MainWindow, qtbot: QtBot, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    from structura.ui.render_actions import RenderContext  # noqa: PLC0415
+    from structura.ui.save_paths import SavePaths  # noqa: PLC0415
+
     folder = _open_script(window, qtbot, tmp_path)
-    settings = RenderSettings(width=4, height=4)
-    window.render_view.last = RenderUpdate(RenderProgress(np.zeros((4, 4, 3), np.float32), 1, 0.1), "cpu", 1,
-                                           settings=settings)  # fmt: skip
-    seen = _capture_directory(monkeypatch)
-    window.reports.save_dialog()
-    assert Path(seen["directory"]).parent == folder
+    actions = window.render_actions
+    actions.context = RenderContext(script_path=folder / "spire.es")
+    monkeypatch.setattr(actions, "report_inputs", object)  # a finished render exists (any non-None value)
+    seen: list[Path] = []
+    monkeypatch.setattr(SavePaths, "ask", lambda *a, **k: seen.append(a[4]))
+    actions.save_report()
+    assert seen and seen[0].parent == folder and seen[0].name.startswith("spire-report")

@@ -321,7 +321,8 @@ All of the following require `#version 2`. v2 also enables:
 
 - whole-word defines;
 - context-sensitive lexing, so operator names can be rule names (D8);
-- a working `cylinder`.
+- a working `cylinder` (as built: Structura draws `cylinder` in v1 scripts too — Structure Synth 1.5 drew
+  nothing for it, and golden comparisons skip those rows; info `W105` notes it).
 
 ### 9.1 Compile-time expressions
 
@@ -338,7 +339,7 @@ rule R md 40 { { rz (twist * 0.5) s (1 - 1/40) x (sin(pi/6)) } R  box }
 | Operators | `+ - * / % ^`, unary `-`, parentheses |
 | Functions | `sin cos tan asin acos atan atan2 sqrt pow exp log abs min max clamp floor ceil round mix` (trig functions take **degrees**, consistent with `rx`) |
 | Constants | `pi tau e` |
-| Random | `rand(a, b)`: compile-time, from the preprocessor stream, equivalent to `random[a,b]` |
+| Random | `rand(a, b)`: compile-time, from the preprocessor stream, equivalent to `random[a,b]` (as built: `a` and `b` must be plain numbers after `#define` substitution; the preprocessor rewrites it to `random[a,b]`, so identical calls on one line share one draw, as in 1.5) |
 | Animation | `time`, `frame`, `fps` (bound per frame by the timeline; [16](16-animation-scripting-cli.md)) |
 | Parameters | Names from `#define` and `#param` |
 
@@ -378,8 +379,9 @@ material shiny {
   emission  #ffffff 0.0      # colour, strength
   opacity   state            # state alpha (default) or a number
 }
-box::shiny                   # selects the material through the tag
-{ mat shiny } R              # v2 state operator: inherited material for the subtree (a tag overrides it)
+box::shiny                   // selects the material through the tag
+{ mat shiny } R              // v2 state operator: inherited material for the subtree (a tag overrides it)
+rule R { sphere }
 ```
 
 - A tag with no declared material and the same name as a built-in preset (`glass`, `mirror`, `metal`, `gold`,
@@ -393,9 +395,9 @@ light key  { type sun    direction [-1 -2 -1]  color #fff  intensity 3  angle 0.
 light fill { type sphere position  [0 10 0]    radius 1    color #ffe  power 200 }
 light spot { type spot   position  [5 5 5]     target [0 0 0]  cone 30  blend 0.2  power 150 }
 environment { type sunsky  sun key  turbidity 3  ground #333 }
-# or: environment { type hdri  file "studio.exr"  rotation 90  intensity 1 }
-# or: environment { type color #ffffff }      # the Sunflow-AO "white studio" look
-# or: environment { type gradient  top #9bd  bottom #fff }
+// or: environment { type hdri  file "studio.exr"  rotation 90  intensity 1 }
+// or: environment { type color  color #ffffff }   // the Sunflow-AO "white studio" look
+// or: environment { type gradient  top #9bd  bottom #fff }
 ```
 
 ### 9.5 Camera & render blocks
@@ -412,11 +414,23 @@ camera {
 render {
   integrator path           # path | ao | classic | preview
   samples 512  size 1920x1080  max-bounces 8
-  filter mitchell  denoise true  view agx  exposure 0
+  filter mitchell  denoise auto  view agx  exposure 0
 }
 ```
 
 When both are present, `camera`/`render` blocks override the legacy `set` equivalents, with warning `W113`.
+
+> **As built (PLAN Q5, F1):** the camera block is a photographic lens as well. `focal_length 85` (mm) or
+> `lens 85mm` / `lens "85mm f/1.8"` / a preset name replace `fov`; `sensor` (full-frame, aps-c, mft, 1inch,
+> phone, medium-format, super35 or `36x24`) sets the film back; `fstop 2.8` gives depth of field like a real
+> lens, with `scale` world units per metre (default 1); `focus auto | hyperfocal | DISTANCE`; bokeh with
+> `blades`, `blade_rotation`, `bokeh_bias` (−1 bright centre … 1 bright rim) and `anamorphic` (squeeze);
+> `shift [x y]` (frame heights) and `tilt [x y]` (degrees: a tilted plane of focus); fisheye `mapping`
+> (equidistant, equisolid, stereographic). The render block also takes `look` (off, subtle, neon, cinematic,
+> studio), `bloom`, `bloom_threshold`, `bloom_radius`, `vignette`, `temperature`, `saturation`, `contrast` and
+> `lut "file.cube"` — the post stack, applied when the image is shown and saved (never to EXR radiance). Every
+> key and its range is in the generated [language reference](reference/language.md); an unknown key is `W115`
+> (with a did-you-mean fix), a value of the wrong kind `E017`, an out-of-range number `W117`.
 
 ### 9.6 Additional primitives
 
@@ -455,11 +469,12 @@ Codes are stable. Messages live in `catalog/diagnostics.toml`, and this table is
 | E015 | error | Parameter type mismatch (v2) |
 | E016 | error | Expression error (v2) |
 | E017 | error | Invalid v2 block |
+| E018 | error | v2 primitive in a v1 script |
 | W101 | warning | Rule is never referenced |
 | W102 | warning | Rule is unreachable |
 | W103 | warning | #define replaces text inside other words (v1) |
 | W104 | warning | Recursive #define |
-| W105 | warning | cylinder draws nothing in v1 |
+| W105 | info | cylinder was invisible in Structure Synth 1.5 |
 | W106 | info | Alias not valid in Structure Synth 1.5 |
 | W108 | info | Recursion bounded only by the default maxdepth |
 | W109 | warning | 'set rng old' is obsolete |
@@ -467,6 +482,9 @@ Codes are stable. Messages live in `catalog/diagnostics.toml`, and this table is
 | W112 | info | Tag has no material (v2) |
 | W113 | warning | Legacy settings overridden by a v2 block |
 | W114 | warning | v2 syntax without '#version 2' |
+| W115 | warning | Unknown key in a v2 block |
+| W116 | warning | '#version 2' is not the first line |
+| W117 | warning | v2 block value out of range |
 | W120 | warning | Unknown preprocessor command |
 | W121 | warning | Malformed #define slider |
 | I204 | info | JavaScript script |
@@ -501,7 +519,7 @@ elsewhere in this document.
 | C7 | A trailing comment after `(float:a-b)` turns the line into a *plain* define whose value includes the comment text. (1.5's own snippet menu inserts such lines.) | §2.2 |
 | C8 | Termination is checked once per BFS generation, so a generation can **overshoot** `maxobjects`. | §5.1 |
 | C9 | Depth-first mode: all listed rules get `maxdepth 1000` before the script runs. A script's `set maxdepth N` therefore only reaches rules whose depth is still ≤ 0, which in practice means the alternatives of ambiguous rules (these are always overwritten). | §5.2 |
-| C10 | `cylinder`, and `mesh` without a previous state, **count as objects** but draw nothing. | §4.5 |
+| C10 | `cylinder`, and `mesh` without a previous state, **count as objects** but draw nothing. *As built (M12):* Structura draws `cylinder` in v1 too (owner decision); object counts still match 1.5 and the golden comparison skips cylinder rows; `W105` (info) notes the difference. | §4.5 |
 | C11 | Emitted direction vectors are computed as `M·e − M·0` in float32 (for example 0.99999994), not read from the matrix. | §4.2 |
 | C12 | `QColor::toHsv` works in double precision, and saturation/value/alpha are rounded 16→8-bit divisions by 257 (Qt 6 differs). | §4.3 |
 | C13 | `set` values are validated **when executed**. A bad value in a rule that never runs is not an error. | §6 |

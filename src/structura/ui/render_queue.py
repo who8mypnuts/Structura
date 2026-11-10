@@ -158,14 +158,14 @@ def _save_job(entry: QueueEntry, update: RenderUpdate) -> Callable[[JobContext],
         image = update.denoised if update.denoised is not None else update.progress.image
         camera = details.camera if details is not None else request.camera
         assert camera is not None
-        meta = render_metadata(request.settings, camera, entry.script)
+        display = request.display or request.settings.display
+        meta = render_metadata(request.settings, camera, entry.script, display=display)
         layers = update.progress.aovs.layers() if update.progress.aovs is not None else None
-        exposure, view = request.display or (0.0, request.settings.view_transform)
         entry.path.parent.mkdir(parents=True, exist_ok=True)
-        save_image(image, entry.path, exposure, view, meta, layers)
+        save_image(image, entry.path, display, meta, layers)
         if entry.report is not None and details is not None:
             inputs = ReportInputs(request.scene, update.progress, details, update.device, update.passes, image,
-                                  update.denoiser, exposure, view, entry.script, outputs=(entry.path,))  # fmt: skip
+                                  update.denoiser, display, entry.script, outputs=(entry.path,))  # fmt: skip
             write_report(build_report(inputs), entry.report)
         return entry.path
 

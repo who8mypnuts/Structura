@@ -263,3 +263,10 @@ structura/export/
 structura/core/geometry/
   unit_shapes.py  tessellate.py  affine.py  weld.py  lod.py
 ```
+
+> **As built (M12, owner review):** PyMeshLab (`export/mesh/meshlab.py`) cleans meshes before PLY, STL, 3MF,
+> OBJ and MeshLab-project exports (`cleanup`: clean, print-ready, light, smooth, remesh; `keep` for
+> decimation) and measures them for **Export ▸ Check Mesh…**; `export/mesh/mlp.py` writes MeshLab projects
+> (one PLY layer per group). Built-in presets (`export/presets.BUILTIN`) name the common choices. The export
+> sheet's *Run after export* runs a command on the written file; *Open in MeshLab* follows mesh exports.
+> The USD and Blender exporters write the camera's lens (focal length, sensor, f-stop, focus).

@@ -20,13 +20,14 @@ from PySide6.QtWidgets import (
 
 from ...core.lang.analysis import Analysis
 from ...core.scene.ir import PrimitiveKind, SceneIR
+from ...core.scene.vectors import fmt_vec
 from ..i18n import tr
 
 FIELDS = ("Object", "Generation", "Tag", "Colour", "Position", "Size", "Source")
 
 
 def _vec(v: np.ndarray) -> str:
-    return "(" + ", ".join(f"{round(float(c), 4) + 0.0:g}" for c in v) + ")"
+    return fmt_vec(np.round(v, 4), "g")
 
 
 class InspectorPanel(QWidget):

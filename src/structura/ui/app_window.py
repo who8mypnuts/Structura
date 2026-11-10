@@ -39,6 +39,7 @@ from .dock_layout import LAYOUT_VERSION, DockLayout
 from .document_actions import DocumentActions
 from .documents import DocumentTabs, EditorTab
 from .editor_actions import EditorActions
+from .error_reporting import ErrorReporter
 from .export_actions import ExportActions
 from .file_drop import FileDropFilter
 from .header import BRAND, HeaderBar
@@ -121,6 +122,7 @@ class MainWindow(QMainWindow):
         self.build_actions = BuildActions(self)
         self.workspaces = Workspaces(self)
         self.banners = Banners(self)
+        self.errors = ErrorReporter(self)
         self.material_actions, self.light_actions = MaterialActions(self), LightActions(self)
         self.registry = CommandRegistry(self)
         self.command_palette = CommandPalette(self.registry, self)
@@ -251,6 +253,7 @@ class MainWindow(QMainWindow):
         self.render_settings.overrides_changed.connect(self._store_render_overrides)
         self.status.track(self.tabs)
         self.problems.activated_offset.connect(self.docs.go_to)
+        self.problems.count_changed.connect(self._problem_count)
         self.outline.activated_offset.connect(self.docs.go_to)
         self.examples.open_example.connect(self.docs.open_example)
         self.inspector.go_to_source.connect(self.docs.go_to)
@@ -273,6 +276,7 @@ class MainWindow(QMainWindow):
         self.viewport.mode_changed.connect(lambda mode: self.status.set("device", f"Preview: {preview_label(mode)}"))
         self.themes.theme_changed.connect(self.apply_theme)
         self.render_view.status.connect(self.show_message)
+        self.render_view.activity.connect(self._render_activity)
         self.render_view.request_source = self.render_actions.guarded_source
 
     # -- appearance ----------------------------------------------------------------------------------------
@@ -323,7 +327,11 @@ class MainWindow(QMainWindow):
         self.parameter_sync.show(tab, analysis)
         errors = sum(1 for d in analysis.diagnostics if d.severity.name == "ERROR")
         self.viewport.overlay.set_stale(bool(errors) and tab.outcome is not None)
-        self.docks["Problems"].setWindowTitle(f"Problems ({len(analysis.diagnostics)})" if errors else "Problems")
+
+    @Slot(int)
+    def _problem_count(self, count: int) -> None:
+        """The Problems dock's title counts the warnings and errors of the current script."""
+        self.docks["Problems"].setWindowTitle(f"Problems ({count})" if count else "Problems")
 
     @Slot(object)
     def on_build_started(self, tab: EditorTab) -> None:
@@ -346,7 +354,8 @@ class MainWindow(QMainWindow):
         self.stats.show_phases(tab.analysis.seconds if tab.analysis else 0.0, outcome.stats.seconds, ready.seconds)
         script = script_settings(outcome.scene)
         self.render_settings.show_settings(script)
-        self.render_view.integrator.setCurrentText(script.integrator)
+        declared = outcome.scene.declarations.render if outcome.scene.declarations is not None else {}
+        self.render_view.controls.show_script(script, declared)
         self.viewport.set_scene(ready.shown, ready.preview, camera)
         self._refresh_viewport_options()
         if frame:
@@ -376,6 +385,12 @@ class MainWindow(QMainWindow):
         tab = self.tabs.current()
         count = len(tab.outcome.scene) if tab is not None and tab.outcome is not None else 0
         self.viewport.highlight(rows if isinstance(rows, np.ndarray) else None, count)
+
+    @Slot(str)
+    def _render_activity(self, text: str) -> None:
+        """A render or animation in progress: in the status bar and the window title (seen from the task bar)."""
+        self.status.set("render", text)
+        self.setWindowTitle(f"Structura — {text}" if text else "Structura")
 
     @Slot(str)
     def show_message(self, text: str) -> None:

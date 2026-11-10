@@ -7,11 +7,13 @@ from __future__ import annotations
 
 import numpy as np
 
+from .vectors import script_vec
+
 KINDS = ("sun", "point", "sphere", "spot", "rect")
 
 
 def _v(values: np.ndarray) -> str:
-    return "[" + " ".join(f"{float(c):.4g}" for c in values) + "]"
+    return script_vec(values, ".4g")
 
 
 def light_text(kind: str, name: str, lo: np.ndarray, hi: np.ndarray) -> str:

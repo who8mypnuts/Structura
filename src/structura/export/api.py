@@ -11,7 +11,8 @@ from ..core.scene.camera import Camera
 from ..core.scene.ir import SceneIR
 from . import legacy as _legacy
 from .base import EXPORTERS, Exporter, ExportJob, ExportReport, exporter_for
-from .mesh import obj as _obj  # noqa: F401 - registers exporters
+from .mesh import mlp as _mlp  # noqa: F401 - registers exporters
+from .mesh import obj as _obj  # noqa: F401
 from .mesh import ply as _ply  # noqa: F401
 from .mesh import stl as _stl  # noqa: F401
 from .mesh import threemf as _threemf  # noqa: F401

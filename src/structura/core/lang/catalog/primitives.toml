@@ -8,7 +8,7 @@ doc = "Sphere centred in the unit cube; radius from the transformed z half-exten
 [[primitive]]
 name = "cylinder"
 legacy_draws = false
-doc = "Cylinder along the local x axis (v2). In Structure Synth 1.5 compatibility mode it draws nothing."
+doc = "Capped cylinder along the local x axis, from (0,.5,.5) to (1,.5,.5), radius 0.5 in y and z. Structure Synth 1.5 counted it but drew nothing; Structura draws it (1.5 template exports still omit it)."
 [[primitive]]
 name = "mesh"
 doc = "Quad tube swept from the parent's frame to the current frame."

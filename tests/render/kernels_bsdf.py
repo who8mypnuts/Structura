@@ -10,7 +10,7 @@ from structura.render.kernels.surface import Surface
 
 @kernel(workgroup=(64, 1, 1))
 def bsdf_samples(
-    gid: uvec3, n: u32, front: u32, wo_x: f32, wo_y: f32, wo_z: f32, mat_f: Buf[f32], result: BufRW[f32]
+    gid: uvec3, n: u32, front: u32, tangent: f32, wo_x: f32, wo_y: f32, wo_z: f32, mat_f: Buf[f32], result: BufRW[f32]
 ) -> None:
     """result[4i:4i+4] = sampled direction wi and the mixture pdf bsdf_eval reports for it."""
     i = gid.x
@@ -18,7 +18,7 @@ def bsdf_samples(
         return
     wo = vec3(wo_x, wo_y, wo_z)
     s = Surface(vec3(0.9, 0.6, 0.3), 1.0, vec3(0.0), u32(0))
-    bs = principled_setup(mat_f, s, wo, front, 0.0)
+    bs = principled_setup(mat_f, s, wo, front, 0.0, tangent)
     wi = bsdf_sample(bs, wo, rand01(i, u32(1), u32(0)), rand01(i, u32(1), u32(1)), rand01(i, u32(1), u32(2)))
     v = bsdf_eval(bs, wo, wi)
     result[i * 4] = wi.x
@@ -29,7 +29,16 @@ def bsdf_samples(
 
 @kernel(workgroup=(64, 1, 1))
 def bsdf_pdfs(
-    gid: uvec3, n: u32, front: u32, wo_x: f32, wo_y: f32, wo_z: f32, mat_f: Buf[f32], dirs: Buf[f32], result: BufRW[f32]
+    gid: uvec3,
+    n: u32,
+    front: u32,
+    tangent: f32,
+    wo_x: f32,
+    wo_y: f32,
+    wo_z: f32,
+    mat_f: Buf[f32],
+    dirs: Buf[f32],
+    result: BufRW[f32],
 ) -> None:
     """result[i] = pdf of direction dirs[3i:3i+3]; result[n + i] = luminance-free f·cos (x channel)."""
     i = gid.x
@@ -37,7 +46,7 @@ def bsdf_pdfs(
         return
     wo = vec3(wo_x, wo_y, wo_z)
     s = Surface(vec3(0.9, 0.6, 0.3), 1.0, vec3(0.0), u32(0))
-    bs = principled_setup(mat_f, s, wo, front, 0.0)
+    bs = principled_setup(mat_f, s, wo, front, 0.0, tangent)
     v = bsdf_eval(bs, wo, vec3(dirs[i * 3], dirs[i * 3 + 1], dirs[i * 3 + 2]))
     result[i] = v.pdf
     result[n + i] = v.f.x

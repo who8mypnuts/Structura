@@ -133,6 +133,18 @@ def mesh_values(scene: SceneIR, i: int) -> Values:
     return {"{matrix}": " ".join(words)} | _color(scene.rgba[i])
 
 
+def solid_values(scene: SceneIR, i: int) -> Values:
+    """The v2 solids (cylinder, cone, torus, ellipsoid) fill the unit cube like a box: the box placeholders,
+    plus {param} for cone[r] / torus[r] (0 for the others)."""
+    return box_values(scene, i) | {"{param}": qnum(float(scene.params(np.array([i]))[0]))}
+
+
+def tube_values(scene: SceneIR, i: int) -> Values:
+    """tube[r]: the line placeholders plus {param} (its diameter in object units) and {r} {g} {b}."""
+    param = {"{param}": qnum(float(scene.params(np.array([i]))[0]))}
+    return line_values(scene, i) | _color(scene.rgba[i]) | param
+
+
 VALUES: dict[str, Callable[[SceneIR, int], Values]] = {
     "box": box_values,
     "grid": box_values,
@@ -141,6 +153,8 @@ VALUES: dict[str, Callable[[SceneIR, int], Values]] = {
     "line": line_values,
     "triangle": triangle_values,
     "mesh": mesh_values,
+    **dict.fromkeys(("cylinder", "cone", "torus", "ellipsoid"), solid_values),
+    "tube": tube_values,
 }
 UID_PREFIX = {
     "box": "Box",
@@ -150,4 +164,9 @@ UID_PREFIX = {
     "line": "Line",
     "triangle": "Triangle",
     "mesh": "Box",
+    "cylinder": "Cylinder",
+    "cone": "Cone",
+    "torus": "Torus",
+    "ellipsoid": "Ellipsoid",
+    "tube": "Tube",
 }  # fmt: skip - 1.5 names mesh uids 'Box'

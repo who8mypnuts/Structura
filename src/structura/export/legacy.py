@@ -7,6 +7,7 @@ from pathlib import Path
 import numpy as np
 
 from ..core.params import ParamSpec, ParamType
+from ..core.scene.vectors import as_vec3 as _vec
 from .base import Exporter, ExportJob, ExportReport, register
 from .legacy_obj import LegacyObjExport
 from .templates.engine import TemplateExport
@@ -38,10 +39,6 @@ def template_camera(job: ExportJob, width: int, height: int) -> TemplateCamera:
     _, right, up = cam.basis
     return TemplateCamera(_vec(np.asarray(cam.eye)), _vec(up), _vec(right), cam.target, width, height,
                           width / height, cam.fov_y_deg)  # fmt: skip
-
-
-def _vec(v: np.ndarray) -> tuple[float, float, float]:
-    return (float(v[0]), float(v[1]), float(v[2]))
 
 
 class TemplateExporter(Exporter):

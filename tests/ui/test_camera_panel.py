@@ -18,7 +18,7 @@ def test_camera_panel_follows_and_drives_the_viewport(qtbot: QtBot, window: Main
     camera = viewport.camera()
     assert np.allclose(panel.eye.value(), camera.eye, atol=1e-3)  # the panel follows
     assert camera.eye[1] > camera.target[1] and abs(camera.eye[0] - camera.target[0]) < 1e-6
-    panel.fov.setValue(40.0)  # an edit moves the viewport
+    panel.lens.fov.setValue(40.0)  # an edit moves the viewport
     assert abs(viewport.camera().fov_y_deg - 40.0) < 1e-6
     window.cameras.add_view(tab, "overhead", viewport.camera())
     window.cameras.standard_view("front")
@@ -29,6 +29,27 @@ def test_camera_panel_follows_and_drives_the_viewport(qtbot: QtBot, window: Main
     assert tab.text().startswith("// camera") and "set perspective-angle 40" in tab.text()
     tab.editor.undo()
     assert tab.text() == "3 * { x 1.5 } box\n"
+
+
+def test_the_lens_is_simple_first(qtbot: QtBot, window: MainWindow) -> None:
+    """A lens preset, depth of field and focus on the selection: the photographic controls drive the camera."""
+    tab = window.docs.new_script()
+    tab.editor.setPlainText("5 * { z -3 } box\n")
+    qtbot.waitUntil(lambda: window.viewport.bounds() is not None, timeout=30000)
+    lens = window.camera_panel.lens
+    lens.preset.setCurrentText("85mm portrait")
+    assert abs(window.viewport.camera().focal_length_mm - 85.0) < 0.05 and abs(lens.focal.value() - 85.0) < 0.05
+    lens.dof.setChecked(True)
+    lens.amount.setValue(100)
+    camera = window.viewport.camera()
+    assert camera.lens.fstop is not None and abs(camera.lens.fstop - 1.2) < 1e-6 and camera.aperture_radius > 0
+    assert "sharp from" in lens.readout.text()
+    window.viewport.select(0)  # the nearest box (the target is the middle one)
+    lens.on_selection.click()
+    focused = window.viewport.camera()
+    assert focused.lens.focus_mode == "manual" and abs(focused.focus - focused.distance) > 0.5
+    window.cameras.copy_to_script()
+    assert "set perspective-angle" in tab.text()  # v1: the field of view (the lens needs a v2 camera block)
 
 
 def test_inspector_shows_the_pick_and_selects_alike(qtbot: QtBot, window: MainWindow) -> None:

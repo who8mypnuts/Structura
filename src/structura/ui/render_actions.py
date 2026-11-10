@@ -6,10 +6,12 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass, field, replace
+from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QObject, Slot, qVersion
+from PySide6.QtGui import QGuiApplication
 
 from ..core.build.driver import BuildStats
 from ..render.api import script_settings
@@ -17,17 +19,21 @@ from ..render.memory import available_bytes, guard_message, render_bytes
 from ..render.metadata import render_metadata
 from ..render.output import save_image
 from ..render.report.collect import ReportInputs, build_report
+from ..render.report.text_writers import to_markdown
 from ..render.report.writers import FORMATS, report_filters
+from ..render.settings import RenderSettings
 from ..services.jobs import ErrorInfo, FunctionJob, JobContext, Lane
 from ..services.report_documents import write_report
 from .dialogs.render_output import FINAL_PRESETS, REPORT_DEFAULT, REPORT_KEY, RenderOutput, choose_output, report_beside
 from .i18n import tr
-from .render_view.presets import CUSTOM, PRESETS
+from .render_view.presets import CUSTOM, FRAME_VIEWPORT, PRESETS, fitted
 from .render_view.render_view import RenderInput
 from .save_paths import SavePaths, stem_for, with_extension
 
 if TYPE_CHECKING:
     from .app_window import MainWindow
+
+KEEP_KEY = "render/keep_folder"  # Preferences ▸ Rendering ▸ Keep every render (empty: off)
 
 
 @dataclass(frozen=True)
@@ -64,6 +70,17 @@ class RenderActions(QObject):
         view.started.connect(self._started)
         view.controls.save_button.clicked.connect(self.save_render)
         view.controls.report_button.clicked.connect(self.save_report)
+        c = view.controls
+        for signal in (c.frame.currentTextChanged, c.preset.currentTextChanged, c.width.valueChanged,
+                       c.height.valueChanged):  # fmt: skip
+            signal.connect(self.update_frame_guide)
+        window.workbench.scene_ready.connect(self.update_frame_guide)
+
+    def update_frame_guide(self, *_: object) -> None:
+        """The viewport shows the render frame whenever it is not the viewport's own shape."""
+        aspect = self.frame_aspect()
+        label = "{} × {}".format(*self.render_size()) if aspect else ""
+        self.w.viewport.overlay.set_frame(aspect, label)
 
     @Slot()
     def _started(self) -> None:
@@ -107,8 +124,30 @@ class RenderActions(QObject):
         """A render (and its denoising) finished: a final render saves its image and report now."""
         out, self.pending = self.pending, None
         last = self.w.render_view.last
-        if out is not None and last is not None and last.fraction >= 1.0:
+        if last is None or last.fraction < 1.0:
+            return
+        out = out or self._kept_output()
+        if out is not None:
             self.write_outputs(out)
+
+    def _kept_output(self) -> RenderOutput | None:
+        """Preferences ▸ Rendering ▸ Keep every render: where a finished render goes, with its report beside it."""
+        folder = str(self.w.settings.value(KEEP_KEY, "") or "")
+        if not folder:
+            return None
+        stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+        image = Path(folder).expanduser() / f"{stem_for(self.context.script_path, 'render')}-{stamp}.png"
+        suffix = str(self.w.settings.value(REPORT_KEY, REPORT_DEFAULT))
+        return RenderOutput(image, report_beside(image, suffix))
+
+    def copy_report(self) -> None:
+        """Render ▸ Copy Report as Markdown: the last render's report, for a forum post or an issue."""
+        inputs = self.report_inputs()
+        if inputs is None:
+            self.w.show_message(tr("Render first (F9), then copy its report."))
+            return
+        QGuiApplication.clipboard().setText(to_markdown(build_report(inputs)))
+        self.w.show_message(tr("The render report is on the clipboard (Markdown)"))
 
     def render_legacy(self) -> None:
         """Render ▸ Render (Legacy Look): the 'classic' integrator, Structure Synth 1.5's raytracer look."""
@@ -132,11 +171,30 @@ class RenderActions(QObject):
         else:
             self.w.render_view.denoise_changed()
 
+    def _view_size(self) -> tuple[int, int]:
+        return max(1, self.w.viewport.width()), max(1, self.w.viewport.height())
+
+    def render_size(self) -> tuple[int, int]:
+        """The image size the Render tool bar asks for (its frame and preset) for the current script."""
+        tab = self.w.tabs.current()
+        script = script_settings(tab.outcome.scene) if tab is not None and tab.outcome is not None else None
+        default = RenderSettings()
+        declared = None if script is None or (script.width, script.height) == (default.width, default.height) \
+            else (script.width, script.height)  # fmt: skip
+        return self.w.render_view.controls.image_size(self._view_size(), declared)
+
+    def frame_aspect(self) -> float | None:
+        """The render frame's aspect for the viewport's guide (None: the viewport's own shape)."""
+        if self.w.render_view.controls.frame.currentText() == FRAME_VIEWPORT:
+            return None
+        width, height = self.render_size()
+        return width / height
+
     def render_source(self) -> RenderInput | None:
         tab = self.w.tabs.current()
         if tab is None or tab.outcome is None:
             return None
-        size = self.w.render_view.controls.image_size((self.w.viewport.width(), self.w.viewport.height()))
+        size = self.render_size()
         quick = self.w.render_view.settings(*size)
         base = script_settings(tab.outcome.scene)  # the script's legacy keys and v2 blocks …
         settings = self.w.render_settings.apply(base)  # … the panel's values …
@@ -146,7 +204,9 @@ class RenderActions(QObject):
             samples_per_pass=quick.samples_per_pass, integrator=quick.integrator, aovs=quick.aovs,
             noise_threshold=noise, asset_dir=str(tab.path.parent) if tab.path else "", mosaic=True,
         )  # fmt: skip
-        return tab.outcome.scene, self.w.viewport.camera(), settings, tab.text()
+        view_w, view_h = self._view_size()
+        camera = fitted(self.w.viewport.camera(), size[0] / size[1], view_w / view_h)  # what the frame guide shows
+        return tab.outcome.scene, camera, settings, tab.text()
 
     def guarded_source(self) -> RenderInput | None:
         """render_source, refused (with a message) when there is nothing built or it would not fit in memory."""
@@ -189,13 +249,13 @@ class RenderActions(QObject):
         if image is None or last is None or source is None:
             return
         _, camera, settings, script = source
-        meta = render_metadata(settings, camera, script, self.context.params)
+        display = view.display()
+        meta = render_metadata(settings, camera, script, self.context.params, display=display)
         layers = last.progress.aovs.layers() if last.progress.aovs is not None else None
-        exposure, view_name = view.controls.exposure.value(), view.controls.view_transform()
 
         def run(ctx: JobContext) -> Path:
             path.parent.mkdir(parents=True, exist_ok=True)
-            save_image(image, path, exposure, view_name, meta, layers)
+            save_image(image, path, display, meta, layers)
             return path
 
         self._io(f"save {path.name}", run, tr("Saved {name}"))
@@ -228,7 +288,7 @@ class RenderActions(QObject):
         return ReportInputs(
             scene=source[0], progress=last.progress, details=last.details, device=last.device,
             passes=last.passes, image=view.shown_image(), denoiser=last.denoiser if denoised else "",
-            exposure=view.controls.exposure.value(), view=view.controls.view_transform(), script=source[3],
+            display=view.display(), script=source[3],
             script_path=c.script_path, seed=c.seed, params=c.params, build=c.build, outputs=self.saved,
             environment={"Qt": qVersion()},
         )  # fmt: skip

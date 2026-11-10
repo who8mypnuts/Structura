@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from PySide6.QtCore import QCoreApplication
 
 from structura.scripting.js_bridge import js_string, run_javascript
 
@@ -70,8 +69,9 @@ class Host:
 
 
 @pytest.fixture(autouse=True)
-def app() -> Any:
-    return QCoreApplication.instance() or QCoreApplication([])
+def app(qapp: Any) -> Any:
+    """pytest-qt's QApplication: a plain QCoreApplication here would break later tests that need a GUI one."""
+    return qapp
 
 
 def test_load_define_build_and_render(tmp_path: Path) -> None:

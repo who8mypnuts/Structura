@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from ..core.params import ParamSpec, ParamType
 from .ground import MODES as GROUND_MODES
 from .ground import Ground
 from .kernels import layout as lay
-from .kernels.layout import CAMERA_TYPES
+from .output import Display
+from .post import PostSettings
 
 INTEGRATORS = {
     "preview": lay.INTEGRATOR_PREVIEW,
@@ -24,7 +25,19 @@ FILTER_NAMES = ("box", "triangle", "gaussian", "blackman-harris", "mitchell", "c
                 "sinc")  # fmt: skip
 SAMPLERS = ("progressive", "tiled")  # docs/09 §5: whole-image passes, or buckets refined one at a time
 BUCKET_ORDERS = ("hilbert", "spiral", "rows", "columns", "diagonal", "random")
+DENOISERS = ("off", "auto", "oidn", "atrous")  # render { denoise … } (render/denoise: auto = OIDN, else À-Trous)
 SEQUENCES = ("random", "halton")  # hashed per-pixel random numbers, or Halton (Sunflow's QMC, for comparison)
+RGB = tuple[float, float, float]
+SKY_TOP: RGB = (0.55, 0.65, 0.85)  # linear; the default gradient sky (v2 'environment { type gradient }' too)
+SKY_BOTTOM: RGB = (0.25, 0.24, 0.22)
+SKY_GROUND: RGB = (0.06, 0.055, 0.05)  # sunsky: the ground below the horizon (linear)
+
+
+def resolve_view(view: str, integrator: str) -> str:
+    """The view transform ``view`` names; 'auto' is AgX, except standard for Structure Synth's classic look."""
+    if view != "auto":
+        return view
+    return "standard" if integrator == "classic" else "agx"
 
 
 @dataclass(frozen=True)
@@ -42,11 +55,9 @@ class RenderSettings:
     sun_angle_deg: float = 2.0  # angular diameter
     sun_vector: tuple[float, float, float] | None = None  # explicit direction towards the sun (v2 'light')
     sun_irradiance: tuple[float, float, float] = (3.2, 3.0, 2.7)
-    sky_top: tuple[float, float, float] = (0.55, 0.65, 0.85)
-    sky_bottom: tuple[float, float, float] = (0.25, 0.24, 0.22)
+    sky_top: tuple[float, float, float] = SKY_TOP
+    sky_bottom: tuple[float, float, float] = SKY_BOTTOM
     clamp: float = 20.0
-    aperture: float = 0.0
-    focus_distance: float | None = None
     legacy_dof: tuple[float, float] | None = None  # 'raytracer::dof [center, falloff]', resolved with the view
     light_position: tuple[float, float, float] | None = None  # classic point light; None: the 1.5 default
     shadows: bool = True
@@ -55,9 +66,6 @@ class RenderSettings:
     photon_count: int = 300_000  # caustics "photons": sun photons traced per render
     photon_radius: float = 0.0  # gather radius in world units (0: 0.6 % of the scene's bounding radius)
     view: str = "auto"
-    camera_type: str = "perspective"  # perspective | orthographic | spherical | fisheye
-    ortho_height: float = 10.0  # orthographic: visible height in world units
-    fisheye_fov: float = 180.0  # fisheye: field of view across the image height, degrees
     frame: bool = False  # ignore the script camera and fit the structure
     seed: int = 0
     env_type: str = "gradient"  # gradient (sky_top/bottom) | hdri (env_file) | sunsky (Preetham, lit by the sun)
@@ -65,11 +73,9 @@ class RenderSettings:
     env_rotation_deg: float = 0.0
     env_intensity: float = 1.0
     turbidity: float = 3.0
-    ground: tuple[float, float, float] = (0.06, 0.055, 0.05)  # sunsky: the ground below the horizon (linear)
+    ground: tuple[float, float, float] = SKY_GROUND  # sunsky: the ground below the horizon (linear)
     asset_dir: str = ""  # the script's folder (for relative file names)
     filter: str = "box"  # pixel reconstruction filter (render/filters.py); box = uniform jitter in the pixel
-    blades: int = 0  # aperture blades for polygonal bokeh (< 3: a round aperture)
-    blade_rotation_deg: float = 0.0
     region: tuple[int, int, int, int] | None = None  # x0, y0, x1, y1 (pixels): render only this rectangle
     aovs: bool = False  # also compute first-hit albedo / normal / depth / ids (EXR layers, denoising)
     noise_threshold: float = 0.0  # adaptive sampling: pixels stop once their relative error is below (0 = off)
@@ -91,6 +97,9 @@ class RenderSettings:
     transmission_bounces: int = -1
     ao_direct: bool = False  # ao: add direct light from the sun and the declared lights
     mosaic: bool = False  # progressive: a quarter-resolution first image before the first full pass (the GUI)
+    exposure: float = 0.0  # stops, applied when the image is shown or saved (render { exposure … })
+    post: PostSettings = field(default_factory=PostSettings)  # bloom, vignette, grading (render/post.py)
+    denoise: str = ""  # render { denoise … }: one of DENOISERS; "" = not set (the GUI tool bar / CLI decide)
 
     @property
     def sun_direction(self) -> tuple[float, float, float]:
@@ -101,9 +110,12 @@ class RenderSettings:
 
     @property
     def view_transform(self) -> str:
-        if self.view != "auto":
-            return self.view
-        return "standard" if self.integrator == "classic" else "agx"
+        return resolve_view(self.view, self.integrator)
+
+    @property
+    def display(self) -> Display:
+        """Exposure, view transform and post stack the image is shown and saved with."""
+        return Display(self.exposure, self.view_transform, self.post, self.asset_dir)
 
     @property
     def ground_spec(self) -> Ground | None:
@@ -135,15 +147,11 @@ def render_param_specs() -> tuple[ParamSpec, ...]:
         ParamSpec("clamp", ParamType.FLOAT, 20.0, "Sample clamp", range=(0.1, 1e6)),
         ParamSpec("noise_threshold", ParamType.FLOAT, 0.0, "Noise threshold (0 = off)", range=(0.0, 1.0)),
         ParamSpec("time_limit", ParamType.FLOAT, 0.0, "Time limit, s (0 = none)", range=(0.0, 1e6)),
-        ParamSpec("aperture", ParamType.FLOAT, 0.0, "Aperture radius", range=(0.0, 100.0)),
-        ParamSpec("camera_type", ParamType.ENUM, "perspective", "Camera", choices=tuple(CAMERA_TYPES)),
         ParamSpec("caustics", ParamType.ENUM, "filtered", "Caustics", choices=("filtered", "on", "photons")),
         ParamSpec("photon_count", ParamType.INT, 300_000, "Caustic photons", range=(1000, 100_000_000)),
         ParamSpec("photon_radius", ParamType.FLOAT, 0.0, "Photon radius (0 = auto)", range=(0.0, 1e6)),
         ParamSpec("view", ParamType.ENUM, "auto", "View transform", choices=VIEWS),
         ParamSpec("filter", ParamType.ENUM, "box", "Pixel filter", choices=FILTER_NAMES),
-        ParamSpec("blades", ParamType.INT, 0, "Aperture blades (bokeh)", range=(0, 16)),
-        ParamSpec("blade_rotation_deg", ParamType.FLOAT, 0.0, "Blade rotation °", range=(-360.0, 360.0)),
         ParamSpec("env_type", ParamType.ENUM, "gradient", "Environment", choices=ENV_TYPES),
         ParamSpec("env_file", ParamType.STRING, "", "HDRI file (.exr / .hdr)"),
         ParamSpec("env_rotation_deg", ParamType.FLOAT, 0.0, "Environment rotation °", range=(-360.0, 360.0)),

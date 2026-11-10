@@ -102,7 +102,8 @@ def merged_sequence(scene: SceneIR) -> list[tuple[str, int, object]]:
         while e < len(events) and events[e][1] <= i:
             seq.append(("ev", e, events[e][0]))
             e += 1
-        seq.append(("prim", i, None))
+        if scene.kind[i] != K.CYLINDER:  # Structura draws v1 cylinders; Structure Synth 1.5 dumped nothing
+            seq.append(("prim", i, None))
     seq.extend(("ev", k, events[k][0]) for k in range(e, len(events)))
     return seq
 

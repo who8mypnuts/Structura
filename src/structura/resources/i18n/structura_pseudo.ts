@@ -12,6 +12,10 @@
       <translation>[À çöpý Strûçtûré Sýñth 1.5 öpéñs (v2 féàtûrés flàttéñéd ör dröppéd; ñötés îñ thé Çöñsölé) ~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>A script in EisenScript v2: materials, lights, environment and render blocks</source>
+      <translation>[À sçrîpt îñ ÉîséñSçrîpt v2: màtérîàls, lîghts, éñvîröñméñt àñd réñdér blöçks ~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>A script that uses the Python API (import structura as st); output in the Console</source>
       <translation>[À sçrîpt thàt ûsés thé Pýthöñ ÀPÎ (împört strûçtûrà às st); öûtpût îñ thé Çöñsölé ~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
@@ -84,8 +88,16 @@
       <translation>[Çàmérà ~]</translation>
     </message>
     <message>
+      <source>Camera Path from Saved Views…</source>
+      <translation>[Çàmérà Pàth fröm Sàvéd Vîéws… ~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Cancel Build</source>
       <translation>[Çàñçél Bûîld ~~~]</translation>
+    </message>
+    <message>
+      <source>Check Mesh…</source>
+      <translation>[Çhéçk Mésh… ~~~]</translation>
     </message>
     <message>
       <source>Choose Theme…</source>
@@ -132,6 +144,10 @@
       <translation>[Çöpý Çàmérà tö Sçrîpt ~~~~~~]</translation>
     </message>
     <message>
+      <source>Copy Report as Markdown</source>
+      <translation>[Çöpý Répört às Màrkdöwñ ~~~~~~]</translation>
+    </message>
+    <message>
       <source>Cut</source>
       <translation>[Çût ~]</translation>
     </message>
@@ -150,6 +166,10 @@
     <message>
       <source>Drag over the rendered image to render that part again (or Shift+drag any time)</source>
       <translation>[Dràg övér thé réñdéréd îmàgé tö réñdér thàt pàrt àgàîñ (ör Shîft+dràg àñý tîmé) ~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Earlier versions of every script you saved (the last 20 of each)</source>
+      <translation>[Éàrlîér vérsîöñs öf évérý sçrîpt ýöû sàvéd (thé làst 20 öf éàçh) ~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Edit Theme…</source>
@@ -216,6 +236,10 @@
       <translation>[Flàt çölöûrs wîth dàrk édgés ~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Focus Planes (depth of field)</source>
+      <translation>[Föçûs Plàñés (dépth öf fîéld) ~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Fold</source>
       <translation>[Föld ~]</translation>
     </message>
@@ -280,6 +304,10 @@
       <translation>[Îñspéçtör ~~]</translation>
     </message>
     <message>
+      <source>Is the structure a watertight, manifold mesh? (MeshLab's measures: holes, parts, volume)</source>
+      <translation>[Îs thé strûçtûré à wàtértîght, màñîföld mésh? (MéshLàb's méàsûrés: hölés, pàrts, völûmé) ~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Isometric</source>
       <translation>[Îsömétrîç ~~]</translation>
     </message>
@@ -290,6 +318,10 @@
     <message>
       <source>Key Camera</source>
       <translation>[Kéý Çàmérà ~~~]</translation>
+    </message>
+    <message>
+      <source>Key a smooth camera path through the Camera panel's saved views</source>
+      <translation>[Kéý à smööth çàmérà pàth thröûgh thé Çàmérà pàñél's sàvéd vîéws ~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Key the viewport camera at the current frame</source>
@@ -336,6 +368,10 @@
       <translation>[Màtérîàls ~~]</translation>
     </message>
     <message>
+      <source>MeshLab project (.mlp + PLY layers)…</source>
+      <translation>[MéshLàb pröjéçt (.mlp + PLÝ làýérs)… ~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Migrate a Structure Synth 1.5 script; it builds the same (notes in the console)</source>
       <translation>[Mîgràté à Strûçtûré Sýñth 1.5 sçrîpt; ît bûîlds thé sàmé (ñötés îñ thé çöñsölé) ~~~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
@@ -350,6 +386,10 @@
     <message>
       <source>New Script</source>
       <translation>[Ñéw Sçrîpt ~~~]</translation>
+    </message>
+    <message>
+      <source>New v2 Script</source>
+      <translation>[Ñéw v2 Sçrîpt ~~~]</translation>
     </message>
     <message>
       <source>Next Frame</source>
@@ -376,6 +416,10 @@
       <translation>[Öñlý thé îmàgé, fûll sçrééñ (Ésç rétûrñs) ~~~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Open Backups Folder</source>
+      <translation>[Öpéñ Bàçkûps Földér ~~~~~]</translation>
+    </message>
+    <message>
       <source>Open from Render…</source>
       <translation>[Öpéñ fröm Réñdér… ~~~~~]</translation>
     </message>
@@ -386,6 +430,10 @@
     <message>
       <source>Open…</source>
       <translation>[Öpéñ… ~]</translation>
+    </message>
+    <message>
+      <source>Orbit the current view in a seamless loop: keys the timeline, then renders the animation</source>
+      <translation>[Örbît thé çûrréñt vîéw îñ à séàmléss lööp: kéýs thé tîmélîñé, théñ réñdérs thé àñîmàtîöñ ~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Outline</source>
@@ -564,6 +612,10 @@
       <translation>[Rését Làýöût ~~~]</translation>
     </message>
     <message>
+      <source>Restore Declined Recovery</source>
+      <translation>[Réstöré Déçlîñéd Réçövérý ~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Revert File</source>
       <translation>[Révért Fîlé ~~~]</translation>
     </message>
@@ -712,6 +764,14 @@
       <translation>[Thé çlàssîç îñtégràtör: Strûçtûré Sýñth 1.5's ràýtràçér löök ~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>The last render's report on the clipboard, ready for a forum post or a bug report</source>
+      <translation>[Thé làst réñdér's répört öñ thé çlîpböàrd, réàdý för à förûm pöst ör à bûg répört ~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>The scripts of a crashed session whose recovery you declined</source>
+      <translation>[Thé sçrîpts öf à çràshéd séssîöñ whösé réçövérý ýöû déçlîñéd ~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Timeline</source>
       <translation>[Tîmélîñé ~~]</translation>
     </message>
@@ -730,6 +790,10 @@
     <message>
       <source>Top</source>
       <translation>[Töp ~]</translation>
+    </message>
+    <message>
+      <source>Turntable…</source>
+      <translation>[Tûrñtàblé… ~~~]</translation>
     </message>
     <message>
       <source>USD (instanced)…</source>
@@ -879,8 +943,16 @@
       <translation>[Prépröçéssör ~~~]</translation>
     </message>
     <message>
+      <source>Primitives</source>
+      <translation>[Prîmîtîvés ~~~]</translation>
+    </message>
+    <message>
       <source>Raytracer</source>
       <translation>[Ràýtràçér ~~]</translation>
+    </message>
+    <message>
+      <source>Recover</source>
+      <translation>[Réçövér ~~]</translation>
     </message>
     <message>
       <source>Render</source>
@@ -993,6 +1065,10 @@
   <context>
     <name>Structura</name>
     <message>
+      <source>$FILE is the exported file; %NAME% / $NAME are environment variables. You are asked before it runs.</source>
+      <translation>[$FÎLÉ îs thé éxpörtéd fîlé; %ÑÀMÉ% / $ÑÀMÉ àré éñvîröñméñt vàrîàblés. Ýöû àré àskéd béföré ît rûñs. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>(current options)</source>
       <translation>[(çûrréñt öptîöñs) ~~~~~]</translation>
     </message>
@@ -1007,6 +1083,14 @@
     <message>
       <source>A/B</source>
       <translation>[À/B ~]</translation>
+    </message>
+    <message>
+      <source>Absorption colour</source>
+      <translation>[Àbsörptîöñ çölöûr ~~~~~]</translation>
+    </message>
+    <message>
+      <source>Absorption colour: what white light becomes inside glass after the distance</source>
+      <translation>[Àbsörptîöñ çölöûr: whàt whîté lîght béçömés îñsîdé glàss àftér thé dîstàñçé ~~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Add Current View…</source>
@@ -1029,16 +1113,36 @@
       <translation>[Àdvàñçéd ~~]</translation>
     </message>
     <message>
+      <source>Advanced lens</source>
+      <translation>[Àdvàñçéd léñs ~~~]</translation>
+    </message>
+    <message>
       <source>All messages</source>
       <translation>[Àll méssàgés ~~~]</translation>
+    </message>
+    <message>
+      <source>An STL export with the 'print-ready' clean-up, or 'Watertight union', repairs most problems.</source>
+      <translation>[Àñ STL éxpört wîth thé 'prîñt-réàdý' çléàñ-ûp, ör 'Wàtértîght ûñîöñ', répàîrs möst pröbléms. ~~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Anamorphic</source>
+      <translation>[Àñàmörphîç ~~~]</translation>
+    </message>
+    <message>
+      <source>Anamorphic ratio</source>
+      <translation>[Àñàmörphîç ràtîö ~~~~]</translation>
     </message>
     <message>
       <source>Ancestry</source>
       <translation>[Àñçéstrý ~~]</translation>
     </message>
     <message>
-      <source>Aperture</source>
-      <translation>[Àpértûré ~~]</translation>
+      <source>Animation {percent} %</source>
+      <translation>[Àñîmàtîöñ {percent} % ~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Aperture blades</source>
+      <translation>[Àpértûré blàdés ~~~~]</translation>
     </message>
     <message>
       <source>Aperture radius</source>
@@ -1051,10 +1155,6 @@
     <message>
       <source>Area (rectangle)</source>
       <translation>[Àréà (réçtàñglé) ~~~~]</translation>
-    </message>
-    <message>
-      <source>Auto (target distance)</source>
-      <translation>[Àûtö (tàrgét dîstàñçé) ~~~~~~]</translation>
     </message>
     <message>
       <source>Autosave the script with its seed and camera (.es next to the file)</source>
@@ -1073,12 +1173,16 @@
       <translation>[Bàsé çölöûr ~~~]</translation>
     </message>
     <message>
-      <source>Blender script ready</source>
-      <translation>[Bléñdér sçrîpt réàdý ~~~~~~]</translation>
+      <source>Blade rotation</source>
+      <translation>[Blàdé rötàtîöñ ~~~~]</translation>
     </message>
     <message>
-      <source>Blender was not found: set its path in Preferences ▸ Paths.</source>
-      <translation>[Bléñdér wàs ñöt föûñd: sét îts pàth îñ Préféréñçés ▸ Pàths. ~~~~~~~~~~~~~~~~~]</translation>
+      <source>Blades</source>
+      <translation>[Blàdés ~]</translation>
+    </message>
+    <message>
+      <source>Bokeh bias</source>
+      <translation>[Bökéh bîàs ~~~]</translation>
     </message>
     <message>
       <source>Bottom</source>
@@ -1097,6 +1201,14 @@
       <translation>[Bûîld Lîmîts ~~~]</translation>
     </message>
     <message>
+      <source>Build the script first (F5), then check the mesh.</source>
+      <translation>[Bûîld thé sçrîpt fîrst (F5), théñ çhéçk thé mésh. ~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Build the script first (F5), then make a turntable.</source>
+      <translation>[Bûîld thé sçrîpt fîrst (F5), théñ màké à tûrñtàblé. ~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Build the script first (F5).</source>
       <translation>[Bûîld thé sçrîpt fîrst (F5). ~~~~~~~~]</translation>
     </message>
@@ -1107,6 +1219,14 @@
     <message>
       <source>CPU rendering: {cores} cores (no GPU compute)</source>
       <translation>[ÇPÛ réñdérîñg: {cores} çörés (ñö GPÛ çömpûté) ~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Camera Path</source>
+      <translation>[Çàmérà Pàth ~~~]</translation>
+    </message>
+    <message>
+      <source>Camera path keyed through {count} saved views</source>
+      <translation>[Çàmérà pàth kéýéd thröûgh {count} sàvéd vîéws ~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Camera written to the script</source>
@@ -1129,6 +1249,18 @@
       <translation>[Çhàñgé… ~~]</translation>
     </message>
     <message>
+      <source>Check Mesh</source>
+      <translation>[Çhéçk Mésh ~~~]</translation>
+    </message>
+    <message>
+      <source>Check Mesh failed: {error}</source>
+      <translation>[Çhéçk Mésh fàîléd: {error} ~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Checking the mesh with MeshLab…</source>
+      <translation>[Çhéçkîñg thé mésh wîth MéshLàb… ~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Clear</source>
       <translation>[Çléàr ~]</translation>
     </message>
@@ -1147,6 +1279,26 @@
     <message>
       <source>Click an object in the viewport</source>
       <translation>[Çlîçk àñ öbjéçt îñ thé vîéwpört ~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Click an object in the viewport first, then focus on it.</source>
+      <translation>[Çlîçk àñ öbjéçt îñ thé vîéwpört fîrst, théñ föçûs öñ ît. ~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Close</source>
+      <translation>[Çlösé ~]</translation>
+    </message>
+    <message>
+      <source>Close Others</source>
+      <translation>[Çlösé Öthérs ~~~]</translation>
+    </message>
+    <message>
+      <source>Close Saved</source>
+      <translation>[Çlösé Sàvéd ~~~]</translation>
+    </message>
+    <message>
+      <source>Close to the Right</source>
+      <translation>[Çlösé tö thé Rîght ~~~~~]</translation>
     </message>
     <message>
       <source>Collecting… (structura doctor)</source>
@@ -1181,6 +1333,14 @@
       <translation>[Çöpý ~]</translation>
     </message>
     <message>
+      <source>Copy Path</source>
+      <translation>[Çöpý Pàth ~~]</translation>
+    </message>
+    <message>
+      <source>Copy Report</source>
+      <translation>[Çöpý Répört ~~~]</translation>
+    </message>
+    <message>
       <source>Copy to Script</source>
       <translation>[Çöpý tö Sçrîpt ~~~~]</translation>
     </message>
@@ -1189,8 +1349,16 @@
       <translation>[Çöûld ñöt rûñ {program}: {error} ~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Create</source>
+      <translation>[Çréàté ~]</translation>
+    </message>
+    <message>
       <source>Current frame</source>
       <translation>[Çûrréñt fràmé ~~~]</translation>
+    </message>
+    <message>
+      <source>Deep (f/22) … shallow (f/1.2)</source>
+      <translation>[Déép (f/22) … shàllöw (f/1.2) ~~~~~~~~]</translation>
     </message>
     <message>
       <source>Delete</source>
@@ -1209,16 +1377,44 @@
       <translation>[Déñöîsé whéñ fîñîshéd (àûtö: ÖÎDÑ, élsé À-Tröûs) ~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Depth of field</source>
+      <translation>[Dépth öf fîéld ~~~~]</translation>
+    </message>
+    <message>
+      <source>Depth of field amount</source>
+      <translation>[Dépth öf fîéld àmöûñt ~~~~~~]</translation>
+    </message>
+    <message>
       <source>Destination</source>
       <translation>[Déstîñàtîöñ ~~~]</translation>
+    </message>
+    <message>
+      <source>Details</source>
+      <translation>[Détàîls ~~]</translation>
+    </message>
+    <message>
+      <source>Direction</source>
+      <translation>[Dîréçtîöñ ~~]</translation>
     </message>
     <message>
       <source>Dismiss</source>
       <translation>[Dîsmîss ~~]</translation>
     </message>
     <message>
+      <source>Distance at the end</source>
+      <translation>[Dîstàñçé àt thé éñd ~~~~~]</translation>
+    </message>
+    <message>
       <source>Drag over the image: that region renders again.</source>
       <translation>[Dràg övér thé îmàgé: thàt régîöñ réñdérs àgàîñ. ~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Duration</source>
+      <translation>[Dûràtîöñ ~~]</translation>
+    </message>
+    <message>
+      <source>Ease in and out (stops at the end instead of looping)</source>
+      <translation>[Éàsé îñ àñd öût (stöps àt thé éñd îñstéàd öf lööpîñg) ~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Editor</source>
@@ -1293,10 +1489,6 @@
       <translation>[Fîéld öf vîéw ~~~]</translation>
     </message>
     <message>
-      <source>Field of view °</source>
-      <translation>[Fîéld öf vîéw ° ~~~~]</translation>
-    </message>
-    <message>
       <source>File Exists</source>
       <translation>[Fîlé Éxîsts ~~~]</translation>
     </message>
@@ -1341,12 +1533,36 @@
       <translation>[Fîrst fràmé ~~~]</translation>
     </message>
     <message>
+      <source>Fisheye field</source>
+      <translation>[Fîshéýé fîéld ~~~]</translation>
+    </message>
+    <message>
+      <source>Fisheye mapping</source>
+      <translation>[Fîshéýé màppîñg ~~~~]</translation>
+    </message>
+    <message>
+      <source>Focal length</source>
+      <translation>[Föçàl léñgth ~~~]</translation>
+    </message>
+    <message>
       <source>Focus</source>
       <translation>[Föçûs ~]</translation>
     </message>
     <message>
       <source>Focus distance</source>
       <translation>[Föçûs dîstàñçé ~~~~]</translation>
+    </message>
+    <message>
+      <source>Focus on the object selected in the viewport</source>
+      <translation>[Föçûs öñ thé öbjéçt séléçtéd îñ thé vîéwpört ~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Focus tilt</source>
+      <translation>[Föçûs tîlt ~~~]</translation>
+    </message>
+    <message>
+      <source>Frame</source>
+      <translation>[Fràmé ~]</translation>
     </message>
     <message>
       <source>Frame files</source>
@@ -1357,8 +1573,16 @@
       <translation>[Fràmé thé strûçtûré, sééñ fröm thîs sîdé ~~~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Frame: the viewport's shape, the script's size, a ratio, or an exact size (the viewport shows it)</source>
+      <translation>[Fràmé: thé vîéwpört's shàpé, thé sçrîpt's sîzé, à ràtîö, ör àñ éxàçt sîzé (thé vîéwpört shöws ît) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Frames</source>
       <translation>[Fràmés ~]</translation>
+    </message>
+    <message>
+      <source>Frames from one saved view to the next:</source>
+      <translation>[Fràmés fröm öñé sàvéd vîéw tö thé ñéxt: ~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Frames per second</source>
@@ -1389,12 +1613,20 @@
       <translation>[Gràmmàr-bàséd 3D strûçtûrés ~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Height</source>
+      <translation>[Héîght ~]</translation>
+    </message>
+    <message>
       <source>Help page</source>
       <translation>[Hélp pàgé ~~]</translation>
     </message>
     <message>
       <source>Hide everything else in the viewport (renders and exports are not affected)</source>
       <translation>[Hîdé évérýthîñg élsé îñ thé vîéwpört (réñdérs àñd éxpörts àré ñöt àfféçtéd) ~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>How big the structure is in the real world: sets the scale the f-stop uses</source>
+      <translation>[Höw bîg thé strûçtûré îs îñ thé réàl wörld: séts thé sçàlé thé f-stöp ûsés ~~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Image</source>
@@ -1417,12 +1649,20 @@
       <translation>[Îñtégràtör ~~~]</translation>
     </message>
     <message>
+      <source>Internal Error</source>
+      <translation>[Îñtérñàl Érrör ~~~~]</translation>
+    </message>
+    <message>
       <source>Iso</source>
       <translation>[Îsö ~]</translation>
     </message>
     <message>
       <source>Isolate Selection</source>
       <translation>[Îsölàté Séléçtîöñ ~~~~~]</translation>
+    </message>
+    <message>
+      <source>It can run any program. Run it?</source>
+      <translation>[Ît çàñ rûñ àñý prögràm. Rûñ ît? ~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Job</source>
@@ -1477,8 +1717,36 @@
       <translation>[Légàçý Löök ~~~]</translation>
     </message>
     <message>
+      <source>Lens</source>
+      <translation>[Léñs ~]</translation>
+    </message>
+    <message>
+      <source>Lens preset</source>
+      <translation>[Léñs prését ~~~]</translation>
+    </message>
+    <message>
+      <source>Lens shift</source>
+      <translation>[Léñs shîft ~~~]</translation>
+    </message>
+    <message>
       <source>Light '{name}' added to the script</source>
       <translation>[Lîght '{name}' àddéd tö thé sçrîpt ~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Light properties</source>
+      <translation>[Lîght pröpértîés ~~~~]</translation>
+    </message>
+    <message>
+      <source>Light the structure with a complete set-up: lights and environment, sized to it (applying another rig replaces the rig's lights; your own lights stay)</source>
+      <translation>[Lîght thé strûçtûré wîth à çömplété sét-ûp: lîghts àñd éñvîröñméñt, sîzéd tö ît (àpplýîñg àñöthér rîg réplàçés thé rîg's lîghts; ýöûr öwñ lîghts stàý) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Lighting Rig</source>
+      <translation>[Lîghtîñg Rîg ~~~]</translation>
+    </message>
+    <message>
+      <source>Lighting rig '{name}' applied (Undo reverts it)</source>
+      <translation>[Lîghtîñg rîg '{name}' àpplîéd (Ûñdö révérts ît) ~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Lights</source>
@@ -1497,8 +1765,20 @@
       <translation>[Lög ~]</translation>
     </message>
     <message>
+      <source>Look</source>
+      <translation>[Löök ~]</translation>
+    </message>
+    <message>
+      <source>Look: bloom, vignette and colour grading (applies live; a script's render block can declare one)</source>
+      <translation>[Löök: blööm, vîgñétté àñd çölöûr gràdîñg (àpplîés lîvé; à sçrîpt's réñdér blöçk çàñ déçlàré öñé) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Looking for a render device…</source>
       <translation>[Löökîñg för à réñdér dévîçé… ~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Mapping</source>
+      <translation>[Màppîñg ~~]</translation>
     </message>
     <message>
       <source>Matches</source>
@@ -1541,6 +1821,10 @@
       <translation>[Ñéw vàrîàtîöñs ~~~~]</translation>
     </message>
     <message>
+      <source>No depth of field in this projection</source>
+      <translation>[Ñö dépth öf fîéld îñ thîs pröjéçtîöñ ~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>No parameters. Declare one with  #define NAME 1 (float:0-2)</source>
       <translation>[Ñö pàràmétérs. Déçlàré öñé wîth  #défîñé ÑÀMÉ 1 (flöàt:0-2) ~~~~~~~~~~~~~~~~~]</translation>
     </message>
@@ -1569,6 +1853,10 @@
       <translation>[Öbjéçts pér géñéràtîöñ (léft: thé fîrst géñéràtîöñ) ~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>On Selection</source>
+      <translation>[Öñ Séléçtîöñ ~~~]</translation>
+    </message>
+    <message>
       <source>Open</source>
       <translation>[Öpéñ ~]</translation>
     </message>
@@ -1581,8 +1869,12 @@
       <translation>[Öpéñ Földér… ~~~]</translation>
     </message>
     <message>
-      <source>Open in Blender</source>
-      <translation>[Öpéñ îñ Bléñdér ~~~~]</translation>
+      <source>Open Script</source>
+      <translation>[Öpéñ Sçrîpt ~~~]</translation>
+    </message>
+    <message>
+      <source>Open in {app}</source>
+      <translation>[Öpéñ îñ {app} ~~~]</translation>
     </message>
     <message>
       <source>Open scripts</source>
@@ -1599,6 +1891,14 @@
     <message>
       <source>Options</source>
       <translation>[Öptîöñs ~~]</translation>
+    </message>
+    <message>
+      <source>Ortho height</source>
+      <translation>[Örthö héîght ~~~]</translation>
+    </message>
+    <message>
+      <source>Orthographic height</source>
+      <translation>[Örthögràphîç héîght ~~~~~]</translation>
     </message>
     <message>
       <source>Output</source>
@@ -1637,6 +1937,10 @@
       <translation>[Pîçk àñ öbjéçt îñ thé vîéwpört fîrst. ~~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Pinhole: everything is sharp</source>
+      <translation>[Pîñhölé: évérýthîñg îs shàrp ~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Point</source>
       <translation>[Pöîñt ~]</translation>
     </message>
@@ -1651,6 +1955,10 @@
     <message>
       <source>Preferences</source>
       <translation>[Préféréñçés ~~~]</translation>
+    </message>
+    <message>
+      <source>Preparing…</source>
+      <translation>[Prépàrîñg… ~~~]</translation>
     </message>
     <message>
       <source>Preset</source>
@@ -1671,6 +1979,10 @@
     <message>
       <source>Progress</source>
       <translation>[Prögréss ~~]</translation>
+    </message>
+    <message>
+      <source>Projection</source>
+      <translation>[Pröjéçtîöñ ~~~]</translation>
     </message>
     <message>
       <source>Python scripts (*.py)</source>
@@ -1725,6 +2037,10 @@
       <translation>[Réñdér Öñlý ~~~]</translation>
     </message>
     <message>
+      <source>Render first (F9), then copy its report.</source>
+      <translation>[Réñdér fîrst (F9), théñ çöpý îts répört. ~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Render first (F9), then pick a region to render again.</source>
       <translation>[Réñdér fîrst (F9), théñ pîçk à régîöñ tö réñdér àgàîñ. ~~~~~~~~~~~~~~~~]</translation>
     </message>
@@ -1745,6 +2061,10 @@
       <translation>[Réñdér prését: sàmplés, îmàgé sîzé, ñöîsé thréshöld àñd déñöîsîñg ~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Render the animation now</source>
+      <translation>[Réñdér thé àñîmàtîöñ ñöw ~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Render without saving; use Save… afterwards</source>
       <translation>[Réñdér wîthöût sàvîñg; ûsé Sàvé… àftérwàrds ~~~~~~~~~~~~]</translation>
     </message>
@@ -1755,6 +2075,14 @@
     <message>
       <source>Rendering</source>
       <translation>[Réñdérîñg ~~]</translation>
+    </message>
+    <message>
+      <source>Rendering {percent} %</source>
+      <translation>[Réñdérîñg {percent} % ~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Rendering: {text}</source>
+      <translation>[Réñdérîñg: {text} ~~~~~]</translation>
     </message>
     <message>
       <source>Renders use the {name} integrator</source>
@@ -1797,8 +2125,16 @@
       <translation>[Réstöréd thé sñàpshöt öf {time} ~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>Restored {count} script(s) from the declined recovery</source>
+      <translation>[Réstöréd {count} sçrîpt(s) fröm thé déçlîñéd réçövérý ~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Resume</source>
       <translation>[Résûmé ~]</translation>
+    </message>
+    <message>
+      <source>Reveal in Folder</source>
+      <translation>[Révéàl îñ Földér ~~~~]</translation>
     </message>
     <message>
       <source>Right</source>
@@ -1823,6 +2159,10 @@
     <message>
       <source>Run a Program</source>
       <translation>[Rûñ à Prögràm ~~~]</translation>
+    </message>
+    <message>
+      <source>Run after export</source>
+      <translation>[Rûñ àftér éxpört ~~~~]</translation>
     </message>
     <message>
       <source>Same Call Site</source>
@@ -1851,6 +2191,10 @@
     <message>
       <source>Save</source>
       <translation>[Sàvé ~]</translation>
+    </message>
+    <message>
+      <source>Save As…</source>
+      <translation>[Sàvé Às… ~~]</translation>
     </message>
     <message>
       <source>Save Preset</source>
@@ -1905,6 +2249,10 @@
       <translation>[Sàvé tö ~~]</translation>
     </message>
     <message>
+      <source>Save two views or more in the Camera panel first.</source>
+      <translation>[Sàvé twö vîéws ör möré îñ thé Çàmérà pàñél fîrst. ~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Saved a Structure Synth 1.5 copy</source>
       <translation>[Sàvéd à Strûçtûré Sýñth 1.5 çöpý ~~~~~~~~~]</translation>
     </message>
@@ -1947,6 +2295,30 @@
     <message>
       <source>Seeds</source>
       <translation>[Sééds ~]</translation>
+    </message>
+    <message>
+      <source>Select a light to edit it; the light block in the script is updated.</source>
+      <translation>[Séléçt à lîght tö édît ît; thé lîght blöçk îñ thé sçrîpt îs ûpdàtéd. ~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Sensor</source>
+      <translation>[Séñsör ~]</translation>
+    </message>
+    <message>
+      <source>Sensor size (mm)</source>
+      <translation>[Séñsör sîzé (mm) ~~~~]</translation>
+    </message>
+    <message>
+      <source>Set the height</source>
+      <translation>[Sét thé héîght ~~~~]</translation>
+    </message>
+    <message>
+      <source>Shallow</source>
+      <translation>[Shàllöw ~~]</translation>
+    </message>
+    <message>
+      <source>Shift (x, y)</source>
+      <translation>[Shîft (x, ý) ~~~]</translation>
     </message>
     <message>
       <source>Show</source>
@@ -2013,6 +2385,14 @@
       <translation>[Strûçtûrà Hélp ~~~~]</translation>
     </message>
     <message>
+      <source>Structura hit an internal error ({summary}). Your scripts are saved in the recovery snapshot; you can keep working.</source>
+      <translation>[Strûçtûrà hît àñ îñtérñàl érrör ({summary}). Ýöûr sçrîpts àré sàvéd îñ thé réçövérý sñàpshöt; ýöû çàñ kéép wörkîñg. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Structure size</source>
+      <translation>[Strûçtûré sîzé ~~~~]</translation>
+    </message>
+    <message>
       <source>Sun</source>
       <translation>[Sûñ ~]</translation>
     </message>
@@ -2041,6 +2421,10 @@
       <translation>[Tàrgét ~]</translation>
     </message>
     <message>
+      <source>Target: the point looked at · Manual: the distance below (Alt+click in the viewport) · Hyperfocal: sharp from half that distance to infinity</source>
+      <translation>[Tàrgét: thé pöîñt löökéd àt · Màñûàl: thé dîstàñçé bélöw (Àlt+çlîçk îñ thé vîéwpört) · Hýpérföçàl: shàrp fröm hàlf thàt dîstàñçé tö îñfîñîtý ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Template</source>
       <translation>[Témplàté ~~]</translation>
     </message>
@@ -2057,8 +2441,16 @@
       <translation>[Témplàté téxt ~~~]</translation>
     </message>
     <message>
-      <source>Templates can run any program. Run it?</source>
-      <translation>[Témplàtés çàñ rûñ àñý prögràm. Rûñ ît? ~~~~~~~~~~~]</translation>
+      <source>The camera orbits the current view's target. The timeline's camera path is replaced; its range becomes one seamless loop.</source>
+      <translation>[Thé çàmérà örbîts thé çûrréñt vîéw's tàrgét. Thé tîmélîñé's çàmérà pàth îs réplàçéd; îts ràñgé béçömés öñé séàmléss lööp. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>The camera's distance at the end, as a share of the start (focus on the target follows it)</source>
+      <translation>[Thé çàmérà's dîstàñçé àt thé éñd, às à shàré öf thé stàrt (föçûs öñ thé tàrgét föllöws ît) ~~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>The error report is on the clipboard</source>
+      <translation>[Thé érrör répört îs öñ thé çlîpböàrd ~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>The layout is reset when you press OK.</source>
@@ -2069,6 +2461,14 @@
       <translation>[Thé lîñéàr vàlûé öf thé pîxél ûñdér thé çûrsör; Shîft+dràg ré-réñdérs à régîöñ ~~~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>The mesh is {verdict}.</source>
+      <translation>[Thé mésh îs {verdict}. ~~~~~~]</translation>
+    </message>
+    <message>
+      <source>The render report is on the clipboard (Markdown)</source>
+      <translation>[Thé réñdér répört îs öñ thé çlîpböàrd (Màrkdöwñ) ~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>The rules that made this object (re-runs the build in trace mode)</source>
       <translation>[Thé rûlés thàt màdé thîs öbjéçt (ré-rûñs thé bûîld îñ tràçé mödé) ~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
@@ -2077,16 +2477,24 @@
       <translation>[Thé sçrîpt wàñts tö rûñ: ~~~~~~~]</translation>
     </message>
     <message>
-      <source>The template '{name}' runs a program on the exported file:</source>
-      <translation>[Thé témplàté '{name}' rûñs à prögràm öñ thé éxpörtéd fîlé: ~~~~~~~~~~~~~~~~~]</translation>
+      <source>The template '{name}'</source>
+      <translation>[Thé témplàté '{name}' ~~~~~~]</translation>
     </message>
     <message>
       <source>Theme</source>
       <translation>[Thémé ~]</translation>
     </message>
     <message>
+      <source>There is no declined recovery snapshot.</source>
+      <translation>[Théré îs ñö déçlîñéd réçövérý sñàpshöt. ~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>This Structure Synth script has raytracer settings. Render it with the classic look of Structure Synth's raytracer, or with the modern path tracer?</source>
       <translation>[Thîs Strûçtûré Sýñth sçrîpt hàs ràýtràçér séttîñgs. Réñdér ît wîth thé çlàssîç löök öf Strûçtûré Sýñth's ràýtràçér, ör wîth thé mödérñ pàth tràçér? ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Tilt (x, y)</source>
+      <translation>[Tîlt (x, ý) ~~~]</translation>
     </message>
     <message>
       <source>Time</source>
@@ -2101,12 +2509,32 @@
       <translation>[Tràçîñg… ~~]</translation>
     </message>
     <message>
+      <source>Turns</source>
+      <translation>[Tûrñs ~]</translation>
+    </message>
+    <message>
+      <source>Turntable</source>
+      <translation>[Tûrñtàblé ~~]</translation>
+    </message>
+    <message>
+      <source>Turntable keyed: {frames} frames</source>
+      <translation>[Tûrñtàblé kéýéd: {frames} fràmés ~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Units per metre</source>
+      <translation>[Ûñîts pér métré ~~~~]</translation>
+    </message>
+    <message>
       <source>Up</source>
       <translation>[Ûp ~]</translation>
     </message>
     <message>
       <source>Use the structure's colours</source>
       <translation>[Ûsé thé strûçtûré's çölöûrs ~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Use the structure's transparency (alpha)</source>
+      <translation>[Ûsé thé strûçtûré's tràñspàréñçý (àlphà) ~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Uses</source>
@@ -2161,12 +2589,20 @@
       <translation>[Wélçömé ~~]</translation>
     </message>
     <message>
+      <source>Width</source>
+      <translation>[Wîdth ~]</translation>
+    </message>
+    <message>
       <source>Workspace</source>
       <translation>[Wörkspàçé ~~]</translation>
     </message>
     <message>
       <source>Workspace (Ctrl+1 … Ctrl+4)</source>
       <translation>[Wörkspàçé (Çtrl+1 … Çtrl+4) ~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>World units per metre</source>
+      <translation>[Wörld ûñîts pér métré ~~~~~~]</translation>
     </message>
     <message>
       <source>Write Material</source>
@@ -2221,6 +2657,14 @@
       <translation>[éxpörtîñg ~~]</translation>
     </message>
     <message>
+      <source>f-stop</source>
+      <translation>[f-stöp ~]</translation>
+    </message>
+    <message>
+      <source>f/{f:.2g} · focus {d:.3g} · sharp from {near:.3g} to {far}</source>
+      <translation>[f/{f:.2g} · föçûs {d:.3g} · shàrp fröm {near:.3g} tö {far} ~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>failed</source>
       <translation>[fàîléd ~]</translation>
     </message>
@@ -2235,6 +2679,14 @@
     <message>
       <source>line {line}</source>
       <translation>[lîñé {line} ~~~]</translation>
+    </message>
+    <message>
+      <source>not watertight (see below)</source>
+      <translation>[ñöt wàtértîght (séé bélöw) ~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>optional: a program to run on the file, e.g. python clean.py "$FILE"</source>
+      <translation>[öptîöñàl: à prögràm tö rûñ öñ thé fîlé, é.g. pýthöñ çléàñ.pý "$FÎLÉ" ~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>preset</source>
@@ -2265,12 +2717,24 @@
       <translation>[thé öbjéçt lîmît ('sét màxöbjéçts') wàs réàçhéd ~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
+      <source>this export</source>
+      <translation>[thîs éxpört ~~~]</translation>
+    </message>
+    <message>
       <source>top level</source>
       <translation>[töp lévél ~~]</translation>
     </message>
     <message>
       <source>variation …</source>
       <translation>[vàrîàtîöñ … ~~~]</translation>
+    </message>
+    <message>
+      <source>watertight: ready to print</source>
+      <translation>[wàtértîght: réàdý tö prîñt ~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>{app} was not found: set its path in Preferences ▸ Paths.</source>
+      <translation>[{app} wàs ñöt föûñd: sét îts pàth îñ Préféréñçés ▸ Pàths. ~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>{count} cache folders removed; kernels compile again on the next start.</source>
@@ -2291,6 +2755,14 @@
     <message>
       <source>{name} finished (exit code {code})</source>
       <translation>[{name} fîñîshéd (éxît çödé {code}) ~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>{name} is ready</source>
+      <translation>[{name} îs réàdý ~~~~]</translation>
+    </message>
+    <message>
+      <source>{source} runs a program on the exported file:</source>
+      <translation>[{source} rûñs à prögràm öñ thé éxpörtéd fîlé: ~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>◆ Camera</source>

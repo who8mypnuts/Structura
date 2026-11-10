@@ -52,14 +52,18 @@ def test_region_render_only_touches_the_region() -> None:
     assert float(np.abs(part[mask]).max()) == 0.0
 
 
-def test_polygonal_bokeh_keeps_the_energy_but_changes_the_blur() -> None:
-    camera = "camera { position [0 0 8] target [0 0 0] fov 20 aperture 0.4 focus 3 }"
+def _lamp(camera: str) -> np.ndarray:
     script = ("#version 2\nenvironment { type color color #000000 }\nmaterial lamp { emission #fff 20 }\n"
               f"{camera}\n{{ s 0.3 }} sphere::lamp\n")  # fmt: skip
     scene = build_scene(compile_script(script).program).scene
     base = replace(script_settings(scene), width=48, height=48, samples=256, samples_per_pass=64, integrator="path")
-    round_ = render(prepare(scene), base, CpuBackend()).image
-    hexagon = render(prepare(scene), replace(base, blades=6, blade_rotation_deg=15.0), CpuBackend()).image
+    return render(prepare(scene), base, CpuBackend()).image
+
+
+def test_polygonal_bokeh_keeps_the_energy_but_changes_the_blur() -> None:
+    camera = "camera { position [0 0 8] target [0 0 0] fov 20 aperture 0.4 focus 3 "
+    round_ = _lamp(camera + "}")
+    hexagon = _lamp(camera + "blades 6 blade_rotation 15 }")
     assert float(hexagon.sum()) == pytest.approx(float(round_.sum()), rel=0.05)  # the same light, spread differently
     lit_round, lit_hexagon = ((img.mean(axis=2) > 0.05).sum() for img in (round_, hexagon))
     assert 0.75 < lit_hexagon / lit_round < 0.95  # an inscribed hexagon covers 83% of the disc

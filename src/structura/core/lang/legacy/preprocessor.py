@@ -24,6 +24,7 @@ _DEFINE_INT = re.compile(r"^#define\s([^\s]+)\s(.*)\s\(int:([^\s]*)\)$")
 _DEFINE = re.compile(r"^#define\s([^\s]+)\s(.*)$")
 _DEFINE_TYPED = re.compile(r"^#define\s([^\s]+)\s(\S+)\s\((color|bool|enum)(?::([^\s)]*))?\)$")  # v2 #param
 _RANDOM = re.compile(r"random\[([-+]?[0-9]*\.?[0-9]+),([-+]?[0-9]*\.?[0-9]+)\]")
+_RAND_V2 = re.compile(r"(?<![\w.])rand\(\s*([-+]?[0-9]*\.?[0-9]+)\s*,\s*([-+]?[0-9]*\.?[0-9]+)\s*\)")  # docs/05 §9.1
 _LINE_SPLIT = re.compile(r"\r\n|\r|\n")
 _KNOWN = re.compile(r"\s*#(version|javascript)\b", re.IGNORECASE)
 MAX_SUBSTITUTIONS = 100
@@ -137,6 +138,8 @@ class LegacyPreprocessor:
                 line = raw
             else:
                 line = self._apply_defines(raw)
+                if self.whole_words:  # v2: 'rand(a, b)' in an expression is 'random[a,b]' (the same stream)
+                    line = _RAND_V2.sub(r"random[\1,\2]", line)
             lines[index] = self._replace_random(line, rng)
         self.result.text = "\r\n".join(lines)
         self.result.defines = dict(self.substitutions)

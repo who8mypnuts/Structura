@@ -59,7 +59,8 @@ class ProjectActions(QObject):
         return tab
 
     def open_render_dialog(self) -> None:
-        name, _ = QFileDialog.getOpenFileName(self.w, "Open from Render", "", "Renders (*.png *.exr)")
+        start = SavePaths(self.w.settings).folder("render")
+        name, _ = QFileDialog.getOpenFileName(self.w, "Open from Render", str(start), "Renders (*.png *.exr)")
         if name:
             self.open_render(Path(name))
 
@@ -89,7 +90,7 @@ class ProjectActions(QObject):
         if target is None:
             return self.save_as(tab)
         if tab.path is not None:
-            tab.save()  # a linked script: its own file first
+            self.w.docs.write(tab)  # a linked script: its own file first (with a backup)
         model.save(target, self.snapshot(tab, target), tab.dialect)
         tab.project_path = target
         tab.editor.document().setModified(False)

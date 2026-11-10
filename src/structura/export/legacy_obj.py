@@ -21,6 +21,7 @@ from .templates.qt_format import qnum
 F32 = np.float32
 V3 = tuple[float, float, float]
 NO_NORMAL = -1
+LEGACY_KINDS = frozenset((K.BOX, K.GRID, K.SPHERE, K.MESH, K.LINE, K.DOT, K.TRIANGLE))  # what 1.5 exported
 DTOR = float(F32(3.1415 / 180.0))
 
 
@@ -160,8 +161,8 @@ class LegacyObjExport:
 
     def add(self, scene: SceneIR, i: int) -> None:
         kind = K(int(scene.kind[i]))
-        if kind == K.TEMPLATE:
-            return
+        if kind not in LEGACY_KINDS:
+            return  # markers, and the cylinders / v2 solids 1.5's OBJ writer never saw (the modern OBJ has them)
         target = self._group(scene, i)
         if kind == K.SPHERE:
             c = _point(scene, i, (0.5, 0.5, 0.5))

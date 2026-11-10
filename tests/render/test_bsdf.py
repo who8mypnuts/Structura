@@ -22,10 +22,14 @@ MATERIALS = {
     "diffuse": Material(roughness=1.0, specular=0.0),
     "plastic": Material(roughness=0.35),
     "metal": Material(metallic=1.0, roughness=0.25),
+    "brushed": Material(metallic=1.0, roughness=0.4, anisotropy=0.8, anisotropy_rotation=0.1),
     "rough-glass": Material(transmission=1.0, roughness=0.4),
+    "glass-own-roughness": Material(transmission=1.0, roughness=0.05, transmission_roughness=0.5),
+    "thin-glass": Material(transmission=1.0, roughness=0.35, thin_walled=True),
     "coated": Material(roughness=0.6, coat=1.0, coat_roughness=0.2),
 }
 WO = np.array([0.48, 0.1, 0.87])
+TANGENT = 0.7  # radians: the anisotropy axis is turned away from the local x axis
 
 
 @cache
@@ -35,7 +39,8 @@ def _module() -> ir.Module:
 
 def _args(material: Material, front: int) -> dict[str, object]:
     wo = WO / np.linalg.norm(WO)
-    return {"front": front, "wo_x": wo[0], "wo_y": wo[1], "wo_z": wo[2], "mat_f": pack_material(material)}
+    return {"front": front, "tangent": TANGENT, "wo_x": wo[0], "wo_y": wo[1], "wo_z": wo[2],
+            "mat_f": pack_material(material)}  # fmt: skip
 
 
 def _samples(material: Material, front: int) -> np.ndarray:

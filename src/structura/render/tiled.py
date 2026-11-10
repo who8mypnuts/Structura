@@ -73,7 +73,9 @@ def tiled_passes(
     pacing, finished, shown = Pacing(s), len(order) - len(todo), time.perf_counter()
     host = film.reshape(h, w, FILM_F)
     for k, rect in enumerate(todo):
+        started = time.perf_counter()
         host[rect[1] : rect[3]] = render_bucket(run, rect, pacing, between)
+        run.pass_times.append(time.perf_counter() - started)  # per bucket
         finished += 1
         last = k + 1 == len(todo) or run.out_of_time()
         if last or time.perf_counter() - shown >= SNAPSHOT_SECONDS:

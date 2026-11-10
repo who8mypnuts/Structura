@@ -8,43 +8,44 @@ from typing import Any
 
 import numpy as np
 
-from ..core.color import parse_color, srgb_to_linear
+from ..core.color import linear_of, rgb_of
 from ..core.scene.camera import Camera
+from ..core.scene.camera_block import camera_from_block
 from ..core.scene.declarations import SceneDeclarations
+from ..core.scene.vectors import vec3_of
 from .ground import MODES as GROUND_MODES
-from .settings import BUCKET_ORDERS, FILTER_NAMES, INTEGRATORS, SAMPLERS, SEQUENCES, RenderSettings
-
-RGB = tuple[float, float, float]
-
-
-def _linear(value: Any, default: RGB) -> RGB:
-    c = parse_color(str(value)) if value is not None else None
-    if c is None:
-        return default
-    r, g, b = (float(v) for v in srgb_to_linear(np.array([c.r, c.g, c.b], np.float32) / np.float32(65535)))
-    return (r, g, b)
-
-
-def _vec(value: Any) -> RGB | None:
-    return (float(value[0]), float(value[1]), float(value[2])) if isinstance(value, tuple) and len(value) == 3 else None
-
+from .post import post_from_block
+from .settings import (
+    BUCKET_ORDERS,
+    DENOISERS,
+    FILTER_NAMES,
+    INTEGRATORS,
+    SAMPLERS,
+    SEQUENCES,
+    SKY_BOTTOM,
+    SKY_GROUND,
+    SKY_TOP,
+    VIEWS,
+    RenderSettings,
+)
 
 CHOICES: dict[str, tuple[str, tuple[str, ...]]] = {  # block key → (settings field, allowed values)
     "integrator": ("integrator", tuple(INTEGRATORS)),
-    "type": ("camera_type", ("perspective", "orthographic", "spherical", "fisheye")),
     "filter": ("filter", FILTER_NAMES),
     "caustics": ("caustics", ("filtered", "on", "photons")),
     "sampler": ("sampler", SAMPLERS),
     "bucket_order": ("bucket_order", BUCKET_ORDERS),
     "sequence": ("sequence", SEQUENCES),
+    "view": ("view", VIEWS),
+    "denoise": ("denoise", DENOISERS),
 }
-INTS = {"samples": ("samples", 1), "max_bounces": ("max_bounces", 0), "blades": ("blades", 0),
+INTS = {"samples": ("samples", 1), "max_bounces": ("max_bounces", 0),
         "photon_count": ("photon_count", 1000), "bucket_size": ("bucket_size", 8),
         "diffuse_bounces": ("diffuse_bounces", 0), "glossy_bounces": ("glossy_bounces", 0),
         "transmission_bounces": ("transmission_bounces", 0)}  # block key → (field, minimum)  # fmt: skip
 TRUE = ("true", "on", "yes", "1")
-FLOATS = {"height": "ortho_height", "blade_rotation": "blade_rotation_deg", "noise_threshold": "noise_threshold",
-          "time_limit": "time_limit", "photon_radius": "photon_radius"}  # fmt: skip
+FLOATS = {"noise_threshold": "noise_threshold", "time_limit": "time_limit", "photon_radius": "photon_radius",
+          "exposure": "exposure"}  # fmt: skip
 
 
 def _render_block(block: dict[str, Any]) -> dict[str, Any]:
@@ -57,16 +58,13 @@ def _render_block(block: dict[str, Any]) -> dict[str, Any]:
             out[key] = max(0.0, out[key])
     if "ao_direct" in block:
         out["ao_direct"] = str(block["ao_direct"]).lower() in TRUE
+    if (post := post_from_block(block)) is not None:
+        out["post"] = post
     size = str(block.get("size", ""))
     if "x" in size:
         w, _, h = size.lower().partition("x")
         out["width"], out["height"] = int(w), int(h)
     return out
-
-
-def _srgb(block: dict[str, Any], key: str) -> RGB | None:
-    c = parse_color(str(block[key])) if key in block else None
-    return None if c is None else (c.r / 65535, c.g / 65535, c.b / 65535)
 
 
 def _ground(block: dict[str, Any]) -> dict[str, Any]:
@@ -76,21 +74,24 @@ def _ground(block: dict[str, Any]) -> dict[str, Any]:
     if str(block.get("ground", "")) in GROUND_MODES:
         out["ground_plane"] = str(block["ground"])
     for key in ("fog_color", "ground_color"):
-        if (colour := _srgb(block, key)) is not None:
+        if key in block and (colour := rgb_of(block[key])) is not None:
             out[key] = colour
     return out
 
 
 def _sun(decl: SceneDeclarations) -> dict[str, Any]:
-    sun = next((light for light in decl.lights if light.type == "sun"), None)
+    """The sun: the light 'environment { sun NAME }' names, else the first sun light."""
+    suns = [light for light in decl.lights if light.type == "sun"]
+    named = str(decl.environment.get("sun", "")).lower()
+    sun = next((light for light in suns if light.name.lower() == named), suns[0] if suns else None)
     if sun is None:  # a script that declares its lighting has no implicit sun (night scenes, studio lights)
         return {"sun_irradiance": (0.0, 0.0, 0.0)} if decl.lights or decl.environment else {}
     out: dict[str, Any] = {}
-    travel = _vec(sun.values.get("direction"))
+    travel = vec3_of(sun.values.get("direction"))
     if travel is not None:
         d = -np.asarray(travel) / (np.linalg.norm(travel) or 1.0)  # towards the sun
         out["sun_vector"] = (float(d[0]), float(d[1]), float(d[2]))
-    colour = _linear(sun.values.get("color"), (1.0, 1.0, 1.0))
+    colour = linear_of(sun.values.get("color"), (1.0, 1.0, 1.0))
     intensity = float(sun.values.get("intensity", 3.0))
     out["sun_irradiance"] = (colour[0] * intensity, colour[1] * intensity, colour[2] * intensity)
     if "angle" in sun.values:
@@ -105,15 +106,17 @@ def _environment(block: dict[str, Any]) -> dict[str, Any]:
     if kind == "hdri":
         return {"env_type": "hdri", "env_file": str(block.get("file", "")), **shared}
     if kind == "sunsky":
-        ground = {"ground": _linear(block["ground"], (0.06, 0.055, 0.05))} if "ground" in block else {}
+        ground = {"ground": linear_of(block["ground"], SKY_GROUND)} if "ground" in block else {}
         turbidity = {"turbidity": float(block["turbidity"])} if "turbidity" in block else {}
         return {"env_type": "sunsky", **turbidity, **ground, **shared}
     if kind == "color":
-        c = _linear(block.get("color"), (1.0, 1.0, 1.0))
+        c = linear_of(block.get("color"), (1.0, 1.0, 1.0))
         return {"sky_top": c, "sky_bottom": c}
     if kind == "gradient":
-        return {"sky_top": _linear(block.get("top"), (0.55, 0.65, 0.85)),
-                "sky_bottom": _linear(block.get("bottom"), (0.25, 0.24, 0.22))}  # fmt: skip
+        return {
+            "sky_top": linear_of(block.get("top"), SKY_TOP),
+            "sky_bottom": linear_of(block.get("bottom"), SKY_BOTTOM),
+        }
     return {}
 
 
@@ -122,14 +125,9 @@ def declared_settings(
 ) -> RenderSettings:
     if decl is None:
         return settings
-    camera = {k: v for k, v in _render_block(decl.camera).items()
-              if k in ("camera_type", "ortho_height", "blades", "blade_rotation_deg")}  # fmt: skip
-    if decl.camera.get("type") == "fisheye" and "fov" in decl.camera:
-        camera["fisheye_fov"] = float(decl.camera["fov"])
     values = {
         **_render_block(decl.render),
         **_ground(decl.render),
-        **camera,
         **_sun(decl),
         **_environment(decl.environment),
     }
@@ -142,11 +140,4 @@ def declared_camera(decl: SceneDeclarations | None, fallback: Camera) -> Camera 
     """The camera block as a Camera, or None when the script has none."""
     if decl is None or not decl.camera:
         return None
-    block = decl.camera
-    eye = _vec(block.get("position")) or fallback.eye
-    target = _vec(block.get("target")) or fallback.target
-    focus = block.get("focus")
-    return Camera(
-        eye, target, _vec(block.get("up")) or (0.0, 1.0, 0.0), float(block.get("fov", fallback.fov_y_deg)),
-        float(block.get("aperture", 0.0)), float(focus) if isinstance(focus, float) else None,
-    )  # fmt: skip
+    return camera_from_block(decl.camera, fallback)

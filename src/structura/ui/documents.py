@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import uuid
+from collections.abc import Callable
 from dataclasses import replace
 from pathlib import Path
 
-from PySide6.QtCore import QFileSystemWatcher, Qt, Signal, Slot
+from PySide6.QtCore import QEvent, QFileSystemWatcher, QObject, Qt, Signal, Slot
+from PySide6.QtGui import QMouseEvent
 from PySide6.QtWidgets import QMessageBox, QSplitter, QTabWidget, QVBoxLayout, QWidget
 
 from ..core import text_file
@@ -33,6 +35,24 @@ R1
 rule R1 {
   { x 1.2 rz 12 ry 6 s 0.95 hue 8 } R1
   { color #4ad } box
+}
+"""
+NEW_SCRIPT_V2 = """#version 2
+// A new Structura script in EisenScript v2: materials, lights, environment and render settings in blocks
+material brass { preset gold roughness 0.25 }
+material frost { preset frosted-glass }
+light key { type sun direction [-0.5 -1 -0.6] intensity 3 angle 2 }
+environment { type sunsky turbidity 3 }
+render { integrator path samples 128 ground catcher }
+
+set maxdepth 40
+
+12 * { ry 30 } arm
+
+rule arm {
+  { x 1 rz 8 s 0.93 hue 10 } arm
+  { s 1 0.3 0.3 } cylinder::brass
+  { x 0.6 s 0.35 } sphere::frost
 }
 """
 
@@ -171,6 +191,7 @@ class DocumentTabs(QTabWidget):
     def __init__(self, theme: Theme, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.theme = theme
+        self.save_tab: Callable[[EditorTab], bool] | None = None  # the window's Save (True: saved)
         self.setTabsClosable(True)
         self.setMovable(True)
         self.setDocumentMode(True)
@@ -178,6 +199,22 @@ class DocumentTabs(QTabWidget):
         self.currentChanged.connect(lambda _i: self.current_tab_changed.emit(self.current()))
         self.watcher = QFileSystemWatcher(self)
         self.watcher.fileChanged.connect(self._file_changed)
+        self.tabBar().setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)  # DocumentActions.tab_menu
+        self.tabBar().installEventFilter(self)
+
+    def eventFilter(self, watched: QObject, event: QEvent) -> bool:  # noqa: N802
+        """A middle click on a tab closes it (as in browsers and code editors)."""
+        if watched is self.tabBar() and event.type() == QEvent.Type.MouseButtonRelease:
+            assert isinstance(event, QMouseEvent)
+            index = self.tabBar().tabAt(event.position().toPoint())
+            if event.button() == Qt.MouseButton.MiddleButton and index >= 0:
+                self.close_tab(index)
+                return True
+        return super().eventFilter(watched, event)
+
+    def close_tabs(self, indices: list[int]) -> bool:
+        """Close several tabs, highest index first; stop at the first one the user keeps (Cancel)."""
+        return all(self.close_tab(i) for i in sorted(indices, reverse=True))
 
     def tabs(self) -> list[EditorTab]:
         return [w for i in range(self.count()) if isinstance(w := self.widget(i), EditorTab)]
@@ -239,13 +276,17 @@ class DocumentTabs(QTabWidget):
             self.setTabToolTip(i, str(tab.project_path or tab.path or "Unsaved script"))
 
     def close_tab(self, index: int) -> bool:
+        """Close the tab at ``index``; a modified one asks Save / Don't Save / Cancel. False: it stays open."""
         tab = self.widget(index)
         if isinstance(tab, EditorTab) and tab.modified:
+            buttons = QMessageBox.StandardButton
             answer = QMessageBox.question(
-                self, "Unsaved changes", f"Close {tab.title} without saving?",
-                QMessageBox.StandardButton.Discard | QMessageBox.StandardButton.Cancel,
+                self, "Unsaved Changes", f"Save the changes to {tab.display_name} before closing it?",
+                buttons.Save | buttons.Discard | buttons.Cancel, buttons.Save,
             )  # fmt: skip
-            if answer != QMessageBox.StandardButton.Discard:
+            if answer == buttons.Save and not (self.save_tab is not None and self.save_tab(tab)):
+                return False  # the save was cancelled: keep the tab
+            if answer not in (buttons.Save, buttons.Discard):
                 return False
         self.removeTab(index)
         if isinstance(tab, EditorTab):

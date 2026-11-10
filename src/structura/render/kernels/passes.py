@@ -6,12 +6,11 @@ from __future__ import annotations
 from structura.kernels.skl import Buf, BufRW, clamp, f32, floor, func, kernel, min, struct, u32, uvec3, vec3
 
 from .buffers import SceneBufs
-from .camera import camera_ray, cfg3
+from .camera import camera_ray
 from .classic import classic_radiance
 from .color import srgb_decode
 from .integrators import shade_first_hit
 from .layout import (
-    BACKGROUND,
     CLAMP,
     FILM_F,
     FILTER_BASE,
@@ -22,9 +21,10 @@ from .layout import (
     INTEGRATOR_CLASSIC,
     INTEGRATOR_PATH,
 )
-from .path import path_radiance
+from .opacity import visible_hit
+from .path import escaped, path_radiance
 from .sampling import sample01
-from .scene import NO_HIT, trace
+from .scene import NO_HIT
 
 
 @struct
@@ -70,9 +70,9 @@ def sample_radiance(
         return path_radiance(ray_o, ray_d, max_bounces, pixel, s, sc)
     if integrator == INTEGRATOR_CLASSIC:
         return srgb_decode(classic_radiance(ray_o, ray_d, max_bounces, ao_samples, pixel, s, sc))
-    h = trace(ray_o, ray_d, 0.0, 3.0e38, u32(0), u32(NO_HIT), sc)
-    if h.prim == NO_HIT:
-        return cfg3(sc.cfg, BACKGROUND)
+    h = visible_hit(ray_o, ray_d, pixel, s, sc)
+    if h.prim == NO_HIT:  # the background colour, or the sky when the script declares an environment
+        return escaped(sc, ray_d, True, 0.0, False)
     return shade_first_hit(h, ray_o, ray_d, integrator, ao_samples, pixel, s, sc)
 
 

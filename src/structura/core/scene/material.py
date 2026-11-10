@@ -14,6 +14,8 @@ from functools import cache
 from pathlib import Path
 from typing import Any
 
+from ..params import ParamSpec, ParamType
+
 RGB = tuple[float, float, float]
 PRESETS_FILE = Path(__file__).resolve().parent / "materials.toml"
 
@@ -75,6 +77,36 @@ class Material:
 
 
 FIELD_NAMES = frozenset(f.name for f in fields(Material))
+DEBUG_MODELS = frozenset(m for m in MaterialModel if m.name.startswith("DEBUG"))  # script-only diagnostic looks
+PANEL_MODELS = tuple(m.name.lower() for m in MaterialModel if m not in DEBUG_MODELS)
+
+
+def material_param_specs() -> tuple[ParamSpec, ...]:
+    """The fields the Materials panel edits and 'Write to Script' writes, in display order (docs/10 §3.1).
+
+    Colours (base, emission, attenuation colour) and opacity's 'state' have their own widgets; the debug models
+    stay script-only. An attenuation distance of 0 stands for "no absorption" (math.inf in the Material)."""
+    f, unit = ParamType.FLOAT, (0.0, 1.0)
+    return (
+        ParamSpec("model", ParamType.ENUM, "principled", "Model", choices=PANEL_MODELS),
+        ParamSpec("metallic", f, 0.0, "Metallic", range=unit),
+        ParamSpec("roughness", f, 0.5, "Roughness", range=unit),
+        ParamSpec("specular", f, 0.5, "Specular", range=unit),
+        ParamSpec("ior", f, 1.5, "IOR", range=(1.0, 3.0)),
+        ParamSpec("transmission", f, 0.0, "Transmission (glass)", range=unit),
+        ParamSpec("transmission_roughness", f, 0.0, "Transmission roughness (0 = roughness)", range=unit),
+        ParamSpec("attenuation_distance", f, 0.0, "Absorption distance (0 = clear)", range=(0.0, 1e6),
+                  doc="Inside glass, white light becomes the absorption colour after this distance"),
+        ParamSpec("thin_walled", ParamType.BOOL, False, "Thin-walled (no refraction)",
+                  doc="Single-sided panes and shells: light passes straight through"),
+        ParamSpec("coat", f, 0.0, "Clear coat", range=unit),
+        ParamSpec("coat_roughness", f, 0.03, "Coat roughness", range=unit),
+        ParamSpec("anisotropy", f, 0.0, "Anisotropy", range=(-1.0, 1.0),
+                  doc="Stretches highlights along the object's local x axis (brushed metal); negative: across"),
+        ParamSpec("anisotropy_rotation", f, 0.0, "Anisotropy rotation (turns)", range=unit),
+        ParamSpec("emission_strength", f, 0.0, "Emission strength", range=(0.0, 1000.0)),
+        ParamSpec("opacity", f, 1.0, "Opacity", range=unit),
+    )  # fmt: skip
 
 
 def _coerce(key: str, value: Any) -> Any:

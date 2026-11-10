@@ -21,11 +21,15 @@ CONSERVING = {
     "diffuse": Material(base=WHITE, roughness=1.0, specular=0.0),
     "mirror": Material(base=WHITE, metallic=1.0, roughness=0.0),
     "glass": Material(base=WHITE, transmission=1.0, roughness=0.0),
+    "thin-glass": Material(base=WHITE, transmission=1.0, roughness=0.0, thin_walled=True),
 }
 LOSSY = {
     "plastic": Material(base=WHITE, roughness=0.3),
     "rough-metal": Material(base=WHITE, metallic=1.0, roughness=0.7),
+    "brushed-metal": Material(base=WHITE, metallic=1.0, roughness=0.5, anisotropy=0.9),
     "rough-glass": Material(base=WHITE, transmission=1.0, roughness=0.5),
+    "rough-thin-glass": Material(base=WHITE, transmission=1.0, roughness=0.5, thin_walled=True),
+    "glass-own-roughness": Material(base=WHITE, transmission=1.0, transmission_roughness=0.5),
     "coated": Material(base=WHITE, roughness=0.5, coat=1.0, coat_roughness=0.1),
 }
 

@@ -279,3 +279,11 @@ structura/ui/
 
 `widgets/param_form.py` is the single generator of settings UIs. Render Settings, Preferences, export sheets
 and material editors are all `ParamForm`s over ParamSpec lists (DRY).
+
+> **As built (M12, owner review):** the Camera panel has a simple/advanced **lens editor**
+> (`panels/lens_editor.py`) and the viewport outlines the plane of focus; the Render view's tool bar gained
+> **Frame** (viewport, script, ratios, custom — with a letterbox guide in the viewport) and **Look** (post
+> stack presets, live); the Lights panel edits a light in a catalogue-generated form and applies **lighting
+> rigs**; tabs ask Save / Don't Save / Cancel and have a context menu (Close Others / to the Right, Reveal);
+> File ▸ Recover restores a declined recovery snapshot or opens the backups; an error banner replaces silent
+> failures; Render ▸ Turntable… and Camera Path from Saved Views… key the timeline.

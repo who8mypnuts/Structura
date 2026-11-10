@@ -6,7 +6,7 @@ lights …)."""
 from __future__ import annotations
 
 import json
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, fields
 from pathlib import Path
 from typing import Any
 
@@ -15,6 +15,7 @@ from ..animation.timeline import Timeline
 from ..animation.timeline import from_dict as timeline_from
 from ..animation.timeline import to_dict as timeline_dict
 from ..scene.camera import Camera
+from ..scene.lens import Lens
 from ..text_file import read_script
 from .migrations import CURRENT_VERSION, migrate
 
@@ -39,8 +40,8 @@ class Project:
     reserved: dict[str, Any] = field(default_factory=dict)  # sections this version keeps but does not edit
 
 
-def _camera_json(camera: Camera | None) -> dict[str, Any] | None:
-    return None if camera is None else {"kind": "perspective", **asdict(camera)}
+def camera_to_dict(camera: Camera | None) -> dict[str, Any] | None:
+    return None if camera is None else {"kind": camera.lens.projection, **asdict(camera)}
 
 
 def _vec3(value: Any, default: tuple[float, float, float]) -> tuple[float, float, float]:
@@ -49,15 +50,41 @@ def _vec3(value: Any, default: tuple[float, float, float]) -> tuple[float, float
     return default
 
 
+def lens_from_dict(data: Any) -> Lens:
+    """A Lens from its JSON form; unknown keys are ignored and bad values fall back to the defaults."""
+    if not isinstance(data, dict):
+        return Lens()
+    values: dict[str, Any] = {}
+    for f in fields(Lens):
+        if f.name not in data:
+            continue
+        default, raw = getattr(Lens(), f.name), data[f.name]
+        try:
+            if isinstance(default, tuple):
+                values[f.name] = (float(raw[0]), float(raw[1]))
+            elif f.name in ("fstop", "focus_distance"):
+                values[f.name] = None if raw is None else float(raw)
+            else:
+                values[f.name] = type(default)(raw)
+        except (TypeError, ValueError, IndexError):
+            continue
+    return Lens(**values)
+
+
 def camera_from_dict(data: Any) -> Camera | None:
+    """A Camera from its JSON form (the lens nested; format 1 kept aperture_radius/focus_distance on the camera)."""
     if not isinstance(data, dict) or "eye" not in data or "target" not in data:
         return None
-    focus = data.get("focus_distance")
+    lens = dict(data.get("lens") or {})
+    for old in ("aperture_radius", "focus_distance"):  # format 1 (and renders made before the lens)
+        if old in data and old not in lens:
+            lens[old] = data[old]
+    if lens.get("focus_distance") is not None and "focus_mode" not in lens:
+        lens["focus_mode"] = "manual"
     return Camera(
         eye=_vec3(data["eye"], (0.0, 0.0, 10.0)), target=_vec3(data["target"], (0.0, 0.0, 0.0)),
         up=_vec3(data.get("up"), (0.0, 1.0, 0.0)), fov_y_deg=float(data.get("fov_y_deg", 22.0)),
-        aperture_radius=float(data.get("aperture_radius", 0.0)),
-        focus_distance=None if focus is None else float(focus),
+        lens=lens_from_dict(lens),
     )  # fmt: skip
 
 
@@ -69,13 +96,13 @@ def to_json(project: Project, dialect: int = 1) -> str:
         "format": FORMAT, "format_version": CURRENT_VERSION, "app_version": __version__,
         "script": script | {"dialect": dialect}, "seed": project.seed,
         "auto_increment_seed": project.auto_increment_seed, "params": project.params,
-        "camera": _camera_json(project.camera), "camera_lock_to_script": project.camera_lock_to_script,
+        "camera": camera_to_dict(project.camera), "camera_lock_to_script": project.camera_lock_to_script,
         "render": project.render, **project.reserved, "thumbnail_png_b64": project.thumbnail_png_b64,
     }  # fmt: skip
     if project.timeline is not None:
         data["timeline"] = timeline_dict(project.timeline)
     if project.bookmarks:
-        data["camera_bookmarks"] = {name: _camera_json(camera) for name, camera in project.bookmarks.items()}
+        data["camera_bookmarks"] = {name: camera_to_dict(camera) for name, camera in project.bookmarks.items()}
     return json.dumps(data, indent=2) + "\n"
 
 

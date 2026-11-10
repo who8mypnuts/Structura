@@ -1,5 +1,6 @@
-"""Camera panel (docs/14 §3): the viewport camera in numbers, standard views, bookmarks (saved views) and
-"Copy to Script". It follows the viewport; editing a number moves the viewport."""
+"""Camera panel (docs/14 §3): the viewport camera in numbers, its lens (panels/lens_editor.py: focal length,
+depth of field, focus, and the advanced lens), standard views, bookmarks (saved views) and "Copy to Script".
+It follows the viewport; editing a number moves the viewport."""
 
 from __future__ import annotations
 
@@ -19,8 +20,10 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from ...core.scene.camera import STANDARD_VIEWS, Camera, Vec3
+from ...core.scene.camera import STANDARD_VIEWS, Camera
+from ...core.scene.vectors import Vec3
 from ..i18n import tr
+from .lens_editor import LensEditor
 
 
 def _spin(low: float, high: float, decimals: int = 3, name: str = "") -> QDoubleSpinBox:
@@ -63,22 +66,20 @@ class CameraPanel(QWidget):
     bookmark_chosen = Signal(object)  # Camera
     bookmark_deleted = Signal(str)
     lock_toggled = Signal(bool)  # Lock to Script
+    focus_selection = Signal()  # focus on the object selected in the viewport
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.eye, self.target, self.up = VectorEdit(tr("Position")), VectorEdit(tr("Target")), VectorEdit(tr("Up"))
-        self.fov = _spin(1.0, 170.0, 2, tr("Field of view"))
-        self.aperture = _spin(0.0, 1e4, 4, tr("Aperture radius"))
-        self.auto_focus = QCheckBox(tr("Auto (target distance)"))
-        self.focus = _spin(0.0, 1e6, 3, tr("Focus distance"))
+        self.lens = LensEditor()
+        self.lens.focus_selection.connect(self.focus_selection)
         form = QFormLayout()
-        for label, widget in ((tr("Position"), self.eye), (tr("Target"), self.target), (tr("Up"), self.up),
-                              (tr("Field of view °"), self.fov), (tr("Aperture"), self.aperture),
-                              (tr("Focus"), self.auto_focus), ("", self.focus)):  # fmt: skip
+        for label, widget in ((tr("Position"), self.eye), (tr("Target"), self.target), (tr("Up"), self.up)):
             form.addRow(label, widget)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(6, 6, 6, 6)
         layout.addLayout(form)
+        layout.addWidget(self.lens)
         layout.addLayout(self._view_buttons())
         copy = QPushButton(tr("Copy to Script"))
         copy.setToolTip(tr("Write this camera into the script (v1: 'set' lines; v2: a camera block)"))
@@ -93,9 +94,7 @@ class CameraPanel(QWidget):
         layout.addLayout(self._bookmarks(), 1)
         for edit in (self.eye, self.target, self.up):
             edit.changed.connect(self._edited)
-        for spin in (self.fov, self.aperture, self.focus):
-            spin.valueChanged.connect(self._edited)
-        self.auto_focus.toggled.connect(self._edited)
+        self.lens.changed.connect(self._edited)
         self._base = Camera((0.0, 0.0, 10.0), (0.0, 0.0, 0.0))
 
     def set_locked(self, locked: bool) -> None:
@@ -135,29 +134,22 @@ class CameraPanel(QWidget):
     def show_camera(self, camera: Camera) -> None:
         """Follow the viewport (without echoing the change back)."""
         self._base = camera
-        widgets = [*self.eye.spins, *self.target.spins, *self.up.spins, self.fov, self.aperture, self.focus,
-                   self.auto_focus]  # fmt: skip
+        widgets = [*self.eye.spins, *self.target.spins, *self.up.spins]
         for w in widgets:
             w.blockSignals(True)
         self.eye.set_value(camera.eye)
         self.target.set_value(camera.target)
         self.up.set_value(camera.up)
-        self.fov.setValue(camera.fov_y_deg)
-        self.aperture.setValue(camera.aperture_radius)
-        self.auto_focus.setChecked(camera.focus_distance is None)
-        self.focus.setValue(camera.focus)
-        self.focus.setEnabled(camera.focus_distance is not None)
         for w in widgets:
             w.blockSignals(False)
+        self.lens.show_camera(camera)
 
     def camera(self) -> Camera:
-        focus = None if self.auto_focus.isChecked() else self.focus.value()
+        lensed = self.lens.camera()
         return replace(self._base, eye=self.eye.value(), target=self.target.value(), up=self.up.value(),
-                       fov_y_deg=self.fov.value(), aperture_radius=self.aperture.value(),
-                       focus_distance=focus)  # fmt: skip
+                       fov_y_deg=lensed.fov_y_deg, lens=lensed.lens)  # fmt: skip
 
     def _edited(self) -> None:
-        self.focus.setEnabled(not self.auto_focus.isChecked())
         camera = self.camera()
         if camera.eye != camera.target:
             self.camera_edited.emit(camera)

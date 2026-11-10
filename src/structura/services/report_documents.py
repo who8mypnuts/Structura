@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PySide6.QtCore import QMarginsF
+from PySide6.QtCore import QCoreApplication, QMarginsF
 from PySide6.QtGui import QGuiApplication, QPageLayout, QPageSize, QPdfWriter, QTextDocument, QTextDocumentWriter
 
 from ..render.report.html_writer import to_html
@@ -17,9 +17,13 @@ DPI = 300
 
 
 def ensure_gui_application() -> None:
-    """Qt's document engine needs fonts, which need a QGuiApplication (the CLI has none: use 'offscreen')."""
-    if QGuiApplication.instance() is None:
+    """Qt's document engine needs fonts, which need a QGuiApplication (the CLI has none: use 'offscreen'). A
+    plain QCoreApplication cannot be upgraded; say so instead of letting Qt abort the process."""
+    app = QCoreApplication.instance()
+    if app is None:
         QGuiApplication(["structura", "-platform", "offscreen"])
+    elif not isinstance(app, QGuiApplication):
+        raise RuntimeError("PDF and ODT reports need a QGuiApplication, but a QCoreApplication is running")
 
 
 def _document(report: Report) -> QTextDocument:

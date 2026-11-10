@@ -1,7 +1,8 @@
 """GGX microfacet and Fresnel building blocks, in the local shading frame (z = normal; docs/10 §3.1).
 
 D uses sin²θ computed from x/y directly, which keeps near-mirror lobes (alpha ≈ 1e-3) accurate in f32.
-Visible normals are sampled with spherical caps (Dupuy & Benyoub 2023).
+Visible normals are sampled with spherical caps (Dupuy & Benyoub 2023). The anisotropic forms take one alpha
+per local axis (x, y); the isotropic helpers are those with both alphas equal.
 """
 
 from __future__ import annotations
@@ -26,10 +27,25 @@ def ggx_d(h: vec3, a: f32) -> f32:
 
 
 @func
-def ggx_lambda(w: vec3, a: f32) -> f32:
+def ggx_d_aniso(h: vec3, ax: f32, ay: f32) -> f32:
+    """Anisotropic Trowbridge–Reitz: 1 / (π ax ay (x²/ax² + y²/ay² + z²)²), scaled by ax²ay² to stay in f32."""
+    x = h.x * ay
+    y = h.y * ax
+    z = h.z * ax * ay
+    t = x * x + y * y + z * z
+    return ax * ax * ax * ay * ay * ay / (PI * t * t)
+
+
+@func
+def ggx_lambda_aniso(w: vec3, ax: f32, ay: f32) -> f32:
     c2 = max(w.z * w.z, 1.0e-12)
-    s2 = w.x * w.x + w.y * w.y
-    return 0.5 * (sqrt(1.0 + a * a * s2 / c2) - 1.0)
+    s2 = ax * ax * w.x * w.x + ay * ay * w.y * w.y
+    return 0.5 * (sqrt(1.0 + s2 / c2) - 1.0)
+
+
+@func
+def ggx_lambda(w: vec3, a: f32) -> f32:
+    return ggx_lambda_aniso(w, a, a)
 
 
 @func
@@ -44,14 +60,19 @@ def ggx_g2(wo: vec3, wi: vec3, a: f32) -> f32:
 
 
 @func
-def sample_vndf(wo: vec3, a: f32, u1: f32, u2: f32) -> vec3:
+def sample_vndf_aniso(wo: vec3, ax: f32, ay: f32, u1: f32, u2: f32) -> vec3:
     """A visible microfacet normal for wo (wo.z > 0)."""
-    v = normalize(vec3(wo.x * a, wo.y * a, wo.z))
+    v = normalize(vec3(wo.x * ax, wo.y * ay, wo.z))
     phi = 2.0 * PI * u1
     z = (1.0 - u2) * (1.0 + v.z) - v.z
     st = sqrt(clamp(1.0 - z * z, 0.0, 1.0))
     hs = vec3(st * cos(phi), st * sin(phi), z) + v
-    return normalize(vec3(hs.x * a, hs.y * a, max(hs.z, 1.0e-7)))
+    return normalize(vec3(hs.x * ax, hs.y * ay, max(hs.z, 1.0e-7)))
+
+
+@func
+def sample_vndf(wo: vec3, a: f32, u1: f32, u2: f32) -> vec3:
+    return sample_vndf_aniso(wo, a, a, u1, u2)
 
 
 @func

@@ -18,6 +18,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QInputDialog,
     QLabel,
+    QLineEdit,
     QMessageBox,
     QPushButton,
     QVBoxLayout,
@@ -65,6 +66,12 @@ class ExportDialog(QDialog):
         self.estimate.setObjectName("Muted")
         head.addRow(tr("Estimated size"), self.estimate)
         head.addRow(tr("Preset"), self._preset_row())
+        self.run_after = QLineEdit()
+        self.run_after.setPlaceholderText(tr('optional: a program to run on the file, e.g. python clean.py "$FILE"'))
+        self.run_after.setAccessibleName(tr("Run after export"))
+        self.run_after.setToolTip(tr("$FILE is the exported file; %NAME% / $NAME are environment variables. "
+                                     "You are asked before it runs."))  # fmt: skip
+        head.addRow(tr("Run after export"), self.run_after)
         buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         buttons.button(QDialogButtonBox.StandardButton.Ok).setText(tr("Export"))
         buttons.accepted.connect(self._accept)

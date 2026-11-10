@@ -21,7 +21,11 @@ PHOTON_CENTRE, PHOTON_EXTENT, PHOTON_COUNT = 65, 68, 69  # photon emission: scen
 SEQUENCE = 70  # 0: hashed random numbers; 1: Halton (rotated per pixel) for the pixel, lens and first bounce
 DIFFUSE_BOUNCES, GLOSSY_BOUNCES, TRANSMISSION_BOUNCES = 71, 72, 73  # path: per-lobe limits (huge = none)
 AO_DIRECT = 74  # ao: 1 adds direct light from the sun and the declared lights
-CFG_SIZE = 80
+MAX_GENERATION = 75  # the scene's deepest build generation (the debug_generation material model)
+SHIFT = 76  # lens shift x, y in frame heights (render/config.py; core/scene/lens.py)
+FOCUS_NORMAL = 78  # the focus plane's normal (world): the view direction, turned by the lens tilt
+BOKEH_BIAS, ANAMORPHIC, FISHEYE_MAP = 81, 82, 83  # lens sampling (exponent), aperture width/height, mapping 0..2
+CFG_SIZE = 96
 FILTER_BASE = CFG_SIZE  # cfg[FILTER_BASE:] holds the filter table when FILTER_ON (render/filters.py)
 FILTER_TABLE, FILTER_SIGNS = 256, 256  # FILTER_TABLE + 1 inverse-CDF offsets, then the signs
 

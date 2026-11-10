@@ -16,9 +16,9 @@ Structura has two engines:
   and the object counts. A warning badge appears while the script has errors: the viewport keeps showing the
   last good build.
 - **View ▸ Standard Views** (front, back, left, right, top, bottom, isometric) and the **Camera** panel: the
-  camera in numbers (position, target, up, field of view, aperture, focus), saved views, and **Copy to
-  Script**, which writes the camera into the script (`set translation/rotation/pivot/scale` in v1 scripts, a
-  `camera { }` block in v2).
+  camera in numbers (position, target, up), the **lens** (below), saved views, and **Copy to Script**, which
+  writes the camera into the script (`set translation/rotation/pivot/scale` in v1 scripts, a `camera { }`
+  block with the lens in v2).
 - The **Inspector** panel describes the object you clicked (kind, generation, tag, colour, position, size,
   the line that made it) and selects everything alike: the same call site, tag, generation or kind.
   **Isolate Selection** hides everything else in the viewport; **View ▸ Show All** brings it back.
@@ -34,11 +34,49 @@ Structura has two engines:
 - If OpenGL 3.3 is not available, the viewport draws with the render kernels instead (on the GPU when CUDA,
   OpenCL or wgpu is there): the badge says "CUDA preview" or "CPU preview" and a banner explains why once.
 
+## Camera and lens
+
+The **Camera** panel's lens editor is simple until you need more:
+
+- **Simple:** a **lens preset** (14 mm ultra-wide … 200 mm long tele, 100 mm macro), the **focal length**
+  (it and the field of view follow each other), a **Depth of field** switch with an amount slider (f/22 …
+  f/1.2), **where to focus** (the target, the hyperfocal distance, or a distance), and a readout of the
+  **sharp range**. **Alt+click** a surface in the viewport, or **On Selection**, focuses there.
+- **Advanced** (open the group): the **projection** (perspective, orthographic, spherical 360°, fisheye with
+  equidistant / equisolid / stereographic mapping), the **sensor** (full frame, APS-C, Micro Four Thirds,
+  1″, phone, medium format, Super 35 or any size in mm), the f-stop or a raw aperture radius, the **scene
+  scale** (world units per metre — an f-stop blurs like a real lens only when Structura knows how big the
+  structure is; the default is 1 unit = 1 m), **bokeh** (aperture blades and their rotation, bias towards a
+  bright rim or centre, anamorphic squeeze), **lens shift** (keep verticals straight) and **tilt**
+  (tilt-shift: a tilted plane of focus, or a miniature look).
+
+While depth of field is on, the viewport outlines the **plane of focus** (tilted with the lens) and, dashed,
+the near and far limits of the sharp range. In v2 scripts the same
+lens is written in the `camera` block:
+
+```
+camera { position [0 2 20]  target [0 1 0]  lens 85mm  fstop 1.8  focus auto  scale 40  blades 7 }
+```
+
+`structura render` takes `--lens "85mm f/1.8"`, `--focal-length`, `--fov`, `--fstop`, `--focus`,
+`--projection`, `--sensor`, `--shift`, `--tilt`, `--scene-scale`, `--blades`, and `--camera-from IMAGE` (the
+camera and lens of a PNG or EXR Structura rendered). The timeline can key the focus distance and the f-stop
+(a focus pull).
+
 ## The Render view
 
-The tool bar: **Render** (F9), **Stop**, **Save…**, **Report…**, **A/B** compare, the **preset**, integrator,
-samples per pixel, device, denoiser, exposure, view transform, and the channel to show. A render refines
-progressively; exposure and view transform apply to the finished image without rendering again.
+The tool bar: **Render** (F9), **Stop**, **Resume**, **Save…**, **Report…**, **A/B** compare, the **preset**,
+the **frame**, integrator, samples per pixel, device, denoiser, exposure, view transform, **look**, and the
+channel to show. A render refines progressively; exposure, view transform and look apply to the finished image
+without rendering again.
+
+**Progress:** before the first pass the bar moves and says what is happening (preparing the device, building
+the BVH, compiling kernels); then it fills with the samples (or buckets) done, with the time left. The status
+bar and the window title show the progress too, so a render in a background window is easy to follow.
+
+**Frame:** the image's shape — the **viewport**'s, the **script**'s `render { size }`, a ratio (16:9, 3:2, 4:3,
+1:1, 4:5, 9:16) at the preset's size, or a **custom** width × height. The viewport darkens what falls outside
+the frame, so you compose for the render.
 
 | Preset | Samples | Long edge | Noise threshold |
 |--------|---------|-----------|-----------------|
@@ -77,8 +115,8 @@ overrides the script for this tab until **Reset to script**. Highlights:
 - **Sample sequence:** `random` (default) or `halton` (Sunflow's quasi-random numbers, for comparisons).
 - **Bounces:** `max_bounces`, and separate limits for diffuse, glossy and transmission bounces (−1 = only the
   maximum). **AO: add direct light** lights the `ao` integrator by the sun and the lights too.
-- **Pixel filter** (box, gaussian, Mitchell, Lanczos, sinc, …), **aperture** and **blades** for depth of field and
-  polygonal bokeh, **camera** type (perspective, orthographic, spherical 360°, fisheye).
+- **Pixel filter** (box, gaussian, Mitchell, Lanczos, sinc, …). Depth of field, bokeh and the projection are
+  part of the camera's lens (Camera panel, above).
 - **Environment:** gradient sky, **HDRI** (`.exr` / `.hdr`) with rotation and intensity, or the Preetham
   **sun-sky**.
 - **Ground:** a plane under the structure, or a **shadow catcher** (the background stays visible, darkened
@@ -90,6 +128,32 @@ overrides the script for this tab until **Reset to script**. Highlights:
 - **View transform:** AgX (default for `path` and `ao`), ACES, Filmic, Standard (default for `classic`),
   Soft.
 
+## Looks: bloom, vignette and grading
+
+The tool bar's **Look** finishes the image — live, without rendering again, and only for display and 8-bit
+files (EXR keeps the linear light):
+
+| Look | What it does |
+|------|--------------|
+| Off | The image as rendered |
+| Subtle | A touch of bloom and vignette, slightly richer colour and contrast |
+| Neon | Strong, wide bloom around everything that glows, vivid colour — for emissive scenes |
+| Cinematic | Soft bloom, a darker frame, a warm balance and more contrast |
+| Studio | A light vignette and a little contrast |
+
+**Bloom** adds the light above a threshold, spread around it: it never brightens what does not glow, and it
+adds exactly that light (energy-preserving). A script can set its own look in the `render` block — the tool
+bar then offers **Script**:
+
+```
+render { look cinematic  bloom 0.1  bloom_threshold 1  bloom_radius 0.5  vignette 0.3
+         temperature 0.2  saturation 1.1  contrast 1.1  lut "film.cube" }
+```
+
+`lut` applies a 3D colour look-up table (`.cube`, relative to the script) last. From the command line:
+`--look neon`, `--bloom 0.2`, `--vignette 0.3`, `--lut grade.cube`. The render report lists the look used and
+its reproduce command repeats it.
+
 ## Denoising and channels
 
 - **Denoise** runs when a render finishes: Intel Open Image Denoise when it is installed, otherwise the
@@ -97,7 +161,7 @@ overrides the script for this tab until **Reset to script**. Highlights:
 - **Channels:** beauty, albedo, normal, depth, alpha, instance id, material id, samples. Saving to **EXR**
   writes all of them as layers.
 
-## Materials and lights (v2 scripts)
+## Glass, materials and lights (v2 scripts)
 
 ```
 #version 2
@@ -114,11 +178,40 @@ render { integrator path samples 512 noise_threshold 0.01 filter mitchell ground
 Objects with an emissive material light the scene (and are sampled as lights). A tag named like a preset
 (`box::gold`) uses that preset.
 
+**Glass** needs the `path` integrator (the `preview`, `ao` and `classic` integrators show it as a tinted,
+see-through approximation, and so does the OpenGL viewport). What the material block offers:
+
+- `transmission 1` with `ior` (1.5 glass, 1.33 water, 2.42 diamond) and `roughness` for clear or frosted glass;
+  `transmission_roughness` frosts only the refraction;
+- `attenuation_color` and `attenuation_distance`: coloured glass whose colour deepens with thickness
+  (Beer–Lambert absorption — a thin pane is pale, a thick block is saturated);
+- `thin_walled true` for panes and bubbles: light passes without bending;
+- `opacity` (or the state's `alpha`) cuts objects out (leaves, lace); `coat` adds a clear lacquer;
+  `anisotropy` stretches highlights along the surface (brushed metal);
+- `model`: `principled` (default), `constant` (flat colour), `wireframe`, `ao`, `shadow_catcher`, and debug
+  views (`debug_normal`, `debug_id`, `debug_uv`, `debug_generation`, `debug_gray`) for checking a scene.
+
+For caustics (light focused by glass onto the ground) use `caustics photons` in the `render` block.
+
 The **Materials** panel lists the tags of the built structure and the material each renders with (declared,
 a preset named like the tag, or the default). Choose a preset, change colours and values with a live swatch,
 and **Write to Script** adds or updates the tag's `material` block. The **Lights** panel lists the `light`
-blocks and adds new ones (sun, point, sphere, spot, area) placed around the structure. Both offer to convert a
-Structure Synth (v1) script to v2 first; it builds the same.
+blocks and adds new ones (sun, point, sphere, spot, area) placed around the structure; select a light to edit
+its values in a form (the block in the script is rewritten). **Lighting Rig** writes a complete set-up —
+lights and environment, placed and sized for the structure:
+
+| Rig | Mood |
+|-----|------|
+| Studio softbox | Large soft key, cool fill and rim on a dark backdrop: clean product shots |
+| Sunset | A low warm sun under a clear evening sky |
+| Overcast | A bright even sky and a huge soft source above: every detail readable |
+| White studio | A white seamless studio with a soft key |
+| Night neon | Magenta and cyan glows with a violet rim in the dark (switches the look to Neon) |
+| Top light | One soft source straight above: sculptural, dramatic |
+| Rim light | Two strips behind the structure outline its silhouette |
+
+Rig lights are named `rig_…`; applying another rig replaces them (your own lights stay), and Undo takes a rig
+back. Both panels offer to convert a Structure Synth (v1) script to v2 first; it builds the same.
 
 ## Saving
 
@@ -132,6 +225,9 @@ Structure Synth (v1) script to v2 first; it builds the same.
 
 PNG and EXR files carry the script, seed, camera and settings, so a render can be reproduced — **File ▸ Open
 from Render…** reopens them.
+
+**Preferences ▸ Rendering ▸ Keep every render** names a folder where every finished render is saved
+automatically, with its report beside it — nothing is lost when you render again.
 
 ## Final renders
 
@@ -164,7 +260,10 @@ client, or a forum post:
 
 Formats: **PDF**, **HTML** (one file, images inlined, light and dark), **Markdown** (with a preview image
 beside it), **plain text**, **JSON** (every value, machine-readable), **CSV** (one row per value) and
-**OpenDocument** (`.odt`). Reports are usually written with the image (Save…, Final Render, the queue);
+**OpenDocument** (`.odt`). **Render ▸ Copy Report as Markdown** puts the last render's report on the clipboard
+for a forum post or a bug report. The report also lists the lens (focal length, f-stop, focus, sharp range,
+bokeh), the declared lights, kernel start-up and per-pass times, the device, and the peak memory. Reports are
+usually written with the image (Save…, Final Render, the queue);
 **Report…** writes one on its own, starting beside the image you saved last. `structura render … --report
 report.pdf` writes the same report from the command line.
 

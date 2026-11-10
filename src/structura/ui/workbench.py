@@ -16,6 +16,7 @@ from PySide6.QtCore import QObject, Signal, Slot
 from ..core.lang.analysis import Analysis
 from ..core.scene.camera import Camera
 from ..core.scene.ir import SceneIR
+from ..core.scene.material_look import material_look
 from ..core.scene.settings import settings_from_events
 from ..core.scene.view_filter import ViewFilter
 from ..preview.instances import PreviewScene, preview_scene
@@ -267,6 +268,8 @@ def _preview_job(doc_id: str, outcome: BuildOutcome, view: ViewFilter, recolor: 
         ctx.check_cancelled()
         started = time.perf_counter()
         shown = view.apply(outcome.scene)
-        return PreviewReady(doc_id, outcome, preview_scene(shown), shown, recolor, time.perf_counter() - started)
+        looks = material_look(outcome.scene) if view.color_by == "authored" else outcome.scene
+        preview = preview_scene(shown if looks is outcome.scene else view.apply(looks))  # GL: materials approximated
+        return PreviewReady(doc_id, outcome, preview, shown, recolor, time.perf_counter() - started)
 
     return run

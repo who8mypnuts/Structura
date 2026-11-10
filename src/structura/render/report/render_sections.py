@@ -3,57 +3,76 @@
 from __future__ import annotations
 
 import math
+from collections.abc import Iterable
 
 import numpy as np
 
-from ...core.scene.material import STATE, Material
+from ...core.scene.camera import Camera
+from ...core.scene.lens import focal_length_mm
+from ...core.scene.material import Material
+from ...core.scene.vectors import fmt_vec
 from ..details import RenderDetails
+from ..progress import RenderProgress
 from ..settings import RenderSettings
 from .model import Row, Section, Table, row
+from .system_sections import peak_memory
 
-FULL_FRAME_HEIGHT_MM = 24.0  # 35 mm film: focal lengths are quoted for a 36 × 24 mm frame
 
-
-def _vec(v: object) -> str:
-    return "(" + ", ".join(f"{float(c):.4g}" for c in v) + ")"  # type: ignore[attr-defined]
+def _vec(v: Iterable[float]) -> str:
+    return fmt_vec(v)
 
 
 def _on(flag: bool) -> str:
     return "on" if flag else "off"
 
 
+def _lens_rows(c: Camera) -> list[Row]:
+    lens = c.lens
+    if lens.projection == "orthographic":
+        return [row("Orthographic height", lens.ortho_height, f"{lens.ortho_height:g} world units")]
+    if lens.projection == "fisheye":
+        return [row("Fisheye field", lens.fisheye_fov_deg, f"{lens.fisheye_fov_deg:g}° ({lens.fisheye_mapping})")]
+    if lens.projection != "perspective":
+        return []
+    sensor = f"{lens.sensor_mm[0]:g} × {lens.sensor_mm[1]:g} mm"
+    rows = [row("Focal length", c.focal_length_mm, f"{c.focal_length_mm:.1f} mm on a {sensor} sensor"),
+            row("Scene scale", lens.units_per_metre, f"{lens.units_per_metre:g} world units per metre")]  # fmt: skip
+    if any(lens.shift):
+        rows.append(row("Lens shift", list(lens.shift), _vec(lens.shift), "in frame heights"))
+    if c.aperture_radius <= 0:
+        return [*rows, row("Depth of field", False, "off (pinhole)")]
+    near, far = c.sharp_range
+    bokeh = f"{lens.blades} blades at {lens.blade_rotation_deg:g}°" if lens.blades >= 3 else "round"
+    return [*rows,
+        row("Aperture", c.fstop, f"f/{c.fstop:.3g} (radius {c.aperture_radius:.4g} world units)"),
+        row("Focus distance", c.focus, f"{c.focus:.4g} ({lens.focus_mode})"),
+        row("Sharp range", [near, far], f"{near:.4g} – {'∞' if math.isinf(far) else f'{far:.4g}'}",
+            f"circle of confusion {lens.coc_mm:.3g} mm"),
+        row("Bokeh", lens.blades, bokeh + (f", bias {lens.bokeh_bias:+g}" if lens.bokeh_bias else "")
+            + (f", anamorphic {lens.anamorphic:g}" if lens.anamorphic != 1 else "")),
+        *([row("Focus tilt", list(lens.tilt), f"{lens.tilt[0]:g}° / {lens.tilt[1]:g}°")] if any(lens.tilt) else []),
+    ]  # fmt: skip
+
+
 def camera_section(d: RenderDetails) -> Section:
     c, s = d.camera, d.settings
     forward = c.basis[0]
-    distance = float(np.linalg.norm(np.subtract(c.target, c.eye)))
     vertical = c.fov_y_deg
     horizontal = math.degrees(2 * math.atan(math.tan(math.radians(vertical) / 2) * s.aspect))
-    focal = FULL_FRAME_HEIGHT_MM / (2 * math.tan(math.radians(vertical) / 2))
     yaw, pitch = math.degrees(math.atan2(forward[0], forward[2])), math.degrees(math.asin(float(forward[1])))
     rows: list[Row] = [
-        row("Projection", s.camera_type),
+        row("Projection", c.lens.projection),
         row("Position", list(c.eye), _vec(c.eye)),
         row("Target", list(c.target), _vec(c.target)),
         row("Up", list(c.up), _vec(c.up)),
         row("View direction", forward.tolist(), _vec(forward)),
         row("Heading / pitch", [yaw, pitch], f"{yaw:.2f}° / {pitch:.2f}°", "rotation about +Y from +Z; elevation"),
-        row("Distance to target", distance, f"{distance:.4g}"),
+        row("Distance to target", c.distance, f"{c.distance:.4g}"),
         row("Field of view (V × H)", [vertical, horizontal], f"{vertical:.2f}° × {horizontal:.2f}°"),
-        row("Focal length (35 mm equivalent)", focal, f"{focal:.1f} mm"),
+        row("Focal length (35 mm equivalent)", focal_length_mm(vertical), f"{focal_length_mm(vertical):.1f} mm"),
         row("Aspect ratio", s.aspect, f"{s.aspect:.4f} ({s.width} : {s.height})"),
+        *_lens_rows(c),
     ]  # fmt: skip
-    if s.camera_type == "orthographic":
-        rows.append(row("Orthographic height", s.ortho_height, f"{s.ortho_height:g} world units"))
-    if s.camera_type == "fisheye":
-        rows.append(row("Fisheye field", s.fisheye_fov, f"{s.fisheye_fov:g}°"))
-    if c.aperture_radius > 0:
-        rows += [
-            row("Aperture radius", c.aperture_radius, f"{c.aperture_radius:.4g} world units"),
-            row("Focus distance", c.focus, f"{c.focus:.4g}"),
-            row("Bokeh", s.blades, f"{s.blades} blades at {s.blade_rotation_deg:g}°" if s.blades >= 3 else "round"),
-        ]  # fmt: skip
-    else:
-        rows.append(row("Depth of field", False, "off (pinhole)"))
     return Section("camera", "Camera", tuple(rows))
 
 
@@ -94,6 +113,7 @@ def lighting_section(d: RenderDetails) -> Section:
            "hdri": f"HDRI {s.env_file or '(none)'}, rotated {s.env_rotation_deg:g}°",
            "sunsky": f"Preetham sun-sky, turbidity {s.turbidity:g}"}.get(s.env_type, s.env_type)  # fmt: skip
     lights = ", ".join(f"{n} {t}" for t, n in sorted(_count(d.lights).items())) or "none"
+    tables = (Table("Declared lights", ("Name", "Type", "Values"), d.light_specs),) if d.light_specs else ()
     rows = [
         row("Environment", s.env_type, env),
         row("Environment intensity", s.env_intensity, f"{s.env_intensity:g}"),
@@ -107,7 +127,7 @@ def lighting_section(d: RenderDetails) -> Section:
         row("Ground", s.ground_plane, s.ground_plane if s.ground_plane != "off" else "none"),
         row("Fog", s.fog_density, f"density {s.fog_density:g}, falloff {s.fog_falloff:g}" if s.fog_density else "none"),
     ]  # fmt: skip
-    return Section("lighting", "Lighting & environment", tuple(rows))
+    return Section("lighting", "Lighting & environment", tuple(rows), tables)
 
 
 def _count(items: tuple[str, ...]) -> dict[str, int]:
@@ -118,7 +138,7 @@ def _count(items: tuple[str, ...]) -> dict[str, int]:
 
 
 def _colour(value: str | tuple[float, float, float]) -> str:
-    return "per object" if value == STATE else _vec(value)
+    return "per object" if isinstance(value, str) else _vec(value)
 
 
 def materials_section(materials: tuple[Material, ...]) -> Section:
@@ -132,14 +152,29 @@ def materials_section(materials: tuple[Material, ...]) -> Section:
     return Section("materials", "Materials", summary, (Table("Material table", columns, rows),))
 
 
-def performance_section(d: RenderDetails, samples: int, seconds: float, passes: int, device: str) -> Section:
+def _timing_rows(p: RenderProgress) -> list[Row]:
+    rows = [row("Kernel start", p.kernel_seconds, f"{p.kernel_seconds:,.2f} s",
+                "binding the render kernel: its first compile on a device, else uploading the scene")]  # fmt: skip
+    if p.pass_seconds:
+        times = np.asarray(p.pass_seconds)
+        text = f"{times.min() * 1000:,.0f} / {times.mean() * 1000:,.0f} / {times.max() * 1000:,.0f} ms"
+        rows.append(row("Pass time (min / mean / max)", [float(times.min()), float(times.mean()), float(times.max())],
+                        text, "one pass (or bucket), including the read-back"))  # fmt: skip
+    return rows
+
+
+def performance_section(d: RenderDetails, p: RenderProgress, passes: int, device: str) -> Section:
+    samples, seconds = p.samples, p.seconds
     pixels = d.settings.width * d.settings.height
     rate = samples * pixels / seconds if seconds > 0 else 0.0
     b = d.bvh
+    peak = peak_memory()
     rows = (
         row("Device", device),
+        *(row(f"Device: {label}", value) for label, value in d.device),
         row("Render time", seconds, f"{seconds:,.2f} s"),
         row("Scene preparation", d.prepare_seconds, f"{d.prepare_seconds:,.2f} s", "packing, BVH build, materials"),
+        *_timing_rows(p),
         row("Samples reached", samples, f"{samples:,} spp"),
         row("Passes", passes, f"{passes:,}" + (f" (≈ {samples / passes:.1f} spp each)" if passes else "")),
         row("Throughput", rate, f"{rate / 1e6:,.2f} M samples/s", "pixel samples per second"),
@@ -153,5 +188,6 @@ def performance_section(d: RenderDetails, samples: int, seconds: float, passes: 
             f"{b.mean_leaf_size:.2f} / {b.max_leaf_size}"),
         row("BVH memory", b.bytes, f"{b.bytes / 2**20:.2f} MiB"),
         row("Scene radius", d.scene_radius, f"{d.scene_radius:.4g}"),
+        row("Peak memory", peak, f"{peak / 2**20:,.0f} MiB" if peak else "—", "the process's largest resident size"),
     )  # fmt: skip
     return Section("performance", "Performance", rows)

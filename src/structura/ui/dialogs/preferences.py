@@ -32,6 +32,16 @@ from ..widgets.param_form import ParamForm
 CACHES = ("numba", "skl_numba", "cuda", "thumbnails", "icons")  # folders of the user cache directory
 
 
+def _path_specs() -> tuple[ParamSpec, ...]:
+    """Preferences ▸ Paths: folders, and the other applications Structura opens files in (ui/external_apps)."""
+    return (
+        ParamSpec("paths/output", ParamType.STRING, "", "Default folder for new files (empty: Documents/Structura)"),
+        ParamSpec("paths/library", ParamType.STRING, "", f"Library folders for #include (separated by '{os.pathsep}')"),
+        ParamSpec("paths/blender", ParamType.STRING, "", "Blender executable for 'Open in Blender' (empty: find it)"),
+        ParamSpec("paths/meshlab", ParamType.STRING, "", "MeshLab executable for 'Open in MeshLab' (empty: find it)"),
+    )
+
+
 def _specs() -> dict[str, tuple[ParamSpec, ...]]:
     threads = os.cpu_count() or 1
     return {
@@ -66,17 +76,12 @@ def _specs() -> dict[str, tuple[ParamSpec, ...]]:
             ParamSpec("render/preset", ParamType.ENUM, "Standard", "Default render preset",
                       choices=tuple(p.name for p in PRESETS)),
             ParamSpec("render/cpu_threads", ParamType.INT, 0, "CPU threads (0 = all cores)", range=(0, threads)),
+            ParamSpec("render/keep_folder", ParamType.STRING, "",
+                      "Keep every render: save each finished render with its report into this folder (empty: off)"),
             ParamSpec("render/memory_guard", ParamType.INT, 80,
                       "Memory guard: refuse renders needing more than this % of free memory", range=(10, 100)),
         ),
-        "Paths": (
-            ParamSpec("paths/output", ParamType.STRING, "",
-                      "Default folder for new files (empty: Documents/Structura)"),
-            ParamSpec("paths/library", ParamType.STRING, "",
-                      f"Library folders for #include (separated by '{os.pathsep}')"),
-            ParamSpec("paths/blender", ParamType.STRING, "",
-                      "Blender executable for 'Open in Blender' (empty: find it)"),
-        ),
+        "Paths": _path_specs(),
         "Advanced": (
             ParamSpec("advanced/log_level", ParamType.ENUM, "info", "Log level (Console)",
                       choices=("debug", "info", "warning", "error")),

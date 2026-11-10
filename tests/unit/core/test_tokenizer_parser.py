@@ -84,3 +84,10 @@ def test_the_editor_sees_every_broken_rule_and_keeps_the_good_ones() -> None:
         errors[1].code,
     ]
     assert {r.name for r in analysis.rules} == {"r1", "r4"}
+
+
+def test_analysis_reports_a_symbol_the_tokenizer_rejects() -> None:
+    from structura.core.lang.analysis import analyze  # noqa: PLC0415
+
+    found = analyze("box 85mm\n").diagnostics  # (it used to raise instead: the editor showed nothing)
+    assert [(d.code, d.span.start) for d in found if d.span is not None] == [("E004", 4)]

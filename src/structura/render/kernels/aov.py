@@ -10,9 +10,10 @@ from structura.kernels.skl import BufRW, f32, kernel, u32, uvec3
 
 from .buffers import SceneBufs
 from .camera import camera_ray
+from .opacity import visible_hit
 from .passes import pixel_sample
 from .sampling import rand01
-from .scene import NO_HIT, PRIM_U, trace
+from .scene import NO_HIT, PRIM_U
 from .surface import surface_at
 
 AOV_F = 10
@@ -30,7 +31,7 @@ def aov_pass(gid: uvec3, width: u32, height: u32, sample_base: u32, spp: u32, sc
         sx = ((f32(gid.x) + ps.x) / f32(width)) * 2.0 - 1.0
         sy = 1.0 - ((f32(gid.y) + ps.y) / f32(height)) * 2.0
         ray = camera_ray(sc.cfg, sx, sy, rand01(pixel, s, u32(2)), rand01(pixel, s, u32(3)))
-        h = trace(ray.o, ray.d, 0.0, 3.0e38, u32(0), u32(NO_HIT), sc)
+        h = visible_hit(ray.o, ray.d, pixel, s, sc)  # see-through instances as the beauty pass sees them
         if h.prim == NO_HIT:
             continue
         surf = surface_at(sc, h.prim)

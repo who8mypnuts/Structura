@@ -9,7 +9,7 @@ implemented once and runs on the GPU and CPU backends.
 |-----------|----------|-----------|
 | Integrators | `render.integrators` | `preview`, `classic`, `ao`, `path`, `photon-caustics` (R3) |
 | Material models | `render.materials` | `principled`, `constant`, `wireframe`, `ao`, `debug-*` |
-| Material presets | `render/materials/presets.toml` | 22 presets (§3.3) |
+| Material presets | `core/scene/materials.toml` (as built; planned as `render/materials/presets.toml`) | 22 presets (§3.3) |
 | Lights | `render.lights` | point, sphere, spot, sun, rect, emissive geometry, env (colour / gradient / HDRI / sun-sky) |
 | Cameras | `render.cameras` | perspective (thin lens), orthographic, spherical, fisheye |
 | Filters | `render.film.filters` | box, triangle, gaussian, mitchell, catmull-rom, blackman-harris, lanczos, sinc, cubic B-spline |
@@ -111,7 +111,7 @@ Material fields match [07](07-scene-model.md) §3. That includes `attenuation_co
 | `constant` | Unlit colour (flat graphic look, emissive "neon" without light contribution) | `ConstantShader` |
 | `wireframe` | Edge lines on boxes and triangles (distance-to-edge in object or barycentric space) over a fill colour | `WireframeShader` |
 | `ao` | Per-material AO look inside any integrator | `AmbientOcclusionShader` |
-| `debug-normal`, `debug-id`, `debug-uv`, `debug-generation`, `debug-gray` | Diagnostic looks | `NormalShader`, `IDShader`, `PrimIDShader`, `UVShader`, `QuickGrayShader` |
+| `debug_normal`, `debug_id`, `debug_uv`, `debug_generation`, `debug_gray` (script only; not offered in the Materials panel) | Diagnostic looks | `NormalShader`, `IDShader`, `PrimIDShader`, `UVShader`, `QuickGrayShader` |
 
 ### 3.3 Presets (data: `presets.toml`)
 
@@ -206,3 +206,10 @@ subsurface scattering, procedural textures (Perlin; Sunflow `PerlinModifier`), b
 primitives (POV-Ray isosurfaces, Julia fractals), light BVH for many emitters, Hosek–Wilkie sky, thin-film
 iridescence, render-time CSG, irradiance cache for fast CPU GI, motion blur (Sunflow `MovingMatrix4`),
 stereo / ODS spherical cameras.
+
+> **As built (M12, owner review):** transmission exits apply Beer–Lambert absorption from
+> `attenuation_color` / `attenuation_distance` (`kernels/volume.py`, path and photon passes); `thin_walled`
+> surfaces transmit without refraction; `transmission_roughness` frosts refraction only; anisotropic GGX uses
+> a tangent frame from the surface (`anisotropy`, `anisotropy_rotation`); cut-out opacity is honoured by every
+> integrator and the AOVs (`kernels/opacity.py`). Material `model`s (constant, wireframe, ao, shadow catcher,
+> debug views) are evaluated in `kernels/models.py`.

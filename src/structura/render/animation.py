@@ -14,6 +14,7 @@ from typing import Any
 
 from ..compute.base import Backend
 from ..core.animation.camera import camera_at, has_camera_tracks
+from ..core.animation.paths import Turntable, turntable
 from ..core.animation.timeline import Timeline
 from ..core.build.api import build_scene
 from ..core.lang.api import compile_script
@@ -66,3 +67,10 @@ def render_frame(
         view = replace(view, camera=camera_at(anim.timeline, frame, view.camera))
     *_, result = progressive(prepared, settings, backend, view, between)
     return result, settings
+
+
+def with_turntable(anim: Animation, spec: Turntable) -> Animation:
+    """``anim`` orbiting its first frame's camera (the base camera, else the script's or the framing one)."""
+    scene, _ = build_frame(anim, spec.start)
+    _, view = prepare_with_frame(scene, frame_settings(anim, scene), camera=anim.camera)
+    return replace(anim, timeline=turntable(anim.timeline, view.camera, spec), camera=view.camera)

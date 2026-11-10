@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class StatusBar(QStatusBar):
-    SEGMENTS = ("vim", "cursor", "encoding", "dialect", "objects", "build", "device")
+    SEGMENTS = ("vim", "cursor", "encoding", "dialect", "objects", "build", "render", "device")
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)

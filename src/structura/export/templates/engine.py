@@ -19,8 +19,7 @@ from .template_file import LegacyTemplate
 
 log = logging.getLogger(__name__)
 PLACEHOLDER = re.compile(r"\{[A-Za-z0-9_.]+\}")
-KIND_NAMES = {K.BOX: "box", K.GRID: "grid", K.SPHERE: "sphere", K.DOT: "dot", K.LINE: "line",
-              K.TRIANGLE: "triangle", K.MESH: "mesh", K.TEMPLATE: "template"}  # fmt: skip
+KIND_NAMES = {kind: kind.name.lower() for kind in K}  # box, sphere, …, and the v2 cylinder, cone, torus, …
 CHUNK = 4096  # primitives per yielded chunk
 
 
@@ -77,6 +76,8 @@ class TemplateExport:
 
     def _primitive(self, scene: SceneIR, i: int) -> str:
         kind = KIND_NAMES[K(int(scene.kind[i]))]
+        if kind == "cylinder" and scene.declarations is None:
+            return ""  # a v1 cylinder: Structure Synth 1.5 never handed it to a template (byte-identical output)
         tag = scene.tags[int(scene.tag[i])]
         name = kind + (f"::{tag}" if tag else "")
         if not self._exists(name):

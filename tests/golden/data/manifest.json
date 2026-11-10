@@ -1,5 +1,5 @@
 {
- "harness": "Structure Synth r312 model/parser + Qt 5.15.13",
+ "harness": "Structure Synth 1.5.0 (release tarball) model/parser + Qt 5.15.13",
  "seeds": [
   0,
   1,

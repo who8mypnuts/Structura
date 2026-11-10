@@ -16,11 +16,11 @@ from pathlib import Path
 import numpy as np
 
 from .hdr_io import read_environment
-from .settings import RenderSettings
+from .settings import SKY_GROUND, RenderSettings
 
 RGB = tuple[float, float, float]
 SKY_SIZE = (512, 256)
-GROUND: RGB = (0.06, 0.055, 0.05)
+GROUND: RGB = SKY_GROUND
 SKY_UNITS = 1.0 / 31.8  # kcd/m² → radiance units where the default sun lights white paper to ≈ 1
 XYZ_TO_RGB = np.array([[3.2406, -1.5372, -0.4986], [-0.9689, 1.8758, 0.0415], [0.0557, -0.2040, 1.0570]])
 PEREZ = {  # (slope, offset) per coefficient A..E and channel, Preetham et al. 1999

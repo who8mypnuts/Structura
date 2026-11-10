@@ -16,7 +16,7 @@ from ..core.scene.ir import SceneIR
 from ..render.api import RenderProgress, prepare_with_frame, progressive
 from ..render.denoise import denoise_with
 from ..render.details import RenderDetails, render_details
-from ..render.output import to_display
+from ..render.output import Display
 from ..render.settings import RenderSettings
 from .jobs import FunctionJob, JobContext, JobHandle, JobRunner, Lane
 from .jobs.tracked import TrackedJobs
@@ -31,7 +31,7 @@ class RenderRequest:
     camera: Camera | None = None  # None: the script camera (or framed)
     tag_presets: bool = False
     denoise: str | None = None  # a render.denoise method, run on the compute lane once the render finishes
-    display: tuple[float, str] | None = None  # (exposure, view): also make the 8-bit display image in the job
+    display: Display | None = None  # also make the 8-bit display image in the job
     resume: RenderProgress | None = None  # continue a stopped render (same scene, camera and settings)
 
 
@@ -43,7 +43,7 @@ class RenderUpdate:
     denoised: np.ndarray | None = None
     denoiser: str = ""  # the method that produced ``denoised``
     display: np.ndarray | None = None  # uint8 (H, W, 3) for RenderRequest.display, made off the GUI thread
-    display_for: tuple[float, str] | None = None  # the (exposure, view) ``display`` was made with
+    display_for: Display | None = None  # what ``display`` was made with
     details: RenderDetails | None = None  # what the render used (reports)
     denoised_display: np.ndarray | None = None  # uint8 display image of ``denoised`` (for ``display_for``)
     passes: int = 0
@@ -67,23 +67,28 @@ class DeviceBackends:
         return self._cache[name]
 
 
-def _display(image: np.ndarray, display: tuple[float, str] | None) -> np.ndarray | None:
+def _display(image: np.ndarray, display: Display | None) -> np.ndarray | None:
     if display is None:
         return None
-    out = np.ascontiguousarray(to_display(image, *display))
+    out = np.ascontiguousarray(display.apply(image))
     out.flags.writeable = False
     return out
 
 
 def render_job(req: RenderRequest, backends: DeviceBackends) -> Callable[[JobContext], RenderUpdate]:
     def run(ctx: JobContext) -> RenderUpdate:
+        def phase(text: str) -> None:  # before the first pass: what the render is doing (the view shows it)
+            ctx.progress(0.0, text, force=True)
+            ctx.check_cancelled()
+
+        phase("Preparing the render device…")
         backend = backends.get(req.device)
         started = time.perf_counter()
-        prepared, frame = prepare_with_frame(req.scene, req.settings, req.tag_presets, req.camera)
-        details = render_details(prepared, frame, time.perf_counter() - started)
+        prepared, frame = prepare_with_frame(req.scene, req.settings, req.tag_presets, req.camera, phase)
+        details = render_details(prepared, frame, time.perf_counter() - started, backend.details())
         ctx.check_cancelled()
         update = None
-        results = progressive(prepared, req.settings, backend, frame, ctx.check_cancelled, req.resume)
+        results = progressive(prepared, req.settings, backend, frame, ctx.check_cancelled, req.resume, phase)
         for passes, result in enumerate(results, 1):
             result.image.flags.writeable = False
             update = RenderUpdate(result, f"{backend.name} {backend.device_name}".strip(), req.settings.samples,
@@ -110,11 +115,26 @@ def denoise_job(update: RenderUpdate, method: str) -> Callable[[JobContext], Ren
     return run
 
 
+def display_job(update: RenderUpdate, display: Display) -> Callable[[JobContext], RenderUpdate]:
+    """Tone-map a finished image (and its denoised version) for another exposure, view or look, off the GUI
+    thread: bloom on a large image takes a moment."""
+
+    def run(ctx: JobContext) -> RenderUpdate:
+        shown = _display(update.progress.image, display)
+        ctx.check_cancelled()
+        denoised = _display(update.denoised, display) if update.denoised is not None else None
+        return replace(update, display=shown, display_for=display, denoised_display=denoised)
+
+    return run
+
+
 class RenderService(TrackedJobs):
     progress = Signal(str, object)  # doc_id, RenderUpdate
+    phase = Signal(str, str)  # doc_id, what the render is doing before its first pass
     finished = Signal(str, object)  # doc_id, RenderUpdate
     failed = Signal(str, object)  # doc_id, ErrorInfo
     cancelled = Signal(str)
+    displayed = Signal(str, object)  # doc_id, the RenderUpdate tone-mapped again by redisplay()
 
     def __init__(self, runner: JobRunner) -> None:
         super().__init__(runner)
@@ -125,6 +145,7 @@ class RenderService(TrackedJobs):
         job = FunctionJob(f"render {req.doc_id}", Lane.DEVICE, render_job(req, self.backends), key=req.doc_id)
         handle = self._track(req.doc_id, job)
         handle.partial.connect(self._on_partial)
+        handle.progress.connect(self._on_phase)
         if req.denoise:
             self._denoise_after[handle] = req.denoise
             handle.ended.connect(self._forget_denoise)  # a bound slot: queued to the GUI thread
@@ -135,12 +156,29 @@ class RenderService(TrackedJobs):
         job = FunctionJob(f"denoise {doc_id}", Lane.COMPUTE, denoise_job(update, method), key=doc_id)
         return self._track(doc_id, job)
 
+    def redisplay(self, doc_id: str, update: RenderUpdate, display: Display) -> JobHandle:
+        """Tone-map ``update`` for ``display`` on the compute lane (the latest request wins); ``displayed``
+        carries the result."""
+        job = FunctionJob(f"display {doc_id}", Lane.COMPUTE, display_job(update, display), key=f"{doc_id}:display")
+        handle = self.submit_for(doc_id, job)
+        handle.finished.connect(self._on_displayed)
+        return handle
+
+    @Slot(object)
+    def _on_displayed(self, update: object) -> None:
+        self.displayed.emit(self.sender_doc(), update)
+
     def _track(self, doc_id: str, job: FunctionJob) -> JobHandle:
         handle = self.submit_for(doc_id, job)
         handle.finished.connect(self._on_finished)
         handle.failed.connect(self._on_failed)
         handle.cancelled.connect(self._on_cancelled)
         return handle
+
+    @Slot(float, str)
+    def _on_phase(self, _fraction: float, text: str) -> None:
+        if text:
+            self.phase.emit(self.sender_doc(), text)
 
     @Slot(object)
     def _on_partial(self, update: object) -> None:

@@ -13,7 +13,6 @@ from structura.core.lang.api import compile_script
 from structura.core.lang.convert import convert_to_v2
 from structura.core.lang.diagnostics import ParseError
 from structura.core.lang.source import detect_dialect
-from structura.core.scene.ir import PrimitiveKind as K
 from structura.core.text_file import read_script
 
 EXAMPLES = sorted((Path(__file__).parents[3] / "src/structura/resources/examples").rglob("*.es"))
@@ -22,9 +21,8 @@ EXAMPLES = sorted((Path(__file__).parents[3] / "src/structura/resources/examples
 def _same_build(a: str, b: str) -> None:
     one = build_scene(compile_script(a).program, 1).scene
     two = build_scene(compile_script(b).program, 1).scene
-    drawn = two.kind != K.CYLINDER  # v1 cylinders draw nothing; v2 ones do
-    assert np.array_equal(one.kind, two.kind[drawn]) and np.array_equal(one.xform, two.xform[drawn])
-    assert np.array_equal(one.rgba, two.rgba[drawn])
+    assert np.array_equal(one.kind, two.kind) and np.array_equal(one.xform, two.xform)
+    assert np.array_equal(one.rgba, two.rgba)
 
 
 def test_substring_defines_are_written_out() -> None:
@@ -46,9 +44,11 @@ def test_rules_named_like_v2_keywords_are_renamed() -> None:
     _same_build(text, converted.text)
 
 
-def test_cylinders_are_reported() -> None:
-    notes = convert_to_v2("cylinder\nbox\n").notes
-    assert any("cylinder" in n and "line 1" in n for n in notes)
+def test_cylinders_draw_the_same_in_both_dialects() -> None:
+    text = "cylinder\n{ x 2 } box\n"
+    converted = convert_to_v2(text)
+    assert not any("cylinder" in n for n in converted.notes)  # nothing changes: v1 cylinders draw too
+    _same_build(text, converted.text)
 
 
 def test_v2_scripts_are_left_alone() -> None:

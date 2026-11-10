@@ -1,5 +1,6 @@
 """`structura doctor` — report the environment the GUI and the renderers will see: Qt platform, the OpenGL
-probe (every format tried and why it failed), and which compute backends are available. Paste its output
+probe (every format tried and why it failed), PyMeshLab and Open Image Denoise, and which compute backends are
+available. Paste its output
 into bug reports."""
 
 from __future__ import annotations
@@ -9,6 +10,7 @@ import os
 import platform
 import subprocess
 import sys
+from importlib.metadata import version
 
 HELP = "report the Qt platform, OpenGL support and compute devices (for bug reports)"
 SESSION_VARS = ("XDG_SESSION_TYPE", "WAYLAND_DISPLAY", "DISPLAY", "QT_QPA_PLATFORM", "QT_XCB_GL_INTEGRATION",
@@ -97,10 +99,28 @@ def compute_lines() -> list[str]:
     return lines
 
 
+def library_lines() -> list[str]:
+    """Optional-at-run-time libraries: PyMeshLab (mesh clean-up, Check Mesh) and Open Image Denoise."""
+    from ...export.mesh.meshlab import MeshLabUnavailableError, _pymeshlab  # noqa: PLC0415
+    from ...render.denoise.oidn import OidnUnavailableError, library  # noqa: PLC0415
+
+    lines = ["Libraries:"]
+    try:
+        _pymeshlab()
+        lines.append(f"  ok  PyMeshLab {version('pymeshlab')}")
+    except MeshLabUnavailableError as exc:
+        lines.append(f"  no  {exc}")
+    try:
+        lines.append(f"  ok  Open Image Denoise: {library().lib._name}")
+    except OidnUnavailableError as exc:
+        lines.append(f"  no  Open Image Denoise: {exc} (the À-Trous denoiser is used)")
+    return lines
+
+
 def run(args: argparse.Namespace) -> int:
     if args.opengl_only:
         print("\n".join(_opengl()))
         return 0
-    sections = [_environment(), _opengl()] + ([] if args.no_compute else [compute_lines()])
+    sections = [_environment(), _opengl(), library_lines()] + ([] if args.no_compute else [compute_lines()])
     print("\n\n".join("\n".join(section) for section in sections))
     return 0

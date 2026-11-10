@@ -10,10 +10,12 @@ from pytestqt.qtbot import QtBot
 
 from structura.render.aovs import Aovs
 from structura.render.api import RenderProgress
+from structura.render.post import PostSettings
 from structura.render.settings import RenderSettings
 from structura.services.render import RenderUpdate
 from structura.ui.app_window import MainWindow
 from structura.ui.panels.render_settings import RenderSettingsPanel
+from structura.ui.render_view.controls import LOOK_SCRIPT
 
 
 def _spin(panel: RenderSettingsPanel, key: str) -> QSpinBox:
@@ -63,6 +65,39 @@ def test_render_view_exposure_applies_without_re_rendering(window: MainWindow) -
     before = view.view.image.pixelColor(4, 4).red()
     view.exposure.setValue(2.0)  # two stops brighter, from the same render
     assert view.view.image.pixelColor(4, 4).red() > before
+
+
+def test_render_view_look_applies_live_and_follows_the_script(window: MainWindow) -> None:
+    view = window.render_view
+    update = RenderUpdate(RenderProgress(np.full((16, 16, 3), 0.18, np.float32), 4, 0.1), "cpu", 4)
+    view._on_update("render-view", update)
+    assert view.view.image is not None
+    before = view.view.image.pixelColor(0, 0).red()
+    view.controls.look.setCurrentText("Cinematic")  # a vignette darkens the corner, without re-rendering
+    assert view.view.image.pixelColor(0, 0).red() < before
+    assert view.display().post.vignette > 0
+    script = RenderSettings(post=PostSettings(bloom=0.2))
+    view.controls.show_script(script, ())
+    assert view.controls.look.currentText() == LOOK_SCRIPT and view.display().post.bloom == 0.2
+    view.controls.show_script(RenderSettings(), ())
+    assert view.controls.look.findText(LOOK_SCRIPT) < 0
+
+
+def test_a_large_image_is_tone_mapped_off_the_gui_thread(qtbot: QtBot, window: MainWindow) -> None:
+    from structura.ui.render_view.render_view import LARGE  # noqa: PLC0415
+
+    view = window.render_view
+    side = int(LARGE**0.5) + 8
+    update = RenderUpdate(RenderProgress(np.full((side, side, 3), 0.18, np.float32), 4, 0.1), "cpu", 4)
+    view._on_update("render-view", update)  # no display made by a render job: a compute-lane job makes it
+    qtbot.waitUntil(lambda: view.view.image is not None, timeout=30000)
+    first = view.view.image
+    assert first is not None
+    view.exposure.setValue(2.0)  # large: a compute-lane job makes the new picture; the old one stays meanwhile
+    assert view.view.image is first
+    qtbot.waitUntil(lambda: view.view.image is not first, timeout=30000)
+    assert view.last is not None and view.last.display_for == view.display()
+    assert view.view.image.pixelColor(4, 4).red() > first.pixelColor(4, 4).red()
 
 
 def test_render_view_shows_aov_channels_and_denoised_results(window: MainWindow) -> None:

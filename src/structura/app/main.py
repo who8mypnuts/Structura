@@ -20,6 +20,7 @@ from ..ui.viewport.gl_probe import preferred_format, probe
 from ..ui.viewport.host import preferred_backend
 from ..ui.warmup import WarmUp
 from ..ui.watchdog import StallWatchdog
+from .diagnostics import Diagnostics
 
 
 def create_app(argv: Sequence[str]) -> QApplication:
@@ -44,6 +45,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = list(sys.argv if argv is None else argv)
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     settings = SettingsService()
+    diagnostics = Diagnostics(settings.directory() / "logs")
+    diagnostics.install()
     xwayland.apply_hint(settings)
     app = create_app(args)
     gl_ok = preferred_backend() == "gpu"  # runs the OpenGL probe before any window exists
@@ -52,6 +55,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     xwayland.remember(settings, gl_ok)
     install_translators(str(settings.value("appearance/language", "system")))
     window = MainWindow(settings)
+    window.errors.log_dir = diagnostics.directory
+    diagnostics.on_error = window.errors.report
     window.start([Path(a) for a in args[1:] if not a.startswith("-")])
     window.show()
     WarmUp(window).start()

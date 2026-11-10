@@ -13,6 +13,7 @@ from .blocks import HEADER, extract_blocks
 from .expressions import params_to_defines, substitute_expressions
 
 _PARAM = re.compile(r"(?m)^[ \t]*#param\b.*$")
+_VERSION = re.compile(r"(?m)^[ \t]*#[ \t]*version[ \t]*2[ \t]*$")
 
 
 @dataclass(frozen=True)
@@ -57,6 +58,14 @@ def _first_paren(text: str) -> tuple[int, int] | None:
                 return offset + column, offset + column + 1
         offset, state = offset + len(line) + 1, state_after
     return None
+
+
+def misplaced_version(text: str) -> Span | None:
+    """A '#version 2' line that does not select v2 because it is not the first non-blank line."""
+    if detect_dialect(text) == 2:
+        return None
+    match = _VERSION.search(text)
+    return Span(*match.span()) if match else None
 
 
 def v2_syntax(text: str) -> Span | None:
