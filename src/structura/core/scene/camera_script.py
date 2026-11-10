@@ -14,16 +14,14 @@ import numpy as np
 
 from .camera import LEGACY_FOV, LEGACY_SCALE, Camera, LegacyView
 from .lens import SENSORS, Lens
-from .vectors import number, script_vec
+from .vectors import number as _n
+from .vectors import script_vec as _list
 
 V1_KEYS = ("translation", "rotation", "pivot", "scale", "perspective-angle")
 V1_LINE = re.compile(r"^[ \t]*set[ \t]+(" + "|".join(map(re.escape, V1_KEYS)) + r")\b[^\n]*\n?", re.MULTILINE | re.I)
 V2_BLOCK = re.compile(r"^[ \t]*camera[ \t]*\{[^}]*\}[ \t]*\n?", re.MULTILINE)
 MARKER = "// camera (Structura: Copy Camera to Script)"
 VERSION_LINE = re.compile(r"^[ \t]*#version[^\n]*\n?", re.MULTILINE)
-
-
-_n, _list = number, script_vec
 
 
 def legacy_view(camera: Camera) -> LegacyView:
@@ -86,7 +84,15 @@ def _lens_lines(camera: Camera) -> list[str]:
 
 
 def camera_text(camera: Camera, v2: bool) -> str:
-    """The camera as script lines (no trailing blank line)."""
+    """Writes a camera as script lines.
+
+    Args:
+        camera: The camera to write (its lens too, in v2).
+        v2: True for a v2 'camera { }' block with its lens, False for Structure Synth's 'set' lines.
+
+    Returns:
+        The lines, without a trailing newline.
+    """
     if v2:
         place = f"  position {_list(camera.eye)}  target {_list(camera.target)}  up {_list(camera.up)}"
         return "\n".join(["camera {", place, *_lens_lines(camera), "}"])

@@ -97,8 +97,17 @@ CSG_OPTION = ParamSpec("csg", ParamType.BOOL, False, "Evaluate CSG markers (temp
 
 
 def export_mesh(job: ExportJob) -> tuple[TriMesh, tuple[str, ...]]:
-    """The triangles a mesh exporter writes: CSG groups evaluated when asked for, else plain tessellation;
-    then the MeshLab clean-up the options name (mesh/meshlab.py)."""
+    """Returns the triangles a mesh exporter writes.
+
+    CSG groups are evaluated when the options ask for it, else the scene is tessellated; then the MeshLab clean-up
+    the options name runs (mesh/meshlab.py).
+
+    Args:
+        job: The export job (options 'lod', 'csg', 'cleanup', 'keep').
+
+    Returns:
+        (the mesh, warnings about the CSG evaluation).
+    """
     lod = job.options["lod"]
     warnings: list[str] = []
     if job.options.get("csg") and has_markers(job.scene):

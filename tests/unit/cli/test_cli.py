@@ -122,6 +122,7 @@ def test_render_follows_the_script_s_view_exposure_and_denoising(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     def mean(text: str, *extra: str) -> float:
+        """The mean brightness of a tiny render of ``text`` with the extra options."""
         script, out = tmp_path / "s.es", tmp_path / "s.png"
         script.write_text(text)
         assert main(["render", str(script), "-o", str(out), "--size", "16x12", "--samples", "2", "--device", "cpu",
@@ -137,6 +138,7 @@ def test_render_follows_the_script_s_view_exposure_and_denoising(
 
 def test_render_look_options(tmp_path: Path) -> None:
     def corner(*extra: str) -> float:
+        """The corner brightness of a tiny render with the extra options."""
         script, out = tmp_path / "s.es", tmp_path / "s.png"
         script.write_text("#version 2\nset background #888\nrender { integrator ao view standard }\nbox\n")
         assert main(["render", str(script), "-o", str(out), "--size", "24x16", "--samples", "1", "--device", "cpu",

@@ -92,6 +92,7 @@ def test_a_missing_pymeshlab_is_explained(monkeypatch: pytest.MonkeyPatch) -> No
     real_import = builtins.__import__
 
     def no_meshlab(name: str, *args: object, **kwargs: object) -> object:
+        """An import that fails for pymeshlab as a missing libOpenGL would."""
         if name == "pymeshlab":
             raise ImportError("libOpenGL.so.0: cannot open shared object file")
         return real_import(name, *args, **kwargs)  # type: ignore[arg-type]
@@ -99,3 +100,13 @@ def test_a_missing_pymeshlab_is_explained(monkeypatch: pytest.MonkeyPatch) -> No
     monkeypatch.setattr(builtins, "__import__", no_meshlab)
     with pytest.raises(meshlab.MeshLabUnavailableError, match="libopengl0"):
         meshlab._pymeshlab()
+
+
+def test_layer_names_never_collide_and_empty_meshes_are_measured() -> None:
+    from structura.export.mesh.mlp import layer_name, unique_names  # noqa: PLC0415
+
+    assert unique_names([layer_name("a b"), layer_name("a_b"), layer_name("#!")]) == ["a_b", "a_b_2", "layer"]
+    empty = check_mesh(TriMesh.empty())
+    assert (empty.triangles, empty.watertight, empty.volume) == (0, False, None)
+    with pytest.raises(ValueError, match="unknown mesh clean-up"):
+        clean_up(TriMesh.empty(), "shiny")

@@ -303,7 +303,7 @@ import only `structura.kernels.skl`.
 > **As built (M12, owner review):** renders report *phases* before the first pass (device, BVH, kernel
 > compilation) through a `phase` callback of `prepare`/`progressive`, shown by the Render view's moving bar,
 > the status bar and the window title. The camera's lens (`core/scene/lens.py`) replaced the render settings'
-> aperture, blades and camera type. The **post stack** (`render/post.py`: bloom, vignette, white balance,
-> saturation, contrast; `render/lut.py`: `.cube` LUTs) is applied by `render/output.Display` where images are
-> shown and saved — never to the radiance, so EXR stays linear. Progress carries per-pass and kernel-start
+> aperture, blades and camera type. The **post stack** (`render/post.py`: settings and looks;
+> `render/post_image.py`: bloom, vignette, white balance, saturation, contrast; `render/lut.py`: `.cube` LUTs)
+> is applied by `render/output.Display` where images are shown and saved — never to the radiance, so EXR stays linear. Progress carries per-pass and kernel-start
 > times for the reports; `Backend.details()` describes the device.

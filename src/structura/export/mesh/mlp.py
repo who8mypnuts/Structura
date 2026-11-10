@@ -23,11 +23,37 @@ UNSAFE = re.compile(r"[^\w.-]+")
 
 
 def layer_name(key: str) -> str:
+    """Returns a file-name-safe form of a group key ("layer" when nothing is left).
+
+    Args:
+        key: A material name, tag or colour ('#ff8800' becomes 'ff8800').
+    """
     return UNSAFE.sub("_", key).strip("_") or "layer"
 
 
+def unique_names(names: list[str]) -> list[str]:
+    """Returns the names with '_2', '_3' … added to repeats, so no two layers share a file.
+
+    Args:
+        names: Layer names, in order (different keys can make the same safe name: 'a b' and 'a_b').
+    """
+    seen: dict[str, int] = {}
+    out = []
+    for name in names:
+        seen[name] = seen.get(name, 0) + 1
+        out.append(name if seen[name] == 1 else f"{name}_{seen[name]}")
+    return out
+
+
 def project_xml(layers: list[tuple[str, str]]) -> str:
-    """The .mlp document for (label, relative PLY path) layers."""
+    """Writes a MeshLab project document.
+
+    Args:
+        layers: (label, PLY path relative to the project) of every layer.
+
+    Returns:
+        The .mlp XML.
+    """
     root = ET.Element("MeshLabProject")
     group = ET.SubElement(root, "MeshGroup")
     for label, filename in layers:
@@ -38,6 +64,8 @@ def project_xml(layers: list[tuple[str, str]]) -> str:
 
 
 class MeshLabProjectExporter(Exporter):
+    """MeshLab projects: one PLY layer per group (material, tag or colour) and the .mlp listing them."""
+
     name = "meshlab"
     title = "MeshLab project (.mlp + PLY layers)"
     extensions: tuple[str, ...] = (".mlp",)
@@ -55,9 +83,10 @@ class MeshLabProjectExporter(Exporter):
         folder = path.with_name(f"{path.stem}_layers")
         folder.mkdir(parents=True, exist_ok=True)
         layers, files = [], []
-        for key in dict.fromkeys(keys.tolist()):
+        names = unique_names([layer_name(str(key)) for key in dict.fromkeys(keys.tolist())])
+        for key, name in zip(dict.fromkeys(keys.tolist()), names, strict=True):
             part = mesh.select(np.asarray(keys == key))
-            target = folder / f"{layer_name(str(key))}.ply"
+            target = folder / f"{name}.ply"
             target.write_bytes(ply_bytes(part, job.model.points(part.positions), job.model.directions(part.normals)))
             layers.append((str(key), f"{folder.name}/{target.name}"))
             files.append(target)

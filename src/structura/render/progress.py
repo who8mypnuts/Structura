@@ -18,18 +18,35 @@ Rect = tuple[int, int, int, int]  # x0, y0, x1, y1 (pixels, exclusive end)
 
 @dataclass(frozen=True)
 class RenderProgress:
-    image: np.ndarray  # float32[H, W, 3] linear radiance estimate
-    samples: int  # the most samples any pixel has
+    """A render's state after a pass: the image and what the reports and the Render view need.
+
+    Attributes:
+        image: float32 (H, W, 3) linear radiance estimate.
+        samples: The most samples any pixel has.
+        seconds: Render time so far (earlier sessions of a resumed render included).
+        aovs: First-hit channels, when the settings ask for them.
+        sample_map: int32 (H, W) samples per pixel (adaptive sampling varies them).
+        active: The fraction of pixels still being sampled.
+        film: The raw accumulation buffer (to resume a stopped render).
+        mask: uint32 pixel mask still being sampled (to resume).
+        tile: Tiled sampler: the bucket rendered next (the Render view marks it).
+        completed: Tiled sampler: the fraction of buckets done (None for the progressive sampler).
+        pass_seconds: Time of every pass (or bucket) so far (reports).
+        kernel_seconds: Time to bind the render kernel: its first compile on a device, else an upload.
+    """
+
+    image: np.ndarray
+    samples: int
     seconds: float
-    aovs: Aovs | None = None  # when settings.aovs
-    sample_map: np.ndarray | None = None  # int32[H, W] samples per pixel (adaptive sampling varies them)
-    active: float = 1.0  # the fraction of pixels still being sampled
-    film: np.ndarray | None = None  # the raw accumulation buffer (resuming a stopped render)
-    mask: np.ndarray | None = None  # uint32 pixel mask still being sampled (resuming)
-    tile: Rect | None = None  # tiled sampler: the bucket rendered next (the render view marks it)
-    completed: float | None = None  # tiled sampler: the fraction of buckets done (progressive: from samples)
-    pass_seconds: tuple[float, ...] = ()  # device time of every pass (or bucket) so far (reports)
-    kernel_seconds: float = 0.0  # binding the render kernel: its first compile on a device, else an upload
+    aovs: Aovs | None = None
+    sample_map: np.ndarray | None = None
+    active: float = 1.0
+    film: np.ndarray | None = None
+    mask: np.ndarray | None = None
+    tile: Rect | None = None
+    completed: float | None = None
+    pass_seconds: tuple[float, ...] = ()
+    kernel_seconds: float = 0.0
 
 
 @dataclass
@@ -62,6 +79,12 @@ class RenderRun:
         return self.settings.seed * 1_000_003 + done
 
     def snapshot(self, accum: np.ndarray, **extra: Any) -> RenderProgress:
+        """Returns the progress for an accumulation buffer.
+
+        Args:
+            accum: The film as read back from the device.
+            **extra: RenderProgress fields to set (the tiled sampler's bucket and completion).
+        """
         w, h = self.size
         snapshot = RenderProgress(film_image(accum, w, h), int(self.counts.max(initial=0)), self.seconds, self.aovs,
                                   self.counts.copy(), float(self.mask.mean()), accum, self.mask.copy(),

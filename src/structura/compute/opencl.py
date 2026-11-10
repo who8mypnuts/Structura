@@ -63,6 +63,8 @@ class OpenCLBound(Bound):
 
 
 class OpenCLBackend(BackendBase):
+    """The OpenCL backend: kernels emitted as OpenCL C 1.2, on a GPU (or pocl's CPU device)."""
+
     name = "opencl"
 
     def __init__(self) -> None:

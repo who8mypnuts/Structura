@@ -108,6 +108,11 @@ def _label() -> str:
 
 
 def main() -> int:
+    """Runs the harness over the corpus and writes the golden data and manifest.
+
+    Returns:
+        The exit code (1 when the harness is not built).
+    """
     if not EXE.exists():
         print("build the harness first: python tools/golden/build_harness.py", file=sys.stderr)
         return 1

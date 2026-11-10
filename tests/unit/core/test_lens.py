@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 
+import numpy as np
 import pytest
 
 from structura.core.lang.v2.blocks import extract_blocks
@@ -93,3 +94,13 @@ def test_copy_camera_to_script_round_trips_the_lens(lens: Lens) -> None:
     assert back.lens == lens
     if lens.projection == "perspective":
         assert back.fov_y_deg == pytest.approx(30.0, abs=1e-4)
+
+
+def test_degenerate_inputs_stay_finite() -> None:
+    assert math.isfinite(focal_length_mm(0.0)) and math.isfinite(focal_length_mm(180.0))
+    assert amount_for_fstop(0.0) == 0.0 and amount_for_fstop(math.inf) == 0.0
+    assert sensor_of("0x24") is None and sensor_of((36, -1)) is None and sensor_of("wide") is None
+    assert sensor_of("36X24") == (36.0, 24.0) and sensor_of(["23.6", 15.6]) == (23.6, 15.6)
+    looking_up = Camera((0.0, 0.0, 0.0), (0.0, 5.0, 0.0))  # the view direction is the default 'up'
+    forward, right, up = looking_up.basis
+    assert np.isfinite([*forward, *right, *up]).all() and abs(float(np.dot(right, forward))) < 1e-12

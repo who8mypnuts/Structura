@@ -49,6 +49,7 @@ FLOATS = {"noise_threshold": "noise_threshold", "time_limit": "time_limit", "pho
 
 
 def _render_block(block: dict[str, Any]) -> dict[str, Any]:
+    """Render settings from the render block's keys (choices, counts, numbers, the look and the size)."""
     out: dict[str, Any] = {field: str(block[key]) for key, (field, allowed) in CHOICES.items()
                            if str(block.get(key, "")) in allowed}  # fmt: skip
     out |= {field: max(low, int(block[key])) for key, (field, low) in INTS.items() if key in block}
@@ -61,9 +62,9 @@ def _render_block(block: dict[str, Any]) -> dict[str, Any]:
     if (post := post_from_block(block)) is not None:
         out["post"] = post
     size = str(block.get("size", ""))
-    if "x" in size:
+    if "x" in size:  # (block_check let only digits 'x' digits through)
         w, _, h = size.lower().partition("x")
-        out["width"], out["height"] = int(w), int(h)
+        out["width"], out["height"] = max(1, int(w)), max(1, int(h))
     return out
 
 
@@ -100,6 +101,7 @@ def _sun(decl: SceneDeclarations) -> dict[str, Any]:
 
 
 def _environment(block: dict[str, Any]) -> dict[str, Any]:
+    """Render settings from the environment block: an HDRI, the sun-sky, a colour or a gradient."""
     kind = str(block.get("type", ""))
     shared = {k: float(block[key]) for key, k in (("rotation", "env_rotation_deg"), ("intensity", "env_intensity"))
               if key in block}  # fmt: skip
@@ -123,6 +125,16 @@ def _environment(block: dict[str, Any]) -> dict[str, Any]:
 def declared_settings(
     settings: RenderSettings, decl: SceneDeclarations | None, has_background: bool = False
 ) -> RenderSettings:
+    """Applies a script's v2 blocks to render settings.
+
+    Args:
+        settings: The settings so far (defaults and legacy 'set raytracer::' values).
+        decl: The script's declarations; None (a v1 script) changes nothing.
+        has_background: Whether the script sets a background colour (then camera rays keep seeing it).
+
+    Returns:
+        The settings with the render, environment and sun blocks applied.
+    """
     if decl is None:
         return settings
     values = {
@@ -137,7 +149,15 @@ def declared_settings(
 
 
 def declared_camera(decl: SceneDeclarations | None, fallback: Camera) -> Camera | None:
-    """The camera block as a Camera, or None when the script has none."""
+    """Reads the script's camera block.
+
+    Args:
+        decl: The script's declarations, if any.
+        fallback: The camera that supplies what the block leaves out.
+
+    Returns:
+        The camera, or None when the script has no camera block.
+    """
     if decl is None or not decl.camera:
         return None
     return camera_from_block(decl.camera, fallback)

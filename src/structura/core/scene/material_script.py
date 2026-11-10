@@ -7,17 +7,16 @@ declarations (script_blocks.put_block).
 
 from __future__ import annotations
 
-from dataclasses import fields
-
 from .material import STATE, Material, MaterialModel, material_param_specs, presets
 from .script_blocks import put_block
+from .vectors import number
 
 SPECIAL = ("emission_strength", "opacity")  # written with the emission colour / as 'state'
 WRITTEN = tuple(s.key for s in material_param_specs() if s.key not in SPECIAL)
 
 
 def _number(x: float) -> str:
-    return f"{float(x):.4g}"
+    return number(x, ".4g")
 
 
 def _colour(value: str | tuple[float, float, float]) -> str:
@@ -32,6 +31,16 @@ def _differs(material: Material, start: Material, name: str) -> bool:
 
 
 def material_text(material: Material, preset: str = "") -> str:
+    """Writes a material as a v2 block.
+
+    Args:
+        material: The material (its name names the block).
+        preset: The preset the block starts from ('preset NAME'); only the fields that differ from it are
+            written. An unknown preset starts from the default material.
+
+    Returns:
+        The block text, without a trailing newline.
+    """
     start = presets().get(preset, Material())
     lines = [f"material {material.name} {{"] + ([f"  preset {preset}"] if preset in presets() else [])
     if material.base != start.base:
@@ -52,8 +61,11 @@ def material_text(material: Material, preset: str = "") -> str:
 
 
 def with_material(text: str, material: Material, preset: str = "") -> str:
+    """Returns ``text`` with the material's block replaced, or added with the other declarations.
+
+    Args:
+        text: The script.
+        material: The material to write.
+        preset: The preset its block starts from (see ``material_text``).
+    """
     return put_block(text, "material", material.name, material_text(material, preset))
-
-
-def material_fields() -> tuple[str, ...]:
-    return tuple(f.name for f in fields(Material))

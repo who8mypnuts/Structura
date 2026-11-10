@@ -84,6 +84,7 @@ def test_theme_changes_show_at_once_and_cancel_puts_them_back(
     seen: list[str] = []
 
     def exec_(dialog: PreferencesDialog) -> int:
+        """Picks another theme while the dialog is open, then cancels."""
         combo = dialog.forms[1].widgets["appearance/theme"]
         assert isinstance(combo, QComboBox)
         combo.setCurrentText(other)  # previewed while the dialog is open

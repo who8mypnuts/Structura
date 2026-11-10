@@ -24,6 +24,8 @@ OVERLAYS = {"grid": False, "axes": True, "bounds": False, "hud": True, "focus": 
 
 
 class BuildActions(QObject):
+    """Build and viewport commands: live build, seeds, variations, looks, X-ray, colour modes and overlays."""
+
     def __init__(self, window: MainWindow) -> None:
         super().__init__(window)
         self.w = window
@@ -69,7 +71,11 @@ class BuildActions(QObject):
         self.w.workbench.set_seed(seed)
 
     def set_look(self, look: str) -> None:
-        """View ▸ Look: the viewport's shading; choosing a look also ends X-ray (a see-through variant of any look)."""
+        """Sets the viewport's shading; choosing a look also ends X-ray (a see-through variant of any look).
+
+        Args:
+            look: A preview LOOKS name ('studio', 'legacy', 'clay', 'technical').
+        """
         self.w.viewport.set_options(replace(self.w.viewport.options, look=look))
         if self.w.workbench.view.xray:
             self.toggle_xray()
@@ -98,6 +104,7 @@ class BuildActions(QObject):
         self.apply_overlays()
 
     def apply_overlays(self) -> None:
+        """Shows the overlays the preferences switch on (gizmo, bounds, counts, focus planes, grid)."""
         overlays = Overlays(self.overlay_on("axes"), self.overlay_on("bounds"), self.overlay_on("hud"),
                             self.overlay_on("focus"))  # fmt: skip
         self.w.viewport.set_overlays(overlays, grid=self.overlay_on("grid"))

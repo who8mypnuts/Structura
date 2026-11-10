@@ -47,6 +47,14 @@ def example_files() -> list[tuple[str, Path]]:
 
 
 def cache_file(path: Path) -> Path:
+    """Returns where an example's thumbnail is cached.
+
+    The name hashes the script's bytes, the version, the tile size and the thumbnail STYLE, so any change makes
+    a new thumbnail.
+
+    Args:
+        path: The example script.
+    """
     digest = hashlib.sha1(path.read_bytes() + f"|{__version__}|{TILE}|{STYLE}".encode()).hexdigest()
     return CACHE / f"{digest}.png"
 
@@ -72,7 +80,10 @@ def _load_cached(paths: list[Path]) -> Any:
 
 
 def _render(path: Path) -> Any:
+    """The compute-lane job that renders one gallery tile and caches it (a blank tile when the script fails)."""
+
     def run(ctx: JobContext) -> tuple[Path, np.ndarray]:
+        """Renders the tile with the script's own camera, sky and look."""
         try:
             rgb, _ = script_thumbnail(path.read_text(encoding="utf-8", errors="replace"), TILE, script_view=True)
         except Exception:  # a script that does not build still gets a (blank) tile

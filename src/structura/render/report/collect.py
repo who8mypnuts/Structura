@@ -23,22 +23,46 @@ from .system_sections import reproduce_section, system_section
 
 @dataclass(frozen=True)
 class ReportInputs:
+    """Everything a report describes.
+
+    Attributes:
+        scene: The built scene.
+        progress: The final render progress.
+        details: What the render used.
+        device: The backend and device ('cuda NVIDIA GeForce GTX 1660').
+        passes: How many passes the render took.
+        image: The image as saved (e.g. denoised); None: ``progress.image``.
+        denoiser: The denoiser used, or "".
+        display: Exposure, view transform and look the image was saved with; None: the settings' own.
+        script: The script text.
+        script_path: The script file.
+        seed: The build seed.
+        params: Parameter values.
+        build: Build statistics, when known.
+        outputs: Files written alongside the report (the image).
+        environment: Extra system rows (Qt version, driver …).
+    """
+
     scene: SceneIR
     progress: RenderProgress
     details: RenderDetails
-    device: str  # "cuda NVIDIA GeForce GTX 1660"
+    device: str
     passes: int = 0
-    image: np.ndarray | None = None  # the image as saved (e.g. denoised); default: progress.image
+    image: np.ndarray | None = None
     denoiser: str = ""
-    display: Display | None = None  # exposure, view transform and post stack the image was saved with (None:
-    # the render settings' own)
+    display: Display | None = None
     script: str | None = None
     script_path: Path | None = None
     seed: int = 0
     params: dict[str, float] = field(default_factory=dict)
     build: BuildStats | None = None
-    outputs: tuple[Path, ...] = ()  # files written alongside the report (the image)
-    environment: dict[str, str] = field(default_factory=dict)  # extra system rows (Qt version, driver, …)
+    outputs: tuple[Path, ...] = ()
+    environment: dict[str, str] = field(default_factory=dict)
+
+    @property
+    def shown(self) -> Display:
+        """The exposure, view transform and look the image was saved with."""
+        return self.display or self.details.settings.display
 
 
 def _post_rows(post: PostSettings) -> list[Row]:
@@ -48,12 +72,9 @@ def _post_rows(post: PostSettings) -> list[Row]:
             if value != getattr(base, name)]  # fmt: skip
 
 
-def _shown_with(inputs: ReportInputs) -> Display:
-    return inputs.display or inputs.details.settings.display
-
-
 def _image_section(inputs: ReportInputs, linear: np.ndarray, display: np.ndarray) -> Section:
-    p, s, shown = inputs.progress, inputs.details.settings, _shown_with(inputs)
+    """The image section: how it was shown, its statistics, sampling and visibility."""
+    p, s, shown = inputs.progress, inputs.details.settings, inputs.shown
     rows: list[Row] = [
         row("Exposure", shown.exposure, f"{shown.exposure:+g} stops"),
         row("View transform", shown.view),
@@ -85,9 +106,17 @@ def _highlights(inputs: ReportInputs) -> tuple[tuple[str, str], ...]:
 
 
 def build_report(inputs: ReportInputs) -> Report:
+    """Collects everything about a finished render into a report (format-independent).
+
+    Args:
+        inputs: The render and its context.
+
+    Returns:
+        The report: highlights, sections, thumbnail, histogram and palette.
+    """
     d, p = inputs.details, inputs.progress
     linear = inputs.image if inputs.image is not None else p.image
-    display = _shown_with(inputs).apply(linear)
+    display = inputs.shown.apply(linear)
     name = inputs.script_path.name if inputs.script_path else "Untitled script"
     sections = [
         script_section(inputs.script, inputs.script_path, inputs.seed, inputs.params),

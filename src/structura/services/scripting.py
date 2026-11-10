@@ -75,6 +75,14 @@ class BuilderHost:
         return build_scene(compile_script(text, 0, None, script_dir).program).scene
 
     def raytrace(self, scene: Any, path: Path, width: int, height: int) -> None:
+        """Builder.raytraceToFile: renders a scene with the classic integrator to an image.
+
+        Args:
+            scene: The built scene.
+            path: The image file.
+            width: Image width (0: from the height, 4:3, or the script's).
+            height: Image height (0: from the width, 4:3, or the script's).
+        """
         settings = replace(script_settings(scene), integrator="classic")
         if width or height:
             w, h = width or round(height * 4 / 3), height or round(width * 3 / 4)

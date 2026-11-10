@@ -30,6 +30,7 @@ from .film import active_mask, initial_mask, new_film
 from .ground import Ground, with_ground
 from .kernels.layout import MAX_GENERATION, N_EMITTERS
 from .kernels.passes import render_pass
+from .kernels.scene import PF_GENERATION
 from .legacy import with_legacy
 from .lights import pack_lights
 from .materials import pack_materials
@@ -45,7 +46,7 @@ Phase = Callable[[str], None]  # told what a render is doing before its first pa
 
 
 def _quiet(_text: str) -> None:
-    return None
+    """The default phase callback: says nothing."""
 
 
 @cache
@@ -71,10 +72,20 @@ def prepare(
     scene: SceneIR, declared: Mapping[str, Material] | None = None, tag_presets: bool = False,
     ground: Ground | None = None, phase: Phase = _quiet,
 ) -> Prepared:  # fmt: skip
-    """Pack, build the BVH and resolve materials (declared ones, then presets named like a tag if enabled).
+    """Packs the scene, builds the BVH and resolves the materials.
 
-    v2 scripts bring their own 'material' blocks and always enable tag presets (docs/05 §9.3). ``ground``
-    adds a ground plane or shadow catcher under the scene (excluded from the framing bounds).
+    Materials come from the ``declared`` ones, then presets named like a tag if enabled. v2 scripts bring their
+    own 'material' blocks and always enable tag presets (docs/05 §9.3).
+
+    Args:
+        scene: The built scene.
+        declared: Materials by tag, over the script's own.
+        tag_presets: Whether a tag named like a preset ('box::glass') uses it.
+        ground: A ground plane or shadow catcher to add under the scene (excluded from the framing bounds).
+        phase: Told what is happening ('Building the BVH…'), for progress displays.
+
+    Returns:
+        Everything the kernels need of the scene.
     """
     if scene.declarations is not None:
         declared, tag_presets = {**scene.declarations.materials, **(declared or {})}, True
@@ -98,7 +109,19 @@ def prepare_with_frame(
     scene: SceneIR, settings: RenderSettings, tag_presets: bool = False, camera: Camera | None = None,
     phase: Phase = _quiet,
 ) -> tuple[Prepared, Frame]:  # fmt: skip
-    """``prepare`` (with the settings' ground) and the view: ``camera``, else the script camera or framing."""
+    """Prepares a scene and its view.
+
+    Args:
+        scene: The built scene.
+        settings: The render settings (their ground is added).
+        tag_presets: Whether a tag named like a preset uses it.
+        camera: The camera to render with; None uses the script's camera, or frames the structure. Legacy
+            'raytracer::dof' settings still apply to a given camera without depth of field.
+        phase: Told what is happening, for progress displays.
+
+    Returns:
+        (the prepared scene, its frame: camera, settings and scale).
+    """
     prepared = prepare(scene, tag_presets=tag_presets, ground=settings.ground_spec, phase=phase)
     frame = scene_frame(prepared.scene_settings, settings, prepared.lo, prepared.hi, prepared.declarations)
     if camera is None:
@@ -124,11 +147,17 @@ def _joined(data: np.ndarray, cdf: np.ndarray) -> np.ndarray:
 
 
 def launch_args(prepared: Prepared, frame: Frame) -> dict[str, Any]:
+    """Returns the render kernel's arguments: buffers, the configuration and the film.
+
+    Args:
+        prepared: The prepared scene.
+        frame: The view and settings.
+    """
     st, p, b = frame.settings, prepared.packed, prepared.bvh
     env = settings_environment(st)
     cfg = config(frame)
     cfg[N_EMITTERS] = len(prepared.emitters)  # the count lives with the scene, the rest of cfg with the frame
-    cfg[MAX_GENERATION] = float(p.prim_f[:, 23].max()) if len(p) else 0.0
+    cfg[MAX_GENERATION] = float(p.prim_f[:, PF_GENERATION].max()) if len(p) else 0.0
     return {
         "width": st.width,
         "height": st.height,
@@ -173,17 +202,29 @@ def start_run(
     prepared: Prepared, settings: RenderSettings, backend: Backend, frame: Frame, resume: RenderProgress | None,
     phase: Phase = _quiet,
 ) -> tuple[RenderRun, np.ndarray]:  # fmt: skip
-    """Bind the render kernel (photons and AOVs first when asked for); returns the run and the starting film."""
+    """Binds the render kernel, after the photon and AOV passes when they are asked for.
+
+    Args:
+        prepared: The prepared scene.
+        settings: The render settings.
+        backend: The compute backend.
+        frame: The view.
+        resume: A stopped render of the same scene, camera and settings to continue, or None.
+        phase: Told what is happening, for progress displays.
+
+    Returns:
+        (the run, the starting film: empty, or the resumed one).
+    """
     w, h = settings.width, settings.height
     args = launch_args(prepared, frame)
     if settings.caustics == "photons":
         phase(f"Tracing {settings.photon_count:,} caustic photons…")
         add_photons(args, prepared.lo, prepared.hi, settings.photon_count, settings.photon_radius, backend,
                     settings.seed)  # fmt: skip
-    if settings.aovs and (resume is None or resume.aovs is None):
+    aovs = resume.aovs if resume is not None else None
+    if settings.aovs and aovs is None:
         phase("First-hit passes (albedo, normals, depth)…")
-    aovs = render_aovs(args, backend) if settings.aovs and (resume is None or resume.aovs is None) else None
-    aovs = aovs or (resume.aovs if resume is not None else None)
+        aovs = render_aovs(args, backend)
     counts, done, spent = _resumed(args, w, h, resume)
     film = args["accum"].copy()
     phase(f"Starting the render kernel on {backend.name} (the first render on a device compiles it)…")
@@ -203,12 +244,23 @@ def progressive(
     resume: RenderProgress | None = None,
     phase: Phase = _quiet,
 ) -> Iterator[RenderProgress]:
-    """Yield an updated image after every pass (render/pacing.py sizes the passes), or with the tiled sampler
-    after buckets (render/tiled.py).
+    """Renders pass by pass, yielding the image after every pass.
 
-    Stops at settings.samples, at the time limit, or when adaptive sampling finds every pixel below the
-    noise threshold. ``between`` runs between the row bands of each pass (cancellation checks). ``resume``
-    continues a stopped render of the same scene, camera and settings.
+    Passes are sized by render/pacing.py; the tiled sampler yields after buckets instead (render/tiled.py). The
+    render stops at ``settings.samples``, at the time limit, or when adaptive sampling finds every pixel below the
+    noise threshold.
+
+    Args:
+        scene: A built scene, or one prepared already.
+        settings: The render settings.
+        backend: The compute backend.
+        frame: The view; None uses the script's camera or framing.
+        between: Runs between the row bands of each pass (cancellation checks).
+        resume: A stopped render of the same scene, camera and settings to continue.
+        phase: Told what is happening before the first pass.
+
+    Yields:
+        The progress after each pass (image, samples, timings).
     """
     prepared = scene if isinstance(scene, Prepared) else prepare(scene)
     frame = frame or scene_frame(prepared.scene_settings, settings, prepared.lo, prepared.hi, prepared.declarations)
@@ -222,6 +274,7 @@ def progressive(
 
 
 def _passes(run: RenderRun, between: Callable[[], None] | None) -> Iterator[RenderProgress]:
+    """The progressive sampler's passes (see ``progressive``)."""
     s, (w, h) = run.settings, run.size
     bands, pacing = Bands(w, h), Pacing(s)
     while run.done < s.samples and run.mask.any():
@@ -244,6 +297,17 @@ def _passes(run: RenderRun, between: Callable[[], None] | None) -> Iterator[Rend
 def render(
     scene: SceneIR | Prepared, settings: RenderSettings, backend: Backend, frame: Frame | None = None
 ) -> RenderProgress:
+    """Renders to completion.
+
+    Args:
+        scene: A built scene, or one prepared already.
+        settings: The render settings.
+        backend: The compute backend.
+        frame: The view; None uses the script's camera or framing.
+
+    Returns:
+        The final progress (the finished image).
+    """
     *_, last = progressive(scene, settings, backend, frame)
     return last
 

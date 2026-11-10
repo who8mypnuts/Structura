@@ -39,43 +39,26 @@ from ...core.scene.lens import (
     fstop_for_amount,
 )
 from ..i18n import tr
+from ..widgets.fields import combo_box, spin_box, spin_pair
 
 CUSTOM, LEGACY = "Custom", "Structure Synth 22°"
 DEFAULT_AMOUNT = 0.5
 
 
-def spin(low: float, high: float, decimals: int = 2, name: str = "", suffix: str = "") -> QDoubleSpinBox:
-    box = QDoubleSpinBox()
-    box.setRange(low, high)
-    box.setDecimals(decimals)
-    box.setKeyboardTracking(False)  # apply on Enter or focus change, not on every typed digit
-    box.setAccessibleName(name)
-    box.setSuffix(suffix)
-    return box
-
-
-def pair(name: str, low: float, high: float, decimals: int = 3) -> tuple[QWidget, QDoubleSpinBox, QDoubleSpinBox]:
-    row = QWidget()
-    layout = QHBoxLayout(row)
-    layout.setContentsMargins(0, 0, 0, 0)
-    a, b = spin(low, high, decimals, f"{name} x"), spin(low, high, decimals, f"{name} y")
-    layout.addWidget(a)
-    layout.addWidget(b)
-    return row, a, b
-
-
-def combo(items: tuple[str, ...] | list[str], name: str) -> QComboBox:
-    box = QComboBox()
-    box.addItems(list(items))
-    box.setAccessibleName(name)
-    return box
-
-
 class LensEditor(QWidget):
+    """The Camera panel's lens: simple (preset, focal length, depth of field, focus) and advanced (projection,
+    sensor, aperture, scale, bokeh, shift and tilt). Edits build a core.scene.lens.Lens; ``changed`` says so.
+    """
+
     changed = Signal()  # the user edited the lens or the field of view
     focus_selection = Signal()  # "On selection": focus on the object selected in the viewport
 
     def __init__(self, parent: QWidget | None = None) -> None:
+        """Builds the simple rows and the (folded) advanced group.
+
+        Args:
+            parent: The parent widget.
+        """
         super().__init__(parent)
         self._camera = Camera((0.0, 0.0, 10.0), (0.0, 0.0, 0.0))
         self._scene_size = 0.0  # the structure's diagonal in world units (scene scale helper)
@@ -88,22 +71,23 @@ class LensEditor(QWidget):
 
     # -- building ------------------------------------------------------------------------------------------
     def _simple(self) -> QFormLayout:
-        self.preset = combo([CUSTOM, *LENS_PRESETS, LEGACY], tr("Lens preset"))
-        self.focal = spin(2.0, 2000.0, 1, tr("Focal length"), " mm")
-        self.fov = spin(1.0, 170.0, 2, tr("Field of view"), "°")
+        """The simple rows: lens preset, focal length ↔ field of view, depth of field, focus and the readout."""
+        self.preset = combo_box([CUSTOM, *LENS_PRESETS, LEGACY], tr("Lens preset"))
+        self.focal = spin_box(2.0, 2000.0, 1, tr("Focal length"), " mm")
+        self.fov = spin_box(1.0, 170.0, 2, tr("Field of view"), "°")
         self.dof = QCheckBox(tr("Depth of field"))
         self.amount = QSlider(Qt.Orientation.Horizontal)
         self.amount.setRange(0, 100)
         self.amount.setAccessibleName(tr("Depth of field amount"))
         self.amount.setToolTip(tr("Deep (f/22) … shallow (f/1.2)"))
-        self.focus_mode = combo(("target", "manual", "hyperfocal"), tr("Focus"))
+        self.focus_mode = combo_box(("target", "manual", "hyperfocal"), tr("Focus"))
         self.focus_mode.setToolTip(
             tr(
                 "Target: the point looked at · Manual: the distance below (Alt+click in the "
                 "viewport) · Hyperfocal: sharp from half that distance to infinity"
             )
         )
-        self.focus = spin(0.0, 1e6, 3, tr("Focus distance"))
+        self.focus = spin_box(0.0, 1e6, 3, tr("Focus distance"))
         self.on_selection = QPushButton(tr("On Selection"))
         self.on_selection.setToolTip(tr("Focus on the object selected in the viewport"))
         focus_row = QHBoxLayout()
@@ -123,28 +107,29 @@ class LensEditor(QWidget):
         return form
 
     def _advanced(self) -> QGroupBox:
+        """The advanced group (folded at first): every other lens field."""
         box = QGroupBox(tr("Advanced lens"))
         box.setCheckable(True)
         box.setChecked(False)
         inner = QWidget()
         form = QFormLayout(inner)
-        self.projection = combo(PROJECTIONS, tr("Projection"))
-        self.sensor = combo([*SENSORS, CUSTOM], tr("Sensor"))
-        sensor_row, self.sensor_w, self.sensor_h = pair(tr("Sensor size (mm)"), 1.0, 200.0, 2)
-        self.fstop = spin(0.5, 128.0, 2, tr("f-stop"))
-        self.radius = spin(0.0, 1e4, 4, tr("Aperture radius"))
-        self.units = spin(1e-4, 1e6, 4, tr("World units per metre"))
-        self.size_m = spin(0.0, 1e6, 3, tr("Structure size"), " m")
+        self.projection = combo_box(PROJECTIONS, tr("Projection"))
+        self.sensor = combo_box([*SENSORS, CUSTOM], tr("Sensor"))
+        sensor_row, self.sensor_w, self.sensor_h = spin_pair(tr("Sensor size (mm)"), 1.0, 200.0, 2)
+        self.fstop = spin_box(0.5, 128.0, 2, tr("f-stop"))
+        self.radius = spin_box(0.0, 1e4, 4, tr("Aperture radius"))
+        self.units = spin_box(1e-4, 1e6, 4, tr("World units per metre"))
+        self.size_m = spin_box(0.0, 1e6, 3, tr("Structure size"), " m")
         self.size_m.setToolTip(tr("How big the structure is in the real world: sets the scale the f-stop uses"))
-        self.blades = spin(0, 16, 0, tr("Aperture blades"))
-        self.blade_rotation = spin(-360.0, 360.0, 1, tr("Blade rotation"), "°")
-        self.bias = spin(-1.0, 1.0, 2, tr("Bokeh bias"))
-        self.anamorphic = spin(0.25, 4.0, 2, tr("Anamorphic ratio"))
-        shift_row, self.shift_x, self.shift_y = pair(tr("Lens shift"), -2.0, 2.0)
-        tilt_row, self.tilt_x, self.tilt_y = pair(tr("Focus tilt"), -60.0, 60.0, 2)
-        self.ortho = spin(1e-4, 1e6, 3, tr("Orthographic height"))
-        self.fisheye = spin(1.0, 360.0, 1, tr("Fisheye field"), "°")
-        self.mapping = combo(FISHEYE_MAPPINGS, tr("Fisheye mapping"))
+        self.blades = spin_box(0, 16, 0, tr("Aperture blades"))
+        self.blade_rotation = spin_box(-360.0, 360.0, 1, tr("Blade rotation"), "°")
+        self.bias = spin_box(-1.0, 1.0, 2, tr("Bokeh bias"))
+        self.anamorphic = spin_box(0.25, 4.0, 2, tr("Anamorphic ratio"))
+        shift_row, self.shift_x, self.shift_y = spin_pair(tr("Lens shift"), -2.0, 2.0)
+        tilt_row, self.tilt_x, self.tilt_y = spin_pair(tr("Focus tilt"), -60.0, 60.0, 2)
+        self.ortho = spin_box(1e-4, 1e6, 3, tr("Orthographic height"))
+        self.fisheye = spin_box(1.0, 360.0, 1, tr("Fisheye field"), "°")
+        self.mapping = combo_box(FISHEYE_MAPPINGS, tr("Fisheye mapping"))
         rows = ((tr("Projection"), self.projection), (tr("Sensor"), self.sensor), ("", sensor_row),
                 (tr("f-stop"), self.fstop), (tr("Aperture radius"), self.radius), (tr("Units per metre"), self.units),
                 (tr("Structure size"), self.size_m), (tr("Blades"), self.blades),
@@ -163,6 +148,7 @@ class LensEditor(QWidget):
         return box
 
     def _connect(self) -> None:
+        """Wires the fields: two-way focal length ↔ field of view and f-stop ↔ slider; others to ``_edited``."""
         self.preset.currentTextChanged.connect(self._preset_chosen)
         self.focal.valueChanged.connect(self._focal_edited)
         self.fov.valueChanged.connect(self._fov_edited)
@@ -182,11 +168,16 @@ class LensEditor(QWidget):
 
     # -- showing -------------------------------------------------------------------------------------------
     def widgets(self) -> list[QWidget]:
+        """Returns every input field (to block their signals while showing a camera)."""
         kinds = (QDoubleSpinBox, QComboBox, QCheckBox, QSlider)
         return [w for w in self.findChildren(QWidget) if isinstance(w, kinds)]
 
     def show_camera(self, camera: Camera) -> None:
-        """Follow the viewport's camera without echoing the change back."""
+        """Shows a camera's lens without echoing the change back.
+
+        Args:
+            camera: The camera the viewport has now.
+        """
         self._camera = camera
         lens = camera.lens
         for w in self.widgets():
@@ -221,7 +212,11 @@ class LensEditor(QWidget):
         self._readout(camera)
 
     def set_scene_size(self, diagonal: float) -> None:
-        """The structure's size in world units, for the 'Structure size' helper."""
+        """Tells the editor the structure's size, for the 'Structure size' helper (metres ↔ units per metre).
+
+        Args:
+            diagonal: The structure's bounding-box diagonal in world units (0: unknown).
+        """
         self._scene_size = diagonal
         self.size_m.blockSignals(True)
         self.size_m.setValue(diagonal / self._camera.lens.units_per_metre if diagonal else 0.0)
@@ -234,6 +229,7 @@ class LensEditor(QWidget):
         return next((n for n, mm in LENS_PRESETS.items() if abs(camera.focal_length_mm - mm) < 0.05), CUSTOM)
 
     def _enable(self) -> None:
+        """Enables only the fields the projection, depth of field, focus mode and sensor make meaningful."""
         perspective = self.projection.currentText() == "perspective"
         dof = self.dof.isChecked() and perspective
         for widget in (self.amount, self.focus_mode, self.fstop, self.blades, self.blade_rotation, self.bias,
@@ -250,6 +246,7 @@ class LensEditor(QWidget):
         self.sensor_h.setEnabled(custom)
 
     def _readout(self, camera: Camera) -> None:
+        """Shows the f-stop, focus and sharp range (or why there is no depth of field)."""
         if camera.lens.projection != "perspective":
             self.readout.setText(tr("No depth of field in this projection"))
         elif camera.aperture_radius <= 0:
@@ -309,6 +306,7 @@ class LensEditor(QWidget):
         return SENSORS[name] if name in SENSORS else (self.sensor_w.value(), self.sensor_h.value())
 
     def _edited(self, *_: object) -> None:
+        """Any edit: re-enable fields, refresh the readout and the preset, and emit ``changed``."""
         self._enable()
         camera = self.camera()
         self._camera = camera
@@ -319,6 +317,7 @@ class LensEditor(QWidget):
         self.changed.emit()
 
     def lens(self) -> Lens:
+        """Returns the lens the fields describe (an aperture radius only while one was set instead of an f-stop)."""
         dof = self.dof.isChecked()
         radius = self.radius.value() if dof and self._radius_mode else 0.0
         fstop = self.fstop.value() if dof and not radius else None
@@ -335,5 +334,5 @@ class LensEditor(QWidget):
         )  # fmt: skip
 
     def camera(self) -> Camera:
-        """The shown camera with this editor's field of view and lens."""
+        """Returns the shown camera with this editor's field of view and lens."""
         return replace(self._camera, fov_y_deg=self.fov.value(), lens=self.lens())

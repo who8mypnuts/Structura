@@ -5,7 +5,6 @@ from __future__ import annotations
 from collections.abc import Collection
 
 from PySide6.QtWidgets import (
-    QComboBox,
     QDoubleSpinBox,
     QLabel,
     QProgressBar,
@@ -22,24 +21,18 @@ from ...render.denoise import METHODS
 from ...render.post import LOOKS, PostSettings
 from ...render.settings import AUTO_PASSES, INTEGRATORS, VIEWS, RenderSettings, resolve_view
 from ..i18n import tr
+from ..widgets.fields import combo_box
 from .presets import BY_NAME, CUSTOM, FRAME_CUSTOM, FRAME_VIEWPORT, FRAMES, PRESETS, frame_size
 
 DENOISE_OFF = "off"
 LOOK_SCRIPT = "Script"  # the look the script's render block declares (bloom, vignette, … keys)
 
 
-def _combo(items: list[str] | tuple[str, ...], current: str, tip: str) -> QComboBox:
-    box = QComboBox()
-    box.addItems(list(items))
-    box.setCurrentText(current)
-    box.setToolTip(tip)
-    return box
-
-
 class RenderControls:
     """Owns the widgets; RenderView connects them. Buttons come first so they never overflow."""
 
     def __init__(self) -> None:
+        """Creates every tool-bar widget and applies the default preset."""
         self.render_button, self.stop_button = QPushButton(tr("Render")), QPushButton(tr("Stop"))
         self.save_button, self.snapshot_button = QPushButton(tr("Save…")), QPushButton(tr("A/B"))
         self.resume_button = QPushButton(tr("Resume"))
@@ -52,19 +45,24 @@ class RenderControls:
             tr("Snapshot the current image and compare it with the next render (drag the split; click again to clear)")
         )
         self.render_button.setProperty("accent", True)
-        self.preset = _combo([*(p.name for p in PRESETS), CUSTOM], "Standard",
-                             tr("Render preset: samples, image size, noise threshold and denoising"))  # fmt: skip
-        self.preset.setAccessibleName(tr("Render preset"))
+        self.preset = combo_box(
+            [*(p.name for p in PRESETS), CUSTOM],
+            tr("Render preset"),
+            "Standard",
+            tr("Render preset: samples, image size, noise threshold and denoising"),
+        )
         self._frame_widgets()
-        self.integrator = _combo(sorted(INTEGRATORS), "path", tr("Integrator"))
-        self.device = _combo(NAMES, "auto", tr("Compute device"))
+        self.integrator = combo_box(sorted(INTEGRATORS), current="path", tip=tr("Integrator"))
+        self.device = combo_box(NAMES, current="auto", tip=tr("Compute device"))
         self.samples = QSpinBox()
         self.samples.setRange(1, 65536)
         self.samples.setValue(128)
         self.samples.setPrefix("spp ")
         self.samples.setMaximumWidth(96)
         self.samples.setAccessibleName(tr("Samples per pixel"))
-        self.denoise = _combo((DENOISE_OFF, *METHODS), "auto", tr("Denoise when finished (auto: OIDN, else À-Trous)"))
+        self.denoise = combo_box(
+            (DENOISE_OFF, *METHODS), current="auto", tip=tr("Denoise when finished (auto: OIDN, else À-Trous)")
+        )
         self._display_widgets()
         self.progress, self.info, self.pixel = QProgressBar(), QLabel(""), QLabel("")
         self.pixel.setObjectName("Muted")
@@ -86,14 +84,14 @@ class RenderControls:
         self.exposure.setPrefix("EV ")
         self.exposure.setToolTip(tr("Exposure in stops (applies live, without re-rendering)"))
         self.exposure.setAccessibleName(tr("Exposure"))
-        self.view_box = _combo(VIEWS, "auto", tr("View transform: auto = AgX (classic: standard)"))
+        self.view_box = combo_box(VIEWS, current="auto", tip=tr("View transform: auto = AgX (classic: standard)"))
         tip = tr("Look: bloom, vignette and colour grading (applies live; a script's render block can declare one)")
-        self.look = _combo(list(LOOKS), "Off", tip)
-        self.look.setAccessibleName(tr("Look"))
+        self.look = combo_box(LOOKS, tr("Look"), "Off", tip)
         self.script_post = PostSettings()
-        self.channel = _combo(CHANNELS, "beauty", tr("Shown channel: the image or one of its AOVs"))
+        self.channel = combo_box(CHANNELS, current="beauty", tip=tr("Shown channel: the image or one of its AOVs"))
 
     def widgets(self) -> tuple[QWidget, ...]:
+        """Returns the tool bar's widgets in order (buttons first, so they never overflow)."""
         return (self.render_button, self.stop_button, self.resume_button, self.save_button, self.report_button,
                 self.snapshot_button,
                 self.preset, self.frame, self.width, self.height, self.integrator,
@@ -124,9 +122,9 @@ class RenderControls:
             self.preset.setCurrentText(CUSTOM)
 
     def _frame_widgets(self) -> None:
+        """The frame choice and the custom width and height (shown for Custom only)."""
         tip = tr("Frame: the viewport's shape, the script's size, a ratio, or an exact size (the viewport shows it)")
-        self.frame = _combo(FRAMES, FRAME_VIEWPORT, tip)
-        self.frame.setAccessibleName(tr("Frame"))
+        self.frame = combo_box(FRAMES, tr("Frame"), FRAME_VIEWPORT, tip)
         self.width, self.height = QSpinBox(), QSpinBox()
         for spin, name in ((self.width, tr("Width")), (self.height, tr("Height"))):
             spin.setRange(16, 16384)
@@ -142,8 +140,12 @@ class RenderControls:
             spin.setVisible(frame == FRAME_CUSTOM)
 
     def image_size(self, viewport: tuple[int, int], script: tuple[int, int] | None = None) -> tuple[int, int]:
-        """The render size: the frame (presets.FRAMES) with the preset's long edge; ``script`` is the script's
-        'render { size }' (the viewport's size when it sets none)."""
+        """Returns the render size: the frame (presets.FRAMES) with the preset's long edge.
+
+        Args:
+            viewport: The viewport's size in pixels.
+            script: The script's 'render { size }', or None (the viewport's size then stands in for it).
+        """
         preset = BY_NAME.get(self.preset.currentText())
         custom = (self.width.value(), self.height.value())
         return frame_size(self.frame.currentText(), viewport, preset.long_edge if preset else None,
@@ -158,8 +160,15 @@ class RenderControls:
         )  # fmt: skip
 
     def show_script(self, script: RenderSettings, declared: Collection[str]) -> None:
-        """The script's render choices in the tool bar: the integrator always; the view transform, exposure and
-        denoising when its render block sets them (otherwise the user's choices stay)."""
+        """Shows the script's render choices in the tool bar.
+
+        The integrator always; the view transform, exposure and denoising when the render block sets them (otherwise
+        the user's choices stay); the 'Script' look while the block declares one.
+
+        Args:
+            script: The script's render settings.
+            declared: The keys the script's render block sets.
+        """
         self.integrator.setCurrentText(script.integrator)
         if "view" in declared:
             self.view_box.setCurrentText(script.view)
@@ -181,7 +190,7 @@ class RenderControls:
             self.look.removeItem(index)  # (Qt moves the selection off it)
 
     def post(self) -> PostSettings:
-        """The post stack of the chosen look."""
+        """Returns the post stack of the chosen look (the script's own for 'Script')."""
         name = self.look.currentText()
         return self.script_post if name == LOOK_SCRIPT else LOOKS.get(name, PostSettings())
 
@@ -190,4 +199,5 @@ class RenderControls:
         return None if method == DENOISE_OFF else method
 
     def view_transform(self) -> str:
+        """Returns the chosen view transform, with 'auto' resolved for the chosen integrator."""
         return resolve_view(self.view_box.currentText(), self.integrator.currentText())

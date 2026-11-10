@@ -22,8 +22,12 @@ def register_fonts() -> list[str]:
 
 
 def choose_families(ui: str, code: str) -> None:
-    """Set the interface and code families; "System" means the platform's general font, an unknown code
-    family falls back to the bundled JetBrains Mono."""
+    """Chooses the interface and code font families.
+
+    Args:
+        ui: A family name, or "System" for the platform's general font ("Inter" is the bundled one).
+        code: A monospace family; an unknown one falls back to the bundled JetBrains Mono.
+    """
     system = QFontDatabase.systemFont(QFontDatabase.SystemFont.GeneralFont).family()
     _chosen["ui"] = system if ui == "System" else _installed_ui(ui or UI_FAMILY)
     _chosen["code"] = code if code and code in QFontDatabase.families() else CODE_FAMILY

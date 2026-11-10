@@ -18,10 +18,16 @@ from ...render.metadata import read_metadata
 
 
 def _focus(text: str) -> str | float:
+    """An argparse type: 'auto', 'hyperfocal' or a distance."""
     return text if text in ("auto", "hyperfocal") else float(text)
 
 
 def add_lens_arguments(p: argparse.ArgumentParser) -> None:
+    """Adds the camera and lens options to a command's parser.
+
+    Args:
+        p: The parser of `structura render`.
+    """
     g = p.add_argument_group("camera and lens (change the script's camera)")
     g.add_argument("--camera-from", type=Path, metavar="IMAGE", help="the camera of a PNG or EXR Structura rendered")
     g.add_argument("--lens", help='a lens like "85mm f/1.8", "24mm" or "f/2", or a preset name (50mm, 135mm …)')
@@ -38,6 +44,7 @@ def add_lens_arguments(p: argparse.ArgumentParser) -> None:
 
 
 def _lens_changes(args: argparse.Namespace) -> dict[str, object]:
+    """Lens fields from the options that map one to one (projection, blades, scale, shift, tilt, sensor)."""
     changes: dict[str, object] = {}
     for arg, field in (("projection", "projection"), ("blades", "blades"), ("scene_scale", "units_per_metre")):
         if getattr(args, arg, None) is not None:
@@ -54,6 +61,7 @@ def _lens_changes(args: argparse.Namespace) -> dict[str, object]:
 
 
 def _camera_from(path: Path) -> Camera:
+    """The camera stored in a rendered PNG or EXR (ValueError when there is none)."""
     try:
         data = json.loads(read_metadata(path).get("camera", "null"))
     except (OSError, ValueError) as exc:
@@ -65,8 +73,18 @@ def _camera_from(path: Path) -> Camera:
 
 
 def apply_lens_arguments(camera: Camera, args: argparse.Namespace) -> Camera:
-    """``camera`` (or the one --camera-from names) with the lens options of the command line (ValueError for a bad
-    --lens, --sensor or --camera-from)."""
+    """Applies the lens options to a camera.
+
+    Args:
+        camera: The script's camera (replaced by the --camera-from image's, when given).
+        args: The parsed command line.
+
+    Returns:
+        The camera with the options applied: focal length or field of view, f-stop, focus, sensor …
+
+    Raises:
+        ValueError: A bad --lens, --sensor or --camera-from.
+    """
     if getattr(args, "camera_from", None) is not None:
         camera = _camera_from(args.camera_from)
     camera = camera.with_lens(**_lens_changes(args))

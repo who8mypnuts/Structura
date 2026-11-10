@@ -11,7 +11,7 @@ from structura.kernels.skl import INF, Buf, dot, f32, func, max3, min, normalize
 from .bsdf import Principled, bsdf_eval, bsdf_sample, principled_setup
 from .buffers import SceneBufs
 from .camera import cfg3
-from .catcher import MODEL_CATCHER, shadow_ratio
+from .catcher import shadow_ratio
 from .emitters import emitter_pdf, sample_emitter
 from .environment import env_pdf, env_radiance, env_sample
 from .fog import fog_light, fog_transmittance
@@ -24,6 +24,8 @@ from .layout import (
     EPS,
     GLOSSY_BOUNCES,
     M_MODEL,
+    MODEL_CATCHER,
+    MODEL_CONSTANT,
     N_EMITTERS,
     N_LIGHTS,
     PHOTONS_ON,
@@ -41,7 +43,6 @@ from .scene import NO_HIT, PRIM_U, Hit, trace
 from .surface import Surface, surface_at, tangent_angle
 from .volume import exit_absorption
 
-MODEL_CONSTANT = 1
 PASS_LIMIT = 16  # extra steps allowed for opacity pass-through
 ROUGH_PDF = 2.0  # a sampled pdf below this marks a rough (diffuse-like) bounce
 
@@ -168,7 +169,13 @@ def roulette(depth: u32, throughput: vec3, u: f32) -> f32:
 
 @func
 def ends_here(sc: SceneBufs, mat: u32, backdrop: bool) -> bool:
-    """The path stops at this surface: a shadow catcher seen by the camera, or a special (unlit) model."""
+    """Returns whether a path stops at a surface: a shadow catcher seen directly, or a special (unlit) model.
+
+    Args:
+        sc: The scene buffers.
+        mat: Offset of the surface's material record.
+        backdrop: True while the path is still the camera ray (or passed only through see-through instances).
+    """
     return (backdrop and sc.mat_f[mat + M_MODEL] == f32(MODEL_CATCHER)) or is_special(sc.mat_f, mat)
 
 
@@ -176,7 +183,21 @@ def ends_here(sc: SceneBufs, mat: u32, backdrop: bool) -> bool:
 def terminal_light(
     sc: SceneBufs, h: Hit, s: Surface, p: vec3, rd: vec3, pixel: u32, sample_index: u32, dim: u32
 ) -> vec3:
-    """What a path that ends_here sees: the backdrop × the shadows on it, or the special model's colour."""
+    """Returns what a path that ``ends_here`` sees.
+
+    Args:
+        sc: The scene buffers.
+        h: The hit.
+        s: The surface at the hit.
+        p: The hit point.
+        rd: The ray direction.
+        pixel: The pixel (random-number stream).
+        sample_index: The sample (random-number stream).
+        dim: The first random dimension this function may use.
+
+    Returns:
+        The backdrop darkened by the shadows on a catcher, or the special model's colour.
+    """
     if sc.mat_f[s.mat + M_MODEL] == f32(MODEL_CATCHER):
         return caught(sc, rd, p, h.normal, pixel, sample_index, dim + 13)
     return special_radiance(sc, h, p, rd, s, pixel, sample_index, dim + 14)
@@ -195,7 +216,22 @@ class Scatter:
 def scatter(
     sc: SceneBufs, h: Hit, s: Surface, p: vec3, rd: vec3, alpha_floor: f32, pixel: u32, sample_index: u32, dim: u32
 ) -> Scatter:
-    """Sun NEE at the vertex plus one BSDF-sampled continuation."""
+    """Samples the direct light at a path vertex and one BSDF-sampled continuation.
+
+    Args:
+        sc: The scene buffers.
+        h: The hit.
+        s: The surface at the hit.
+        p: The hit point.
+        rd: The incoming ray direction.
+        alpha_floor: Roughness floor of the glossy lobes (filtered caustics).
+        pixel: The pixel (random-number stream).
+        sample_index: The sample (random-number stream).
+        dim: The first random dimension this function may use.
+
+    Returns:
+        The direct light and the continuation (a zero weight ends the path).
+    """
     wo = to_local(rd * -1.0, h.normal)
     bs = principled_setup(sc.mat_f, s, wo, h.front, alpha_floor, tangent_angle(sc, h.prim, s.mat, h.normal))
     u1 = sample01(sc.cfg, pixel, sample_index, dim)
@@ -239,6 +275,16 @@ def within_lobe_limits(cfg: Buf[f32], lobes: vec3) -> bool:
 
 @func
 def path_radiance(o: vec3, d: vec3, max_bounces: u32, pixel: u32, sample_index: u32, sc: SceneBufs) -> vec3:
+    """Returns the radiance along a camera ray: the path tracer.
+
+    Args:
+        o: The ray origin.
+        d: The ray direction.
+        max_bounces: The longest path (see-through passes do not count).
+        pixel: The pixel (random-number stream).
+        sample_index: The sample (random-number stream).
+        sc: The scene buffers.
+    """
     radiance = vec3(0.0)
     throughput = vec3(1.0)
     ro = o

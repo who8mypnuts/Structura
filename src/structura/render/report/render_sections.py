@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 import math
-from collections.abc import Iterable
+from collections import Counter
 
 import numpy as np
 
 from ...core.scene.camera import Camera
 from ...core.scene.lens import focal_length_mm
 from ...core.scene.material import Material
-from ...core.scene.vectors import fmt_vec
+from ...core.scene.vectors import fmt_vec as _vec
 from ..details import RenderDetails
 from ..progress import RenderProgress
 from ..settings import RenderSettings
@@ -18,15 +18,12 @@ from .model import Row, Section, Table, row
 from .system_sections import peak_memory
 
 
-def _vec(v: Iterable[float]) -> str:
-    return fmt_vec(v)
-
-
 def _on(flag: bool) -> str:
     return "on" if flag else "off"
 
 
 def _lens_rows(c: Camera) -> list[Row]:
+    """The lens rows: the projection's own field, or the photographic lens and its depth of field."""
     lens = c.lens
     if lens.projection == "orthographic":
         return [row("Orthographic height", lens.ortho_height, f"{lens.ortho_height:g} world units")]
@@ -55,6 +52,11 @@ def _lens_rows(c: Camera) -> list[Row]:
 
 
 def camera_section(d: RenderDetails) -> Section:
+    """Returns the report's camera section: position, direction, field of view and the lens.
+
+    Args:
+        d: What the render used.
+    """
     c, s = d.camera, d.settings
     forward = c.basis[0]
     vertical = c.fov_y_deg
@@ -108,11 +110,16 @@ def settings_section(s: RenderSettings) -> Section:
 
 
 def lighting_section(d: RenderDetails) -> Section:
+    """Returns the report's lighting section: environment, sun, lights (with a table of the declared ones).
+
+    Args:
+        d: What the render used.
+    """
     s = d.settings
     env = {"gradient": f"gradient {_vec(s.sky_bottom)} → {_vec(s.sky_top)}",
            "hdri": f"HDRI {s.env_file or '(none)'}, rotated {s.env_rotation_deg:g}°",
            "sunsky": f"Preetham sun-sky, turbidity {s.turbidity:g}"}.get(s.env_type, s.env_type)  # fmt: skip
-    lights = ", ".join(f"{n} {t}" for t, n in sorted(_count(d.lights).items())) or "none"
+    lights = ", ".join(f"{n} {t}" for t, n in sorted(Counter(d.lights).items())) or "none"
     tables = (Table("Declared lights", ("Name", "Type", "Values"), d.light_specs),) if d.light_specs else ()
     rows = [
         row("Environment", s.env_type, env),
@@ -128,13 +135,6 @@ def lighting_section(d: RenderDetails) -> Section:
         row("Fog", s.fog_density, f"density {s.fog_density:g}, falloff {s.fog_falloff:g}" if s.fog_density else "none"),
     ]  # fmt: skip
     return Section("lighting", "Lighting & environment", tuple(rows), tables)
-
-
-def _count(items: tuple[str, ...]) -> dict[str, int]:
-    out: dict[str, int] = {}
-    for item in items:
-        out[item] = out.get(item, 0) + 1
-    return out
 
 
 def _colour(value: str | tuple[float, float, float]) -> str:
@@ -153,6 +153,7 @@ def materials_section(materials: tuple[Material, ...]) -> Section:
 
 
 def _timing_rows(p: RenderProgress) -> list[Row]:
+    """Kernel start-up and the spread of pass times."""
     rows = [row("Kernel start", p.kernel_seconds, f"{p.kernel_seconds:,.2f} s",
                 "binding the render kernel: its first compile on a device, else uploading the scene")]  # fmt: skip
     if p.pass_seconds:
@@ -164,6 +165,14 @@ def _timing_rows(p: RenderProgress) -> list[Row]:
 
 
 def performance_section(d: RenderDetails, p: RenderProgress, passes: int, device: str) -> Section:
+    """Returns the report's performance section: times, throughput, BVH, device and memory.
+
+    Args:
+        d: What the render used.
+        p: The final progress (samples, times).
+        passes: How many passes the render took.
+        device: The backend and device name ('cuda NVIDIA GeForce GTX 1660').
+    """
     samples, seconds = p.samples, p.seconds
     pixels = d.settings.width * d.settings.height
     rate = samples * pixels / seconds if seconds > 0 else 0.0

@@ -34,6 +34,8 @@ def watertight(mesh: TriMesh) -> np.ndarray:
 
 
 class StlExporter(Exporter):
+    """Binary STL for 3D printing: millimetres, on the build plate, optionally one watertight union."""
+
     name = "stl"
     title = "STL (binary, 3D printing)"
     extensions: tuple[str, ...] = (".stl",)

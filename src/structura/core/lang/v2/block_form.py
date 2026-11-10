@@ -22,12 +22,21 @@ APPLIES = re.compile(r"^([a-z]+(?:, [a-z]+)*): ")
 
 
 def applies(doc: str, kind_type: str) -> bool:
-    """Whether a key documented as ``doc`` belongs to a block of type ``kind_type`` ('spot, rect: …')."""
+    """Whether a key belongs to a block type.
+
+    Args:
+        doc: The key's catalogue documentation; 'spot, rect: …' limits it to those types.
+        kind_type: The block's type ('spot').
+
+    Returns:
+        True when the documentation names no types or names ``kind_type``.
+    """
     match = APPLIES.match(doc)
     return match is None or kind_type in match.group(1).split(", ")
 
 
 def _spec(key: str, grammar: str, doc: str) -> ParamSpec:
+    """The form field of one key: a choice list, a number (with its range), or text for everything else."""
     title = key.replace("_", " ").capitalize()
     if WORD_CHOICES.match(grammar):
         choices = tuple(c.strip() for c in grammar.split("|"))
@@ -42,13 +51,22 @@ def _spec(key: str, grammar: str, doc: str) -> ParamSpec:
 
 
 def block_specs(kind: str, kind_type: str = "") -> tuple[ParamSpec, ...]:
-    """Form fields of a block kind (for lights: those that apply to ``kind_type``), in catalogue order."""
+    """Returns the form fields of a block kind, in catalogue order.
+
+    Args:
+        kind: The block kind ('light').
+        kind_type: For lights, the light type; only its keys are returned ("" returns every key).
+    """
     keys = v2_blocks()[kind].keys
     return tuple(_spec(k.name, k.value, k.doc) for k in keys if not kind_type or applies(k.doc, kind_type))
 
 
 def value_text(value: Any) -> str:
-    """A parsed block value as the script writes it."""
+    """Returns a parsed block value as a script writes it.
+
+    Args:
+        value: Booleans become true/false, tuples '[x y z]', floats their shortest form.
+    """
     if isinstance(value, bool):
         return "true" if value else "false"
     if isinstance(value, tuple):
@@ -59,7 +77,15 @@ def value_text(value: Any) -> str:
 
 
 def form_values(specs: tuple[ParamSpec, ...], entries: dict[str, Any]) -> dict[str, Any]:
-    """The entries a block sets, as values of its form (vectors and colours as text)."""
+    """Turns block entries into form values.
+
+    Args:
+        specs: The form's fields (``block_specs``).
+        entries: The block's entries.
+
+    Returns:
+        The values of the fields the block sets; text and choice fields get the script's text.
+    """
     out: dict[str, Any] = {}
     for spec in specs:
         if spec.key in entries:
@@ -69,7 +95,17 @@ def form_values(specs: tuple[ParamSpec, ...], entries: dict[str, Any]) -> dict[s
 
 
 def entries_of(specs: tuple[ParamSpec, ...], values: dict[str, Any], grammar: dict[str, str]) -> dict[str, Any]:
-    """Form values → block entries (text fields parsed as a script line; values that do not fit are dropped)."""
+    """Turns form values back into block entries.
+
+    Args:
+        specs: The form's fields.
+        values: The form's values; empty ones are left out.
+        grammar: Each key's value grammar (``known_keys``).
+
+    Returns:
+        The entries; text is parsed as a script line would be, and values that do not fit their grammar are
+        dropped.
+    """
     out: dict[str, Any] = {}
     for spec in specs:
         if spec.key not in values or values[spec.key] in ("", None):
@@ -83,6 +119,15 @@ def entries_of(specs: tuple[ParamSpec, ...], values: dict[str, Any], grammar: di
 
 
 def block_text(kind: str, name: str, entries: dict[str, Any]) -> str:
-    """'kind name {' + one 'key value' line per entry + '}'."""
+    """Writes a block.
+
+    Args:
+        kind: The block kind.
+        name: Its name ("" for the unnamed environment, camera and render blocks).
+        entries: One 'key value' line each, in order.
+
+    Returns:
+        The block text, without a trailing newline.
+    """
     head = f"{kind} {name} {{" if name else f"{kind} {{"
     return "\n".join([head, *(f"  {key} {value_text(value)}" for key, value in entries.items()), "}"])

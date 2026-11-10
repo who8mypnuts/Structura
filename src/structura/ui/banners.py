@@ -24,6 +24,8 @@ FALLBACK = "compute-preview"
 
 
 class Banners(QObject):
+    """Offers decisions in the views' banner once: the legacy look for 1.5 scripts, the OpenGL fallback."""
+
     def __init__(self, window: MainWindow) -> None:
         super().__init__(window)
         self.w = window
@@ -48,7 +50,11 @@ class Banners(QObject):
 
     @Slot(str)
     def preview_mode(self, mode: str) -> None:
-        """The viewport is not OpenGL: say so once per session, with what to do about it."""
+        """Explains, once per session, that the viewport is not OpenGL (with Details and Use OpenGL anyway).
+
+        Args:
+            mode: The viewport's mode ('gpu', 'cpu', a compute device, 'off' or 'rendered').
+        """
         headless = QGuiApplication.platformName() in HEADLESS_PLATFORMS  # never a GPU viewport: nothing to fix
         if mode in ("gpu", "off", "rendered") or FALLBACK in self.offered or headless:
             return

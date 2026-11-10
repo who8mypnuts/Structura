@@ -9,7 +9,6 @@ from dataclasses import replace
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
     QCheckBox,
-    QDoubleSpinBox,
     QFormLayout,
     QGridLayout,
     QHBoxLayout,
@@ -23,25 +22,24 @@ from PySide6.QtWidgets import (
 from ...core.scene.camera import STANDARD_VIEWS, Camera
 from ...core.scene.vectors import Vec3
 from ..i18n import tr
+from ..widgets.fields import spin_box
 from .lens_editor import LensEditor
 
 
-def _spin(low: float, high: float, decimals: int = 3, name: str = "") -> QDoubleSpinBox:
-    spin = QDoubleSpinBox()
-    spin.setRange(low, high)
-    spin.setDecimals(decimals)
-    spin.setKeyboardTracking(False)  # apply on Enter or focus change, not on every typed digit
-    spin.setAccessibleName(name)
-    spin.setButtonSymbols(QDoubleSpinBox.ButtonSymbols.NoButtons)
-    return spin
-
-
 class VectorEdit(QWidget):
+    """Three number boxes for a vector (x, y, z); ``changed`` when any of them is edited."""
+
     changed = Signal()
 
     def __init__(self, name: str, parent: QWidget | None = None) -> None:
+        """Builds the three boxes.
+
+        Args:
+            name: The vector's accessible name ('Position'); the boxes are '<name> x', '<name> y' and '<name> z'.
+            parent: The parent widget.
+        """
         super().__init__(parent)
-        self.spins = [_spin(-1e6, 1e6, name=f"{name} {axis}") for axis in "xyz"]
+        self.spins = [spin_box(-1e6, 1e6, 3, f"{name} {axis}", buttons=False) for axis in "xyz"]
         row = QHBoxLayout(self)
         row.setContentsMargins(0, 0, 0, 0)
         row.setSpacing(4)
@@ -59,6 +57,8 @@ class VectorEdit(QWidget):
 
 
 class CameraPanel(QWidget):
+    """The viewport camera in numbers, its lens, standard views, saved views, Lock to Script and Copy to Script."""
+
     camera_edited = Signal(object)  # Camera
     view_requested = Signal(str)  # a STANDARD_VIEWS name
     copy_to_script = Signal()
@@ -69,6 +69,11 @@ class CameraPanel(QWidget):
     focus_selection = Signal()  # focus on the object selected in the viewport
 
     def __init__(self, parent: QWidget | None = None) -> None:
+        """Builds the panel; it shows the default camera until the viewport reports its own.
+
+        Args:
+            parent: The parent widget.
+        """
         super().__init__(parent)
         self.eye, self.target, self.up = VectorEdit(tr("Position")), VectorEdit(tr("Target")), VectorEdit(tr("Up"))
         self.lens = LensEditor()
@@ -132,7 +137,11 @@ class CameraPanel(QWidget):
 
     # -- the camera --------------------------------------------------------------------------------------------
     def show_camera(self, camera: Camera) -> None:
-        """Follow the viewport (without echoing the change back)."""
+        """Follows the viewport's camera without echoing the change back.
+
+        Args:
+            camera: The viewport's camera.
+        """
         self._base = camera
         widgets = [*self.eye.spins, *self.target.spins, *self.up.spins]
         for w in widgets:
@@ -145,6 +154,7 @@ class CameraPanel(QWidget):
         self.lens.show_camera(camera)
 
     def camera(self) -> Camera:
+        """Returns the camera the panel shows: its position, target and up with the lens editor's lens."""
         lensed = self.lens.camera()
         return replace(self._base, eye=self.eye.value(), target=self.target.value(), up=self.up.value(),
                        fov_y_deg=lensed.fov_y_deg, lens=lensed.lens)  # fmt: skip

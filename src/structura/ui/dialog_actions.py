@@ -19,6 +19,8 @@ if TYPE_CHECKING:
 
 
 class DialogActions(QObject):
+    """The window's dialogs: preferences (previewed live), themes, shortcuts, full screen and About."""
+
     def __init__(self, window: MainWindow) -> None:
         super().__init__(window)
         self.w = window

@@ -44,22 +44,45 @@ def scene_frame(
     hi: np.ndarray,
     declarations: SceneDeclarations | None = None,
 ) -> Frame:
+    """Decides the view of a render.
+
+    A v2 'camera' block wins over the legacy view; ``settings.frame`` (or a script without a view) frames the
+    structure instead.
+
+    Args:
+        scene: The script's scene settings (its legacy view).
+        settings: The render settings.
+        lo: The structure's bounding-box minimum.
+        hi: The structure's bounding-box maximum.
+        declarations: The script's v2 declarations, if any.
+
+    Returns:
+        The frame: camera, settings, scale of the view and the structure's extent.
+    """
     camera = scene.view.camera()
+    radius = float(np.linalg.norm(np.asarray(hi) - np.asarray(lo))) / 2 or 1.0
     declared = declared_camera(declarations, camera)
     if declared is not None and not settings.frame:  # a v2 'camera' block overrides the legacy view
-        radius = float(np.linalg.norm(np.asarray(hi) - np.asarray(lo))) / 2 or 1.0
         return Frame(declared, settings, scene, radius, declared.focus / 20.0, declarations, float(lo[1]))
     world_per_view = 1.0 / scene.view.scale
     camera = with_legacy_dof(camera, settings, scene)
     if settings.frame or not scene.has_view:
         camera = framed(camera, lo, hi, settings.aspect)
         world_per_view = camera.focus / 20.0  # |translation z| of the default legacy view
-    radius = float(np.linalg.norm(np.asarray(hi) - np.asarray(lo))) / 2 or 1.0
     return Frame(camera, settings, scene, radius, world_per_view, declarations, float(lo[1]))
 
 
 def with_legacy_dof(camera: Camera, settings: RenderSettings, scene: SceneSettings) -> Camera:
-    """'set raytracer::dof [centre, falloff]' as the camera's thin lens, unless the camera has depth of field."""
+    """Applies 'set raytracer::dof [centre, falloff]' to a camera as a thin lens.
+
+    Args:
+        camera: The camera; one that has depth of field already keeps it.
+        settings: The render settings (their ``legacy_dof``).
+        scene: The script's scene settings (the legacy view the values are relative to).
+
+    Returns:
+        The camera, with the legacy aperture and focus when the script sets them.
+    """
     if settings.legacy_dof is None or camera.lens.depth_of_field:
         return camera
     aperture, focus = legacy_lens(scene.view, settings.legacy_dof)
@@ -92,6 +115,11 @@ def _sampling(cfg: np.ndarray, st: RenderSettings) -> None:
 
 
 def config(frame: Frame) -> np.ndarray:
+    """Returns the render configuration buffer (float32[CFG_SIZE], layout: kernels/layout.py) of a frame.
+
+    Args:
+        frame: The camera, settings and scene of the render.
+    """
     cam, st = frame.camera, frame.settings
     cfg = np.zeros(lay.CFG_SIZE, np.float32)
     forward, right, up = cam.basis

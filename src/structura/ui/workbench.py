@@ -264,7 +264,20 @@ def script_camera(scene: SceneIR) -> Camera | None:
 
 
 def _preview_job(doc_id: str, outcome: BuildOutcome, view: ViewFilter, recolor: bool = False) -> Any:
+    """Makes the io-lane job that turns a build into what the viewport shows.
+
+    Args:
+        doc_id: The document.
+        outcome: The build.
+        view: Colour-by, X-ray and isolation.
+        recolor: True when only the view changed (not the build).
+
+    Returns:
+        The job function; its result is the preview (materials approximated) and the shown scene.
+    """
+
     def run(ctx: JobContext) -> PreviewReady:
+        """Applies the view and the material approximation, and packs the preview."""
         ctx.check_cancelled()
         started = time.perf_counter()
         shown = view.apply(outcome.scene)

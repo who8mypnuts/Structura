@@ -9,8 +9,7 @@ from pathlib import Path
 import numpy as np
 from PySide6.QtCore import Signal, Slot
 
-from ..render.animation import Animation, frame_path, render_frame
-from ..render.output import save_image
+from ..render.animation import Animation, render_frame, save_frame
 from ..render.video import encode_video
 from .jobs import FunctionJob, JobContext, JobHandle, JobRunner, Lane
 from .jobs.tracked import TrackedJobs
@@ -38,17 +37,27 @@ class AnimationProgress:
 
 
 def animation_job(req: AnimationRequest, backends: DeviceBackends) -> Callable[[JobContext], list[Path]]:
+    """Makes the device-lane job that renders an animation's frames (and its video).
+
+    Args:
+        req: The frames, the file pattern, the video and the device.
+        backends: The device lane's backends.
+
+    Returns:
+        The job function: it publishes each frame (AnimationProgress) and returns the files written.
+    """
+
     def run(ctx: JobContext) -> list[Path]:
+        """Renders, saves and publishes each frame, then encodes the video."""
         backend = backends.get(req.device)
         req.pattern.parent.mkdir(parents=True, exist_ok=True)
         written, shown = [], []
         for index, frame in enumerate(req.frames):
             result, settings = render_frame(req.animation, frame, backend, ctx.check_cancelled)
-            path = frame_path(req.pattern, frame)
-            save_image(result.image, path, settings.display)
+            path, image = save_frame(result, settings, req.pattern, frame)
             written.append(path)
             if req.video is not None:
-                shown.append(settings.display.apply(result.image))
+                shown.append(image)
             result.image.flags.writeable = False
             ctx.partial(AnimationProgress(frame, index + 1, len(req.frames), result.image, path))
             ctx.check_cancelled()

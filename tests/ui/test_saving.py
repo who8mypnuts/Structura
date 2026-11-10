@@ -209,20 +209,20 @@ def test_blender_exports_offer_open_in_blender(
 
     fake = tmp_path / "blender"
     fake.write_text("")
-    assert blender_app.find_blender(str(fake)) == str(fake)
-    assert blender_app.find_blender(str(tmp_path / "missing")) is None
+    assert blender_app.find_app(blender_app.BLENDER, str(fake)) == str(fake)
+    assert blender_app.find_app(blender_app.BLENDER, str(tmp_path / "missing")) is None
     window.settings.set_value("paths/blender", str(fake))
     started: list[tuple[str, list[str]]] = []
     monkeypatch.setattr(window.processes, "start_program", lambda p, args, cwd: started.append((p, args)))
     script = tmp_path / "scene.py"
-    window.exports._offer_blender(script)
+    window.exports._offer(blender_app.BLENDER, script)
     toast = window.toasts.toasts[-1]
     assert toast.button is not None and toast.button.text() == "Open in Blender"
     assert "Blender was not found" not in window.status.currentMessage()
     toast.button.click()
     assert started == [(str(fake), ["--python", str(script)])]
-    monkeypatch.setattr(export_actions, "find_blender", lambda _configured: None)
-    window.exports.open_in_blender(script)
+    monkeypatch.setattr(export_actions, "find_app", lambda _app, _configured: None)
+    window.exports.open_in(blender_app.BLENDER, script)
     assert "Blender was not found" in window.status.currentMessage()
 
 

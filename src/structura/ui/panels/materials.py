@@ -35,7 +35,11 @@ SPECS = material_param_specs()
 
 
 def form_values(material: Material) -> dict[str, Any]:
-    """The panel's values of ``material`` (the model by name, no absorption as distance 0, 'state' opacity as 1)."""
+    """Returns the panel's values of a material.
+
+    Args:
+        material: The material: its model is shown by name, no absorption as distance 0, 'state' opacity as 1.
+    """
     values: dict[str, Any] = {s.key: getattr(material, s.key) for s in SPECS}
     values["model"] = material.model.name.lower()
     values["attenuation_distance"] = 0.0 if math.isinf(material.attenuation_distance) else material.attenuation_distance
@@ -44,7 +48,12 @@ def form_values(material: Material) -> dict[str, Any]:
 
 
 def material_values(values: dict[str, Any], own_alpha: bool) -> dict[str, Any]:
-    """form_values, inverted: Material fields from the panel's values."""
+    """Returns Material fields from the panel's values (the inverse of ``form_values``).
+
+    Args:
+        values: The form's values.
+        own_alpha: Whether opacity comes from the objects' alpha ('state').
+    """
     out = dict(values)
     out["model"] = MaterialModel[str(values["model"]).upper()]
     out["attenuation_distance"] = float(values["attenuation_distance"]) or math.inf
@@ -63,10 +72,19 @@ def _qcolor(value: object, fallback: str = "#c8c8c8") -> QColor:
 
 
 class MaterialsPanel(QWidget):
+    """The structure's tags and the material each renders with: presets, colours, every principled field (the
+    debug models are script-only), a live swatch, and Write to Script.
+    """
+
     apply_requested = Signal(object, str)  # Material, preset name
     preview_requested = Signal(object)  # Material: render a swatch
 
     def __init__(self, parent: QWidget | None = None) -> None:
+        """Builds the tag list, the fields and the swatch.
+
+        Args:
+            parent: The parent widget.
+        """
         super().__init__(parent)
         self.list = QListWidget()
         self.list.setAccessibleName(tr("Tags and materials"))
@@ -137,6 +155,12 @@ class MaterialsPanel(QWidget):
         self.show_material(replace(material, name=name), name if name in presets() else "")
 
     def show_material(self, material: Material, preset: str) -> None:
+        """Shows a material in the fields and asks for its swatch.
+
+        Args:
+            material: The material to edit (its name names the block 'Write to Script' writes).
+            preset: The preset it starts from ("" for none).
+        """
         self.current = material
         widgets = (self.preset, self.own_colour, self.own_alpha, self.base, self.emission, self.absorption, self.form)
         for w in widgets:
@@ -172,6 +196,7 @@ class MaterialsPanel(QWidget):
         self._debounce.start()
 
     def material(self) -> Material:
+        """Returns the material the fields describe (colours the buttons still show keep full precision)."""
         values = material_values(self.form.values(), self.own_alpha.isChecked())
         base = STATE if self.own_colour.isChecked() else self._kept(self.current.base, self.base.color)
         emission = self._kept(self.current.emission, self.emission.color) if values["emission_strength"] > 0 \

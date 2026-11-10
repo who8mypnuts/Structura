@@ -17,6 +17,7 @@ def test_turntable_keys_a_loop(qtbot: QtBot, window: MainWindow, monkeypatch: py
     qtbot.waitUntil(lambda: tab.outcome is not None, timeout=30000)
 
     def accept(dialog: TurntableDialog) -> int:
+        """Fills the dialog (2 s at 12 fps, no render) and accepts it."""
         dialog.seconds.setValue(2.0)
         dialog.fps.setValue(12.0)
         dialog.render_now.setChecked(False)

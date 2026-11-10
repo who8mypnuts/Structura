@@ -33,7 +33,14 @@ EDITOR_MENU = ("edit.definition", "edit.peek", "edit.references", "edit.rename",
 
 
 class DocumentActions(QObject):
+    """Scripts as files: new, open, save (with backups), Save As, recent files, revert and the tab menu."""
+
     def __init__(self, window: MainWindow) -> None:
+        """Connects the tabs to the file actions (closing a modified tab offers to save it).
+
+        Args:
+            window: The main window.
+        """
         super().__init__(window)
         self.legacy = LegacySave(window)
         self.w = window
@@ -50,13 +57,23 @@ class DocumentActions(QObject):
 
     # -- files ---------------------------------------------------------------------------------------------
     def new_script(self) -> EditorTab:
+        """File ▸ New Script.
+
+        Returns:
+            A new untitled (v1) tab.
+        """
         return self.w.tabs.new_document()
 
     def new_v2_script(self) -> EditorTab:
-        """File ▸ New v2 Script: a starter with a material, glass, a sun, a sky and a ground."""
+        """File ▸ New v2 Script.
+
+        Returns:
+            A new tab with a v2 starter: a material, glass, a sun, a sky and a ground.
+        """
         return self.w.tabs.new_document(NEW_SCRIPT_V2)
 
     def open_dialog(self) -> None:
+        """File ▸ Open: a script or project, starting in the folder used last."""
         tab = self.current()
         start = self.paths.folder("script", tab.path if tab is not None else None)
         name, _ = QFileDialog.getOpenFileName(self.w, tr("Open Script"), str(start), OPEN_FILTER)
@@ -66,6 +83,14 @@ class DocumentActions(QObject):
 
     @Slot(Path)
     def open_file(self, path: Path) -> EditorTab | None:
+        """Opens a script, or a project (in its own tab).
+
+        Args:
+            path: The file.
+
+        Returns:
+            The tab, or None when a project could not be opened.
+        """
         if path.suffix == SUFFIX:
             return self.w.projects.open(path)
         tab = self.w.tabs.open_file(path)
@@ -87,7 +112,14 @@ class DocumentActions(QObject):
             menu.addAction("Clear Recent Files").triggered.connect(self.recent.clear)
 
     def save(self, tab: EditorTab | None = None) -> bool:
-        """File ▸ Save (the current tab, or ``tab``): True when it was saved (Save As can be cancelled)."""
+        """File ▸ Save: writes a tab (its project, its file, or Save As for an untitled tab).
+
+        Args:
+            tab: The tab (default: the current one).
+
+        Returns:
+            True when it was saved (Save As can be cancelled).
+        """
         tab = tab or self.current()
         if tab is None:
             return False
@@ -100,7 +132,12 @@ class DocumentActions(QObject):
         return True
 
     def write(self, tab: EditorTab, path: Path | None = None) -> None:
-        """Save ``tab`` (to ``path``), keeping a backup of the file it replaces (services/backups.py)."""
+        """Writes a tab to its file (or another), keeping a backup of the file it replaces (services/backups.py).
+
+        Args:
+            tab: The tab whose file to show (nothing happens for an untitled one).
+            path: Where to write (default: the tab's file).
+        """
         target = path or tab.path
         if target is not None:
             try:
@@ -119,6 +156,14 @@ class DocumentActions(QObject):
         return tab
 
     def save_as(self, tab: EditorTab | None = None) -> bool:
+        """File ▸ Save As: asks for a file and writes the tab there.
+
+        Args:
+            tab: The tab (default: the current one).
+
+        Returns:
+            True when it was saved, False when the dialog was cancelled.
+        """
         tab = tab or self.current()
         if tab is None:
             return False
@@ -132,7 +177,11 @@ class DocumentActions(QObject):
         return True
 
     def tab_menu(self, pos: QPoint) -> None:
-        """The tab bar's context menu: close (this, others, to the right, saved), save, and the file's place."""
+        """Shows the tab bar's context menu: close (this, others, to the right, saved), save, and the file's place.
+
+        Args:
+            pos: Where the tab bar was right-clicked.
+        """
         tabs = self.w.tabs
         index = tabs.tabBar().tabAt(pos)
         tab = tabs.widget(index)
@@ -163,6 +212,11 @@ class DocumentActions(QObject):
         menu.popup(tabs.tabBar().mapToGlobal(pos))
 
     def reveal(self, tab: EditorTab) -> None:
+        """Opens the folder of a tab's file in the system's file manager.
+
+        Args:
+            tab: The tab (nothing happens for an untitled one).
+        """
         if tab.path is not None:
             QDesktopServices.openUrl(QUrl.fromLocalFile(str(tab.path.parent)))
 

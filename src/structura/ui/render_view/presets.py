@@ -52,7 +52,15 @@ def image_size(viewport: tuple[int, int], long_edge: int | None) -> tuple[int, i
 def frame_size(
     frame: str, viewport: tuple[int, int], long_edge: int | None, script: tuple[int, int], custom: tuple[int, int]
 ) -> tuple[int, int]:
-    """The render size for a FRAMES choice (the script's and custom sizes are used as they are)."""
+    """Returns the render size for a FRAMES choice.
+
+    Args:
+        frame: The choice: 'Viewport', 'Script', a ratio ('16:9') or 'Custom'.
+        viewport: The viewport's size in pixels.
+        long_edge: The preset's long edge (None: the viewport's, capped at VIEWPORT_CAP).
+        script: The script's size (used as it is for 'Script').
+        custom: The custom size (used as it is for 'Custom').
+    """
     if frame == FRAME_SCRIPT:
         return script
     if frame == FRAME_CUSTOM:
@@ -65,8 +73,16 @@ def frame_size(
 
 
 def fitted(camera: Camera, render_aspect: float, view_aspect: float) -> Camera:
-    """The camera a render of ``render_aspect`` uses when the viewport has ``view_aspect``: the same vertical field,
-    unless the render is wider — then the same horizontal field (the frame guide's letterbox)."""
+    """Returns the camera a render uses when its aspect differs from the viewport's.
+
+    The vertical field stays, unless the render is wider than the viewport: then the horizontal field stays (the
+    frame guide's letterbox shows exactly that).
+
+    Args:
+        camera: The viewport's camera.
+        render_aspect: The render's width / height.
+        view_aspect: The viewport's width / height.
+    """
     if render_aspect <= view_aspect or view_aspect <= 0:
         return camera
     tan_half = math.tan(math.radians(camera.fov_y_deg) / 2) * view_aspect / render_aspect
@@ -74,7 +90,12 @@ def fitted(camera: Camera, render_aspect: float, view_aspect: float) -> Camera:
 
 
 def guide_rect(render_aspect: float, size: tuple[int, int]) -> tuple[float, float, float, float]:
-    """(x, y, width, height) of the render frame inside a viewport of ``size`` (see fitted)."""
+    """Returns (x, y, width, height) of the render frame inside the viewport (see ``fitted``).
+
+    Args:
+        render_aspect: The render's width / height.
+        size: The viewport's size in pixels.
+    """
     w, h = max(1, size[0]), max(1, size[1])
     if render_aspect <= w / h:
         width = h * render_aspect

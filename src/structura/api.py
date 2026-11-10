@@ -111,9 +111,20 @@ def render(
     lens: Lens | None = None,
     **settings: Any,
 ) -> RenderProgress:
-    """Render ``scene`` (script settings, then ``settings`` overrides such as samples=, integrator=, width=).
-    ``camera`` replaces the script's camera; ``lens`` replaces its lens (``Lens(fstop=2.8)`` …); ``post=`` a
-    render.post look (``LOOKS["Neon"]``, ``PostSettings(bloom=0.1)``) finishes the saved image."""
+    """Renders a scene.
+
+    Args:
+        scene: The built scene.
+        output: An image file to save (PNG, EXR …), or None.
+        device: The compute device ('auto', 'cpu', 'cuda' …).
+        camera: Replaces the script's camera.
+        lens: Replaces the camera's lens (``Lens(fstop=2.8)`` …).
+        **settings: RenderSettings overrides over the script's values (samples=, integrator=, width=, and post=
+            for a look: ``LOOKS["Neon"]`` or ``PostSettings(bloom=0.1)``).
+
+    Returns:
+        The final render progress (its ``image`` is linear radiance).
+    """
     config = replace(script_settings(scene), **settings)
     prepared, frame = prepare_with_frame(scene, config, camera=camera)
     if lens is not None:

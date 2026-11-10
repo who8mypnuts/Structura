@@ -28,7 +28,15 @@ def ggx_d(h: vec3, a: f32) -> f32:
 
 @func
 def ggx_d_aniso(h: vec3, ax: f32, ay: f32) -> f32:
-    """Anisotropic Trowbridge–Reitz: 1 / (π ax ay (x²/ax² + y²/ay² + z²)²), scaled by ax²ay² to stay in f32."""
+    """Returns the anisotropic Trowbridge–Reitz distribution D(h).
+
+    1 / (π ax ay (x²/ax² + y²/ay² + z²)²), computed scaled by ax²ay² to stay within f32.
+
+    Args:
+        h: The microfacet normal in the tangent frame.
+        ax: The roughness alpha along the tangent.
+        ay: The roughness alpha across it.
+    """
     x = h.x * ay
     y = h.y * ax
     z = h.z * ax * ay
@@ -38,6 +46,13 @@ def ggx_d_aniso(h: vec3, ax: f32, ay: f32) -> f32:
 
 @func
 def ggx_lambda_aniso(w: vec3, ax: f32, ay: f32) -> f32:
+    """Returns Smith's Λ(w) for the anisotropic GGX distribution.
+
+    Args:
+        w: The direction in the tangent frame.
+        ax: The roughness alpha along the tangent.
+        ay: The roughness alpha across it.
+    """
     c2 = max(w.z * w.z, 1.0e-12)
     s2 = ax * ax * w.x * w.x + ay * ay * w.y * w.y
     return 0.5 * (sqrt(1.0 + s2 / c2) - 1.0)
@@ -45,6 +60,12 @@ def ggx_lambda_aniso(w: vec3, ax: f32, ay: f32) -> f32:
 
 @func
 def ggx_lambda(w: vec3, a: f32) -> f32:
+    """Returns Smith's Λ(w) for the isotropic GGX distribution.
+
+    Args:
+        w: The direction in the local frame.
+        a: The roughness alpha.
+    """
     return ggx_lambda_aniso(w, a, a)
 
 
@@ -61,7 +82,18 @@ def ggx_g2(wo: vec3, wi: vec3, a: f32) -> f32:
 
 @func
 def sample_vndf_aniso(wo: vec3, ax: f32, ay: f32, u1: f32, u2: f32) -> vec3:
-    """A visible microfacet normal for wo (wo.z > 0)."""
+    """Samples a visible microfacet normal for a view direction (anisotropic GGX).
+
+    Args:
+        wo: The view direction in the tangent frame (wo.z > 0).
+        ax: The roughness alpha along the tangent.
+        ay: The roughness alpha across it.
+        u1: A uniform random number.
+        u2: Another uniform random number.
+
+    Returns:
+        The microfacet normal.
+    """
     v = normalize(vec3(wo.x * ax, wo.y * ay, wo.z))
     phi = 2.0 * PI * u1
     z = (1.0 - u2) * (1.0 + v.z) - v.z
@@ -72,6 +104,14 @@ def sample_vndf_aniso(wo: vec3, ax: f32, ay: f32, u1: f32, u2: f32) -> vec3:
 
 @func
 def sample_vndf(wo: vec3, a: f32, u1: f32, u2: f32) -> vec3:
+    """Returns a visible microfacet normal of the isotropic GGX distribution.
+
+    Args:
+        wo: The view direction in the local frame (wo.z > 0).
+        a: The roughness alpha.
+        u1: A uniform random number.
+        u2: Another uniform random number.
+    """
     return sample_vndf_aniso(wo, a, a, u1, u2)
 
 

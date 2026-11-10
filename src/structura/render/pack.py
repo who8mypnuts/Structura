@@ -1,7 +1,7 @@
 """Pack a SceneIR into flat render buffers (docs/09 §3.1, flat ABI docs/11 §2).
 
 Every renderable thing becomes a *primitive* with a float record (PRIM_F floats) and an int record (PRIM_U
-u32). The BVH is built over primitive world AABBs. Layouts (keep in sync with render/kernels/scene.py):
+u32). The BVH is built over primitive world AABBs. Layouts (the sizes and kinds come from render/kernels/scene.py):
 
   prim_f: [0:12] inverse affine (world→object) rows   [12:16] linear rgba   [16:23] shape data   [23] generation
           sphere: centre xyz, radius   capsule: a xyz, b xyz, radius   triangle: unused
@@ -21,10 +21,17 @@ from ..core.geometry.triangles import scene_triangles
 from ..core.geometry.v2_shapes import tube_ends
 from ..core.scene.ir import PrimitiveKind as K
 from ..core.scene.ir import SceneIR
-
-PRIM_F, PRIM_U = 24, 4
-RK_BOX, RK_SPHERE, RK_CAPSULE, RK_TRIANGLE, RK_GRID = 0, 1, 2, 3, 4
-RK_ELLIPSOID, RK_CYLINDER, RK_TORUS = 5, 6, 7  # kernels/solids.py
+from .kernels.scene import (  # the layouts the kernels read (one definition)
+    PF_GENERATION,
+    PRIM_F,
+    PRIM_U,
+    RK_BOX,
+    RK_CAPSULE,
+    RK_GRID,
+    RK_SPHERE,
+    RK_TRIANGLE,
+)
+from .kernels.solids import RK_CYLINDER, RK_ELLIPSOID, RK_TORUS
 
 
 @dataclass(frozen=True)
@@ -72,15 +79,23 @@ def box_bounds(xform: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 
 @dataclass(frozen=True)
 class _Ctx:
+    """What every packer needs: the scene and the options."""
+
     scene: SceneIR
     opt: PackOptions
 
     def records(self, kind: int, rows: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """Returns zeroed (prim_f, prim_u) records for some rows, with colour, generation, kind, row and material set.
+
+        Args:
+            kind: The RK_* primitive kind.
+            rows: The SceneIR rows.
+        """
         f = np.zeros((len(rows), PRIM_F), np.float32)
         u = np.zeros((len(rows), PRIM_U), np.uint32)
         rgba = self.scene.rgba[rows]
         f[:, 12:15], f[:, 15] = srgb_to_linear(rgba[:, :3]), rgba[:, 3]
-        f[:, 23] = self.scene.generation[rows]  # the debug_generation model
+        f[:, PF_GENERATION] = self.scene.generation[rows]
         by_tag = self.opt.material_of_tag
         u[:, 0], u[:, 2] = kind, rows
         u[:, 1] = by_tag[self.scene.tag[rows]] if by_tag is not None else 0

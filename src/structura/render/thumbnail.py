@@ -23,7 +23,18 @@ FRAMED = Display(0.0, "soft")
 
 
 def thumbnail_rgb(scene: SceneIR, size: tuple[int, int], samples: int = 2, script_view: bool = False) -> np.ndarray:
-    """uint8[H, W, 3]: the scene (framed, or seen by its own camera), or a black tile for an empty one."""
+    """Renders a small preview of a scene (the 'preview' integrator on the CPU).
+
+    Args:
+        scene: The built scene.
+        size: (width, height) in pixels.
+        samples: Samples per pixel.
+        script_view: True shows the script's own camera, sky and look (gallery tiles); False frames the
+            structure (rule previews, variation cells).
+
+    Returns:
+        uint8 (H, W, 3); black for an empty scene.
+    """
     if not len(scene):
         return np.zeros((size[1], size[0], 3), np.uint8)
     settings = replace(script_settings(scene), width=size[0], height=size[1], samples=samples,
@@ -35,6 +46,16 @@ def thumbnail_rgb(scene: SceneIR, size: tuple[int, int], samples: int = 2, scrip
 def script_thumbnail(
     text: str, size: tuple[int, int], seed: int = 0, script_view: bool = False
 ) -> tuple[np.ndarray, int]:
-    """(image, objects) for an EisenScript text; the build stops at MAX_OBJECTS."""
+    """Builds and renders a script as a thumbnail; the build stops at MAX_OBJECTS.
+
+    Args:
+        text: The EisenScript text.
+        size: (width, height) in pixels.
+        seed: The build seed.
+        script_view: See ``thumbnail_rgb``.
+
+    Returns:
+        (the image, the number of objects built).
+    """
     scene = build_capped(compile_script(text, seed).program, seed, MAX_OBJECTS)
     return thumbnail_rgb(scene, size, script_view=script_view), len(scene)

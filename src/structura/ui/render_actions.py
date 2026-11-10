@@ -55,7 +55,16 @@ def _suffix(path: Path, filters: list[str], chosen: str, default: str) -> Path:
 
 
 class RenderActions(QObject):
+    """The Render view's actions: start, final and legacy renders, the render frame and its viewport guide,
+    saving images and reports (and Keep every render), and the render queue.
+    """
+
     def __init__(self, window: MainWindow) -> None:
+        """Connects the Render view's buttons and frame controls.
+
+        Args:
+            window: The main window.
+        """
         super().__init__(window)
         self.w = window
         self.paths = SavePaths(window.settings)
@@ -77,7 +86,11 @@ class RenderActions(QObject):
         window.workbench.scene_ready.connect(self.update_frame_guide)
 
     def update_frame_guide(self, *_: object) -> None:
-        """The viewport shows the render frame whenever it is not the viewport's own shape."""
+        """Shows the render frame in the viewport whenever it is not the viewport's own shape.
+
+        Args:
+            *_: The triggering signal's values (ignored).
+        """
         aspect = self.frame_aspect()
         label = "{} × {}".format(*self.render_size()) if aspect else ""
         self.w.viewport.overlay.set_frame(aspect, label)
@@ -175,7 +188,7 @@ class RenderActions(QObject):
         return max(1, self.w.viewport.width()), max(1, self.w.viewport.height())
 
     def render_size(self) -> tuple[int, int]:
-        """The image size the Render tool bar asks for (its frame and preset) for the current script."""
+        """Returns the image size the Render tool bar asks for (its frame and preset) for the current script."""
         tab = self.w.tabs.current()
         script = script_settings(tab.outcome.scene) if tab is not None and tab.outcome is not None else None
         default = RenderSettings()
@@ -184,13 +197,18 @@ class RenderActions(QObject):
         return self.w.render_view.controls.image_size(self._view_size(), declared)
 
     def frame_aspect(self) -> float | None:
-        """The render frame's aspect for the viewport's guide (None: the viewport's own shape)."""
+        """Returns the render frame's width / height for the viewport's guide; None for the viewport's own shape."""
         if self.w.render_view.controls.frame.currentText() == FRAME_VIEWPORT:
             return None
         width, height = self.render_size()
         return width / height
 
     def render_source(self) -> RenderInput | None:
+        """Returns what the Render view renders: the scene, the camera fitted to the frame, the settings and the text.
+
+        The settings are the script's, then the Render Settings panel's, then the tool bar's (size, samples,
+        integrator). None when nothing is built.
+        """
         tab = self.w.tabs.current()
         if tab is None or tab.outcome is None:
             return None
@@ -244,6 +262,7 @@ class RenderActions(QObject):
             self._write_report(out.report)
 
     def _save_image(self, path: Path) -> None:
+        """Writes the shown image (with its exposure, view and look) on the io lane; the path joins ``saved``."""
         view = self.w.render_view
         image, last, source = view.shown_image(), view.last, view.source
         if image is None or last is None or source is None:
@@ -254,6 +273,7 @@ class RenderActions(QObject):
         layers = last.progress.aovs.layers() if last.progress.aovs is not None else None
 
         def run(ctx: JobContext) -> Path:
+            """Writes the file."""
             path.parent.mkdir(parents=True, exist_ok=True)
             save_image(image, path, display, meta, layers)
             return path
@@ -279,6 +299,7 @@ class RenderActions(QObject):
 
     # -- reports -----------------------------------------------------------------------------------------------
     def report_inputs(self) -> ReportInputs | None:
+        """Returns what a report of the last render describes, or None before a render finishes."""
         view = self.w.render_view
         last, source = view.last, view.source
         if last is None or source is None or last.details is None:

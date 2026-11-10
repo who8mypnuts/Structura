@@ -14,6 +14,8 @@ if TYPE_CHECKING:
 
 
 class StatusBar(QStatusBar):
+    """The window's status bar: named segments (SEGMENTS) and a busy indicator."""
+
     SEGMENTS = ("vim", "cursor", "encoding", "dialect", "objects", "build", "render", "device")
 
     def __init__(self, parent: QWidget | None = None) -> None:

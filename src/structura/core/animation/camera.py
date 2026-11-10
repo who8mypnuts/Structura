@@ -10,7 +10,11 @@ from .timeline import CAMERA_FIELDS, Timeline
 
 
 def camera_values(camera: Camera) -> dict[str, float]:
-    """The keyable fields of a camera, by track target."""
+    """Returns the keyable fields of a camera by track target ('camera:eye.x' … 'camera:fstop').
+
+    Args:
+        camera: The camera; a lens without an f-stop gives 0 for 'camera:fstop'.
+    """
     values = [*camera.eye, *camera.target, camera.fov_y_deg, camera.focus, camera.lens.fstop or 0.0]
     return {f"camera:{name}": float(v) for name, v in zip(CAMERA_FIELDS, values, strict=True)}
 
@@ -20,7 +24,17 @@ def has_camera_tracks(timeline: Timeline) -> bool:
 
 
 def camera_at(timeline: Timeline, frame: float, base: Camera) -> Camera:
-    """``base`` with every animated field replaced by its value at ``frame``."""
+    """Evaluates the camera tracks of a timeline.
+
+    Args:
+        timeline: The timeline with the camera tracks.
+        frame: The frame (fractions interpolate).
+        base: The camera whose un-animated fields are kept.
+
+    Returns:
+        ``base`` with every animated field at its value for ``frame``; a focus track focuses manually, an
+        f-stop track of 0 or less removes the f-stop.
+    """
     current = camera_values(base)
     values = {k: (timeline.value(k, frame) if timeline.track(k) else v) for k, v in current.items()}
     v = [values[f"camera:{name}"] for name in CAMERA_FIELDS]

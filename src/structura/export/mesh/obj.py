@@ -45,6 +45,8 @@ def _mtl(name: str, material: Material | None) -> str:
 
 
 class ObjExporter(Exporter):
+    """Wavefront OBJ with an MTL library: groups by colour, tag or material, streamed."""
+
     name = "obj"
     title = "Wavefront OBJ"
     extensions: tuple[str, ...] = (".obj",)

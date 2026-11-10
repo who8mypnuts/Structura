@@ -15,6 +15,16 @@ from .unit_shapes import Mesh
 
 @dataclass(frozen=True)
 class TriMesh:
+    """Triangles with per-vertex normals and colours, and the scene row each triangle came from.
+
+    Attributes:
+        positions: float32[V, 3] vertex positions.
+        normals: float32[V, 3] vertex normals.
+        colors: float32[V, 4] sRGB colour and alpha (the authored colour).
+        indices: uint32[T, 3] vertex indices of each triangle.
+        owners: int64[T] the SceneIR row of each triangle.
+    """
+
     positions: np.ndarray  # float32[V, 3]
     normals: np.ndarray  # float32[V, 3]
     colors: np.ndarray  # float32[V, 4] sRGB + alpha (the authored colour)
@@ -31,7 +41,14 @@ class TriMesh:
         return cls(z, z, np.zeros((0, 4), np.float32), np.zeros((0, 3), np.uint32), np.zeros(0, np.int64))
 
     def select(self, faces: np.ndarray) -> TriMesh:
-        """The triangles where the boolean mask ``faces`` is set, with only the vertices they use."""
+        """Keeps some triangles.
+
+        Args:
+            faces: A boolean mask over the triangles.
+
+        Returns:
+            A mesh of the selected triangles with only the vertices they use.
+        """
         tris = self.indices[faces]
         used, remap = np.unique(tris, return_inverse=True)
         return TriMesh(self.positions[used], self.normals[used], self.colors[used],

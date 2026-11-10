@@ -12,7 +12,12 @@ ANY_BLOCK = re.compile(r"(?ms)^[ \t]*(?:material|light|environment|camera|render
 
 
 def block_pattern(kind: str, name: str) -> re.Pattern[str]:
-    """A named block ('light key { … }'), or with ``name`` "" the unnamed one ('environment { … }')."""
+    """Returns the pattern of one block, with its line ending.
+
+    Args:
+        kind: The block kind ('material', 'light', 'environment' …).
+        name: The block's name; "" matches the unnamed block of that kind ('environment { … }').
+    """
     gap = r"[ \t]+" if name else r"[ \t]*"
     return re.compile(rf"(?ms)^[ \t]*{kind}{gap}{re.escape(name)}[ \t]*\{{[^}}]*\}}[ \t]*\n?")
 
@@ -23,7 +28,17 @@ def block_span(text: str, kind: str, name: str) -> tuple[int, int] | None:
 
 
 def put_block(text: str, kind: str, name: str, block: str) -> str:
-    """Replace the named block, or add it after the version line and the existing blocks."""
+    """Replaces a block, or adds it after the version line and the existing blocks.
+
+    Args:
+        text: The script.
+        kind: The block kind.
+        name: The block's name ("" for an unnamed block).
+        block: The new block text.
+
+    Returns:
+        The new script text.
+    """
     block = block.rstrip("\n") + "\n"
     pattern = block_pattern(kind, name)
     if pattern.search(text):
@@ -32,7 +47,15 @@ def put_block(text: str, kind: str, name: str, block: str) -> str:
 
 
 def append_block(text: str, block: str) -> str:
-    """Add ``block`` (one or more blocks, comments allowed) after the version line and the existing blocks."""
+    """Adds text after the version line and the existing blocks, so declarations stay together at the top.
+
+    Args:
+        text: The script.
+        block: One or more blocks (comments allowed).
+
+    Returns:
+        The new script text.
+    """
     block = block.rstrip("\n") + "\n"
     anchor = max((m.end() for m in (*VERSION.finditer(text), *ANY_BLOCK.finditer(text))), default=0)
     return text[:anchor] + block + text[anchor:]

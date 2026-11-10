@@ -15,7 +15,8 @@ from PIL import Image
 from PIL.PngImagePlugin import PngInfo
 
 from ..core.color import linear_to_srgb
-from .post import PostSettings, apply_display, apply_linear
+from .post import PostSettings
+from .post_image import apply_display, apply_linear
 from .views import VIEW_TRANSFORMS
 
 DISPLAY_FORMATS = {".png", ".jpg", ".jpeg", ".webp", ".tif", ".tiff"}
@@ -26,7 +27,20 @@ def to_display(
     image: np.ndarray, exposure: float = 0.0, view: str = "soft", *, post: PostSettings | None = None,
     asset_dir: str = "",
 ) -> np.ndarray:  # fmt: skip
-    """Linear HDR → sRGB 8-bit through the post stack and a view transform (render/views.py)."""
+    """Turns linear HDR into 8-bit sRGB through the post stack and a view transform.
+
+    Most callers use ``Display.apply``, which bundles these settings.
+
+    Args:
+        image: float linear RGB (H, W, 3).
+        exposure: Exposure in stops.
+        view: The view transform (unknown names use 'standard').
+        post: The post stack; None or inactive skips it.
+        asset_dir: The folder the post stack's LUT is relative to.
+
+    Returns:
+        uint8 sRGB (H, W, 3).
+    """
     scaled = image * np.float32(2.0**exposure)
     if post is not None and post.active:
         scaled = apply_linear(scaled, post)
@@ -39,8 +53,17 @@ def to_display(
 
 @dataclass(frozen=True)
 class Display:
-    """How a linear image becomes a picture: exposure (stops), the view transform and the post stack (with the
-    folder its LUT is relative to). Compared to tell whether an image made elsewhere is still the one wanted."""
+    """How a linear image becomes a picture.
+
+    Displays compare equal when they make the same picture, which tells whether an image made elsewhere (by a
+    render job) is still the one wanted.
+
+    Attributes:
+        exposure: Exposure in stops.
+        view: The view transform (render/views.py VIEW_TRANSFORMS).
+        post: The post stack (bloom, vignette, grading).
+        asset_dir: The folder the post stack's LUT is relative to (the script's).
+    """
 
     exposure: float = 0.0
     view: str = "standard"
@@ -48,6 +71,11 @@ class Display:
     asset_dir: str = ""
 
     def apply(self, image: np.ndarray) -> np.ndarray:
+        """Returns an image as uint8 sRGB with these settings.
+
+        Args:
+            image: float linear RGB (H, W, 3).
+        """
         return to_display(image, self.exposure, self.view, post=self.post, asset_dir=self.asset_dir)
 
 
@@ -68,18 +96,35 @@ def save_image(
     display: Display | None = None,
     metadata: Mapping[str, str] | None = None,
     layers: Mapping[str, np.ndarray] | None = None,
-) -> None:
-    """Write an image; EXR keeps linear radiance (exposed, without the post stack) and any AOV ``layers`` (other
-    formats ignore them)."""
+) -> np.ndarray | None:
+    """Writes an image.
+
+    EXR keeps linear radiance (exposed, without the post stack) and any AOV ``layers``; the other formats get the
+    display transform and ignore the layers. PNG files carry ``metadata`` as text chunks, EXR in its header.
+
+    Args:
+        image: float linear RGB (H, W, 3).
+        path: The file; its suffix picks the format (FORMATS).
+        display: Exposure, view transform and look (default: none, the standard view).
+        metadata: Key → text entries to embed.
+        layers: EXR channels by name (AOVs).
+
+    Returns:
+        The uint8 image written for a display format (reuse it: a video of the frames), None for EXR.
+
+    Raises:
+        ValueError: The suffix is not an image format Structura writes.
+    """
     display = display or Display()
     suffix = path.suffix.lower()
     meta = dict(metadata or {})
     if suffix == ".exr":
         _save_exr(image * np.float32(2.0**display.exposure), path, meta, layers or {})
-        return
+        return None
     if suffix not in DISPLAY_FORMATS:
         raise ValueError(f"unsupported image format '{suffix}' (use one of {sorted(FORMATS)})")
-    pil = Image.fromarray(display.apply(image))
+    rgb = display.apply(image)
+    pil = Image.fromarray(rgb)
     if suffix == ".png":
         info = PngInfo()
         for key, value in meta.items():
@@ -87,3 +132,4 @@ def save_image(
         pil.save(path, pnginfo=info)
     else:
         pil.save(path)
+    return rgb

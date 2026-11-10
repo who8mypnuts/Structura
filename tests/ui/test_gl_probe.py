@@ -121,3 +121,69 @@ def test_every_requested_format_is_desktop_opengl() -> None:
 def test_preview_labels_name_the_compute_device() -> None:
     assert host.preview_label("gpu") == "OpenGL" and host.preview_label("cpu") == "CPU"
     assert host.preview_label("cuda") == "CUDA"
+
+
+class _FakeFunctions:
+    """The GL functions of a context made current: only glGetString."""
+
+    @staticmethod
+    def glGetString(name: int) -> str:
+        """Answers GL_VERSION and GL_RENDERER like an NVIDIA driver.
+
+        Args:
+            name: The GL enum asked for.
+
+        Returns:
+            The version string for GL_VERSION, else the renderer string.
+        """
+        return "4.6.0 NVIDIA 615.71.09" if name == gl_probe.GL_VERSION else "NVIDIA GeForce GTX 1660"
+
+
+class _FakeContext:
+    """A context that cannot be made current on an offscreen surface, only on a window (some Wayland/EGL
+    stacks have no pbuffer for the chosen config)."""
+
+    def __init__(self) -> None:
+        """Starts with no surface tried."""
+        self.surfaces: list[str] = []
+
+    def makeCurrent(self, surface: object) -> bool:
+        """Records the surface's type; only a QWindow works.
+
+        Args:
+            surface: The surface to make the context current on.
+
+        Returns:
+            Whether the context is current.
+        """
+        self.surfaces.append(type(surface).__name__)
+        return type(surface).__name__ == "QWindow"
+
+    def functions(self) -> _FakeFunctions:
+        """Returns the fake GL functions."""
+        return _FakeFunctions()
+
+    def doneCurrent(self) -> None:
+        """Releases nothing (there is no real context)."""
+        return None
+
+
+def test_the_check_falls_back_to_a_hidden_window(qapp: object) -> None:
+    context = _FakeContext()
+    result = gl_probe._query(context, gl_probe.preferred_format())  # type: ignore[arg-type]
+    assert result == ("4.6.0 NVIDIA 615.71.09", "NVIDIA GeForce GTX 1660")
+    assert context.surfaces == ["QOffscreenSurface", "QWindow"]
+
+
+def test_the_fallback_banner_explains_and_can_force_opengl(window: MainWindow, monkeypatch: pytest.MonkeyPatch) -> None:
+    from PySide6.QtWidgets import QMessageBox  # noqa: PLC0415
+
+    shown: list[str] = []
+    monkeypatch.setattr(QMessageBox, "information", lambda _parent, _title, text: shown.append(text))
+    monkeypatch.setattr(host.QGuiApplication, "platformName", staticmethod(lambda: "wayland"))
+    window.banners.preview_mode("cpu")
+    assert window.banner.isVisibleTo(window) and "OpenGL 3.3" in window.banner.label.text()
+    window.banners._probe_details()
+    assert shown and "Qt platform" in shown[0]
+    window.banners._force_opengl()
+    assert window.settings.value(host.BACKEND_KEY, "auto") == "gpu"

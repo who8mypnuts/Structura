@@ -7,6 +7,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QObject, Slot
+from PySide6.QtWidgets import QMessageBox
 
 from ..core.lang.convert import convert_to_v2
 from .documents import EditorTab
@@ -15,6 +16,7 @@ from .editor.code_editor import CodeEditor
 from .editor.options import EditorOptions, load_options, toggle_option
 from .editor.peek import peek_definition
 from .editor.quick_fix import show_quick_fixes, show_refactorings
+from .i18n import tr
 from .rule_previews import RulePreviews
 
 if TYPE_CHECKING:
@@ -22,6 +24,12 @@ if TYPE_CHECKING:
 
 
 class EditorActions(QObject):
+    """The editor's commands and the rule previews shown in the editor.
+
+    Comments, quick fixes, refactoring, peek, folding, the split view, options, Vim commands and conversion
+    to v2.
+    """
+
     def __init__(self, window: MainWindow) -> None:
         super().__init__(window)
         self.w = window
@@ -55,6 +63,31 @@ class EditorActions(QObject):
         for note in result.notes:
             self.w.console.info(f"convert: {note}")
         self.w.show_message(f"Converted to EisenScript v2 ({len(result.notes)} notes in the console; Ctrl+Z undoes)")
+
+    def ensure_v2(self, title: str, what: str) -> bool:
+        """Makes sure the current script is EisenScript v2 before a v2 block is written into it.
+
+        A v1 script is converted only when the user agrees (it builds the same).
+
+        Args:
+            title: The question's window title ('Add Light').
+            what: What needs v2, for the question ('Lights are', 'Material blocks are').
+
+        Returns:
+            True when the script is v2 now.
+        """
+        tab = self.w.tabs.current()
+        if tab is None:
+            return False
+        if tab.dialect == 2:
+            return True
+        question = tr("{what} EisenScript v2 blocks. Convert this script to v2 first? It builds the same.").format(
+            what=what)  # fmt: skip
+        buttons = QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        if QMessageBox.question(self.w, title, question, buttons) != QMessageBox.StandardButton.Yes:
+            return False
+        self.convert_to_v2()
+        return True
 
     def quick_fix(self) -> None:
         self._with_editor(show_quick_fixes)

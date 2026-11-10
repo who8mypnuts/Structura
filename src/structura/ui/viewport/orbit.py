@@ -3,23 +3,15 @@ the starting camera (legacy views often have one), plus pan, dolly toward the ta
 
 from __future__ import annotations
 
-import math
 from dataclasses import replace
 
 import numpy as np
 
 from ...core.scene.camera import Camera, framed
 from ...core.scene.vectors import as_vec3 as _vec
+from ...core.scene.vectors import rotate
 
 WORLD_UP = np.array([0.0, 1.0, 0.0])
-
-
-def rotate(v: np.ndarray, axis: np.ndarray, angle: float) -> np.ndarray:
-    """Rodrigues rotation of v about the unit axis."""
-    k = axis / (np.linalg.norm(axis) or 1.0)
-    c, s = math.cos(angle), math.sin(angle)
-    out: np.ndarray = v * c + np.cross(k, v) * s + k * np.dot(k, v) * (1 - c)
-    return out
 
 
 class OrbitController:

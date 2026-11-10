@@ -25,6 +25,10 @@ CLICK_SLOP = 4  # pixels a press may move and still count as a click (pick)
 
 
 class ViewportWidget(QOpenGLWidget):
+    """The OpenGL viewport: the preview engine in a QOpenGLWidget, repainting until accumulation converges;
+    picking, navigation, Alt+click focus and the right-click menu request.
+    """
+
     picked = Signal(object)  # SceneIR row or None
     gl_failed = Signal(str)  # the host switches to the CPU preview
     camera_changed = Signal(object)  # Camera

@@ -15,12 +15,23 @@ from pathlib import Path
 
 @dataclass(frozen=True)
 class ExternalApp:
+    """An application Structura can open files in.
+
+    Attributes:
+        name: Its name ('Blender').
+        key: The settings key of its path (Preferences ▸ Paths).
+        command: The program's name on the PATH.
+        installed: The usual install locations, the most likely first.
+        arguments: How it opens a file.
+        opens: The file suffixes it is offered for.
+    """
+
     name: str
-    key: str  # the settings key of its path (Preferences ▸ Paths)
-    command: str  # the program name on the PATH
-    installed: Callable[[], list[str]]  # usual install locations, the most likely first
-    arguments: Callable[[Path], list[str]]  # how it opens a file
-    opens: tuple[str, ...]  # the file suffixes it is offered for
+    key: str
+    command: str
+    installed: Callable[[], list[str]]
+    arguments: Callable[[Path], list[str]]
+    opens: tuple[str, ...]
 
 
 def _program_files(*pattern: str) -> list[str]:
@@ -52,14 +63,19 @@ MESHLAB = ExternalApp("MeshLab", "paths/meshlab", "meshlab", _meshlab_installed,
 
 
 def find_app(app: ExternalApp, configured: str = "") -> str | None:
-    """The executable of ``app`` to use, or None when there is none."""
+    """Finds an application's executable.
+
+    Args:
+        app: The application.
+        configured: The path set in Preferences; when set it is the only candidate.
+
+    Returns:
+        The executable: the configured one, else the one on the PATH, else one in the usual install folders;
+        None when there is none.
+    """
     if configured:
         return configured if Path(configured).is_file() else None
     on_path = shutil.which(app.command)
     if on_path:
         return on_path
     return next((p for p in app.installed() if Path(p).is_file()), None)
-
-
-def find_blender(configured: str = "") -> str | None:
-    return find_app(BLENDER, configured)

@@ -31,6 +31,10 @@ EDIT_DELAY_MS = 400  # edits are written to the script once typing pauses
 
 
 class LightsPanel(QWidget):
+    """The script's v2 light blocks: a list, a property form for the selected light, Add Light, Lighting Rig
+    and Remove. The panel only emits intents (LightActions edits the script).
+    """
+
     add_requested = Signal(str)  # kind
     remove_requested = Signal(str)  # name
     go_to_requested = Signal(str)  # name
@@ -38,6 +42,11 @@ class LightsPanel(QWidget):
     rig_requested = Signal(str)  # a lighting rig's name (core/scene/light_rigs.toml)
 
     def __init__(self, parent: QWidget | None = None) -> None:
+        """Builds the list, the buttons and the (debounced) property form.
+
+        Args:
+            parent: The parent widget.
+        """
         super().__init__(parent)
         self.list = QListWidget()
         self.list.setAccessibleName(tr("Lights"))
@@ -76,6 +85,7 @@ class LightsPanel(QWidget):
         self._timer.timeout.connect(self._emit_edit)
 
     def _rig_button(self) -> QPushButton:
+        """The Lighting Rig button: a menu of the rigs, each with its description as a tooltip."""
         button = QPushButton(tr("Lighting Rig"))
         button.setToolTip(tr("Light the structure with a complete set-up: lights and environment, sized to it "
                              "(applying another rig replaces the rig's lights; your own lights stay)"))  # fmt: skip
@@ -89,6 +99,11 @@ class LightsPanel(QWidget):
         return button
 
     def show_lights(self, declarations: SceneDeclarations | None) -> None:
+        """Lists a script's lights, keeping the selection (and never replacing a form being typed in).
+
+        Args:
+            declarations: The script's declarations; None for a v1 script (the list then says where its sun is).
+        """
         selected = self._name(self.list.currentItem()) if self.list.currentItem() else ""
         self.list.blockSignals(True)
         self.list.clear()
@@ -113,9 +128,11 @@ class LightsPanel(QWidget):
         return str(item.data(Qt.ItemDataRole.UserRole) or "") if item is not None else ""
 
     def selected(self) -> LightSpec | None:
+        """Returns the selected light, or None."""
         return self.lights.get(self._name(self.list.currentItem()))
 
     def _show_selected(self) -> None:
+        """Replaces the property form with one for the selected light's type and values."""
         light = self.selected()
         if self.form is not None:
             self.form.deleteLater()

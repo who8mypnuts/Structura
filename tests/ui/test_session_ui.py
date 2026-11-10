@@ -148,3 +148,12 @@ def test_window_layout_is_restored(qtbot: QtBot, tmp_path: Path, window: MainWin
     again.start([])
     again.show()
     assert not again.docks["Console"].isVisible()
+
+
+def test_malformed_extras_in_a_snapshot_still_restore_the_script(window: MainWindow) -> None:
+    from structura.services.session import SessionState, TabState  # noqa: PLC0415
+
+    bad = TabState(text="box\n", params={"size": "wide"}, timeline={"tracks": "nonsense"})  # type: ignore[dict-item]
+    assert window.session.restore(SessionState((bad,))) == 1  # the script is back; its extras are skipped
+    restored = window.tabs.tabs()[-1]
+    assert restored.text() == "box\n" and restored.params == {}

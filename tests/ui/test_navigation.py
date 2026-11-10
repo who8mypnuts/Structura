@@ -63,6 +63,7 @@ def test_looking_around_turns_about_the_eye_and_wasd_flies(qapp: object) -> None
 
 def test_shift_slows_and_ctrl_locks_a_drag_to_one_axis(qapp: object) -> None:
     def orbited(mods: Qt.KeyboardModifier, *points: tuple[int, int]) -> np.ndarray:
+        """The eye after a left drag through ``points`` with ``mods`` held."""
         orbit = OrbitController(Camera((0.0, 0.0, 10.0), (0.0, 0.0, 0.0)))
         _drag(Navigator(orbit), B.LeftButton, *points, mods=mods)
         return np.asarray(orbit.camera().eye)

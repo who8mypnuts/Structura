@@ -30,6 +30,10 @@ RENDERED_SAMPLES = 64
 
 
 class ComputeViewport(QWidget):
+    """The viewport drawn by the render kernels (no OpenGL, or the Rendered view): progressive images from the
+    render service, with the same navigation as the OpenGL viewport.
+    """
+
     picked = Signal(object)
     camera_changed = Signal(object)
     device_changed = Signal(str)  # the device the preview runs on, e.g. "cuda NVIDIA GeForce GTX 1660"
@@ -88,6 +92,7 @@ class ComputeViewport(QWidget):
                        integrator=integrator)  # fmt: skip
 
     def _request(self, fast: bool) -> None:
+        """Asks for a render of the current camera (fast: half size, one sample, while moving)."""
         if not self.enabled:
             return
         if self.scene is None or len(self.scene) == 0:
@@ -105,6 +110,7 @@ class ComputeViewport(QWidget):
 
     @Slot(str, object)
     def _on_update(self, doc: str, update: object) -> None:
+        """Shows a render pass of this viewport."""
         if doc != DOC or not isinstance(update, RenderUpdate):
             return
         rgb = update.display if update.display is not None else self.display.apply(update.progress.image)

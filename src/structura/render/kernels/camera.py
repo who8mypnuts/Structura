@@ -61,7 +61,13 @@ def cfg3(cfg: Buf[f32], at: u32) -> vec3:
 
 @func
 def panoramic_ray(cfg: Buf[f32], sx: f32, sy: f32) -> Ray:
-    """Spherical (equirectangular 360°) or equidistant fisheye directions around the camera basis."""
+    """Returns a spherical (equirectangular 360°) or fisheye ray around the camera basis.
+
+    Args:
+        cfg: The render configuration.
+        sx: Screen x in -1..1.
+        sy: Screen y in -1..1 (up).
+    """
     f = cfg3(cfg, FORWARD)
     r = cfg3(cfg, RIGHT)
     u = cfg3(cfg, UP)
@@ -79,7 +85,12 @@ def panoramic_ray(cfg: Buf[f32], sx: f32, sy: f32) -> Ray:
 
 @func
 def fisheye_angle(cfg: Buf[f32], radius: f32) -> f32:
-    """The angle off the view axis at ``radius`` (1 = the top of the frame sees half the field of view)."""
+    """Returns the angle off the view axis at a distance from the image centre.
+
+    Args:
+        cfg: The render configuration (field of view and mapping).
+        radius: Distance from the centre; 1 is the top of the frame, which sees half the field of view.
+    """
     half_field = 0.5 * cfg[FISHEYE_FOV]
     if cfg[FISHEYE_MAP] == 1.0:  # equisolid: r ∝ sin(θ/2)
         return 2.0 * asin(clamp(radius * sin(0.5 * half_field), -1.0, 1.0))
@@ -90,7 +101,15 @@ def fisheye_angle(cfg: Buf[f32], radius: f32) -> f32:
 
 @func
 def camera_ray(cfg: Buf[f32], sx: f32, sy: f32, u1: f32, u2: f32) -> Ray:
-    """Ray through normalised screen position (sx, sy) ∈ [-1,1]² (y up); u1/u2 sample the lens."""
+    """Returns the ray through a screen position, sampling the lens for depth of field.
+
+    Args:
+        cfg: The render configuration (camera basis, projection, shift, lens).
+        sx: Screen x in -1..1.
+        sy: Screen y in -1..1 (up).
+        u1: A uniform random number for the lens.
+        u2: Another uniform random number for the lens.
+    """
     if cfg[CAM_TYPE] >= 2.0:
         return panoramic_ray(cfg, sx, sy)
     px = sx * cfg[ASPECT] + 2.0 * cfg[SHIFT]  # lens shift, in frame heights (2 = the frame's full height)
@@ -119,8 +138,17 @@ def blade_corner(cfg: Buf[f32], k: f32, axis: u32) -> f32:
 
 @func
 def lens_point(cfg: Buf[f32], u1: f32, u2: f32, axis: u32) -> f32:
-    """A point on the aperture (unit radius): a disc, or a regular polygon with BLADES sides. The radial
-    exponent BOKEH_BIAS is 0.5 for an evenly lit aperture (smaller: bright rims; larger: a soft centre)."""
+    """Returns one coordinate of a point on the unit aperture: a disc, or a polygon with BLADES sides.
+
+    The radial exponent BOKEH_BIAS is 0.5 for an evenly lit aperture (smaller: bright rims; larger: a soft
+    centre).
+
+    Args:
+        cfg: The render configuration.
+        u1: A uniform random number.
+        u2: Another uniform random number.
+        axis: 0 for x, 1 for y.
+    """
     if cfg[BLADES] < 3.0:
         r = pow(max(u1, 1.0e-12), cfg[BOKEH_BIAS])
         phi = 2.0 * PI * u2

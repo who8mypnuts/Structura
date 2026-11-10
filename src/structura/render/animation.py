@@ -12,6 +12,8 @@ from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
 from ..compute.base import Backend
 from ..core.animation.camera import camera_at, has_camera_tracks
 from ..core.animation.paths import Turntable, turntable
@@ -21,6 +23,7 @@ from ..core.lang.api import compile_script
 from ..core.scene.camera import Camera
 from ..core.scene.ir import SceneIR
 from .api import RenderProgress, prepare_with_frame, progressive, script_settings
+from .output import save_image
 from .settings import RenderSettings
 
 
@@ -69,8 +72,33 @@ def render_frame(
     return result, settings
 
 
+def save_frame(result: RenderProgress, settings: RenderSettings, pattern: Path, frame: int) -> tuple[Path, np.ndarray]:
+    """Writes one rendered frame.
+
+    Args:
+        result: The frame's render.
+        settings: Its render settings (their display: exposure, view and look).
+        pattern: The frame file pattern ('frames/out.png' → 'frames/out_0012.png').
+        frame: The frame number.
+
+    Returns:
+        (the file written, the frame's 8-bit image for a video).
+    """
+    path = frame_path(pattern, frame)
+    shown = save_image(result.image, path, settings.display)
+    return path, shown if shown is not None else settings.display.apply(result.image)
+
+
 def with_turntable(anim: Animation, spec: Turntable) -> Animation:
-    """``anim`` orbiting its first frame's camera (the base camera, else the script's or the framing one)."""
+    """Makes an animation orbit its first frame's camera.
+
+    Args:
+        anim: The animation; its base camera is used, else the script's camera or the framing one.
+        spec: The turntable move.
+
+    Returns:
+        The animation with the turntable keyed into its timeline and that camera as its base.
+    """
     scene, _ = build_frame(anim, spec.start)
     _, view = prepare_with_frame(scene, frame_settings(anim, scene), camera=anim.camera)
     return replace(anim, timeline=turntable(anim.timeline, view.camera, spec), camera=view.camera)

@@ -34,7 +34,12 @@ SKY_GROUND: RGB = (0.06, 0.055, 0.05)  # sunsky: the ground below the horizon (l
 
 
 def resolve_view(view: str, integrator: str) -> str:
-    """The view transform ``view`` names; 'auto' is AgX, except standard for Structure Synth's classic look."""
+    """Returns the view transform a setting names.
+
+    Args:
+        view: A VIEWS name; 'auto' is AgX, except 'standard' for the classic integrator (Structure Synth's look).
+        integrator: The integrator of the render.
+    """
     if view != "auto":
         return view
     return "standard" if integrator == "classic" else "agx"
@@ -42,6 +47,13 @@ def resolve_view(view: str, integrator: str) -> str:
 
 @dataclass(frozen=True)
 class RenderSettings:
+    """Every option of the precision renderer, with Structura's defaults.
+
+    Each field is documented where it is declared; ``render_param_specs`` gives the titles and ranges the Render
+    Settings panel shows. Scripts change them through 'set raytracer::…' (render/legacy.py) and v2 blocks
+    (render/declarations.py). The camera's lens is not here: it belongs to the Camera.
+    """
+
     width: int = 640
     height: int = 480
     samples: int = 64

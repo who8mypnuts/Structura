@@ -127,6 +127,14 @@ def legacy_aliases(inp: LintInput) -> list[Diagnostic]:
 
 
 def v1_cylinders(inp: LintInput) -> list[Diagnostic]:
+    """W105 (info): the cylinders of a v1 script, which Structure Synth 1.5 counted but did not draw.
+
+    Args:
+        inp: The analysed script.
+
+    Returns:
+        One diagnostic per cylinder call (none for v2 scripts).
+    """
     if inp.dialect != 1:
         return []
     message = "Structure Synth 1.5 did not draw cylinders (Structura does; 1.5 template exports omit them)"

@@ -23,9 +23,16 @@ KEY = "internal-error"
 
 
 class ErrorReporter(QObject):
+    """Shows unhandled exceptions in the banner (Details, Copy Report) and saves a recovery snapshot at once."""
+
     reported = Signal(str, str)  # summary, traceback — emitted from any thread, handled on the GUI thread
 
     def __init__(self, window: MainWindow) -> None:
+        """Prepares the reporter (the diagnostics hooks call ``report``).
+
+        Args:
+            window: The main window.
+        """
         super().__init__(window)
         self.w = window
         self.log_dir: Path | None = None
@@ -33,29 +40,37 @@ class ErrorReporter(QObject):
         self.reported.connect(self._show)
 
     def report(self, summary: str, details: str) -> None:
-        """Thread-safe entry point for the diagnostics hooks."""
+        """Reports an error; safe from any thread (the banner is shown on the GUI thread).
+
+        Args:
+            summary: One line: the exception type and message.
+            details: The traceback.
+        """
         self.reported.emit(summary, details)
 
     @Slot(str, str)
     def _show(self, summary: str, details: str) -> None:
         self.last = (summary, details)
-        self.w.session.autosave()  # the work is safe whatever happens next (the log line reaches the Console)
+        self.w.session.autosave()  # the work is safe, whatever happens next
         text = tr("Structura hit an internal error ({summary}). Your scripts are saved in the recovery snapshot; "
                   "you can keep working.").format(summary=summary)  # fmt: skip
         actions = ((tr("Details"), self.details), (tr("Copy Report"), self.copy_report))
         self.w.banner.show_message(KEY, text, actions)
 
     def report_text(self) -> str:
+        """Returns the last error as text for a bug report: summary, traceback, log folder and system."""
         summary, details = self.last
         where = f"\nLogs: {self.log_dir}" if self.log_dir else ""
         system = "\n".join(f"{r.label}: {r.text}" for r in system_section({"Qt": qVersion()}).rows)
         return f"{summary}\n\n{details}{where}\n\n{system}"
 
     def details(self) -> None:
+        """Shows the last error in a message box, the full report under Details."""
         box = QMessageBox(QMessageBox.Icon.Warning, tr("Internal Error"), self.last[0], parent=self.w)
         box.setDetailedText(self.report_text())
         box.exec()
 
     def copy_report(self) -> None:
+        """Puts the last error's report on the clipboard."""
         QGuiApplication.clipboard().setText(self.report_text())
         self.w.show_message(tr("The error report is on the clipboard"))

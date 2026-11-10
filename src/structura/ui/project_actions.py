@@ -26,6 +26,8 @@ THUMBNAIL = 256
 
 
 class ProjectActions(QObject):
+    """Projects (.structura): open, save, and open a render's embedded script as a project."""
+
     def __init__(self, window: MainWindow) -> None:
         super().__init__(window)
         self.w = window
@@ -59,6 +61,7 @@ class ProjectActions(QObject):
         return tab
 
     def open_render_dialog(self) -> None:
+        """File ▸ Open from Render…: asks for a PNG or EXR and opens what it embeds."""
         start = SavePaths(self.w.settings).folder("render")
         name, _ = QFileDialog.getOpenFileName(self.w, "Open from Render", str(start), "Renders (*.png *.exr)")
         if name:
@@ -86,6 +89,15 @@ class ProjectActions(QObject):
         )  # fmt: skip
 
     def save(self, tab: EditorTab, path: Path | None = None) -> bool:
+        """Saves a tab as a project (its script, seed, parameters, camera, settings and timeline).
+
+        Args:
+            tab: The tab whose script, seed, parameters, camera, settings and timeline are saved.
+            path: Where to save (default: the tab's project file).
+
+        Returns:
+            True when it was saved.
+        """
         target = path or tab.project_path
         if target is None:
             return self.save_as(tab)

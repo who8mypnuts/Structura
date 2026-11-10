@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
+import pytest
 from PIL import Image
 
 import structura.api as st
@@ -88,3 +89,24 @@ def test_turntable_and_saved_view_paths() -> None:
     steps = [np.linalg.norm(np.asarray(camera_at(eased, f + 1, base).eye) - camera_at(eased, f, base).eye)
              for f in range(8)]  # fmt: skip
     assert steps[0] < steps[4] and steps[7] < steps[4]  # gentle start and stop
+
+
+def test_camera_paths_tolerate_degenerate_requests() -> None:
+    from structura.core.animation.paths import Turntable, path_through, turntable, turntable_eyes  # noqa: PLC0415
+    from structura.core.animation.timeline import Timeline  # noqa: PLC0415
+    from structura.core.scene.camera import Camera  # noqa: PLC0415
+
+    base = Camera((0.0, 0.0, 10.0), (0.0, 0.0, 0.0))
+    assert turntable_eyes(base, Turntable(frames=0)) == []
+    assert turntable(Timeline(), base, Turntable(frames=0)).track("camera:eye.x") is None
+    views = [base, Camera((10.0, 0.0, 0.0), (0.0, 0.0, 0.0))]
+    path = path_through(Timeline(), views, 0)  # at least one frame between views
+    assert (path.start, path.end) == (0, 1)
+
+
+def test_animate_refuses_a_non_positive_turntable_zoom(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    script = tmp_path / "s.es"
+    script.write_text("box\n")
+    with pytest.raises(SystemExit) as stopped:
+        main(["animate", str(script), "-o", str(tmp_path / "f.png"), "--turntable", "--zoom", "0"])
+    assert stopped.value.code == 2 and "must be above 0" in capsys.readouterr().err

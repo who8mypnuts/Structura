@@ -14,8 +14,9 @@ from ... import __version__
 from ..animation.timeline import Timeline
 from ..animation.timeline import from_dict as timeline_from
 from ..animation.timeline import to_dict as timeline_dict
-from ..scene.camera import Camera
+from ..scene.camera import LEGACY_FOV, Camera
 from ..scene.lens import Lens
+from ..scene.vectors import vec3_of
 from ..text_file import read_script
 from .migrations import CURRENT_VERSION, migrate
 
@@ -41,17 +42,30 @@ class Project:
 
 
 def camera_to_dict(camera: Camera | None) -> dict[str, Any] | None:
+    """Returns the JSON form of a camera, or None without one.
+
+    Args:
+        camera: The camera; its 'kind' entry names the lens projection.
+    """
     return None if camera is None else {"kind": camera.lens.projection, **asdict(camera)}
 
 
-def _vec3(value: Any, default: tuple[float, float, float]) -> tuple[float, float, float]:
-    if isinstance(value, list | tuple) and len(value) == 3:
-        return (float(value[0]), float(value[1]), float(value[2]))
-    return default
+def _float(value: Any, default: float) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
 
 
 def lens_from_dict(data: Any) -> Lens:
-    """A Lens from its JSON form; unknown keys are ignored and bad values fall back to the defaults."""
+    """Reads a lens from its JSON form.
+
+    Args:
+        data: The 'lens' object of a camera; anything else gives the default lens.
+
+    Returns:
+        The lens; unknown keys are ignored and values that do not convert keep their defaults.
+    """
     if not isinstance(data, dict):
         return Lens()
     values: dict[str, Any] = {}
@@ -72,7 +86,18 @@ def lens_from_dict(data: Any) -> Lens:
 
 
 def camera_from_dict(data: Any) -> Camera | None:
-    """A Camera from its JSON form (the lens nested; format 1 kept aperture_radius/focus_distance on the camera)."""
+    """Reads a camera from its JSON form.
+
+    Format 1 projects (and renders made before the lens existed) kept 'aperture_radius' and 'focus_distance' on
+    the camera itself; they move into the lens.
+
+    Args:
+        data: The 'camera' object.
+
+    Returns:
+        The camera, or None when ``data`` has no eye and target. Malformed vectors and numbers fall back to the
+        defaults.
+    """
     if not isinstance(data, dict) or "eye" not in data or "target" not in data:
         return None
     lens = dict(data.get("lens") or {})
@@ -82,13 +107,22 @@ def camera_from_dict(data: Any) -> Camera | None:
     if lens.get("focus_distance") is not None and "focus_mode" not in lens:
         lens["focus_mode"] = "manual"
     return Camera(
-        eye=_vec3(data["eye"], (0.0, 0.0, 10.0)), target=_vec3(data["target"], (0.0, 0.0, 0.0)),
-        up=_vec3(data.get("up"), (0.0, 1.0, 0.0)), fov_y_deg=float(data.get("fov_y_deg", 22.0)),
+        eye=vec3_of(data["eye"], (0.0, 0.0, 10.0)), target=vec3_of(data["target"], (0.0, 0.0, 0.0)),
+        up=vec3_of(data.get("up"), (0.0, 1.0, 0.0)), fov_y_deg=_float(data.get("fov_y_deg"), LEGACY_FOV),
         lens=lens_from_dict(lens),
     )  # fmt: skip
 
 
 def to_json(project: Project, dialect: int = 1) -> str:
+    """Serialises a project.
+
+    Args:
+        project: The project (an embedded or a linked script, and its state).
+        dialect: The EisenScript dialect of its script (1 or 2), recorded for readers.
+
+    Returns:
+        The JSON text of the current format version.
+    """
     script: dict[str, Any] = {"mode": "linked", "path": project.linked} if project.linked else {"mode": "embedded"}
     if not project.linked:
         script["text"] = project.text

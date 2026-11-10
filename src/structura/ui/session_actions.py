@@ -10,6 +10,7 @@
 
 from __future__ import annotations
 
+import logging
 from dataclasses import replace
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -32,6 +33,7 @@ from .i18n import tr
 if TYPE_CHECKING:
     from .app_window import MainWindow
 
+log = logging.getLogger(__name__)
 SPECS = (
     ParamSpec("general/restore_session", ParamType.BOOL, True, "Reopen the previous session's tabs"),
     ParamSpec("general/hot_exit", ParamType.BOOL, True, "Keep unsaved edits between sessions (no prompt on quit)"),
@@ -41,7 +43,16 @@ EDIT_DELAY_MS = 5000  # a recovery snapshot this long after the last edit
 
 
 class SessionActions(QObject):
+    """Sessions and recovery: the session restored at start-up, recovery snapshots after edits, the crash check,
+    File ▸ Recover, and the window layout.
+    """
+
     def __init__(self, window: MainWindow) -> None:
+        """Connects edits to the (debounced) recovery snapshots.
+
+        Args:
+            window: The main window.
+        """
         super().__init__(window)
         self.w = window
         base = window.settings.directory()
@@ -63,6 +74,7 @@ class SessionActions(QObject):
 
     # -- snapshots -----------------------------------------------------------------------------------------
     def snapshot(self) -> SessionState:
+        """Returns the open tabs as a session state (the current tab with the viewport's camera)."""
         current = self.w.tabs.current()
         states = (
             _tab_state(t, self.w.viewport.camera() if t is current else t.initial_camera) for t in self.w.tabs.tabs()
@@ -70,12 +82,21 @@ class SessionActions(QObject):
         return SessionState(tuple(states), max(0, self.w.tabs.currentIndex()))
 
     def restore(self, state: SessionState) -> int:
+        """Reopens the tabs of a session state.
+
+        Args:
+            state: The snapshot.
+
+        Returns:
+            How many tabs were restored (missing files are skipped).
+        """
         restored = [tab for t in state.tabs if (tab := self._restore_tab(t)) is not None]
         if restored:
             self.w.tabs.setCurrentIndex(min(state.current, self.w.tabs.count() - 1))
         return len(restored)
 
     def _restore_tab(self, state: TabState) -> EditorTab | None:
+        """Reopens one tab: its project, its file, or its unsaved text, with its cursor, folds and extras."""
         path = Path(state.path) if state.path else None
         if state.project and state.text is None and Path(state.project).exists():
             return self.w.projects.open(Path(state.project))
@@ -108,6 +129,12 @@ class SessionActions(QObject):
 
     # -- start-up and quit -----------------------------------------------------------------------------------
     def startup(self, files: list[Path]) -> None:
+        """Restores what the previous run left: the recovery snapshot after a crash (after asking), else the
+        session; then opens the given files.
+
+        Args:
+            files: Files from the command line.
+        """
         crashed = self.guard.start()
         self.recovery = SessionStore(self.guard.recovery)  # another instance keeps its own file
         pending = self.recovery.load() if crashed else None
@@ -122,20 +149,25 @@ class SessionActions(QObject):
             self.w.docs.new_script()
         self.timer.start(int(str(self._setting("general/autosave_seconds"))) * 1000)
 
+    @property
+    def _declined(self) -> SessionStore:
+        """Where a declined recovery snapshot is kept (beside the recovery file)."""
+        return SessionStore(self.recovery.path.with_name("recovery-declined.json"))
+
     def _offer_recovery(self, pending: SessionState) -> bool:
+        """Asks whether to restore a crashed run's scripts; a declined snapshot is kept (File ▸ Recover)."""
         count, unsaved = len(pending.tabs), pending.unsaved_count
         question = (f"Structura did not shut down cleanly. Restore the {count} script{'s' if count != 1 else ''} "
                     f"that {'were' if count != 1 else 'was'} open ({unsaved} with unsaved changes)?")  # fmt: skip
         answer = QMessageBox.question(self.w, "Recover unsaved scripts", question)
         if answer != QMessageBox.StandardButton.Yes:
-            SessionStore(self.recovery.path.with_name("recovery-declined.json")).save(pending)  # never lost
+            self._declined.save(pending)  # never lost
             return False
         return True
 
     def restore_declined(self) -> None:
         """File ▸ Recover ▸ Restore Declined Recovery: the snapshot kept when recovery was declined."""
-        declined = SessionStore(self.recovery.path.with_name("recovery-declined.json"))
-        state = declined.load()
+        state = self._declined.load()
         if state is None or state.empty:
             self.w.show_message(tr("There is no declined recovery snapshot."))
             return
@@ -149,7 +181,13 @@ class SessionActions(QObject):
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(folder)))
 
     def shutdown(self) -> bool:
-        """Called when the window closes; False cancels the close."""
+        """Saves the session and the layout when the window closes.
+
+        Without hot exit, each modified tab asks to be saved first.
+
+        Returns:
+            False when the user cancelled the close.
+        """
         state = self.snapshot()
         if not self._setting("general/hot_exit"):
             saved_only = tuple(replace(t, text=None) for t in state.tabs if t.path is not None)
@@ -179,17 +217,22 @@ class SessionActions(QObject):
 
 
 def _apply_extras(tab: EditorTab, state: TabState) -> None:
-    """The parameters, render overrides, camera, saved views and timeline a snapshot kept for the tab."""
-    tab.params = {str(k): float(v) for k, v in state.params.items()}
-    tab.render_overrides = dict(state.render_overrides)
-    tab.initial_camera = camera_from_dict(state.camera) or tab.initial_camera
-    views = {name: camera_from_dict(data) for name, data in state.bookmarks.items()}
-    tab.bookmarks = {name: camera for name, camera in views.items() if camera is not None}
-    if state.timeline:
-        tab.timeline = timeline_from(state.timeline)
+    """The parameters, render overrides, camera, saved views and timeline a snapshot kept for the tab; a
+    malformed part is left out (the script itself is what recovery must not lose)."""
+    try:
+        tab.params = {str(k): float(v) for k, v in dict(state.params).items()}
+        tab.render_overrides = dict(state.render_overrides)
+        tab.initial_camera = camera_from_dict(state.camera) or tab.initial_camera
+        views = {str(name): camera_from_dict(data) for name, data in dict(state.bookmarks).items()}
+        tab.bookmarks = {name: camera for name, camera in views.items() if camera is not None}
+        if state.timeline:
+            tab.timeline = timeline_from(state.timeline)
+    except (TypeError, ValueError, KeyError, AttributeError) as exc:
+        log.warning("recovery: the extras of %s were not restored (%s)", state.path or "an untitled tab", exc)
 
 
 def _tab_state(tab: EditorTab, camera: Camera | None) -> TabState:
+    """The snapshot of one tab (its text only when unsaved)."""
     unsaved = tab.modified or tab.path is None
     return TabState(
         path=str(tab.path) if tab.path else None,

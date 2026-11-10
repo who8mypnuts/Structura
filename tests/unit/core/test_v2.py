@@ -74,6 +74,7 @@ def test_rand_in_expressions_draws_like_random_brackets() -> None:
     from structura.core.lang.api import compile_script  # noqa: PLC0415
 
     def x_of(text: str) -> float:
+        """The x translation of the first object a script builds."""
         return float(build_scene(compile_script(text, seed=3).program, 3).scene.xform[0, 0, 3])
 
     drawn = x_of("#version 2\n{ x (rand(2, 4) * 10) } box\n")

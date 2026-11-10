@@ -12,7 +12,7 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
 
-from ...compute.base import Backend, BackendUnavailableError
+from ...compute.base import Backend, BackendUnavailableError, device_details, device_label
 from ...compute.select import NAMES, select_backend
 from ...core.build.api import BuildResult, build_scene
 from ...core.build.driver import BuildStats
@@ -44,6 +44,11 @@ def _size(text: str) -> tuple[int, int]:
 
 
 def register(p: argparse.ArgumentParser) -> None:
+    """Adds the options of `structura render`.
+
+    Args:
+        p: The command's parser.
+    """
     add_script_arguments(p)
     p.add_argument("-o", "--output", type=Path, required=True, help="image to write (.png .jpg .webp .tif .exr)")
     p.add_argument("--size", type=_size, help="WIDTHxHEIGHT (default: script 'raytracer::size' or 640x480)")
@@ -75,6 +80,7 @@ def register(p: argparse.ArgumentParser) -> None:
 
 
 def _overrides(args: argparse.Namespace) -> dict[str, Any]:
+    """RenderSettings changes from the command line (size, samples, integrator, sampler …)."""
     out: dict[str, Any] = {"frame": args.frame, "seed": args.seed}
     for key in ("view", "exposure", "denoise"):
         if getattr(args, key) is not None:
@@ -92,11 +98,24 @@ def _overrides(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def denoiser(settings: RenderSettings) -> str | None:
-    """The denoising method the command line or the script asks for (None: none)."""
+    """Returns the denoising method the command line or the script asks for.
+
+    Args:
+        settings: The resolved render settings (their ``denoise``).
+
+    Returns:
+        The method, or None for no denoising.
+    """
     return settings.denoise if settings.denoise not in ("", "off") else None
 
 
 def settings_for(scene: Any, args: argparse.Namespace) -> RenderSettings:
+    """Returns the render settings of a command line: the script's, with the options over them.
+
+    Args:
+        scene: The built scene.
+        args: The parsed command line.
+    """
     settings = replace(script_settings(scene), **_overrides(args), asset_dir=str(args.script.resolve().parent))
     settings = replace(settings, **post_override(args, settings.post))
     aovs = settings.aovs or args.aovs or denoiser(settings) is not None  # the denoiser is guided by the AOVs
@@ -104,6 +123,7 @@ def settings_for(scene: Any, args: argparse.Namespace) -> RenderSettings:
 
 
 def _usage_error(args: argparse.Namespace) -> str | None:
+    """What is wrong with the options before anything is built (formats, lens, OIDN), or None."""
     if args.output.suffix.lower() not in FORMATS:
         return f"unsupported output format '{args.output.suffix}' (use one of {sorted(FORMATS)})"
     for report in args.report:
@@ -123,6 +143,8 @@ def _usage_error(args: argparse.Namespace) -> str | None:
 
 @dataclass
 class _Rendered:
+    """A finished command-line render and what its report needs."""
+
     scene: SceneIR
     build: BuildStats
     settings: RenderSettings
@@ -133,22 +155,24 @@ class _Rendered:
 
 
 def _render(build: BuildResult, args: argparse.Namespace, backend: Backend) -> _Rendered:
+    """Renders with progress on standard error; the camera gets the lens options."""
     settings = settings_for(build.scene, args)
     started = time.perf_counter()
     prepared, frame = prepare_with_frame(build.scene, settings, args.tag_presets)
     frame = replace(frame, camera=apply_lens_arguments(frame.camera, args))
-    details = render_details(prepared, frame, time.perf_counter() - started, backend.details())
-    print(f"rendering {len(build.scene)} objects on {backend.name} {backend.device_name}", file=sys.stderr)
+    details = render_details(prepared, frame, time.perf_counter() - started, device_details(backend))
+    device = device_label(backend)
+    print(f"rendering {len(build.scene)} objects on {device}", file=sys.stderr)
     result, passes = None, 0
     for passes, result in enumerate(progressive(prepared, settings, backend, frame), 1):  # noqa: B007
         print(f"\r  {result.samples}/{settings.samples} spp  {result.seconds:.1f}s", end="", file=sys.stderr)
     print(file=sys.stderr)
     assert result is not None
-    device = f"{backend.name} {backend.device_name}".strip()
     return _Rendered(build.scene, build.stats, settings, result, details, device, passes)
 
 
 def _write_reports(r: _Rendered, args: argparse.Namespace, text: str, image: Any, method: str) -> None:
+    """Writes every --report file."""
     inputs = ReportInputs(
         scene=r.scene, progress=r.result, details=r.details, device=r.device, passes=r.passes, image=image,
         denoiser=method, script=text, script_path=args.script.resolve(), seed=args.seed,
@@ -161,6 +185,14 @@ def _write_reports(r: _Rendered, args: argparse.Namespace, text: str, image: Any
 
 
 def run(args: argparse.Namespace) -> int:
+    """Renders a script to an image (and reports) for `structura render`.
+
+    Args:
+        args: The parsed command line.
+
+    Returns:
+        The exit code: EXIT_OK, EXIT_USAGE, EXIT_SCRIPT_ERROR or EXIT_DEVICE.
+    """
     if problem := _usage_error(args):
         print(problem, file=sys.stderr)
         return EXIT_USAGE

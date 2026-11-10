@@ -54,6 +54,7 @@ def test_see_through_instances_in_every_integrator() -> None:
 
 def test_special_material_models() -> None:
     def centre(model: str, integrator: str = "path") -> np.ndarray:
+        """The mean colour of the image's centre for one material model."""
         text = f"#version 2\nmaterial m {{ model {model} }}\n{{ s 2 color #fff }} box::m\n"
         return _render(text, 4, integrator=integrator)[18, 24]
 
@@ -62,3 +63,11 @@ def test_special_material_models() -> None:
     assert np.allclose(centre("wireframe"), 0.12, atol=0.02)  # the middle of a face: the dark fill
     assert centre("debug_gray").min() > 0.85  # facing the camera: bright grey
     assert 0.0 < centre("ao").mean() <= 1.0
+
+
+def test_the_kernels_material_models_match_the_enum() -> None:
+    from structura.core.scene.material import MaterialModel  # noqa: PLC0415
+    from structura.render.kernels import layout  # noqa: PLC0415
+
+    names = {m: f"MODEL_{'CATCHER' if m.name == 'SHADOW_CATCHER' else m.name}" for m in MaterialModel}
+    assert {m: getattr(layout, name) for m, name in names.items()} == {m: int(m) for m in MaterialModel}

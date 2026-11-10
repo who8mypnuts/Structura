@@ -34,6 +34,7 @@ def _capture_directory(monkeypatch: pytest.MonkeyPatch) -> dict[str, str]:
     seen: dict[str, str] = {}
 
     def fake(_parent: Any, _title: str, directory: str, *_rest: Any) -> tuple[str, str]:
+        """Records the directory a file dialog would open in, and cancels."""
         seen["directory"] = directory
         return "", ""
 

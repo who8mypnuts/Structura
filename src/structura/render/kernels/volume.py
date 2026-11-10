@@ -18,7 +18,16 @@ NO_ABSORPTION = 1.0e29  # attenuation distances at least this large mean "clear"
 
 @func
 def absorption(mat_f: Buf[f32], mat: u32, t: f32) -> vec3:
-    """Transmittance over ``t`` world units inside the material record at ``mat``."""
+    """Returns the transmittance over a distance inside a material (Beer–Lambert).
+
+    Args:
+        mat_f: The material records.
+        mat: Offset of the material's record.
+        t: The distance travelled inside, in world units.
+
+    Returns:
+        Per-channel transmittance; 1 for clear, thin-walled or opaque materials.
+    """
     dist = mat_f[mat + M_ATTENUATION_DIST]
     if dist >= NO_ABSORPTION or mat_f[mat + M_TRANSMISSION] <= 0.0 or mat_f[mat + M_THIN] != 0.0:
         return vec3(1.0)
@@ -31,7 +40,18 @@ def absorption(mat_f: Buf[f32], mat: u32, t: f32) -> vec3:
 
 @func
 def exit_absorption(mat_f: Buf[f32], prim_u: Buf[u32], prim: u32, front: u32, t: f32) -> vec3:
-    """The absorption of a path segment of length ``t`` that ends on ``prim`` (1 unless it hit it from inside)."""
+    """Returns the absorption of a path segment that ends on a primitive.
+
+    Args:
+        mat_f: The material records.
+        prim_u: The primitives' int records (their material).
+        prim: The primitive the segment ends on.
+        front: 1 when the segment hit the primitive from outside (no absorption), 0 from inside.
+        t: The segment's length.
+
+    Returns:
+        Per-channel transmittance of the segment.
+    """
     if front != u32(0):
         return vec3(1.0)
     return absorption(mat_f, prim_u[prim * PRIM_U + 1] * MAT_F, t)

@@ -78,7 +78,16 @@ def _mask_texture(ctx: moderngl.Context, mask: np.ndarray, width: int) -> Any:
 
 
 class PreviewRenderer:
+    """The GLSL preview engine: deferred shading with SSAO, shadows, order-independent transparency, picking
+    and accumulation anti-aliasing, drawn into any framebuffer of one ModernGL context.
+    """
+
     def __init__(self, ctx: moderngl.Context) -> None:
+        """Compiles the programs and creates the render targets' helpers.
+
+        Args:
+            ctx: The ModernGL context (current while the renderer is used).
+        """
         self.ctx = ctx
         self.programs = Programs(ctx)
         self.gpu: GpuScene | None = None
@@ -100,6 +109,11 @@ class PreviewRenderer:
 
     # -- scene -----------------------------------------------------------------------------------------
     def set_scene(self, scene: PreviewScene | None) -> None:
+        """Uploads a scene (replacing and releasing the previous one); the next frame starts accumulating again.
+
+        Args:
+            scene: The preview scene, or None for an empty view.
+        """
         if self.gpu is not None:
             self.gpu.release()
         self._shadow_key = None
@@ -125,7 +139,18 @@ class PreviewRenderer:
     def render(
         self, camera: Camera, target: Any, size: tuple[int, int], options: PreviewOptions, accumulate: bool = True
     ) -> int:
-        """Draw one frame into ``target``; returns the number of accumulated AA samples now shown."""
+        """Draws one frame into a target.
+
+        Args:
+            camera: The camera to view through.
+            target: The framebuffer to draw into.
+            size: (width, height) in pixels.
+            options: Look, effects, background, selection and the grid.
+            accumulate: Whether frames of an unchanged view accumulate anti-aliasing samples.
+
+        Returns:
+            The number of accumulated samples now shown (ACCUMULATE once converged).
+        """
         w, h = max(1, size[0]), max(1, size[1])
         if self.targets is None or self.targets.size != (w, h):
             if self.targets is not None:

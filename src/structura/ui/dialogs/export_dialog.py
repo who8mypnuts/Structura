@@ -48,6 +48,8 @@ def scene_summary(scene: SceneIR) -> str:
 
 
 class ExportDialog(QDialog):
+    """The export sheet: where the file goes, what it contains, the format's options, presets and size."""
+
     estimate_wanted = Signal(object)  # the options (debounced): the owner estimates the file size
     preview_wanted = Signal(object)  # the same, for templates: the owner renders the output preview
 
@@ -55,6 +57,17 @@ class ExportDialog(QDialog):
         self, exporter: Exporter, path: Path, scene: SceneIR, values: dict[str, object], change: ChangePath,
         parent: QWidget | None = None, theme: Theme | None = None,
     ) -> None:  # fmt: skip
+        """Builds the sheet for one exporter.
+
+        Args:
+            exporter: The format.
+            path: The file to write (Change… picks another).
+            scene: The scene (its contents are summarised).
+            values: The options to show (a preset's or the last used).
+            change: Asks for another path.
+            parent: The parent widget.
+            theme: The editor theme of the template tabs.
+        """
         super().__init__(parent)
         self.exporter, self.path, self._change = exporter, path, change
         self.setWindowTitle(tr("Export — {format}").format(format=exporter.title))

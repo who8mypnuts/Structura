@@ -26,9 +26,17 @@ TIMEOUT = 60
 
 @dataclass(frozen=True)
 class Source:
-    name: str  # the file written into FONTS
-    release: tuple[str, str]  # (zip URL, member path) of the upstream release
-    npm: tuple[str, str]  # (tarball URL, WOFF2 member path) of the npm build
+    """Where one bundled font comes from.
+
+    Attributes:
+        name: The file written into FONTS.
+        release: (zip URL, member path) of the upstream release.
+        npm: (tarball URL, WOFF2 member path) of the official npm build.
+    """
+
+    name: str
+    release: tuple[str, str]
+    npm: tuple[str, str]
 
 
 INTER_ZIP = "https://github.com/rsms/inter/releases/download/v4.1/Inter-4.1.zip"
@@ -47,6 +55,7 @@ SOURCES = (
 
 
 def _download(url: str, cache: dict[str, bytes]) -> bytes:
+    """Downloads a URL once (later calls read the cache)."""
     if url not in cache:
         with urllib.request.urlopen(url, timeout=TIMEOUT) as response:
             cache[url] = response.read()
@@ -54,6 +63,16 @@ def _download(url: str, cache: dict[str, bytes]) -> bytes:
 
 
 def from_release(source: Source, cache: dict[str, bytes]) -> bytes:
+    """Returns a font from the upstream release archive.
+
+    Args:
+        source: The font.
+        cache: Downloads by URL (an archive holds several fonts).
+
+    Raises:
+        OSError: The download failed.
+        StopIteration: The archive has no such member.
+    """
     url, member = source.release
     with zipfile.ZipFile(io.BytesIO(_download(url, cache))) as archive:
         path = next(n for n in archive.namelist() if n.endswith(member))
@@ -61,6 +80,16 @@ def from_release(source: Source, cache: dict[str, bytes]) -> bytes:
 
 
 def from_npm(source: Source, cache: dict[str, bytes]) -> bytes:
+    """Returns a font from the npm build, converted from WOFF2 to TrueType (glyph data unchanged).
+
+    Args:
+        source: The font.
+        cache: Downloads by URL.
+
+    Raises:
+        OSError: The download failed.
+        KeyError: The tarball has no such member.
+    """
     from fontTools.ttLib import TTFont  # noqa: PLC0415 - a tool dependency, only for this route
 
     url, member = source.npm
@@ -81,6 +110,17 @@ def _version(data: bytes) -> str:
 
 
 def fetch(npm_only: bool) -> list[tuple[str, str, str, str]]:
+    """Writes every bundled font, trying the routes in order.
+
+    Args:
+        npm_only: Skip the upstream releases.
+
+    Returns:
+        (file, version, origin URL, SHA-256) of every font written.
+
+    Raises:
+        SystemExit: A font could not be fetched by any route.
+    """
     cache: dict[str, bytes] = {}
     routes: list[tuple[str, Callable[[Source, dict[str, bytes]], bytes]]] = [("npm", from_npm)]
     if not npm_only:
@@ -90,7 +130,7 @@ def fetch(npm_only: bool) -> list[tuple[str, str, str, str]]:
         for route, getter in routes:
             try:
                 data = getter(source, cache)
-            except OSError as exc:
+            except (OSError, KeyError, StopIteration, zipfile.BadZipFile, tarfile.TarError) as exc:
                 print(f"{source.name}: {route} unavailable ({exc})", file=sys.stderr)
                 continue
             (FONTS / source.name).write_bytes(data)
@@ -103,6 +143,11 @@ def fetch(npm_only: bool) -> list[tuple[str, str, str, str]]:
 
 
 def write_sources(rows: list[tuple[str, str, str, str]]) -> None:
+    """Writes resources/fonts/SOURCES.md: every file with its version, origin and SHA-256.
+
+    Args:
+        rows: What ``fetch`` returned.
+    """
     lines = ["# Bundled fonts", "", "Written by `tools/fetch_fonts.py`. Both families are under the SIL Open Font",
              "License 1.1 (`OFL-Inter.txt`, `OFL-JetBrainsMono.txt`).", "",
              "| File | Version | Source | SHA-256 |", "|------|---------|--------|---------|"]  # fmt: skip
@@ -111,6 +156,11 @@ def write_sources(rows: list[tuple[str, str, str, str]]) -> None:
 
 
 def main() -> int:
+    """Fetches the fonts and writes SOURCES.md.
+
+    Returns:
+        The exit code (0).
+    """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--npm", action="store_true", help="use the npm builds only")
     rows = fetch(parser.parse_args().npm)

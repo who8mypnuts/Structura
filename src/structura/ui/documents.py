@@ -183,12 +183,20 @@ class EditorTab(QWidget):
 
 
 class DocumentTabs(QTabWidget):
+    """The editor tabs: opening, watching files on disk, titles, and closing with Save / Don't Save / Cancel."""
+
     current_tab_changed = Signal(object)  # EditorTab | None
     tab_edited = Signal(object)  # EditorTab
     tab_added = Signal(object)  # EditorTab
     external_change = Signal(object)  # EditorTab whose file changed on disk while it had unsaved edits
 
     def __init__(self, theme: Theme, parent: QWidget | None = None) -> None:
+        """Creates the tab widget (closable, movable) with its file watcher.
+
+        Args:
+            theme: The editor theme of new tabs.
+            parent: The parent widget.
+        """
         super().__init__(parent)
         self.theme = theme
         self.save_tab: Callable[[EditorTab], bool] | None = None  # the window's Save (True: saved)
@@ -213,7 +221,14 @@ class DocumentTabs(QTabWidget):
         return super().eventFilter(watched, event)
 
     def close_tabs(self, indices: list[int]) -> bool:
-        """Close several tabs, highest index first; stop at the first one the user keeps (Cancel)."""
+        """Closes several tabs, highest index first, stopping at the first one the user keeps.
+
+        Args:
+            indices: The tabs' indices.
+
+        Returns:
+            True when every one was closed.
+        """
         return all(self.close_tab(i) for i in sorted(indices, reverse=True))
 
     def tabs(self) -> list[EditorTab]:
@@ -276,7 +291,14 @@ class DocumentTabs(QTabWidget):
             self.setTabToolTip(i, str(tab.project_path or tab.path or "Unsaved script"))
 
     def close_tab(self, index: int) -> bool:
-        """Close the tab at ``index``; a modified one asks Save / Don't Save / Cancel. False: it stays open."""
+        """Closes a tab; a modified one asks Save / Don't Save / Cancel first.
+
+        Args:
+            index: The tab's index.
+
+        Returns:
+            True when it was closed, False when it stays open (cancelled, or its Save As was cancelled).
+        """
         tab = self.widget(index)
         if isinstance(tab, EditorTab) and tab.modified:
             buttons = QMessageBox.StandardButton

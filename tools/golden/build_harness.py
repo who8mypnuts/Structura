@@ -65,6 +65,11 @@ QT_MODULES = ("QtCore", "QtGui", "QtWidgets", "QtXml")
 
 
 def copy_sources(legacy: Path) -> None:
+    """Copies the Structure Synth sources the harness needs, with the stubbed GL engine and the dump program.
+
+    Args:
+        legacy: The Structure Synth source tree.
+    """
     if SRC.exists():
         shutil.rmtree(SRC)
     for tree in ("StructureSynth", "SyntopiaCore", "ThirdPartyCode"):
@@ -99,6 +104,11 @@ def link(objects: list[Path]) -> None:
 
 
 def main() -> int:
+    """Builds the golden harness from a Structure Synth source tree (its label goes into the manifest).
+
+    Returns:
+        The exit code (1 when the Qt 5 headers are missing).
+    """
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, default=LEGACY, help="a Structure Synth source tree")
     parser.add_argument("--label", default="r312", help="its version, recorded in the golden manifest")

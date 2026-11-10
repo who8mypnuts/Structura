@@ -22,8 +22,7 @@ from ...core.animation.timeline import Timeline
 from ...core.errors import StructuraError
 from ...core.lang.diagnostics import ParseError
 from ...core.project.model import SUFFIX
-from ...render.animation import Animation, frame_path, render_frame, with_turntable
-from ...render.output import save_image
+from ...render.animation import Animation, render_frame, save_frame, with_turntable
 from ...render.post import PostSettings
 from ...render.settings import AUTO_PASSES
 from ...render.video import encode_video
@@ -38,7 +37,20 @@ def _range(text: str) -> range:
     return range(int(start), int(stop))
 
 
+def _positive(text: str) -> float:
+    """An argparse type: a number above zero."""
+    value = float(text)
+    if value <= 0.0:
+        raise argparse.ArgumentTypeError(f"must be above 0, not {text}")
+    return value
+
+
 def register(p: argparse.ArgumentParser) -> None:
+    """Adds the options of `structura animate`.
+
+    Args:
+        p: The command's parser.
+    """
     add_script_arguments(p)
     p.add_argument("-o", "--output", type=Path, required=True, help="frame name pattern, e.g. frames/out.png")
     p.add_argument("--frames", type=_range, help="START:STOP (default: the project's timeline, else 0:24)")
@@ -52,11 +64,12 @@ def register(p: argparse.ArgumentParser) -> None:
                    help="orbit the camera in a seamless loop of SECONDS (default 5); replaces camera keys")  # fmt: skip
     p.add_argument("--turns", type=float, default=1.0, help="--turntable: full turns in the loop (default 1)")
     p.add_argument("--ease", action="store_true", help="--turntable: start and stop gently (not a loop)")
-    p.add_argument("--zoom", type=float, default=1.0, help="--turntable: the distance at the end, e.g. 0.7")
+    p.add_argument("--zoom", type=_positive, default=1.0, help="--turntable: the distance at the end, e.g. 0.7")
     add_post_arguments(p)
 
 
 def _overrides(args: argparse.Namespace) -> dict[str, Any]:
+    """RenderSettings changes from the command line: samples, integrator, size and the look."""
     out: dict[str, Any] = {"samples": args.samples, "samples_per_pass": AUTO_PASSES}
     out |= post_override(args, PostSettings())
     if args.integrator:
@@ -68,7 +81,15 @@ def _overrides(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def animation_for(args: argparse.Namespace) -> Animation:
-    """The animation of a script, or of a project (its timeline, seed, parameters and camera)."""
+    """Builds the animation the command line describes.
+
+    Args:
+        args: The parsed command line (a script or a project, frames, fps, turntable …).
+
+    Returns:
+        The animation: a project's timeline, seed, parameters and camera, or a script with a default timeline;
+        with --turntable, the orbit keyed over it.
+    """
     overrides, params = _overrides(args), parse_params(args.param)
     doc = open_document(args.script)
     project = args.script.suffix.lower() == SUFFIX
@@ -84,6 +105,14 @@ def animation_for(args: argparse.Namespace) -> Animation:
 
 
 def run(args: argparse.Namespace) -> int:
+    """Renders the frames (and the video) of `structura animate`.
+
+    Args:
+        args: The parsed command line.
+
+    Returns:
+        The exit code: EXIT_OK, EXIT_USAGE (no frames) or EXIT_SCRIPT_ERROR.
+    """
     anim = animation_for(args)
     frames = args.frames if args.frames is not None else anim.frames()
     if not frames:
@@ -98,9 +127,8 @@ def run(args: argparse.Namespace) -> int:
         except (ParseError, StructuraError) as exc:
             print(f"{args.script}: frame {frame}: {getattr(exc, 'message', exc)}", file=sys.stderr)
             return EXIT_SCRIPT_ERROR
-        path = frame_path(args.output, frame)
-        save_image(result.image, path, settings.display)
-        images.append(settings.display.apply(result.image))
+        path, shown = save_frame(result, settings, args.output, frame)
+        images.append(shown)
         print(f"\r  frame {frame} → {path.name}", end="", file=sys.stderr)
     print(file=sys.stderr)
     if args.video is not None:

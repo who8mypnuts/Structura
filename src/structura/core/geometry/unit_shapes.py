@@ -80,7 +80,13 @@ def unit_sphere(rings: int = 16, segments: int = 32) -> Mesh:
 
 @cache
 def unit_cylinder(segments: int = 32, top_scale: float = 1.0) -> Mesh:
-    """Capped cylinder (or cone when top_scale = 0) along x from (0,.5,.5) to (1,.5,.5), radius 0.5."""
+    """Returns a capped cylinder (or cone) along x from (0,.5,.5) to (1,.5,.5), radius 0.5.
+
+    Args:
+        segments: Sides around the axis.
+        top_scale: Radius at x = 1 relative to x = 0: 1 is a cylinder, 0 a cone (one triangle per side at the
+            apex, no degenerate ones).
+    """
     ang = np.linspace(0, 2 * np.pi, segments, endpoint=False)
     ring = np.stack([np.cos(ang), np.sin(ang)], -1) * 0.5
     slope = 0.5 * (1.0 - top_scale)  # radial drop over the unit length, for cone normals

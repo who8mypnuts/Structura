@@ -26,12 +26,20 @@ SECTIONS: tuple[tuple[str, tuple[str, ...]], ...] = (  # (submenu title or "", c
 
 
 class ViewportMenu(QObject):
+    """Pops up the viewport menu on a right-click in either viewport."""
+
     def __init__(self, window: MainWindow) -> None:
+        """Connects the viewport's right-click.
+
+        Args:
+            window: The main window.
+        """
         super().__init__(window)
         self.w = window
         window.viewport.menu_requested.connect(self.popup)
 
     def build(self) -> QMenu:
+        """Returns the menu, built from the registry's actions with their current check marks."""
         menu = QMenu(self.w.viewport)
         self.w.registry.refresh()  # check marks and enablement as of now
         for index, (title, ids) in enumerate(SECTIONS):
@@ -44,4 +52,9 @@ class ViewportMenu(QObject):
 
     @Slot(QPoint)
     def popup(self, pos: QPoint) -> None:
+        """Shows the menu at a viewport position.
+
+        Args:
+            pos: The right-click's position in the viewport.
+        """
         self.build().popup(self.w.viewport.mapToGlobal(pos))

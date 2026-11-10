@@ -33,7 +33,21 @@ def direct_lambert(sc: SceneBufs, p: vec3, n: vec3, pixel: u32, sample_index: u3
 def shade_first_hit(
     h: Hit, o: vec3, d: vec3, mode: u32, ao_samples: u32, pixel: u32, sample_index: u32, sc: SceneBufs
 ) -> vec3:
-    """'preview' (mode 0) and 'ao' (mode 1) shading of a primary hit."""
+    """Shades the first hit for the 'preview' (mode 0) and 'ao' (mode 1) integrators.
+
+    Args:
+        h: The hit.
+        o: The ray origin.
+        d: The ray direction.
+        mode: 0 preview, 1 ambient occlusion.
+        ao_samples: Occlusion rays per sample.
+        pixel: The pixel (random-number stream).
+        sample_index: The sample (random-number stream).
+        sc: The scene buffers.
+
+    Returns:
+        The radiance estimate.
+    """
     p = o + d * h.t
     s = surface_at(sc, h.prim)
     if is_special(sc.mat_f, s.mat):

@@ -17,7 +17,8 @@ from dataclasses import dataclass
 import numpy as np
 
 from .kernels import layout as lay
-from .pack import RK_BOX, RK_SPHERE, RK_TRIANGLE, PackedScene
+from .kernels.scene import RK_BOX, RK_SPHERE, RK_TRIANGLE
+from .pack import PackedScene
 
 EMIT_F, NO_EMITTER = lay.EMIT_F, lay.NO_EMITTER
 E_KIND, E_PRIM, E_RADIANCE, E_AREA, E_SELECT, E_GEO = (

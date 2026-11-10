@@ -45,7 +45,8 @@ from .file_drop import FileDropFilter
 from .header import BRAND, HeaderBar
 from .help_actions import HelpActions
 from .i18n import tr
-from .material_actions import LightActions, MaterialActions
+from .light_actions import LightActions
+from .material_actions import MaterialActions
 from .menus import add_dynamic_menu, build_menus
 from .panels.activity import ActivityPanel
 from .panels.build_stats import BuildStatsPanel
@@ -91,7 +92,15 @@ from .workspaces import Workspaces
 
 
 class MainWindow(QMainWindow):
+    """The Structura window: editor tabs, viewport and Render view, the panels, menus and every action."""
+
     def __init__(self, settings: SettingsService | None = None, runner: JobRunner | None = None) -> None:
+        """Builds the window, its services, panels and actions, and applies the preferences.
+
+        Args:
+            settings: The preferences (default: the user's).
+            runner: The job runner (default: a new one with every lane).
+        """
         super().__init__()
         self.setWindowTitle("Structura")
         self.setWindowIcon(QIcon(str(BRAND / "png" / "icon-256.png")))
@@ -236,6 +245,7 @@ class MainWindow(QMainWindow):
         self.geometry_keeper.shown()
 
     def _connect(self) -> None:
+        """Wires the workbench's build results to the window (status, panels, viewport)."""
         wb = self.workbench
         wb.analysis_shown.connect(self.on_analysis)
         wb.build_started.connect(self.on_build_started)
@@ -344,6 +354,14 @@ class MainWindow(QMainWindow):
 
     @Slot(object, object, object, bool)
     def on_scene_ready(self, tab: EditorTab, ready: PreviewReady, camera: Camera | None, frame: bool) -> None:
+        """Shows a new build: statistics, the script's render settings and the viewport.
+
+        Args:
+            tab: The tab that was built (only the current tab updates the panels).
+            ready: The build and its preview.
+            camera: The script's camera to show, or None to keep the viewport's.
+            frame: Whether to frame the structure.
+        """
         outcome = ready.outcome
         self.status.set_busy(False)
         self.viewport.overlay.set_stale(False)
@@ -397,6 +415,21 @@ class MainWindow(QMainWindow):
     def show_message(self, text: str) -> None:
         self.status.showMessage(text, 6000)
         self.console.info(text)
+
+    def built_tab(self, then: str) -> EditorTab | None:
+        """Returns the current tab when its script is built; otherwise says to build it first.
+
+        Args:
+            then: What comes after building, for the message ('export', 'check the mesh').
+
+        Returns:
+            The tab, or None (the status bar then asks for a build).
+        """
+        tab = self.tabs.current()
+        if tab is None or tab.outcome is None:
+            self.show_message(tr("Build the script first (F5), then {then}.").format(then=then))
+            return None
+        return tab
 
     def notify_file(self, text: str, path: Path) -> None:
         """A finished file operation: a toast with "Show in Folder", and the console log."""

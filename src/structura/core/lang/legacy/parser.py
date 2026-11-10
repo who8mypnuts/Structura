@@ -210,8 +210,16 @@ class RecoveringParser(LegacyParser):
 
 
 def parse_recovering(text: str, v2: bool = False) -> tuple[Program, list[ParseError]]:
-    """Every syntax error (up to MAX_ERRORS) and the program made of what parsed. A symbol the tokenizer
-    rejects ('85mm' in a v1 script) is the one error: nothing can be parsed around it."""
+    """Parses as much as possible, collecting every syntax error (up to MAX_ERRORS).
+
+    Args:
+        text: The script after preprocessing.
+        v2: Whether it is an EisenScript v2 script.
+
+    Returns:
+        (the program made of what parsed, the errors). A symbol the tokenizer rejects ('85mm' in a v1 script)
+        is the one error: nothing can be parsed around it.
+    """
     try:
         tokens = tokenize(text)
     except ParseError as exc:

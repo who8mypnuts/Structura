@@ -57,9 +57,17 @@ class Matrices:
 
 
 def camera_matrices(camera: Camera, aspect: float, lo: np.ndarray, hi: np.ndarray) -> Matrices:
-    """View and projection with near/far planes fitted to the scene bounds [lo, hi]: perspective (spherical and
-    fisheye lenses are previewed as perspective) or orthographic, with the lens shift as an off-axis offset —
-    the same framing the precision engine renders (render/kernels/camera.py)."""
+    """Returns the view and projection matrices of a camera for the preview engine.
+
+    Perspective (spherical and fisheye lenses are previewed as perspective) or orthographic, with the lens shift
+    as an off-axis offset: the same framing the precision engine renders (render/kernels/camera.py).
+
+    Args:
+        camera: The camera to view through (its lens's shift and projection included).
+        aspect: Width / height of the viewport.
+        lo: The scene's bounding-box minimum (the near and far planes are fitted to it).
+        hi: The scene's bounding-box maximum.
+    """
     eye = np.asarray(camera.eye, np.float64)
     view = look_at(eye, np.asarray(camera.target, np.float64), np.asarray(camera.up, np.float64))
     centre, radius = (lo + hi) / 2.0, max(float(np.linalg.norm(hi - lo)) / 2.0, 1e-3)

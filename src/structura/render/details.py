@@ -7,6 +7,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from ..core.lang.v2.block_form import value_text
 from ..core.scene.camera import Camera
 from ..core.scene.material import Material
 from .bvh import Bvh
@@ -26,18 +27,35 @@ class BvhStats:
 
 @dataclass(frozen=True)
 class RenderDetails:
-    camera: Camera  # the camera the image was rendered with (script, viewport or framed)
+    """What a render used, for reports (everything resolved: no defaults left to guess).
+
+    Attributes:
+        camera: The camera the image was rendered with (script, viewport or framed).
+        settings: The render settings.
+        prepare_seconds: Time to pack the scene and build the BVH.
+        primitives: Packed primitives (instances).
+        triangles: Explicit triangles (mesh and triangle primitives).
+        bvh: BVH figures.
+        materials: The material table.
+        emitters: Emissive primitives sampled as lights.
+        lights: Declared light types (v2 'light' blocks).
+        scene_radius: Half the diagonal of the structure's bounding box.
+        device: What the backend says about its device (name → value: driver, memory …).
+        light_specs: (name, type, values as the script writes them) of every declared light.
+    """
+
+    camera: Camera
     settings: RenderSettings
     prepare_seconds: float
-    primitives: int  # packed primitives (instances)
-    triangles: int  # explicit triangles (mesh / triangle primitives)
+    primitives: int
+    triangles: int
     bvh: BvhStats
     materials: tuple[Material, ...]
-    emitters: int  # emissive primitives sampled as lights
-    lights: tuple[str, ...]  # declared light types (v2 'light' blocks)
+    emitters: int
+    lights: tuple[str, ...]
     scene_radius: float
-    device: tuple[tuple[str, str], ...] = ()  # what the backend says about its device (driver, memory …)
-    light_specs: tuple[tuple[str, str, str], ...] = ()  # (name, type, its values as the script wrote them)
+    device: tuple[tuple[str, str], ...] = ()
+    light_specs: tuple[tuple[str, str, str], ...] = ()
 
 
 def bvh_stats(bvh: Bvh) -> BvhStats:
@@ -56,17 +74,24 @@ def bvh_stats(bvh: Bvh) -> BvhStats:
 
 
 def _light_text(values: dict[str, object]) -> str:
-    def value(v: object) -> str:
-        return "[" + " ".join(f"{float(c):g}" for c in v) + "]" if isinstance(v, tuple) else str(v)
-
-    return "  ".join(f"{k} {value(v)}" for k, v in values.items())
+    """A light's values as its block writes them ('position [0 5 0]  power 200')."""
+    return "  ".join(f"{key} {value_text(value)}" for key, value in values.items())
 
 
 def render_details(
     prepared: object, frame: Frame, prepare_seconds: float, device: dict[str, str] | None = None
 ) -> RenderDetails:
-    """``prepared``: a render.api.Prepared (typed loosely to keep this module below render.api); ``device``: the
-    backend's details()."""
+    """Collects what a render used.
+
+    Args:
+        prepared: A render.api.Prepared (typed loosely so this module stays below render.api).
+        frame: The view and settings.
+        prepare_seconds: Time spent preparing.
+        device: The backend's ``details()``.
+
+    Returns:
+        The details.
+    """
     packed, bvh, table, emitters = (getattr(prepared, n) for n in ("packed", "bvh", "materials", "emitters"))
     declared = frame.declarations.lights if frame.declarations else ()
     lights = tuple(light.type for light in declared)

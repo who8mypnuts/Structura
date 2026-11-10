@@ -143,6 +143,16 @@ def _sphere(centre: np.ndarray, radius: np.float32, dt: int, dp: int) -> ObjGrou
 
 @dataclass
 class LegacyObjExport:
+    """Structure Synth 1.5's OBJ layout, reproduced byte for byte (golden-tested).
+
+    Attributes:
+        sphere_dt: Sphere segments in theta.
+        sphere_dp: Sphere segments in phi.
+        group_by_tag: Put each tag in its own group.
+        group_by_color: Put each colour in its own group.
+        groups: The groups by name, in first-use order.
+    """
+
     sphere_dt: int = 10
     sphere_dp: int = 10
     group_by_tag: bool = False
@@ -160,6 +170,12 @@ class LegacyObjExport:
         return self.groups.setdefault(name, ObjGroup(name))
 
     def add(self, scene: SceneIR, i: int) -> None:
+        """Adds one scene object; kinds 1.5's writer never saw (cylinders, v2 solids, markers) are skipped.
+
+        Args:
+            scene: The scene the object belongs to.
+            i: The object's row.
+        """
         kind = K(int(scene.kind[i]))
         if kind not in LEGACY_KINDS:
             return  # markers, and the cylinders / v2 solids 1.5's OBJ writer never saw (the modern OBJ has them)

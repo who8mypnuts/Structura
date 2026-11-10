@@ -92,9 +92,12 @@ class WgpuBound(Bound):
 
 
 class WgpuBackend(BackendBase):
+    """The wgpu backend: kernels emitted as WGSL, on Vulkan, Metal or Direct3D 12."""
+
     name = "wgpu"
 
     def __init__(self) -> None:
+        """Requests a high-performance adapter and its device (BackendUnavailableError without one)."""
         self.device, info = _device()
         self.info = dict(info)
         self.device_name = str(info.get("device", ""))

@@ -172,6 +172,17 @@ def _brace_depth(text: str) -> int:
 
 
 def complete(text: str, pos: int, analysis: Analysis | None = None) -> Completions:
+    """Completion at a position in a script.
+
+    Args:
+        text: The script.
+        pos: The cursor position.
+        analysis: The script's latest analysis (its rules and defines), if there is one.
+
+    Returns:
+        The candidates for the word before the cursor and where that word starts; v2-only primitives in a v1
+        script say they need '#version 2'.
+    """
     start_of_line = text.rfind("\n", 0, pos) + 1
     before = text[start_of_line:pos]
     prefix = WORD.search(before).group(0)  # type: ignore[union-attr]

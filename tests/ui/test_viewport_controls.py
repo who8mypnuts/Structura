@@ -55,3 +55,17 @@ def test_the_viewport_engine_preference_sets_the_environment(
     monkeypatch.setenv("STRUCTURA_PREVIEW", "cpu")
     apply_backend_preference(window.settings)
     assert os.environ["STRUCTURA_PREVIEW"] == "cpu"  # the environment wins
+
+
+def test_v2_blocks_ask_before_converting_and_need_a_build(window: MainWindow, monkeypatch: pytest.MonkeyPatch) -> None:
+    from PySide6.QtWidgets import QMessageBox  # noqa: PLC0415
+
+    tab = window.docs.new_script()
+    tab.editor.setPlainText("box\n")
+    window.exports.start("obj")  # nothing built yet: the status bar says so, nothing is asked
+    assert "Build the script first (F5), then export." in window.status.currentMessage()
+    monkeypatch.setattr(QMessageBox, "question", lambda *a, **k: QMessageBox.StandardButton.No)
+    assert not window.editor_actions.ensure_v2("Add Light", "Lights are")  # declined: the script stays v1
+    assert tab.text() == "box\n"
+    monkeypatch.setattr(QMessageBox, "question", lambda *a, **k: QMessageBox.StandardButton.Yes)
+    assert window.editor_actions.ensure_v2("Add Light", "Lights are") and tab.text().startswith("#version 2")

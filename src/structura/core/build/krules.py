@@ -168,6 +168,21 @@ def _aux_row(tables, r: int, work, outbuf, row: int) -> None:  # type: ignore[no
 
 @kernel
 def emit(tables, r: int, work, outbuf, ctl) -> int:  # type: ignore[no-untyped-def]
+    """Counts and writes the object that rule ``r`` makes.
+
+    Templates count nothing; a mesh without a previous frame is counted but not drawn, as in Structure Synth 1.5;
+    v1 cylinders are drawn (1.5 drew nothing for them).
+
+    Args:
+        tables: The compiled rule tables.
+        r: The primitive rule's index.
+        work: The current state (its frame, colour and flags).
+        outbuf: The output rows.
+        ctl: The build's control counters (objects, status).
+
+    Returns:
+        RUNNING: emitting never ends the build (limits are checked per generation).
+    """
     prim = tables.rule_prim[r]
     if prim != PRIM_TEMPLATE:
         ctl[ST_OBJECTS] += 1

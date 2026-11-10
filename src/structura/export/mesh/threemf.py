@@ -128,6 +128,8 @@ class _Instanced:
 
 
 class ThreeMfExporter(Exporter):
+    """3MF for colour 3D printing, with instanced components."""
+
     name = "3mf"
     title = "3MF (colour 3D printing)"
     extensions: tuple[str, ...] = (".3mf",)

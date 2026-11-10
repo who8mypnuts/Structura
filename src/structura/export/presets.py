@@ -30,6 +30,11 @@ def _file(exporter: str, name: str) -> Path:
 
 
 def preset_names(exporter: str) -> list[str]:
+    """Returns the preset names of an exporter: the built-in ones and the user's, sorted.
+
+    Args:
+        exporter: The exporter's name.
+    """
     folder = preset_dir(exporter)
     saved = {p.stem for p in folder.glob("*.toml")} if folder.is_dir() else set()
     return sorted(saved | set(BUILTIN.get(exporter, {})))
@@ -43,6 +48,15 @@ def save_preset(exporter: str, name: str, options: dict[str, Any]) -> Path:
 
 
 def load_preset(exporter: str, name: str) -> dict[str, Any]:
+    """Returns a preset's options.
+
+    Args:
+        exporter: The exporter's name.
+        name: The preset; a user preset wins over a built-in one of the same name.
+
+    Raises:
+        ValueError: The exporter has no such preset.
+    """
     path = _file(exporter, name)
     if not path.exists() and name in BUILTIN.get(exporter, {}):
         return dict(BUILTIN[exporter][name])

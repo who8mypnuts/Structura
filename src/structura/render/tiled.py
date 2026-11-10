@@ -65,8 +65,16 @@ def render_bucket(run: RenderRun, rect: Rect, pacing: Pacing, between: Callable[
 def tiled_passes(
     run: RenderRun, film: np.ndarray, between: Callable[[], None] | None = None
 ) -> Iterator[RenderProgress]:
-    """Yield snapshots while the buckets are rendered; ``film`` is the host copy (resumed renders start
-    from their saved film)."""
+    """Renders bucket by bucket, yielding snapshots as the buckets finish.
+
+    Args:
+        run: The bound render.
+        film: The host copy of the film (a resumed render starts from its saved film).
+        between: Runs between the row bands of each dispatch (cancellation checks).
+
+    Yields:
+        The progress after each bucket (or group of buckets), with the next bucket marked.
+    """
     s, (w, h) = run.settings, run.size
     order = buckets(w, h, s.bucket_size, s.bucket_order, s.seed)
     todo = [r for r in order if run.mask.reshape(h, w)[r[1] : r[3], r[0] : r[2]].any()]

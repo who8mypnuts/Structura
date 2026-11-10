@@ -50,6 +50,8 @@ class Compiled:
 
 @dataclass
 class TemplateExport:
+    """Fills a Structure Synth render template with a scene (the 1.5 output, byte for byte for v1 scenes)."""
+
     template: LegacyTemplate
     camera: TemplateCamera = field(default_factory=TemplateCamera)
     background: tuple[float, float, float] = (0.0, 0.0, 0.0)  # before the script's 'set background'
@@ -75,6 +77,7 @@ class TemplateExport:
         return self._compiled[name].render(begin_end_values(self.camera, background))
 
     def _primitive(self, scene: SceneIR, i: int) -> str:
+        """The template text of one object; v1 cylinders (1.5 drew none) and unsupported kinds give nothing."""
         kind = KIND_NAMES[K(int(scene.kind[i]))]
         if kind == "cylinder" and scene.declarations is None:
             return ""  # a v1 cylinder: Structure Synth 1.5 never handed it to a template (byte-identical output)

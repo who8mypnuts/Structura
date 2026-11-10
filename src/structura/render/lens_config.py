@@ -17,11 +17,21 @@ BIAS_RANGE = 1.5  # the sampling exponent is 0.5 · 2^(−bias · BIAS_RANGE): 0
 
 
 def bokeh_exponent(bias: float) -> float:
-    """The exponent e of the lens radius r = u^e: 0.5 is an evenly lit disc."""
+    """Returns the exponent e of the lens sample radius r = u^e (0.5 lights the disc evenly).
+
+    Args:
+        bias: The lens's bokeh bias, −1 (soft centre) … 1 (bright rims); clamped.
+    """
     return float(0.5 * 2.0 ** (-min(max(bias, -1.0), 1.0) * BIAS_RANGE))
 
 
 def put_lens(cfg: np.ndarray, camera: Camera) -> None:
+    """Writes the lens of a camera into the render configuration.
+
+    Args:
+        cfg: The configuration buffer (kernels/layout.py), changed in place.
+        camera: The camera (its aperture and focus are resolved here, once).
+    """
     lens = camera.lens
     cfg[lay.CAM_TYPE] = lay.CAMERA_TYPES.get(lens.projection, 0)
     cfg[lay.ORTHO_HALF], cfg[lay.FISHEYE_FOV] = lens.ortho_height / 2, math.radians(lens.fisheye_fov_deg)

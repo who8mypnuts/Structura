@@ -18,7 +18,18 @@ OPACITY_DIM = 200  # random dimensions OPACITY_DIM … OPACITY_DIM + PASS_LIMIT 
 
 @func
 def visible_hit(o: vec3, d: vec3, pixel: u32, sample_index: u32, sc: SceneBufs) -> Hit:
-    """The first surface the ray stops at; ``t`` is measured from ``o`` (a miss when it passes everything)."""
+    """Finds the first surface a ray stops at, passing instances with probability 1 − alpha.
+
+    Args:
+        o: The ray origin.
+        d: The ray direction.
+        pixel: The pixel (random-number stream).
+        sample_index: The sample (random-number stream).
+        sc: The scene buffers.
+
+    Returns:
+        The hit, ``t`` measured from ``o``; a miss when the ray passes everything (or PASS_LIMIT instances).
+    """
     ro = o
     travelled = 0.0
     exclude = u32(NO_HIT)

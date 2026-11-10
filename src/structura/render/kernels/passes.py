@@ -66,6 +66,20 @@ def pixel_sample(sc: SceneBufs, pixel: u32, s: u32) -> PixelSample:
 def sample_radiance(
     ray_o: vec3, ray_d: vec3, integrator: u32, max_bounces: u32, ao_samples: u32, pixel: u32, s: u32, sc: SceneBufs
 ) -> vec3:
+    """Returns one radiance sample of a camera ray with the chosen integrator.
+
+    Rays that miss see the background colour, or the sky when the script declares an environment.
+
+    Args:
+        ray_o: The ray origin.
+        ray_d: The ray direction.
+        integrator: INTEGRATOR_* of kernels/layout.py.
+        max_bounces: The path tracer's longest path.
+        ao_samples: Occlusion rays for the preview and ao integrators.
+        pixel: The pixel (random-number stream).
+        s: The sample (random-number stream).
+        sc: The scene buffers.
+    """
     if integrator == INTEGRATOR_PATH:
         return path_radiance(ray_o, ray_d, max_bounces, pixel, s, sc)
     if integrator == INTEGRATOR_CLASSIC:

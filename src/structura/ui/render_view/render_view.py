@@ -14,7 +14,7 @@ from ...core.scene.camera import Camera
 from ...core.scene.ir import SceneIR
 from ...render.aov_display import channel_preview
 from ...render.api import RenderProgress
-from ...render.output import Display, to_display
+from ...render.output import Display
 from ...render.settings import RenderSettings
 from ...services.jobs import ErrorInfo
 from ...services.render import RenderRequest, RenderService, RenderUpdate
@@ -30,6 +30,10 @@ RenderSource = Callable[[], RenderInput | None]
 
 
 class RenderView(QWidget):
+    """Progressive renders of the viewport camera: the tool bar, the image (region renders, A/B compare, pixel
+    inspector), progress, denoising, and exposure / view / look changes without rendering again.
+    """
+
     status = Signal(str)
     started = Signal()  # a render (or region render) was requested; ``source`` holds what it renders
     render_requested = Signal()  # the Render button (the window decides: final presets ask where to save first)
@@ -54,6 +58,7 @@ class RenderView(QWidget):
         self._connect()
 
     def _connect(self) -> None:
+        """Wires the tool bar and the render service."""
         c = self.controls
         c.render_button.clicked.connect(self.render_requested)
         c.stop_button.clicked.connect(self.stop)
@@ -69,6 +74,7 @@ class RenderView(QWidget):
         self.renders.finished.connect(self._on_finished)
         self.renders.failed.connect(self._on_failed)
         self.renders.displayed.connect(self._on_displayed)
+        self.renders.display_failed.connect(self._on_display_failed)
         self.view.region_selected.connect(self.render_region)
         self.view.hovered.connect(self.inspect)
         c.snapshot_button.clicked.connect(self.toggle_snapshot)
@@ -78,6 +84,11 @@ class RenderView(QWidget):
 
     @Slot()
     def start(self, region: tuple[int, int, int, int] | None = None) -> None:
+        """Starts a render of what ``request_source`` provides.
+
+        Args:
+            region: (x0, y0, x1, y1) to render again into the last image, or None for the whole image.
+        """
         if self.request_source is None:
             self.status.emit("Nothing to render yet: build the script first (F5).")
             return
@@ -92,14 +103,23 @@ class RenderView(QWidget):
         self.started.emit()
 
     def make_request(self, source: RenderInput, region: tuple[int, int, int, int] | None = None) -> RenderRequest:
-        """A render of ``source`` with the tool bar's device, denoiser and display settings."""
+        """Returns a render request with the tool bar's device, denoiser and display.
+
+        Args:
+            source: The scene, camera, settings and script text.
+            region: A rectangle to render into the last image, or None.
+        """
         scene, camera, settings, _ = source
         c = self.controls
         return RenderRequest(DOC, scene, replace(settings, region=region), c.device.currentText(), camera,
                              denoise=c.denoise_method(), display=self.display(settings))  # fmt: skip
 
     def display(self, settings: RenderSettings | None = None) -> Display:
-        """The tool bar's exposure, view transform and look (a LUT is relative to the script's folder)."""
+        """Returns the tool bar's exposure, view transform and look.
+
+        Args:
+            settings: The render's settings (for the folder a LUT is relative to); default: the last render's.
+        """
         c, source = self.controls, settings or (self.source[2] if self.source is not None else None)
         return Display(c.exposure.value(), c.view_transform(), c.post(), source.asset_dir if source else "")
 
@@ -137,6 +157,7 @@ class RenderView(QWidget):
 
     @Slot()
     def stop(self) -> None:
+        """Stops the render; a stopped full render can be resumed."""
         self.renders.cancel(DOC)
         self._idle()
         self.view.set_bucket(None)
@@ -156,6 +177,7 @@ class RenderView(QWidget):
 
     @Slot(str, object)
     def _on_update(self, doc: str, update: object) -> None:
+        """Shows a pass: the image, the progress, the bucket mark and the status line."""
         if doc != DOC or not isinstance(update, RenderUpdate):
             return
         self.last = merged(self._base, update)
@@ -179,8 +201,13 @@ class RenderView(QWidget):
         self.controls.info.setToolTip(text)
 
     def show_image(self, image: np.ndarray, text: str, fraction: float | None = None) -> None:
-        """Show an image rendered elsewhere (animation frames) with the current exposure and view; ``fraction``
-        is how far that work is (the progress bar)."""
+        """Shows an image rendered elsewhere (animation frames) with the current exposure, view and look.
+
+        Args:
+            image: float linear RGB.
+            text: The status line.
+            fraction: How far that work is (the progress bar), or None.
+        """
         self.last = RenderUpdate(RenderProgress(image, 0, 0.0), "animation", 1)
         self._redisplay()
         self.controls.info.setText(text)
@@ -214,13 +241,16 @@ class RenderView(QWidget):
         return self.last.denoised if use_denoised else self.last.progress.image
 
     def _display_rgb(self) -> np.ndarray | None:
+        """The 8-bit image to show: an AOV channel, the job-made display when it is still wanted, else tone-mapped
+        here — or, for a large image, by a compute-lane job (None meanwhile: the old picture stays).
+        """
         c, image = self.controls, self.shown_image()
         if image is None or self.last is None:
             return None
         p = self.last.progress
         preview = channel_preview(c.channel.currentText(), p.aovs, p.sample_map)
         if preview is not None:
-            return to_display(preview, 0.0, "standard")
+            return Display().apply(preview)  # AOVs are shown as they are (no exposure or look)
         wanted = self.display()
         if self.last.display_for == wanted:  # made by the render or denoise job: no tone mapping here
             made = self.last.display if image is p.image else self.last.denoised_display
@@ -248,6 +278,12 @@ class RenderView(QWidget):
         if doc == DOC and isinstance(update, RenderUpdate) and last is not None and update.progress is last.progress:
             self.last = update
             self._redisplay()
+
+    @Slot(str, object)
+    def _on_display_failed(self, doc: str, info: object) -> None:
+        """A redisplay() job failed: the last picture stays, the status bar says why."""
+        if doc == DOC and isinstance(info, ErrorInfo):
+            self.status.emit(tr("Could not show the image with these settings: {error}").format(error=info.message))
 
     @Slot(str, object)
     def _on_finished(self, doc: str, update: object) -> None:

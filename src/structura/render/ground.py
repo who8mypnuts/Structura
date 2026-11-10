@@ -14,7 +14,8 @@ import numpy as np
 from ..core.color import srgb_to_linear
 from ..core.scene.material import Material, MaterialModel
 from ..core.scene.material_library import MaterialTable
-from .pack import PRIM_F, PRIM_U, RK_BOX, PackedScene, box_bounds, inverse_rows
+from .kernels.scene import PRIM_F, PRIM_U, RK_BOX
+from .pack import PackedScene, box_bounds, inverse_rows
 
 MODES = ("off", "plane", "catcher")
 SIZE, THICKNESS = 1000.0, 1e-3  # × the scene extent

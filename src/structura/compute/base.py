@@ -134,19 +134,76 @@ class Bound(ABC):
 
 
 class Backend(Protocol):
+    """What the renderer needs of a compute backend.
+
+    Attributes:
+        name: The backend's name ('cpu', 'cuda', 'opencl', 'wgpu').
+        device_name: The device it runs on.
+        is_gpu: Whether that device is a GPU.
+    """
+
     name: str
     device_name: str
     is_gpu: bool
 
-    def bind(self, launch: Launch) -> Bound: ...
+    def bind(self, launch: Launch) -> Bound:
+        """Compiles (or reuses) the kernel and uploads the launch's buffers.
 
-    def run(self, launch: Launch) -> dict[str, np.ndarray]: ...
+        Args:
+            launch: The module, kernel, grid and arguments.
 
-    def details(self) -> dict[str, str]: ...
+        Returns:
+            The bound dispatch (update arguments, dispatch, read back).
+        """
+        ...
+
+    def run(self, launch: Launch) -> dict[str, np.ndarray]:
+        """Binds, dispatches once and reads back.
+
+        Args:
+            launch: The module, kernel, grid and arguments.
+
+        Returns:
+            Every buffer of the launch, by name.
+        """
+        ...
+
+    def details(self) -> dict[str, str]:
+        """Returns what a render report says about the device (driver, memory …): label → text."""
+        ...
 
 
 def mib(size: int) -> str:
+    """Returns a byte count as whole mebibytes ('6,144 MiB').
+
+    Args:
+        size: The byte count.
+    """
     return f"{size / 2**20:,.0f} MiB"
+
+
+def device_label(backend: Backend) -> str:
+    """Returns '<backend> <device>' as progress lines and reports show it ('cuda NVIDIA GeForce GTX 1660').
+
+    Args:
+        backend: Any compute backend.
+    """
+    return f"{backend.name} {backend.device_name}".strip()
+
+
+def device_details(backend: Backend) -> dict[str, str]:
+    """Returns what a backend says about its device, for reports; never fails a render over it.
+
+    Args:
+        backend: Any compute backend (its driver is asked here).
+
+    Returns:
+        Its ``details()``, or one 'Details' entry saying why the driver could not be asked.
+    """
+    try:
+        return backend.details()
+    except Exception as exc:  # any driver error: the report says so, the render goes on
+        return {"Details": f"unavailable ({type(exc).__name__}: {exc})"}
 
 
 class BackendBase(ABC):
@@ -163,7 +220,10 @@ class BackendBase(ABC):
         return self.bind(launch).run()
 
     def details(self) -> dict[str, str]:
-        """What a render report says about the device (driver, memory, …): label → text."""
+        """Returns what a render report says about the device (driver, memory …): label → text.
+
+        Backends override it; the base says nothing.
+        """
         return {}
 
 

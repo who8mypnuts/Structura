@@ -100,7 +100,7 @@ def compute_lines() -> list[str]:
 
 
 def library_lines() -> list[str]:
-    """Optional-at-run-time libraries: PyMeshLab (mesh clean-up, Check Mesh) and Open Image Denoise."""
+    """Returns the Libraries section: whether PyMeshLab and Open Image Denoise load (and why not)."""
     from ...export.mesh.meshlab import MeshLabUnavailableError, _pymeshlab  # noqa: PLC0415
     from ...render.denoise.oidn import OidnUnavailableError, library  # noqa: PLC0415
 
@@ -118,6 +118,14 @@ def library_lines() -> list[str]:
 
 
 def run(args: argparse.Namespace) -> int:
+    """Prints the doctor report.
+
+    Args:
+        args: The parsed command line (--no-compute, --opengl-only).
+
+    Returns:
+        0.
+    """
     if args.opengl_only:
         print("\n".join(_opengl()))
         return 0

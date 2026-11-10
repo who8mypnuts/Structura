@@ -21,6 +21,19 @@ AOV_F = 10
 
 @kernel(workgroup=(8, 8, 1))
 def aov_pass(gid: uvec3, width: u32, height: u32, sample_base: u32, spp: u32, sc: SceneBufs, aov: BufRW[f32]) -> None:
+    """Accumulates the first-hit channels of every pixel (albedo, normal, depth, coverage, ids).
+
+    See-through instances are passed as the beauty pass passes them, so the denoiser's guides match the image.
+
+    Args:
+        gid: The invocation's pixel.
+        width: Image width.
+        height: Image height.
+        sample_base: The first sample index.
+        spp: Samples per pixel in this dispatch.
+        sc: The scene buffers.
+        aov: The AOV accumulation buffer (AOV_F floats per pixel).
+    """
     if gid.x >= width or gid.y >= height:
         return
     pixel = gid.x + gid.y * width

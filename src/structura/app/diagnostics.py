@@ -26,7 +26,21 @@ ErrorHandler = Callable[[str, str], None]  # (summary, traceback)
 
 
 class Diagnostics:
+    """The crash diagnostics of the GUI: a rotating log, faulthandler's crash log and exception hooks.
+
+    Attributes:
+        directory: The logs folder.
+        log_file: The rotating log.
+        crash_file: Where faulthandler writes the tracebacks of a hard crash.
+        on_error: Called with (summary, traceback) for every unhandled exception (the window's error banner).
+    """
+
     def __init__(self, directory: Path) -> None:
+        """Prepares the diagnostics (``install`` turns them on).
+
+        Args:
+            directory: The logs folder.
+        """
         self.directory = directory
         self.log_file = directory / "structura.log"
         self.crash_file = directory / "crash.log"
@@ -36,6 +50,7 @@ class Diagnostics:
         self._previous = (sys.excepthook, threading.excepthook)
 
     def install(self) -> None:
+        """Adds the log handler, enables faulthandler and installs the sys and threading exception hooks."""
         self.directory.mkdir(parents=True, exist_ok=True)
         handler = RotatingFileHandler(self.log_file, maxBytes=LOG_BYTES, backupCount=LOG_FILES, encoding="utf-8")
         handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s"))
@@ -57,6 +72,7 @@ class Diagnostics:
             self._crash_stream.close()
 
     def _report(self, kind: type[BaseException], value: BaseException, tb: TracebackType | None) -> None:
+        """Logs an unhandled exception and hands it to ``on_error``."""
         details = "".join(traceback.format_exception(kind, value, tb))
         log.error("Unhandled exception\n%s", details)
         if self.on_error is not None:

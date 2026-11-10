@@ -19,6 +19,7 @@ Predicate = Callable[[], bool]
 
 
 def _file(w: MainWindow, has_tab: Predicate) -> list[Command]:
+    """The File menu's commands."""
     d = w.docs
     return [
         Command("file.new", "New Script", d.new_script, "Ctrl+N", "File", 0),
@@ -78,6 +79,7 @@ def _canceller(w: MainWindow) -> Callable[[], None]:
 
 
 def _view_help(w: MainWindow, has_tab: Predicate) -> list[Command]:
+    """The View menu's general commands (palette, framing, standard views, looks, themes)."""
     return [
         Command("view.palette", "Command Palette", w.command_palette.open, "Ctrl+Shift+P", "View", 0),
         Command("view.frame_all", "Frame All", w.viewport.frame_all, "", "View", 1, tip="Frame the structure"),
@@ -129,6 +131,7 @@ def _overlay(w: MainWindow, name: str) -> tuple[Callable[[], None], Callable[[],
 
 
 def _colors(w: MainWindow, has_tab: Predicate) -> list[Command]:
+    """The Colour By and Overlays submenus, then the navigation submenus."""
     commands = []
     for mode in MODES:
         handler, current = _color_by(w, mode)
@@ -149,9 +152,11 @@ def _navigation(w: MainWindow) -> list[Command]:
     """Orbit lock and controls preset: View submenus and the viewport menu; both are preferences."""
 
     def choose(key: str, value: str) -> Callable[[], None]:
+        """The handler that stores a preference value."""
         return lambda: w.settings_actions.set_preference(key, value)
 
     def chosen(key: str, value: str, default: str) -> Callable[[], bool]:
+        """The check-state predicate of a preference value."""
         return lambda: str(w.settings.value(key, default)) == value
 
     locks = [Command(f"view.orbit_lock_{lock}", title, choose("viewport/orbit_lock", lock), "", "View", 2,
@@ -217,9 +222,11 @@ def _looks(w: MainWindow) -> list[Command]:
     """The viewport looks: one is always checked; choosing one also ends X-ray."""
 
     def choose(look: str) -> Callable[[], None]:
+        """The handler that chooses a look."""
         return lambda: w.build_actions.set_look(look)
 
     def current(look: str) -> Callable[[], bool]:
+        """The check-state predicate of a look."""
         return lambda: w.viewport.options.look == look and not w.workbench.view.xray
 
     return [Command(f"view.look_{look}", title, choose(look), "", "View", 2, checkable=True, checked=current(look),
@@ -227,6 +234,7 @@ def _looks(w: MainWindow) -> list[Command]:
 
 
 def _render(w: MainWindow, has_tab: Predicate) -> list[Command]:
+    """The Render menu's commands."""
     return [
         Command("render.start", "Render", w.render_actions.start_render, "F9", "Render", 0,
                 tip="Render the current view (F9)"),
@@ -355,6 +363,7 @@ def _exporter(w: MainWindow, name: str) -> Callable[[], None]:
 
 
 def _exports(w: MainWindow, has_tab: Predicate) -> list[Command]:
+    """The Export menu: one command per exporter, Check Mesh and the template export."""
     shortcuts = {"template": "F6"}  # F6 = template export, as in 1.5
     check = Command(
         "export.check_mesh",

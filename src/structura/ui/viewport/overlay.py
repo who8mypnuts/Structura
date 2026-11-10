@@ -25,6 +25,15 @@ GIZMO = 34  # pixels from the corner to the gizmo's centre
 
 @dataclass(frozen=True)
 class Overlays:
+    """Which overlays are shown.
+
+    Attributes:
+        axes: The axis gizmo.
+        bounds: The structure's bounding box.
+        hud: The object counts.
+        focus: The depth-of-field planes (when the lens has depth of field).
+    """
+
     axes: bool = True
     bounds: bool = False
     hud: bool = True
@@ -42,7 +51,14 @@ def project(camera: Camera, size: tuple[int, int], lo: np.ndarray, hi: np.ndarra
 
 
 class ViewportOverlay(QWidget):
+    """Draws the overlays with QPainter over either viewport; transparent to the mouse."""
+
     def __init__(self, parent: QWidget) -> None:
+        """Creates the overlay; it draws nothing until it knows the camera.
+
+        Args:
+            parent: The viewport host it covers.
+        """
         super().__init__(parent)
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground)
@@ -70,11 +86,17 @@ class ViewportOverlay(QWidget):
         self.update()
 
     def set_frame(self, aspect: float | None, label: str = "") -> None:
-        """Show the render frame (a letterbox over the rest of the view); None hides it."""
+        """Shows the render frame: a letterbox over the rest of the view, with a size label.
+
+        Args:
+            aspect: The frame's width / height; None hides it.
+            label: The render size ('1920 × 1080').
+        """
         self.frame = (aspect, label) if aspect else None
         self.update()
 
     def _frame_guide(self, painter: QPainter) -> None:
+        """Darkens what lies outside the render frame and outlines it."""
         assert self.frame is not None
         aspect, label = self.frame
         x, y, w, h = guide_rect(aspect, (self.width(), self.height()))

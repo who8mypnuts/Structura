@@ -32,7 +32,18 @@ def _slug(path: Path) -> str:
 
 
 def render_one(script: Path, integrator: str | None, size: tuple[int, int], samples: int, device: str) -> str:
-    """Render ``script`` into docs/renders; returns its README line."""
+    """Renders one example into docs/renders.
+
+    Args:
+        script: The example script to render.
+        integrator: The integrator, or None for the script's own.
+        size: (width, height) in pixels.
+        samples: Samples per pixel.
+        device: The compute device.
+
+    Returns:
+        Its row of docs/renders/README.md.
+    """
     text = script.read_text(encoding="utf-8")
     scene = api.build(script)
     settings = script_settings(scene)
@@ -54,6 +65,7 @@ def render_one(script: Path, integrator: str | None, size: tuple[int, int], samp
 
 
 def main() -> None:
+    """Renders the chosen examples (all by default) and, for a full run, writes docs/renders/README.md."""
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--size", default="640x400")
     parser.add_argument("--samples", type=int, default=96)

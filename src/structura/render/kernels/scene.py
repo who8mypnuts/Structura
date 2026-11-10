@@ -27,6 +27,7 @@ from .shapes import box_face_normal, capsule_hit, on_grid_edge, sphere_hit, tria
 from .solids import RK_CYLINDER, RK_ELLIPSOID, RK_TORUS, hit_cylinder, hit_ellipsoid, hit_torus
 
 PRIM_F = 24
+PF_GENERATION = 23  # prim_f slot of the instance's generation (the debug_generation model; render/pack.py)
 PRIM_U = 4
 TRACE_ANY = 1  # trace() flags: stop at the first hit (shadow / occlusion rays)
 TRACE_OPAQUE = 2  # ignore primitives whose instance alpha is < 1 (Structure Synth shadow rule)

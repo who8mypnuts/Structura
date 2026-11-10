@@ -157,6 +157,8 @@ def _attribute(device: Any, name: str) -> int:
 
 
 class CudaBackend(BackendBase):
+    """The CUDA backend: kernels compiled to PTX by NVRTC (cached as cubins), on an NVIDIA GPU."""
+
     name = "cuda"
     is_gpu = True
 

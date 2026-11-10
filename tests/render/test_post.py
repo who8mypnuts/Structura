@@ -10,7 +10,8 @@ import pytest
 from structura.core.lang.v2.block_check import known_keys
 from structura.render.lut import apply_lut, parse_cube
 from structura.render.output import Display, save_image
-from structura.render.post import LOOKS, RANGES, PostSettings, adjusted, apply_linear, bloom_light, post_from_block
+from structura.render.post import LOOKS, RANGES, PostSettings, adjusted, post_from_block
+from structura.render.post_image import apply_linear, bloom_light
 
 
 def _spot() -> np.ndarray:
@@ -93,3 +94,22 @@ def test_exr_keeps_radiance_without_the_look(tmp_path: Path) -> None:
     with OpenEXR.File(str(tmp_path / "a.exr")) as f:
         rgb = f.channels()["RGB"].pixels
     np.testing.assert_allclose(rgb, image * 2.0)
+
+
+def test_an_unreadable_lut_is_skipped_with_a_warning(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+    (tmp_path / "broken.cube").write_text("LUT_3D_SIZE 4\n0 0 0\n", encoding="utf-8")
+    grey = np.full((2, 2, 3), 0.18, np.float32)
+    plain = Display(0.0, "standard").apply(grey)
+    for name in ("missing.cube", "broken.cube"):
+        shown = Display(0.0, "standard", PostSettings(lut=name), str(tmp_path)).apply(grey)
+        np.testing.assert_array_equal(shown, plain)  # shown without the LUT instead of failing
+    assert "missing.cube" in caplog.text and "broken.cube" in caplog.text
+
+
+def test_luts_and_bloom_survive_odd_images() -> None:
+    lut = parse_cube(_identity_cube())
+    mapped = apply_lut(np.array([[np.nan, 0.5, 2.0]], np.float32), lut)  # a NaN pixel from a broken sample
+    np.testing.assert_allclose(mapped, [[0.0, 0.5, 1.0]], atol=1e-5)
+    for shape in ((1, 1, 3), (1, 7, 3), (3, 2, 3)):  # smaller than the pyramid
+        image = np.full(shape, 5.0, np.float32)
+        assert bloom_light(image, 1.0, 0.5).sum() == pytest.approx(image.sum() * 0.8, rel=1e-5)

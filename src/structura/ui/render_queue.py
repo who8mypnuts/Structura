@@ -152,7 +152,18 @@ class RenderQueue(QObject):
 
 
 def _save_job(entry: QueueEntry, update: RenderUpdate) -> Callable[[JobContext], Path]:
+    """Makes the io-lane job that saves a finished queued render and its report.
+
+    Args:
+        entry: The queue entry (its request, image file and report file).
+        update: The finished render.
+
+    Returns:
+        The job function; its result is the image file.
+    """
+
     def run(ctx: JobContext) -> Path:
+        """Writes the image (denoised when there is a denoised one) and the report beside it."""
         request, details = entry.request, update.details
         assert request is not None  # (a render entry)
         image = update.denoised if update.denoised is not None else update.progress.image

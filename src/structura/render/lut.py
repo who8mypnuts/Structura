@@ -12,7 +12,17 @@ import numpy as np
 
 
 def parse_cube(text: str) -> np.ndarray:
-    """float32 (N, N, N, 3) indexed [b, g, r] as the format orders it (red changes fastest)."""
+    """Reads a 3D look-up table in the '.cube' format.
+
+    Args:
+        text: The file's text.
+
+    Returns:
+        float32 (N, N, N, 3), indexed [b, g, r] as the format orders it (red changes fastest).
+
+    Raises:
+        ValueError: Not a 3D table of N³ entries, or a domain other than 0..1.
+    """
     size, domain_min, domain_max, rows = 0, np.zeros(3), np.ones(3), []
     for raw in text.splitlines():
         line = raw.split("#", 1)[0].strip()
@@ -40,13 +50,30 @@ def _load(path: str, mtime: float) -> np.ndarray:
 
 
 def load_cube(path: Path) -> np.ndarray:
+    """Returns the table of a '.cube' file, cached by path and modification time.
+
+    Args:
+        path: The file.
+
+    Raises:
+        OSError: The file cannot be read.
+        ValueError: It is not a usable table (see ``parse_cube``).
+    """
     return _load(str(path), path.stat().st_mtime)
 
 
 def apply_lut(rgb: np.ndarray, lut: np.ndarray) -> np.ndarray:
-    """Map display colours ``rgb`` (float 0..1, any shape ending in 3) through the table, trilinearly."""
+    """Maps display colours through a table, interpolating trilinearly.
+
+    Args:
+        rgb: float display colours (clamped to 0..1; NaN reads as 0), any shape ending in 3.
+        lut: A table from ``parse_cube``.
+
+    Returns:
+        float32 colours of the same shape.
+    """
     n = lut.shape[0]
-    x = np.clip(rgb, 0.0, 1.0) * (n - 1)
+    x = np.clip(np.nan_to_num(rgb, nan=0.0), 0.0, 1.0) * (n - 1)  # (a NaN pixel must not index the table)
     i0 = np.minimum(x.astype(np.int32), n - 2)
     f = x - i0
     r0, g0, b0 = i0[..., 0], i0[..., 1], i0[..., 2]

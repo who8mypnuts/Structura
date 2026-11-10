@@ -113,7 +113,15 @@ def sun_photon_origin(sc: SceneBufs, i: u32, seed: u32) -> vec3:
 
 @kernel(workgroup=(64, 1, 1))
 def photon_pass(gid: uvec3, count: u32, seed: u32, sc: SceneBufs, photons: BufRW[f32]) -> None:
-    """Trace one sun photon; store it at the first non-specular surface after a specular bounce."""
+    """Traces sun photons; each is stored at the first non-specular surface after a specular bounce.
+
+    Args:
+        gid: The invocation (the photon's index).
+        count: Photons in the pass.
+        seed: The random seed.
+        sc: The scene buffers.
+        photons: The photon records (PHOTON_OUT floats each).
+    """
     i = gid.x
     if i >= count:
         return

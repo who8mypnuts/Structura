@@ -82,10 +82,12 @@ PANEL_MODELS = tuple(m.name.lower() for m in MaterialModel if m not in DEBUG_MOD
 
 
 def material_param_specs() -> tuple[ParamSpec, ...]:
-    """The fields the Materials panel edits and 'Write to Script' writes, in display order (docs/10 §3.1).
+    """Returns the fields the Materials panel edits and 'Write to Script' writes, in display order.
 
-    Colours (base, emission, attenuation colour) and opacity's 'state' have their own widgets; the debug models
-    stay script-only. An attenuation distance of 0 stands for "no absorption" (math.inf in the Material)."""
+    See docs/10 §3.1. Colours (base, emission, attenuation colour) and opacity's 'state' have their own widgets;
+    the debug models stay script-only. An attenuation distance of 0 stands for "no absorption" (math.inf in the
+    Material).
+    """
     f, unit = ParamType.FLOAT, (0.0, 1.0)
     return (
         ParamSpec("model", ParamType.ENUM, "principled", "Model", choices=PANEL_MODELS),

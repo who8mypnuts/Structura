@@ -42,6 +42,14 @@ def configure_opengl() -> None:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    """Starts the GUI: diagnostics, the OpenGL check (with the XWayland retry), the window and the event loop.
+
+    Args:
+        argv: The command line (default: sys.argv); file arguments are opened.
+
+    Returns:
+        The application's exit code.
+    """
     args = list(sys.argv if argv is None else argv)
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     settings = SettingsService()

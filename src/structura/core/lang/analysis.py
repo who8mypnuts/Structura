@@ -178,6 +178,7 @@ def _analyze(
     frame: int,
     fps: float,
 ) -> Analysis:
+    """The uncached analysis behind ``analyze`` (same arguments)."""
     if is_javascript(text):
         message = "JavaScript script: run it with Build ▸ Run JavaScript (F7)"
         return Analysis(version, (diagnostic("I204", message, Span(0, len(text.partition("\n")[0]))),))

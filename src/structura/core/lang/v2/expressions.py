@@ -34,6 +34,7 @@ BINARY: dict[type, Callable[[Any, Any], Any]] = {
 
 
 def _eval(node: ast.AST, names: dict[str, float]) -> float:
+    """Evaluates one node of an expression tree; ValueError for anything not allowed."""
     if isinstance(node, ast.Expression):
         return _eval(node.body, names)
     if isinstance(node, ast.Constant) and isinstance(node.value, int | float):

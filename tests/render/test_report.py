@@ -30,6 +30,7 @@ SCRIPT = "set background #fff\n{ s 0.5 color #c33 } sphere\n4 * { x 1.5 color #3
 
 @cache
 def _inputs() -> ReportInputs:
+    """A small real render of SCRIPT with everything a report describes (cached: reports are built from it)."""
     build = build_scene(compile_script(SCRIPT).program, 5)
     settings = RenderSettings(width=48, height=32, samples=4, samples_per_pass=0, frame=True, aovs=True)
     prepared, frame = prepare_with_frame(build.scene, settings)
@@ -158,3 +159,18 @@ def test_the_look_is_reported_and_reproduced() -> None:
     custom = build_report(replace(_inputs(), display=Display(0.0, "agx", PostSettings(vignette=0.3))))
     command = str({r.label: r.value for r in custom.section("reproduce").rows}["Command line"])
     assert "--look off --vignette 0.3" in command
+
+
+def test_every_look_setting_survives_the_reproduce_command() -> None:
+    import argparse  # noqa: PLC0415
+    import shlex  # noqa: PLC0415
+
+    from structura.cli.commands.post_args import add_post_arguments, post_override  # noqa: PLC0415
+    from structura.render.post import PostSettings, look_arguments  # noqa: PLC0415
+
+    custom = PostSettings(bloom=0.2, bloom_threshold=2.0, temperature=-0.5, saturation=1.5, contrast=0.8)
+    parser = argparse.ArgumentParser()
+    add_post_arguments(parser)
+    args = parser.parse_args(shlex.split(shlex.join(look_arguments(custom, PostSettings()))))
+    assert post_override(args, PostSettings())["post"] == custom  # nothing lost on the way
+    assert look_arguments(custom, custom) == []  # the script's own look needs no options

@@ -23,6 +23,7 @@ GLOW_LIGHTEN = 0.3
 
 
 def _looked(material: Material, rgba: np.ndarray) -> np.ndarray:
+    """The RGBA rows of one material's instances as the viewport should show them (a new array)."""
     out = rgba.copy()
     if material.base != STATE:
         out[:, :3] = material.base
@@ -39,7 +40,14 @@ def _looked(material: Material, rgba: np.ndarray) -> np.ndarray:
 
 
 def material_look(scene: SceneIR) -> SceneIR:
-    """``scene`` with its colours adjusted for its v2 materials (unchanged for v1 scripts)."""
+    """Approximates v2 materials in the viewport's colours.
+
+    Args:
+        scene: The built scene.
+
+    Returns:
+        The scene with each instance's RGBA adjusted for its material; v1 scenes come back unchanged.
+    """
     if scene.declarations is None or not len(scene):
         return scene
     raytracer = settings_from_events(scene.events).raytracer

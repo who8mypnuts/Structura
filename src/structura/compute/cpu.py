@@ -61,6 +61,8 @@ class CpuBound(Bound):
 
 
 class CpuBackend(BackendBase):
+    """The CPU backend: the kernels compiled by Numba, on every core (the reference for the GPU backends)."""
+
     name = "cpu"
     device_name = "CPU (Numba)"
 

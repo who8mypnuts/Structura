@@ -22,7 +22,7 @@ from ..export.templates.template_file import all_templates, load_template
 from ..services.export import ExportRequest, ExportService
 from ..services.jobs import ErrorInfo, FunctionJob, JobContext, Lane
 from .dialogs.export_dialog import ExportDialog
-from .external_apps import BLENDER, MESHLAB, ExternalApp, find_app, find_blender
+from .external_apps import BLENDER, MESHLAB, ExternalApp, find_app
 from .i18n import tr
 from .save_paths import SavePaths, stem_for, with_extension
 
@@ -39,7 +39,14 @@ def file_filter(exporter: Exporter) -> str:
 
 
 class ExportActions(QObject):
+    """Exports from the window: the Save As and export sheet flow, the export jobs, Check Mesh, and what runs after."""
+
     def __init__(self, window: MainWindow) -> None:
+        """Creates the export service and shows its jobs in the Render Queue panel.
+
+        Args:
+            window: The main window.
+        """
         super().__init__(window)
         self.w = window
         self.paths = SavePaths(window.settings)
@@ -135,10 +142,13 @@ class ExportActions(QObject):
         return answer[1] if answer else None
 
     def start(self, name: str | None = None) -> None:
-        """Export ▸ <format>… (``name``) or File ▸ Export As… (None: the format is chosen in the dialog)."""
-        tab = self.w.tabs.current()
+        """Export ▸ <format>…, or File ▸ Export As… (the format is then chosen in the Save As dialog).
+
+        Args:
+            name: The exporter's name, or None.
+        """
+        tab = self.w.built_tab(tr("export"))
         if tab is None or tab.outcome is None:
-            self.w.show_message("Build the script first (F5), then export.")
             return
         exporter = EXPORTERS[name or self.last_format]
         suggestion = self.paths.suggest(KIND, stem_for(tab.path) + exporter.extensions[0], tab.path)
@@ -168,13 +178,13 @@ class ExportActions(QObject):
 
     def check_mesh(self) -> None:
         """Export ▸ Check Mesh: MeshLab's measures of the structure as a mesh would be exported (io lane)."""
-        tab = self.w.tabs.current()
+        tab = self.w.built_tab(tr("check the mesh"))
         if tab is None or tab.outcome is None:
-            self.w.show_message(tr("Build the script first (F5), then check the mesh."))
             return
         scene = tab.outcome.scene
 
         def run(ctx: JobContext) -> MeshCheck:
+            """Tessellates the scene and measures it."""
             ctx.progress(0.0, "tessellating")
             return check_mesh(tessellate(scene))
 
@@ -185,6 +195,7 @@ class ExportActions(QObject):
 
     @Slot(object)
     def _checked(self, check: object) -> None:
+        """Shows the Check Mesh result: the verdict, and every measure under Details."""
         if isinstance(check, MeshCheck):
             verdict = tr("watertight: ready to print") if check.watertight else tr("not watertight (see below)")
             box = QMessageBox(QMessageBox.Icon.Information, tr("Check Mesh"), tr("The mesh is {verdict}.").format(
@@ -210,6 +221,7 @@ class ExportActions(QObject):
 
     @Slot(object)
     def _finished(self, report: object) -> None:
+        """An export finished: notify, run its commands, and offer the program that opens the file."""
         if isinstance(report, ExportReport):
             self.w.render_queue.export_ended(report.path, "done")
             counts = ", ".join(f"{k} {v:,}" for k, v in report.counts.items())
@@ -223,12 +235,9 @@ class ExportActions(QObject):
             if request is not None and request.exporter == "template":
                 self.run_after(str(request.options.get("template", "")), report.path)
             if request is not None and request.exporter == "blender":
-                self._offer_blender(report.path)
+                self._offer(BLENDER, report.path)
             elif report.path.suffix.lower() in MESHLAB.opens:
                 self._offer(MESHLAB, report.path)
-
-    def _offer_blender(self, script: Path) -> None:
-        self._offer(BLENDER, script)
 
     def _offer(self, app: ExternalApp, path: Path) -> None:
         """A toast with "Open in <app>" when the app is installed."""
@@ -238,30 +247,43 @@ class ExportActions(QObject):
 
     def _find(self, app: ExternalApp) -> str | None:
         configured = str(self.w.settings.value(app.key, ""))
-        return find_blender(configured) if app is BLENDER else find_app(app, configured)
+        return find_app(app, configured)
 
     def open_in(self, app: ExternalApp, path: Path) -> None:
-        """Open ``path`` in ``app`` (a non-blocking process; its output goes to the Console)."""
+        """Opens a file in another application (a non-blocking process; its output goes to the Console).
+
+        Args:
+            app: The application.
+            path: The file.
+        """
         program = self._find(app)
         if program is None:
             self.w.show_message(tr("{app} was not found: set its path in Preferences ▸ Paths.").format(app=app.name))
             return
         self.w.processes.start_program(program, app.arguments(path), path.parent)
 
-    def open_in_blender(self, script: Path) -> None:
-        """Run the exported script in Blender."""
-        self.open_in(BLENDER, script)
-
     def run_after(self, template: str, file: Path) -> None:
-        """Run the template's 'runAfter' program on the exported file (after asking, once per command)."""
+        """Runs a template's 'runAfter' program on the exported file (after asking, once per command).
+
+        Args:
+            template: The template's name.
+            file: The exported file.
+        """
         path = all_templates().get(template)
         command = load_template(path).run_after if path is not None else ""
         if command:
             self.run_command(tr("The template '{name}'").format(name=template), command, file)
 
     def run_command(self, source: str, command: str, file: Path) -> None:
-        """Run a 'run after' command on the exported file: a template's or the export sheet's (e.g. a PyMeshLab
-        script); asked once per command and session, because it can run any program."""
+        """Runs a 'run after' command on an exported file (a template's or the export sheet's).
+
+        The user confirms each command once per session: it can run any program.
+
+        Args:
+            source: Who asks, for the question ('this export', "The template 'Sunflow'").
+            command: The command, with $FILE and environment variables.
+            file: The exported file.
+        """
         expanded = expand_command(command, file)
         if command not in self.allowed and not self._confirm(source, command, expanded):
             return

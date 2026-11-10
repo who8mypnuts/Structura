@@ -14,8 +14,6 @@ from .lights import light_sample, unoccluded
 from .microfacet import luminance
 from .sampling import cone_direction, cosine_hemisphere, rand01
 
-MODEL_CATCHER = 9  # core.scene.material.MaterialModel.SHADOW_CATCHER
-
 
 @func
 def shadow_ratio(sc: SceneBufs, p: vec3, n: vec3, pixel: u32, sample_index: u32, dim: u32) -> f32:

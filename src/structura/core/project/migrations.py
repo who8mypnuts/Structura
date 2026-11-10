@@ -15,7 +15,17 @@ LENS_KEYS = {"camera_type": "projection", "ortho_height": "ortho_height", "fishe
 
 
 def lens_into_camera(data: dict[str, Any]) -> dict[str, Any]:
-    """1 → 2: the camera gained a lens; the lens settings the Render Settings panel held move into it."""
+    """Migrates a project from format 1 to 2: the camera gains a lens.
+
+    The lens settings that format 1 kept in the Render Settings overrides (camera type, aperture, blades …) and
+    on the camera (aperture radius, focus distance) move into ``camera.lens``.
+
+    Args:
+        data: The project's JSON object in format 1.
+
+    Returns:
+        The object in format 2 (``data`` itself is not changed).
+    """
     render = dict(data.get("render") or {})
     lens = {new: render.pop(old) for old, new in LENS_KEYS.items() if old in render}
     camera = data.get("camera")

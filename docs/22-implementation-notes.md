@@ -169,7 +169,7 @@ detail is in [PROGRESS.md](PROGRESS.md).
   default, `scale` changes it; the kernel gained shift, tilt (a tilted focus plane via `focus_normal`),
   bokeh bias, anamorphic squeeze and fisheye mappings (cfg slots 76–83). Projects moved to format 2 (the
   lens in the camera; older projects are migrated). Legacy `raytracer::dof` still resolves against the view.
-- **The post stack** (`render/post.py`, `render/lut.py`) runs where the image is displayed or saved
+- **The post stack** (`render/post.py` settings, `render/post_image.py` operations, `render/lut.py`) runs where the image is displayed or saved
   (`render/output.Display`), never on the radiance: EXR stays linear, every change is live, and one
   `Display` value (exposure, view transform, post, asset folder) travels from the tool bar, the script or the
   command line to every writer. Bloom adds exactly intensity × the light above the threshold.

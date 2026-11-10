@@ -128,6 +128,15 @@ class LegacyPreprocessor:
         self.result.diagnostics.append(Diagnostic(code, Severity.WARNING, message, self._line))
 
     def process(self, text: str, seed: int = 0) -> PreprocessResult:
+        """Preprocesses a script: defines, GUI parameters, random[a,b] (and v2's rand(a, b)).
+
+        Args:
+            text: The script (after v2 blocks were taken out).
+            seed: The build seed of the random[a,b] stream.
+
+        Returns:
+            The preprocessed text, the defines, the parameters and the warnings.
+        """
         rng = mt_new(seed)
         lines = _LINE_SPLIT.split(text)
         starts = [0] + [m.end() for m in _LINE_SPLIT.finditer(text)]

@@ -71,6 +71,7 @@ def test_anamorphic_bokeh_is_wider_than_tall() -> None:
 
 def test_bokeh_bias_moves_light_to_the_rim() -> None:
     def rim_ratio(image: np.ndarray) -> float:
+        """How much brighter a bokeh disc's rim is than its centre."""
         ys, xs = np.mgrid[0:48, 0:48]
         r = np.hypot(xs - 23.5, ys - 23.5)
         radius = r[image > image.max() * 0.05].max()

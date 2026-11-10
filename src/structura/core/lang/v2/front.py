@@ -61,7 +61,14 @@ def _first_paren(text: str) -> tuple[int, int] | None:
 
 
 def misplaced_version(text: str) -> Span | None:
-    """A '#version 2' line that does not select v2 because it is not the first non-blank line."""
+    """Finds a '#version 2' line that does not select v2 because it is not the first non-blank line.
+
+    Args:
+        text: The script.
+
+    Returns:
+        The span of that line, or None (also for v2 scripts).
+    """
     if detect_dialect(text) == 2:
         return None
     match = _VERSION.search(text)

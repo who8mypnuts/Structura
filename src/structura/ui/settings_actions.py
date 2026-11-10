@@ -41,6 +41,8 @@ def followed_theme(theme_id: str, dark: bool | None) -> str:
 
 
 class SettingsActions(QObject):
+    """Applies the preferences to the live window (and follows the system's light/dark setting)."""
+
     def __init__(self, window: MainWindow) -> None:
         super().__init__(window)
         self.w = window
@@ -78,7 +80,12 @@ class SettingsActions(QObject):
         w.apply_theme(w.themes.theme)
 
     def set_preference(self, key: str, value: object) -> None:
-        """A preference changed from a menu (orbit lock, controls): store it and apply everything."""
+        """Stores a preference changed from a menu (orbit lock, controls) and applies everything.
+
+        Args:
+            key: The preference key.
+            value: Its new value.
+        """
         self.w.settings.set_value(key, value)
         self.apply()
 

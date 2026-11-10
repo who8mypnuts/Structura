@@ -66,6 +66,12 @@ def display_colors(prim: UsdGeom.Imageable, rgba: np.ndarray, interpolation: str
 
 
 def camera(stage: Usd.Stage, model: ExportSceneModel) -> None:
+    """Defines the USD camera with its lens (focal length, apertures and shift in the sensor's millimetres).
+
+    Args:
+        stage: The USD stage being written (the camera goes under its root prim).
+        model: The export model (its camera, aspect and unit scale).
+    """
     cam = model.camera
     lens = cam.lens
     usd_cam = UsdGeom.Camera.Define(stage, f"{ROOT}/Camera")

@@ -25,27 +25,54 @@ VERSION = 2  # 2: parameters, render overrides, camera, saved views and timeline
 
 @dataclass(frozen=True)
 class TabState:
-    path: str | None = None  # None: an untitled script
-    text: str | None = None  # unsaved text; None = read the file at ``path``
+    """One tab of a session or recovery snapshot.
+
+    Attributes:
+        path: The script file; None for an untitled script.
+        text: Unsaved text; None reads the file at ``path``.
+        cursor: The cursor position.
+        seed: The build seed.
+        folded: Folded block lines.
+        encoding: The file's text encoding.
+        newline: The file's line ending.
+        project: The tab's .structura file, if any.
+        params: Parameter values.
+        render_overrides: Render Settings changes over the script's values.
+        camera: The viewport camera (core.project.model.camera_to_dict).
+        bookmarks: Saved views: name → camera dict.
+        timeline: The animation (core.animation.timeline.to_dict).
+    """
+
+    path: str | None = None
+    text: str | None = None
     cursor: int = 0
     seed: int = 0
     folded: tuple[int, ...] = ()
     encoding: str = "utf-8"
     newline: str = "\n"
-    project: str | None = None  # the tab's .structura file
+    project: str | None = None
     params: dict[str, float] = field(default_factory=dict)
     render_overrides: dict[str, Any] = field(default_factory=dict)
-    camera: dict[str, Any] | None = None  # core.project.model.camera_to_dict
-    bookmarks: dict[str, Any] = field(default_factory=dict)  # name → camera dict
-    timeline: dict[str, Any] | None = None  # core.animation.timeline.to_dict
+    camera: dict[str, Any] | None = None
+    bookmarks: dict[str, Any] = field(default_factory=dict)
+    timeline: dict[str, Any] | None = None
 
     @property
     def unsaved(self) -> bool:
+        """Whether the tab has text that is not on disk."""
         return self.text is not None
 
 
 @dataclass(frozen=True)
 class SessionState:
+    """The open tabs of a window, as saved on quit (the session) or after edits (recovery).
+
+    Attributes:
+        tabs: The tabs, in order.
+        current: The index of the current tab.
+        extra: Window-level state (layout, panels …).
+    """
+
     tabs: tuple[TabState, ...] = ()
     current: int = 0
     extra: dict[str, Any] = field(default_factory=dict)
@@ -59,25 +86,45 @@ class SessionState:
         return not self.tabs
 
     def to_json(self) -> str:
+        """Returns the snapshot as JSON (format FORMAT, version VERSION)."""
         tabs = [asdict(t) | {"folded": list(t.folded)} for t in self.tabs]
         return json.dumps({"format": FORMAT, "version": VERSION, "current": self.current, "tabs": tabs,
                            "extra": self.extra}, indent=1)  # fmt: skip
 
     @classmethod
     def from_json(cls, text: str) -> SessionState:
-        """Tolerant: unknown keys are ignored and malformed tabs skipped."""
+        """Reads a snapshot; unknown keys are ignored and malformed tabs skipped.
+
+        Args:
+            text: The JSON text.
+
+        Returns:
+            The snapshot.
+
+        Raises:
+            ValueError: The text is not a Structura session (or not JSON).
+        """
         data = json.loads(text)
         if not isinstance(data, dict) or data.get("format") != FORMAT:
             raise ValueError("not a Structura session")
-        names = set(TabState.__dataclass_fields__)
-        tabs = []
-        for raw in data.get("tabs", []):
-            if isinstance(raw, dict):
-                values = {k: v for k, v in raw.items() if k in names}
-                values["folded"] = tuple(int(n) for n in values.get("folded", ()))
-                tabs.append(TabState(**values))
+        tabs = [tab for raw in data.get("tabs", []) if (tab := _tab(raw)) is not None]
         current = int(data.get("current", 0))
         return cls(tuple(tabs), max(0, min(current, len(tabs) - 1)), dict(data.get("extra", {})))
+
+
+def _tab(raw: object) -> TabState | None:
+    """A tab from its JSON object; None for a malformed one (the other tabs are still restored)."""
+    if not isinstance(raw, dict):
+        return None
+    values = {k: v for k, v in raw.items() if k in TabState.__dataclass_fields__}
+    try:
+        values["folded"] = tuple(int(n) for n in values.get("folded", ()))
+        tab = TabState(**values)
+    except (TypeError, ValueError):
+        return None
+    if not isinstance(tab.path, str | None) or not isinstance(tab.text, str | None):
+        return None
+    return tab
 
 
 class SessionStore:
@@ -105,11 +152,25 @@ class SessionStore:
         return self.path.exists()
 
 
+def _is_structura(pid: int) -> bool:
+    """Whether a process runs Structura (a crashed run's PID may have been reused by another program)."""
+    try:
+        command = " ".join(psutil.Process(pid).cmdline()).lower()
+    except (psutil.Error, OSError):
+        return False
+    return "structura" in command
+
+
 class CrashGuard:
     """A lock file for the running instance (pid inside). A lock whose process is gone means that run did not
     shut down cleanly. A second instance keeps its own lock and recovery file, so instances never mix."""
 
     def __init__(self, directory: Path) -> None:
+        """Prepares the lock and recovery files of this run (nothing is written yet).
+
+        Args:
+            directory: Where the lock and the recovery snapshot live (the settings folder).
+        """
         self.directory = directory
         self.lock = directory / "running.lock"
         self.recovery = directory / "recovery.json"
@@ -122,12 +183,18 @@ class CrashGuard:
             return None
 
     def start(self) -> bool:
-        """Take the lock; True when the previous run crashed (its lock was left behind)."""
+        """Takes the lock.
+
+        A second instance gets its own lock and recovery file, so instances never mix.
+
+        Returns:
+            True when the previous run crashed: its lock was left behind and its process is gone.
+        """
         self.directory.mkdir(parents=True, exist_ok=True)
         crashed = False
         if self.lock.exists():
             owner = self._owner(self.lock)
-            if owner is not None and owner != os.getpid() and psutil.pid_exists(owner):
+            if owner is not None and owner != os.getpid() and _is_structura(owner):
                 self.lock = self.directory / f"running-{os.getpid()}.lock"  # another instance is running
                 self.recovery = self.directory / f"recovery-{os.getpid()}.json"
             else:

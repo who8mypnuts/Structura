@@ -49,90 +49,197 @@ SIMPLE_FSTOPS = (22.0, 1.2)  # the Depth of field slider runs from the first (de
 LENS_SPEC = re.compile(r"^\s*(?:(\d+(?:\.\d+)?)\s*mm)?\s*(?:f/?(\d+(?:\.\d+)?))?\s*$", re.I)
 
 
+MIN_FOV_DEG, MAX_FOV_DEG = 1e-3, 179.0  # a perspective field of view is kept inside this open range
+
+
 @dataclass(frozen=True)
 class Lens:
-    projection: str = "perspective"  # PROJECTIONS
-    sensor_mm: Pair = FULL_FRAME  # width, height: relates focal length to the field of view
-    fstop: float | None = None  # None: the aperture radius below is used as given
-    aperture_radius: float = 0.0  # world units; 0 = pinhole (no depth of field)
-    focus_mode: str = "target"  # FOCUS_MODES: the target's distance, focus_distance, or the hyperfocal distance
-    focus_distance: float | None = None  # world units (focus_mode 'manual')
-    blades: int = 0  # aperture blades: 3 or more give polygonal bokeh
+    """A camera lens: projection, sensor, aperture, focus, bokeh, shift and tilt.
+
+    Attributes:
+        projection: One of PROJECTIONS.
+        sensor_mm: Sensor width and height in millimetres; relates focal length and field of view.
+        fstop: The f-number; None uses ``aperture_radius`` as given.
+        aperture_radius: Entrance-pupil radius in world units when no f-stop is set (0: a pinhole).
+        focus_mode: One of FOCUS_MODES: the target's distance, ``focus_distance`` or the hyperfocal distance.
+        focus_distance: The distance in focus in world units ('manual' focus).
+        blades: Aperture blades; three or more give polygonal bokeh.
+        blade_rotation_deg: Rotation of the blade polygon.
+        bokeh_bias: −1 brightens the bokeh's centre, 0 is even, 1 brightens its rim.
+        anamorphic: Aperture width / height; above 1 stretches the bokeh horizontally.
+        shift: Lens shift (x, y) in frame heights (straight verticals in architecture).
+        tilt: Degrees the focus plane turns about the camera's x and y axes (Scheimpflug).
+        ortho_height: Visible height in world units (orthographic projection).
+        fisheye_fov_deg: Field of view across the image height (fisheye projection).
+        fisheye_mapping: One of FISHEYE_MAPPINGS.
+        units_per_metre: World units per metre: the physical scale the f-stop works at.
+    """
+
+    projection: str = "perspective"
+    sensor_mm: Pair = FULL_FRAME
+    fstop: float | None = None
+    aperture_radius: float = 0.0
+    focus_mode: str = "target"
+    focus_distance: float | None = None
+    blades: int = 0
     blade_rotation_deg: float = 0.0
-    bokeh_bias: float = 0.0  # −1 centre-weighted (soft) … 0 even … 1 bright rims (catadioptric / old glass)
-    anamorphic: float = 1.0  # width / height of the aperture: > 1 gives oval, horizontally stretched bokeh
-    shift: Pair = (0.0, 0.0)  # lens shift (x, y) in frame heights: keeps verticals straight in architecture
-    tilt: Pair = (0.0, 0.0)  # degrees the focus plane turns about the camera's x and y axes (Scheimpflug)
-    ortho_height: float = 10.0  # orthographic: the visible height in world units
-    fisheye_fov_deg: float = 180.0  # fisheye: the field across the image height
-    fisheye_mapping: str = "equidistant"  # FISHEYE_MAPPINGS
-    units_per_metre: float = 1.0  # world units per metre (the f-stop's physical scale)
+    bokeh_bias: float = 0.0
+    anamorphic: float = 1.0
+    shift: Pair = (0.0, 0.0)
+    tilt: Pair = (0.0, 0.0)
+    ortho_height: float = 10.0
+    fisheye_fov_deg: float = 180.0
+    fisheye_mapping: str = "equidistant"
+    units_per_metre: float = 1.0
 
     @property
     def sensor_diagonal_mm(self) -> float:
+        """The sensor's diagonal in millimetres."""
         return math.hypot(*self.sensor_mm)
 
     @property
     def coc_mm(self) -> float:
+        """The circle of confusion in millimetres (the sensor diagonal / COC_DIVISOR)."""
         return self.sensor_diagonal_mm / COC_DIVISOR
 
     @property
     def depth_of_field(self) -> bool:
+        """Whether the lens blurs anything: a perspective lens with an f-stop or an aperture."""
         return self.projection == "perspective" and (self.fstop is not None or self.aperture_radius > 0.0)
+
+    def world(self, millimetres: float) -> float:
+        """Converts a physical length in millimetres to world units at the lens's scale.
+
+        Args:
+            millimetres: A length such as a focal length or a circle of confusion.
+
+        Returns:
+            The length in world units (``units_per_metre`` world units make a metre).
+        """
+        return millimetres / 1000.0 * self.units_per_metre
 
 
 def focal_length_mm(fov_y_deg: float, sensor_height_mm: float = FULL_FRAME[1]) -> float:
-    """The focal length that gives a vertical field of view ``fov_y_deg`` on a sensor of that height."""
-    return sensor_height_mm / (2.0 * math.tan(math.radians(fov_y_deg) / 2.0))
+    """Returns the focal length that gives a vertical field of view on a sensor.
+
+    Args:
+        fov_y_deg: Vertical field of view in degrees (clamped to MIN_FOV_DEG … MAX_FOV_DEG).
+        sensor_height_mm: Height of the sensor in millimetres.
+
+    Returns:
+        The focal length in millimetres.
+    """
+    fov = min(max(fov_y_deg, MIN_FOV_DEG), MAX_FOV_DEG)
+    return sensor_height_mm / (2.0 * math.tan(math.radians(fov) / 2.0))
 
 
 def fov_for(focal_mm: float, sensor_height_mm: float = FULL_FRAME[1]) -> float:
-    """The vertical field of view (degrees) of a focal length."""
+    """Returns the vertical field of view, in degrees, of a focal length on a sensor.
+
+    Args:
+        focal_mm: Focal length in millimetres (at least 1e-6).
+        sensor_height_mm: Height of the sensor in millimetres.
+
+    Returns:
+        The vertical field of view in degrees.
+    """
     return math.degrees(2.0 * math.atan(sensor_height_mm / (2.0 * max(focal_mm, 1e-6))))
 
 
 def pupil_radius(lens: Lens, focal_mm: float) -> float:
-    """The aperture radius in world units: from the f-stop when one is set, else as given."""
+    """Returns the entrance-pupil radius in world units.
+
+    Args:
+        lens: The lens; its f-stop (when set and positive) decides, else its ``aperture_radius``.
+        focal_mm: The focal length in millimetres.
+
+    Returns:
+        The radius in world units (0 for a pinhole).
+    """
     if lens.fstop is None or lens.fstop <= 0.0:
         return lens.aperture_radius
-    return focal_mm / 1000.0 * lens.units_per_metre / (2.0 * lens.fstop)
+    return lens.world(focal_mm) / (2.0 * lens.fstop)
 
 
 def hyperfocal(lens: Lens, focal_mm: float) -> float:
-    """The hyperfocal distance (world units): focused there, everything from half of it to infinity is sharp."""
+    """Returns the hyperfocal distance: focused there, everything from half of it to infinity is sharp.
+
+    Args:
+        lens: The lens (aperture, sensor and scale).
+        focal_mm: The focal length in millimetres.
+
+    Returns:
+        The distance in world units; ``math.inf`` for a pinhole.
+    """
     radius = pupil_radius(lens, focal_mm)
     if radius <= 0.0:
         return math.inf
-    f = focal_mm / 1000.0 * lens.units_per_metre
-    coc = lens.coc_mm / 1000.0 * lens.units_per_metre
-    return f * (2.0 * radius) / coc + f
+    f = lens.world(focal_mm)
+    return f * (2.0 * radius) / lens.world(lens.coc_mm) + f
 
 
 def sharp_range(lens: Lens, focal_mm: float, focus: float) -> tuple[float, float]:
-    """(near, far) limits of acceptable sharpness around ``focus`` (far is inf beyond the hyperfocal distance)."""
+    """Returns the near and far limits of acceptable sharpness around a focus distance.
+
+    Args:
+        lens: The lens (aperture, sensor and scale).
+        focal_mm: The focal length in millimetres.
+        focus: The distance in focus, in world units.
+
+    Returns:
+        (near, far) in world units; far is ``math.inf`` at or beyond the hyperfocal distance, and a pinhole
+        gives (0, inf).
+    """
     h = hyperfocal(lens, focal_mm)
     if math.isinf(h):
         return 0.0, math.inf
-    f = focal_mm / 1000.0 * lens.units_per_metre
+    f = lens.world(focal_mm)
     near = focus * (h - f) / (h + focus - 2.0 * f)
     far = math.inf if focus >= h else focus * (h - f) / (h - focus)
     return near, far
 
 
 def fstop_for_amount(amount: float) -> float:
-    """The Camera panel's 'Depth of field' slider (0 = deep, 1 = shallow) as an f-stop (logarithmic)."""
+    """Maps the Camera panel's 'Depth of field' slider to an f-stop, logarithmically.
+
+    Args:
+        amount: 0 (deep: SIMPLE_FSTOPS[0]) … 1 (shallow: SIMPLE_FSTOPS[1]); clamped to that range.
+
+    Returns:
+        The f-stop.
+    """
     deep, shallow = SIMPLE_FSTOPS
     t = min(max(amount, 0.0), 1.0)
     return float(deep * (shallow / deep) ** t)
 
 
 def amount_for_fstop(fstop: float) -> float:
+    """Maps an f-stop back to the 'Depth of field' slider; the inverse of ``fstop_for_amount``.
+
+    Args:
+        fstop: An f-stop; values outside SIMPLE_FSTOPS (or not positive) give the nearest end.
+
+    Returns:
+        The slider amount in 0 … 1.
+    """
     deep, shallow = SIMPLE_FSTOPS
+    if fstop <= 0.0 or not math.isfinite(fstop):
+        return 0.0
     return min(max(math.log(fstop / deep) / math.log(shallow / deep), 0.0), 1.0)
 
 
 def parse_lens(text: str) -> tuple[float | None, float | None]:
-    """'50mm f/2.8', '85mm', 'f2' or a LENS_PRESETS name → (focal length mm, f-stop); ValueError otherwise."""
+    """Reads a lens description.
+
+    Args:
+        text: '50mm f/2.8', '85mm', 'f2' or a LENS_PRESETS name (or its first word, '85mm').
+
+    Returns:
+        (focal length in mm, f-stop); either is None when the text leaves it out.
+
+    Raises:
+        ValueError: The text is not a lens.
+    """
     key = text.strip().lower()
     preset = next((mm for name, mm in LENS_PRESETS.items() if name.lower() == key or name.split()[0] == key), None)
     if preset is not None:
@@ -144,14 +251,24 @@ def parse_lens(text: str) -> tuple[float | None, float | None]:
 
 
 def sensor_of(value: object) -> Pair | None:
-    """A sensor name ('aps-c'), 'WxH' in mm ('36x24') or a pair of numbers; None when it is not one."""
-    if isinstance(value, tuple | list) and len(value) == 2:
-        return (float(value[0]), float(value[1]))
+    """Reads a sensor size.
+
+    Args:
+        value: A SENSORS name ('aps-c'), 'WxH' in millimetres ('36x24') or a pair of numbers.
+
+    Returns:
+        (width, height) in millimetres, or None when ``value`` is not a sensor with a positive size.
+    """
+    size: Pair | None = None
     text = str(value).strip().lower()
-    if text in SENSORS:
-        return SENSORS[text]
-    width, _, height = text.partition("x")
     try:
-        return (float(width), float(height)) if height else None
-    except ValueError:
+        if isinstance(value, tuple | list) and len(value) == 2:
+            size = (float(value[0]), float(value[1]))
+        elif text in SENSORS:
+            size = SENSORS[text]
+        elif "x" in text:
+            width, _, height = text.partition("x")
+            size = (float(width), float(height))
+    except (TypeError, ValueError):
         return None
+    return size if size is not None and size[0] > 0.0 and size[1] > 0.0 else None

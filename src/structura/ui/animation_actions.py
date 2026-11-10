@@ -24,7 +24,14 @@ if TYPE_CHECKING:
 
 
 class AnimationActions(QObject):
+    """Render Animation, turntables and camera paths: the dialogs, the animation job and its progress."""
+
     def __init__(self, window: MainWindow) -> None:
+        """Creates the animation service and shows its progress in the Render view.
+
+        Args:
+            window: The main window.
+        """
         super().__init__(window)
         self.w = window
         self.service = AnimationService(window.runner, window.renders.backends)
@@ -33,8 +40,14 @@ class AnimationActions(QObject):
         self.service.failed.connect(self._on_failed)
 
     def animation(self, samples: int) -> Animation | None:
-        """The current tab as an Animation: its timeline, seed, parameters, the viewport camera, and the
-        Render view's size, integrator, exposure, view transform and look with the Render Settings overrides."""
+        """Returns the current tab as an Animation, or None without a tab or a built scene.
+
+        The animation has the tab's timeline, seed and parameters, the viewport camera, and the Render view's size,
+        integrator, exposure, view transform and look, with the Render Settings overrides.
+
+        Args:
+            samples: Samples per pixel of every frame.
+        """
         tab, source = self.w.tabs.current(), self.w.render_actions.render_source()
         if tab is None or source is None:
             return None
@@ -48,9 +61,9 @@ class AnimationActions(QObject):
 
     @Slot()
     def render(self) -> None:
-        tab = self.w.tabs.current()
-        if tab is None or tab.outcome is None:
-            self.w.show_message("Build the script first (F5), then render its animation.")
+        """Asks for the frames and the output (the Animation dialog), then renders the animation of the built script."""
+        tab = self.w.built_tab(tr("render its animation"))
+        if tab is None:
             return
         folder = tab.path.parent if tab.path else Path.home()
         dialog = AnimationDialog(tab.timeline, folder, self.w)
@@ -68,9 +81,8 @@ class AnimationActions(QObject):
     @Slot()
     def turntable(self) -> None:
         """Render ▸ Turntable…: key an orbit of the viewport camera, then (by default) render it."""
-        tab = self.w.tabs.current()
-        if tab is None or tab.outcome is None:
-            self.w.show_message(tr("Build the script first (F5), then make a turntable."))
+        tab = self.w.built_tab(tr("make a turntable"))
+        if tab is None:
             return
         dialog = TurntableDialog(tab.timeline.fps, self.w)
         if dialog.exec() != QDialog.DialogCode.Accepted:

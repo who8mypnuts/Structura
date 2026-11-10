@@ -36,6 +36,8 @@ def _materials(job: ExportJob) -> list[dict[str, object]]:
 
 
 def _camera(job: ExportJob) -> dict[str, object]:
+    """The camera for the Blender script: position, target and the lens in Blender's terms (its shift is
+    relative to the frame's larger side)."""
     cam = job.model.camera
     eye = job.model.points(np.asarray(cam.eye, np.float32)[None])[0]
     target = job.model.points(np.asarray(cam.target, np.float32)[None])[0]

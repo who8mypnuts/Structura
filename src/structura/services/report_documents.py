@@ -17,8 +17,13 @@ DPI = 300
 
 
 def ensure_gui_application() -> None:
-    """Qt's document engine needs fonts, which need a QGuiApplication (the CLI has none: use 'offscreen'). A
-    plain QCoreApplication cannot be upgraded; say so instead of letting Qt abort the process."""
+    """Makes sure a QGuiApplication exists: Qt's document engine needs fonts.
+
+    The command line has none: one is created on the 'offscreen' platform.
+
+    Raises:
+        RuntimeError: A plain QCoreApplication is running (it cannot be upgraded; Qt would abort).
+    """
     app = QCoreApplication.instance()
     if app is None:
         QGuiApplication(["structura", "-platform", "offscreen"])

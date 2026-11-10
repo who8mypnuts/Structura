@@ -21,7 +21,14 @@ if TYPE_CHECKING:
 
 
 class CameraActions(QObject):
+    """The Camera panel's actions: follow the viewport, standard views, saved views, focus and Copy to Script."""
+
     def __init__(self, window: MainWindow) -> None:
+        """Connects the Camera panel and the viewport.
+
+        Args:
+            window: The main window.
+        """
         super().__init__(window)
         self.w = window
         panel = window.camera_panel

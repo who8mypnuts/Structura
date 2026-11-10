@@ -42,6 +42,8 @@ def ply_bytes(mesh: TriMesh, points: np.ndarray, normals: np.ndarray) -> bytes:
 
 
 class PlyExporter(Exporter):
+    """Binary PLY with vertex colours."""
+
     name = "ply"
     title = "PLY (binary)"
     extensions: tuple[str, ...] = (".ply",)

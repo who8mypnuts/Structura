@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import replace
 
 import numpy as np
+import pytest
 from PySide6.QtWidgets import QSpinBox
 from pytestqt.qtbot import QtBot
 
@@ -98,6 +99,39 @@ def test_a_large_image_is_tone_mapped_off_the_gui_thread(qtbot: QtBot, window: M
     qtbot.waitUntil(lambda: view.view.image is not first, timeout=30000)
     assert view.last is not None and view.last.display_for == view.display()
     assert view.view.image.pixelColor(4, 4).red() > first.pixelColor(4, 4).red()
+
+
+def test_a_failed_re_tone_map_keeps_the_picture_and_says_why(
+    qtbot: QtBot, window: MainWindow, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from structura.render.output import Display  # noqa: PLC0415
+    from structura.ui.render_view.render_view import LARGE  # noqa: PLC0415
+
+    view = window.render_view
+    side = int(LARGE**0.5) + 8
+    update = RenderUpdate(RenderProgress(np.full((side, side, 3), 0.18, np.float32), 4, 0.1), "cpu", 4)
+    view._on_update("render-view", update)
+    qtbot.waitUntil(lambda: view.view.image is not None, timeout=30000)
+    shown = view.view.image
+    messages: list[str] = []
+    view.status.connect(messages.append)
+
+    def broken(self: Display, image: np.ndarray) -> np.ndarray:
+        """Fails as tone mapping would without memory.
+
+        Args:
+            self: The display settings.
+            image: The image to tone-map.
+
+        Raises:
+            RuntimeError: Always.
+        """
+        raise RuntimeError("no memory")
+
+    monkeypatch.setattr(Display, "apply", broken)
+    view.exposure.setValue(1.0)
+    qtbot.waitUntil(lambda: bool(messages), timeout=30000)
+    assert "no memory" in messages[-1] and view.view.image is shown
 
 
 def test_render_view_shows_aov_channels_and_denoised_results(window: MainWindow) -> None:

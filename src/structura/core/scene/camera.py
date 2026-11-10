@@ -23,8 +23,18 @@ LEGACY_FOV = 22.0
 
 @dataclass(frozen=True)
 class Camera:
-    """Where the camera is and what it sees. ``fov_y_deg`` is the one stored measure of the field of view (the
-    focal length is derived from it and the lens's sensor); the lens holds everything else (core/scene/lens.py)."""
+    """Where the camera is and what it sees.
+
+    ``fov_y_deg`` is the one stored measure of the field of view: the focal length is derived from it and the
+    lens's sensor. The lens (core/scene/lens.py) holds everything else.
+
+    Attributes:
+        eye: Position of the camera.
+        target: The point looked at (also the default focus).
+        up: The approximate up direction.
+        fov_y_deg: Vertical field of view in degrees.
+        lens: Projection, aperture, focus, bokeh, shift and tilt.
+    """
 
     eye: Vec3
     target: Vec3
@@ -34,25 +44,31 @@ class Camera:
 
     @property
     def basis(self) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-        """(forward, right, up) orthonormal, right-handed, looking along forward."""
+        """(forward, right, up): orthonormal and right-handed, looking along forward.
+
+        An ``up`` parallel to the view direction is replaced by another axis, so the basis is always defined.
+        """
         forward = np.subtract(self.target, self.eye).astype(np.float64)
-        forward /= np.linalg.norm(forward)
+        forward /= np.linalg.norm(forward) or 1.0
         right = np.cross(forward, self.up)
+        if np.linalg.norm(right) < 1e-12:  # looking straight along 'up'
+            right = np.cross(forward, (1.0, 0.0, 0.0) if abs(forward[0]) < 0.9 else (0.0, 0.0, 1.0))
         right /= np.linalg.norm(right)
         return forward, right, np.cross(right, forward)
 
     @property
     def distance(self) -> float:
-        """From the eye to the target."""
+        """The distance from the eye to the target."""
         return float(np.linalg.norm(np.subtract(self.target, self.eye)))
 
     @property
     def focal_length_mm(self) -> float:
+        """The focal length, in millimetres, that gives ``fov_y_deg`` on the lens's sensor."""
         return focal_length_mm(self.fov_y_deg, self.lens.sensor_mm[1])
 
     @property
     def aperture_radius(self) -> float:
-        """The lens's entrance-pupil radius in world units (0: a pinhole, everything sharp)."""
+        """The entrance-pupil radius in world units (0: a pinhole, everything sharp)."""
         return pupil_radius(self.lens, self.focal_length_mm) if self.lens.projection == "perspective" else 0.0
 
     @property
@@ -69,7 +85,7 @@ class Camera:
 
     @property
     def focus_normal(self) -> np.ndarray:
-        """The focus plane's normal: the view direction, tilted about the camera's x (then y) axis (the lens tilt)."""
+        """The focus plane's unit normal: the view direction turned by the lens tilt (about x, then y)."""
         forward, right, up = self.basis
         tx, ty = (math.radians(a) for a in self.lens.tilt)
         n = forward * math.cos(tx) + up * math.sin(tx)
@@ -79,29 +95,52 @@ class Camera:
 
     @property
     def sharp_range(self) -> tuple[float, float]:
-        """(near, far) distances of acceptable sharpness (0, inf without depth of field)."""
+        """(near, far) distances of acceptable sharpness; (0, inf) without depth of field."""
         if self.aperture_radius <= 0.0:
             return 0.0, math.inf
         return sharp_range(self.lens, self.focal_length_mm, self.focus)
 
     @property
     def fstop(self) -> float:
-        """The f-number of the aperture (the lens's, or the one its radius amounts to; inf for a pinhole)."""
+        """The f-number: the lens's, or the one its aperture radius amounts to (inf for a pinhole)."""
         if self.lens.fstop:
             return self.lens.fstop
-        focal_world = self.focal_length_mm / 1000.0 * self.lens.units_per_metre
-        return focal_world / (2.0 * self.aperture_radius) if self.aperture_radius > 0.0 else math.inf
+        radius = self.aperture_radius
+        return self.lens.world(self.focal_length_mm) / (2.0 * radius) if radius > 0.0 else math.inf
 
     def with_lens(self, **changes: object) -> Camera:
+        """Returns this camera with some lens fields changed.
+
+        Args:
+            **changes: Lens fields and their new values (``fstop=2.8``, ``blades=6`` …).
+
+        Returns:
+            The changed camera.
+        """
         return replace(self, lens=replace(self.lens, **changes))  # type: ignore[arg-type]
 
     def focused_at(self, distance: float | None) -> Camera:
-        """Focus at ``distance`` (None: back to the target)."""
+        """Returns this camera focused at a distance.
+
+        Args:
+            distance: The distance in focus, in world units; None focuses on the target again.
+
+        Returns:
+            The refocused camera.
+        """
         if distance is None:
             return self.with_lens(focus_mode="target", focus_distance=None)
         return self.with_lens(focus_mode="manual", focus_distance=float(distance))
 
     def with_focal_length(self, mm: float) -> Camera:
+        """Returns this camera with the field of view of a focal length on its sensor.
+
+        Args:
+            mm: The focal length in millimetres.
+
+        Returns:
+            The camera with the new ``fov_y_deg``.
+        """
         return replace(self, fov_y_deg=fov_for(mm, self.lens.sensor_mm[1]))
 
 

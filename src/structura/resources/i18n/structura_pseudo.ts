@@ -1257,12 +1257,8 @@
       <translation>[Bûîld Lîmîts ~~~]</translation>
     </message>
     <message>
-      <source>Build the script first (F5), then check the mesh.</source>
-      <translation>[Bûîld thé sçrîpt fîrst (F5), théñ çhéçk thé mésh. ~~~~~~~~~~~~~~]</translation>
-    </message>
-    <message>
-      <source>Build the script first (F5), then make a turntable.</source>
-      <translation>[Bûîld thé sçrîpt fîrst (F5), théñ màké à tûrñtàblé. ~~~~~~~~~~~~~~~]</translation>
+      <source>Build the script first (F5), then {then}.</source>
+      <translation>[Bûîld thé sçrîpt fîrst (F5), théñ {then}. ~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Build the script first (F5).</source>
@@ -1403,6 +1399,10 @@
     <message>
       <source>Could not run {program}: {error}</source>
       <translation>[Çöûld ñöt rûñ {program}: {error} ~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Could not show the image with these settings: {error}</source>
+      <translation>[Çöûld ñöt shöw thé îmàgé wîth thésé séttîñgs: {error} ~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Create</source>
@@ -1809,8 +1809,8 @@
       <translation>[Lîghts ~]</translation>
     </message>
     <message>
-      <source>Lights are EisenScript v2 blocks. Convert this script to v2 first? It builds the same.</source>
-      <translation>[Lîghts àré ÉîséñSçrîpt v2 blöçks. Çöñvért thîs sçrîpt tö v2 fîrst? Ît bûîlds thé sàmé. ~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+      <source>Lights are</source>
+      <translation>[Lîghts àré ~~~]</translation>
     </message>
     <message>
       <source>Lock to script</source>
@@ -1845,8 +1845,8 @@
       <translation>[Màtérîàl '{name}' wrîttéñ tö thé sçrîpt ~~~~~~~~~~~]</translation>
     </message>
     <message>
-      <source>Material blocks are EisenScript v2. Convert this script to v2 first? It builds the same.</source>
-      <translation>[Màtérîàl blöçks àré ÉîséñSçrîpt v2. Çöñvért thîs sçrîpt tö v2 fîrst? Ît bûîlds thé sàmé. ~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+      <source>Material blocks are</source>
+      <translation>[Màtérîàl blöçks àré ~~~~~]</translation>
     </message>
     <message>
       <source>Materials</source>
@@ -2705,6 +2705,10 @@
       <translation>[çàñçélléd ~~]</translation>
     </message>
     <message>
+      <source>check the mesh</source>
+      <translation>[çhéçk thé mésh ~~~~]</translation>
+    </message>
+    <message>
       <source>declared</source>
       <translation>[déçlàréd ~~]</translation>
     </message>
@@ -2723,6 +2727,10 @@
     <message>
       <source>every rule terminated on its own</source>
       <translation>[évérý rûlé térmîñàtéd öñ îts öwñ ~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>export</source>
+      <translation>[éxpört ~]</translation>
     </message>
     <message>
       <source>exporting</source>
@@ -2753,6 +2761,10 @@
       <translation>[lîñé {line} ~~~]</translation>
     </message>
     <message>
+      <source>make a turntable</source>
+      <translation>[màké à tûrñtàblé ~~~~]</translation>
+    </message>
+    <message>
       <source>not watertight (see below)</source>
       <translation>[ñöt wàtértîght (séé bélöw) ~~~~~~~]</translation>
     </message>
@@ -2767,6 +2779,10 @@
     <message>
       <source>queued</source>
       <translation>[qûéûéd ~]</translation>
+    </message>
+    <message>
+      <source>render its animation</source>
+      <translation>[réñdér îts àñîmàtîöñ ~~~~~~]</translation>
     </message>
     <message>
       <source>rendering</source>
@@ -2835,6 +2851,10 @@
     <message>
       <source>{source} runs a program on the exported file:</source>
       <translation>[{source} rûñs à prögràm öñ thé éxpörtéd fîlé: ~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>{what} EisenScript v2 blocks. Convert this script to v2 first? It builds the same.</source>
+      <translation>[{what} ÉîséñSçrîpt v2 blöçks. Çöñvért thîs sçrîpt tö v2 fîrst? Ît bûîlds thé sàmé. ~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>◆ Camera</source>

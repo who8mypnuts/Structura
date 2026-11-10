@@ -51,22 +51,45 @@ INV_PI = 0.3183098861837907
 
 @struct
 class Principled:
+    """The principled BSDF set up for one hit: lobe parameters, weights and sampling probabilities.
+
+    Attributes:
+        base: The base colour.
+        f0: Specular reflectance at normal incidence (the dielectric/metal blend).
+        ax: Specular roughness alpha along the anisotropy tangent.
+        ay: Specular roughness alpha across it.
+        tc: Cosine of the tangent's angle in the local frame.
+        ts: Sine of that angle.
+        a_coat: The clear coat's alpha.
+        a_trans: The glass lobe's alpha (transmission_roughness, else roughness).
+        eta: n_t / n_i for the side the ray is on (thin-walled: always from the outside).
+        thin: 1 when thin-walled transmission passes straight through.
+        w_diffuse: Weight of the diffuse lobe.
+        w_spec: Weight of the specular lobe.
+        w_glass: Weight of the glass lobe.
+        coat: Strength of the clear coat.
+        base_scale: Energy left for the base layer under the coat: 1 − coat · F_coat(wo).
+        prob_diffuse: Probability of sampling the diffuse lobe.
+        prob_spec: Probability of sampling the specular lobe.
+        prob_glass: Probability of sampling the glass lobe (the coat takes the rest).
+    """
+
     base: vec3
-    f0: vec3  # specular reflectance at normal incidence (dielectric/metal blend)
-    ax: f32  # specular alphas along and across the tangent
+    f0: vec3
+    ax: f32
     ay: f32
-    tc: f32  # the tangent's direction in the local frame: (cos, sin)
+    tc: f32
     ts: f32
     a_coat: f32
-    a_trans: f32  # the glass lobe (transmission_roughness, else roughness)
-    eta: f32  # n_t / n_i for the side the ray is on (thin-walled: always from the outside)
-    thin: f32  # 1: thin-walled transmission passes straight through
+    a_trans: f32
+    eta: f32
+    thin: f32
     w_diffuse: f32
     w_spec: f32
     w_glass: f32
     coat: f32
-    base_scale: f32  # energy left for the base layer under the coat: 1 − coat·F_coat(wo)
-    prob_diffuse: f32  # lobe sampling probabilities (sum to 1)
+    base_scale: f32
+    prob_diffuse: f32
     prob_spec: f32
     prob_glass: f32
 
@@ -79,8 +102,19 @@ class BsdfValue:
 
 @func
 def principled_setup(mat_f: Buf[f32], s: Surface, wo: vec3, front: u32, alpha_floor: f32, tangent: f32) -> Principled:
-    """Per-hit lobe weights; ``alpha_floor`` regularises glossy lobes (filtered caustics); ``tangent`` is the
-    angle of the anisotropy axis in the local frame (surface.tangent_angle)."""
+    """Sets up the principled BSDF for one hit.
+
+    Args:
+        mat_f: The material records.
+        s: The surface at the hit.
+        wo: The outgoing direction in the local frame.
+        front: 1 when the ray hit the surface from outside.
+        alpha_floor: Roughness floor of the glossy lobes (filtered caustics).
+        tangent: The anisotropy axis as an angle in the local frame (surface.tangent_angle).
+
+    Returns:
+        The lobe parameters, weights and sampling probabilities.
+    """
     m = s.mat
     metallic = clamp(mat_f[m + M_METALLIC], 0.0, 1.0)
     ior = mat_f[m + M_IOR]
@@ -118,25 +152,51 @@ def principled_setup(mat_f: Buf[f32], s: Surface, wo: vec3, front: u32, alpha_fl
 
 @func
 def to_tangent(p: Principled, v: vec3) -> vec3:
-    """Local-frame v in the anisotropy frame (x along the tangent)."""
+    """Returns a local-frame vector in the anisotropy frame (x along the tangent).
+
+    Args:
+        p: The BSDF (its tangent angle).
+        v: The vector in the local shading frame.
+    """
     return vec3(p.tc * v.x + p.ts * v.y, p.tc * v.y - p.ts * v.x, v.z)
 
 
 @func
 def from_tangent(p: Principled, v: vec3) -> vec3:
+    """Returns an anisotropy-frame vector in the local shading frame (the inverse of ``to_tangent``).
+
+    Args:
+        p: The BSDF (its tangent angle).
+        v: The vector in the anisotropy frame.
+    """
     return vec3(p.tc * v.x - p.ts * v.y, p.ts * v.x + p.tc * v.y, v.z)
 
 
 @struct
 class SpecLobe:
-    d: f32  # D(h)
-    g2: f32  # G2(wo, wi)
-    pdf: f32  # solid-angle pdf of the VNDF-sampled reflection
+    """The anisotropic specular microfacet terms of one reflection.
+
+    Attributes:
+        d: The distribution D(h).
+        g2: Masking-shadowing G2(wo, wi).
+        pdf: Solid-angle pdf of the VNDF-sampled reflection.
+    """
+
+    d: f32
+    g2: f32
+    pdf: f32
 
 
 @func
 def spec_lobe(p: Principled, wo: vec3, wi: vec3, h: vec3) -> SpecLobe:
-    """The anisotropic specular microfacet terms of the reflection wo → wi about h."""
+    """Returns the anisotropic specular terms of the reflection wo → wi about h.
+
+    Args:
+        p: The BSDF set up for the hit.
+        wo: The outgoing (view) direction in the local frame.
+        wi: The incoming (light) direction in the local frame.
+        h: The half vector.
+    """
     lo = ggx_lambda_aniso(to_tangent(p, wo), p.ax, p.ay)
     li = ggx_lambda_aniso(to_tangent(p, wi), p.ax, p.ay)
     d = ggx_d_aniso(to_tangent(p, h), p.ax, p.ay)
@@ -145,6 +205,13 @@ def spec_lobe(p: Principled, wo: vec3, wi: vec3, h: vec3) -> SpecLobe:
 
 @func
 def reflection_value(p: Principled, wo: vec3, wi: vec3) -> BsdfValue:
+    """Returns f · |cos θi| and the pdf of a reflected direction (every lobe that reflects).
+
+    Args:
+        p: The BSDF set up for the hit.
+        wo: The outgoing (view) direction in the local frame.
+        wi: The incoming (light) direction in the local frame.
+    """
     h = normalize(wo + wi)
     oh = max(dot(wo, h), 1.0e-6)
     inv4 = 1.0 / (4.0 * max(wo.z, 1.0e-6))
@@ -169,7 +236,16 @@ def reflection_value(p: Principled, wo: vec3, wi: vec3) -> BsdfValue:
 
 @func
 def thin_transmission_value(p: Principled, wo: vec3, wi: vec3) -> BsdfValue:
-    """Thin-walled glass: the lower-hemisphere mirror image of a glossy reflection, weighted by 1 − Fresnel."""
+    """Returns f · |cos θi| and the pdf of thin-walled transmission.
+
+    Thin-walled glass transmits like the lower-hemisphere mirror image of a glossy reflection, weighted by
+    1 − Fresnel.
+
+    Args:
+        p: The BSDF set up for the hit.
+        wo: The outgoing (view) direction in the local frame.
+        wi: The incoming (light) direction in the local frame.
+    """
     wr = vec3(wi.x, wi.y, -wi.z)
     h = normalize(wo + wr)
     oh = max(dot(wo, h), 1.0e-6)
@@ -181,6 +257,13 @@ def thin_transmission_value(p: Principled, wo: vec3, wi: vec3) -> BsdfValue:
 
 @func
 def transmission_value(p: Principled, wo: vec3, wi: vec3) -> BsdfValue:
+    """Returns f · |cos θi| and the pdf of a transmitted direction (rough dielectric, or thin-walled).
+
+    Args:
+        p: The BSDF set up for the hit.
+        wo: The outgoing (view) direction in the local frame.
+        wi: The incoming (light) direction in the local frame.
+    """
     if p.w_glass <= 0.0:
         return BsdfValue(vec3(0.0), 0.0)
     if p.thin != 0.0:
@@ -221,9 +304,19 @@ def upper(w: vec3) -> vec3:
 
 @func
 def bsdf_sample(p: Principled, wo: vec3, u_lobe: f32, u1: f32, u2: f32) -> vec3:
-    """A direction from one lobe (chosen by u_lobe), or the zero vector if the microfacet sample is invalid.
+    """Samples a direction from one lobe of the BSDF.
 
-    Evaluate the result with bsdf_eval for the estimator weight.
+    Evaluate the result with ``bsdf_eval`` for the estimator weight.
+
+    Args:
+        p: The BSDF set up for the hit.
+        wo: The outgoing direction in the local frame.
+        u_lobe: Chooses the lobe (and, for glass, reflection or refraction).
+        u1: A uniform random number for the direction.
+        u2: Another uniform random number for the direction.
+
+    Returns:
+        The direction, or the zero vector when the microfacet sample is invalid.
     """
     if u_lobe < p.prob_diffuse:
         return cosine_local(u1, u2)

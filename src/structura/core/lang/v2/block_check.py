@@ -30,14 +30,26 @@ FREE = ("colour strength",)  # validated where the value is used (material emiss
 
 @dataclass(frozen=True)
 class Verdict:
-    ok: bool  # the value has an accepted form
+    """How a value fits a key's grammar.
+
+    Attributes:
+        ok: The value has an accepted form (a number outside a range still counts as a number).
+        in_range: False for a number outside the documented range.
+        expected: The grammar, for messages (empty when the value fits).
+    """
+
+    ok: bool
     in_range: bool = True
     expected: str = ""
 
 
 @cache
 def known_keys(kind: str) -> dict[str, str]:
-    """Key → value grammar of a block kind."""
+    """Returns every key of a block kind with its value grammar, in catalogue order.
+
+    Args:
+        kind: The block kind ('light', 'render' …).
+    """
     return {k.name: k.value for k in v2_blocks()[kind].keys}
 
 
@@ -46,6 +58,7 @@ def _number(value: Any) -> bool:
 
 
 def _form_ok(form: str, value: Any) -> bool:  # noqa: PLR0911 - one branch per form of the grammar
+    """Whether ``value`` has one form of the grammar (one alternative between '|')."""
     if isinstance(value, str) and value.lower() == form:  # a literal word ('color' is also an environment type)
         return True
     if form in ("number", "float", "degrees"):
@@ -72,7 +85,15 @@ def _form_ok(form: str, value: Any) -> bool:  # noqa: PLR0911 - one branch per f
 
 
 def verdict(grammar: str, value: Any) -> Verdict:
-    """Whether ``value`` (as parse_body read it) fits ``grammar`` (a catalogue 'value')."""
+    """Checks a value against a key's grammar.
+
+    Args:
+        grammar: The catalogue's 'value' column ('0..1 | auto', 'colour', '[x y z]' …).
+        value: The value as parse_body read it.
+
+    Returns:
+        The verdict: ok, ok but out of range, or not ok (with the grammar that was expected).
+    """
     if grammar in FREE:
         return Verdict(True)
     in_range = False
@@ -90,6 +111,7 @@ def verdict(grammar: str, value: Any) -> Verdict:
 
 
 def _key_span(body: str, offset: int, key: str) -> Span:
+    """Where ``key`` is written in a block body starting at ``offset`` ('-' and '_' spellings alike)."""
     pattern = re.compile(r"(?<![\w-])" + key.replace("_", "[-_]") + r"(?![\w-])", re.I)
     match = pattern.search(body)
     return Span(offset + match.start(), offset + match.end()) if match else Span(offset, offset)
@@ -121,13 +143,31 @@ def _problems(kind: str, entries: dict[str, Any]) -> Iterator[tuple[str, str, st
 
 
 def check_block(kind: str, entries: dict[str, Any], body: str, offset: int) -> list[Diagnostic]:
-    """Diagnostics for one block's parsed ``entries``; ``body`` is its text, starting at ``offset``."""
+    """Checks one block.
+
+    Args:
+        kind: The block kind.
+        entries: Its entries as parse_body read them.
+        body: The block's text between the braces (to place the diagnostics).
+        offset: Where ``body`` starts in the script.
+
+    Returns:
+        W115 for unknown keys, E017 for malformed values and unknown presets, W117 for out-of-range numbers.
+    """
     return [diagnostic(code, message, _key_span(body, offset, key)) for key, message, code in _problems(kind, entries)]
 
 
 def known_entries(kind: str, entries: dict[str, Any]) -> dict[str, Any]:
-    """``entries`` without what check_block reports as unknown (W115) or malformed (E017): those are ignored,
-    so a typo never reaches the renderer. Out-of-range numbers (W117) are kept."""
+    """Drops what ``check_block`` reports as unknown (W115) or malformed (E017), so a typo never reaches the
+    renderer; out-of-range numbers (W117) are kept.
+
+    Args:
+        kind: The block kind.
+        entries: Its entries as parse_body read them.
+
+    Returns:
+        The entries the program uses.
+    """
     keys = known_keys(kind)
     kept = {k: v for k, v in entries.items() if k in keys and verdict(keys[k], v).ok}
     if kind == "material" and str(kept.get("preset", "")) not in presets():

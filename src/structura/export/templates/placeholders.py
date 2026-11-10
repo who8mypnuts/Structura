@@ -134,13 +134,22 @@ def mesh_values(scene: SceneIR, i: int) -> Values:
 
 
 def solid_values(scene: SceneIR, i: int) -> Values:
-    """The v2 solids (cylinder, cone, torus, ellipsoid) fill the unit cube like a box: the box placeholders,
-    plus {param} for cone[r] / torus[r] (0 for the others)."""
+    """Returns the placeholder values of a v2 solid (cylinder, cone, torus, ellipsoid) for a template.
+
+    Args:
+        scene: The scene the object belongs to.
+        i: The object's row.
+    """
     return box_values(scene, i) | {"{param}": qnum(float(scene.params(np.array([i]))[0]))}
 
 
 def tube_values(scene: SceneIR, i: int) -> Values:
-    """tube[r]: the line placeholders plus {param} (its diameter in object units) and {r} {g} {b}."""
+    """Returns the placeholder values of a tube (its ends and radius) for a template.
+
+    Args:
+        scene: The scene the object belongs to.
+        i: The object's row.
+    """
     param = {"{param}": qnum(float(scene.params(np.array([i]))[0]))}
     return line_values(scene, i) | _color(scene.rgba[i]) | param
 

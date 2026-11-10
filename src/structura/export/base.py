@@ -37,14 +37,33 @@ class ExportJob:
 
 
 class Exporter(ABC):
+    """A file format Structura writes; registered instances are listed by EXPORTERS.
+
+    Attributes:
+        name: The format's id (`structura export --format NAME`, presets).
+        title: The name the export dialog shows.
+        extensions: File suffixes, the first being the default.
+        params: The options of the export sheet and `--option KEY=VALUE`.
+        preferred: Whether it is the default exporter for its extensions.
+    """
+
     name: str = ""
     title: str = ""
     extensions: tuple[str, ...] = ()
     params: tuple[ParamSpec, ...] = ()
-    preferred: bool = True  # the default for its extensions (the 1.5 OBJ layout is opt-in)
+    preferred: bool = True  # (the 1.5 OBJ layout is opt-in)
 
     @abstractmethod
-    def write(self, job: ExportJob, path: Path) -> ExportReport: ...
+    def write(self, job: ExportJob, path: Path) -> ExportReport:
+        """Writes a scene.
+
+        Args:
+            job: The scene, its export model, the options, and progress/cancellation callbacks.
+            path: The file to write (exporters may write more files beside it).
+
+        Returns:
+            What was written: the files, counts and warnings.
+        """
 
 
 EXPORTERS: dict[str, Exporter] = {}

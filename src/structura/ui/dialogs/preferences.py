@@ -45,6 +45,7 @@ def _path_specs() -> tuple[ParamSpec, ...]:
 
 
 def _specs() -> dict[str, tuple[ParamSpec, ...]]:
+    """Every preference by section, as ParamSpecs (the dialog is generated from them)."""
     threads = os.cpu_count() or 1
     return {
         "General": (
@@ -116,9 +117,17 @@ LIVE_PREFIXES = ("appearance/", "editor/")  # previewed in the window while the 
 
 
 class PreferencesDialog(QDialog):
+    """Preferences in sections, generated from ParamSpecs; appearance and editor changes are previewed."""
+
     previewed = Signal(str, object)  # an appearance or editor preference changed: show it at once
 
     def __init__(self, settings: SettingsService, parent: QWidget | None = None) -> None:
+        """Builds a form per section from the stored values.
+
+        Args:
+            settings: The preferences.
+            parent: The parent widget.
+        """
         super().__init__(parent)
         self.setWindowTitle(tr("Preferences"))
         self.settings = settings

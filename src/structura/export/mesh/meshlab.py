@@ -75,6 +75,7 @@ class MeshLabUnavailableError(RuntimeError):
 
 
 def _pymeshlab() -> Any:
+    """The pymeshlab module; MeshLabUnavailableError (with a hint) when it cannot be imported."""
     try:
         import pymeshlab  # noqa: PLC0415 - heavy, and only needed when a clean-up or check runs
     except (ImportError, OSError) as exc:  # Linux wheels need libOpenGL.so.0 (package libopengl0)
@@ -84,6 +85,7 @@ def _pymeshlab() -> Any:
 
 
 def _run(ms: Any, name: str, **kwargs: Any) -> Any:
+    """Runs a MeshLab filter by name; RuntimeError when this PyMeshLab has no such filter."""
     filter_ = getattr(ms, name, None)
     if filter_ is None:
         raise RuntimeError(f"this PyMeshLab has no filter '{name}' (PyMeshLab 2025.7 or newer is required)")
@@ -91,7 +93,17 @@ def _run(ms: Any, name: str, **kwargs: Any) -> Any:
 
 
 def to_meshset(mesh: TriMesh) -> tuple[Any, Any]:
-    """(pymeshlab, MeshSet) holding ``mesh`` with its colours and the owner row of every face."""
+    """Puts a mesh into a PyMeshLab MeshSet.
+
+    Args:
+        mesh: The mesh; its vertex colours and the owner row of every face (as the face quality) go along.
+
+    Returns:
+        (the pymeshlab module, the MeshSet).
+
+    Raises:
+        MeshLabUnavailableError: PyMeshLab cannot be imported.
+    """
     ml = _pymeshlab()
     m = ml.Mesh(vertex_matrix=mesh.positions.astype(np.float64), face_matrix=mesh.indices.astype(np.int32),
                 v_color_matrix=np.clip(mesh.colors, 0.0, 1.0).astype(np.float64),
@@ -102,6 +114,14 @@ def to_meshset(mesh: TriMesh) -> tuple[Any, Any]:
 
 
 def from_meshset(ms: Any) -> TriMesh:
+    """Reads the current mesh of a MeshSet back, with fresh vertex normals.
+
+    Args:
+        ms: The MeshSet.
+
+    Returns:
+        The mesh; faces keep their owner rows (0 when a filter dropped them), vertices their colours.
+    """
     _run(ms, "compute_normal_per_vertex")
     m = ms.current_mesh()
     faces = m.face_number()
@@ -112,7 +132,22 @@ def from_meshset(ms: Any) -> TriMesh:
 
 
 def clean_up(mesh: TriMesh, preset: str, keep: float = 0.5) -> TriMesh:
-    """``mesh`` after the CLEANUPS ``preset`` ("none" returns it unchanged)."""
+    """Cleans a mesh with one of the CLEANUPS presets.
+
+    Args:
+        mesh: The triangles to clean (colours and owner rows survive).
+        preset: A CLEANUPS name; "none" returns the mesh unchanged.
+        keep: The share of triangles the 'light' (decimation) preset keeps.
+
+    Returns:
+        The cleaned mesh.
+
+    Raises:
+        ValueError: ``preset`` is not a CLEANUPS name.
+        MeshLabUnavailableError: PyMeshLab cannot be imported.
+    """
+    if preset not in CLEANUPS:
+        raise ValueError(f"unknown mesh clean-up '{preset}' (one of: {', '.join(CLEANUPS)})")
     steps = CLEANUPS[preset]
     if not steps or not mesh.triangles:
         return mesh
@@ -124,6 +159,22 @@ def clean_up(mesh: TriMesh, preset: str, keep: float = 0.5) -> TriMesh:
 
 @dataclass(frozen=True)
 class MeshCheck:
+    """MeshLab's measures of a mesh (Export ▸ Check Mesh).
+
+    Attributes:
+        vertices: Vertex count (after welding).
+        triangles: Triangle count.
+        components: Connected parts.
+        boundary_edges: Edges with one face (open borders).
+        holes: Holes (closed loops of boundary edges).
+        non_manifold_edges: Edges shared by more than two faces.
+        non_manifold_vertices: Vertices where surfaces touch at a point.
+        genus: The surface's genus (handles).
+        watertight: Closed and two-manifold: a 3D printer can slice it.
+        area: Surface area.
+        volume: Enclosed volume; None unless watertight.
+    """
+
     vertices: int
     triangles: int
     components: int
@@ -132,12 +183,12 @@ class MeshCheck:
     non_manifold_edges: int
     non_manifold_vertices: int
     genus: int
-    watertight: bool  # closed and two-manifold: a 3D printer can slice it
+    watertight: bool
     area: float
-    volume: float | None  # only meaningful when watertight
+    volume: float | None
 
     def rows(self) -> list[tuple[str, str]]:
-        """(label, value) for reports and the Check Mesh dialog."""
+        """Returns (label, value) pairs for reports and the Check Mesh dialog."""
         volume = "—" if self.volume is None else f"{self.volume:.6g}"
         return [("Vertices", f"{self.vertices:,}"), ("Triangles", f"{self.triangles:,}"),
                 ("Connected parts", f"{self.components:,}"), ("Watertight", "yes" if self.watertight else "no"),
@@ -148,8 +199,21 @@ class MeshCheck:
 
 
 def check_mesh(mesh: TriMesh, weld: bool = True) -> MeshCheck:
-    """MeshLab's topological and geometric measures of ``mesh`` (welded first: tessellated instances share no
-    vertices, so unwelded every box would count as open)."""
+    """Measures a mesh with MeshLab.
+
+    Args:
+        mesh: The triangles to measure (as an exporter would write them).
+        weld: Weld coincident vertices first: tessellated instances share no vertices, so unwelded every box
+            would count as open.
+
+    Returns:
+        The measures (all zero for a mesh without triangles).
+
+    Raises:
+        MeshLabUnavailableError: PyMeshLab cannot be imported.
+    """
+    if not mesh.triangles:  # (MeshLab's measures need a face)
+        return MeshCheck(0, 0, 0, 0, 0, 0, 0, 0, False, 0.0, None)
     ml, ms = to_meshset(mesh)
     if weld:
         _weld(ml, ms, 1.0)

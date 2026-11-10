@@ -58,14 +58,29 @@ MODIFIER_KEYS = {"structura"}  # presets whose Shift (slow) and Ctrl (one axis) 
 
 
 def drag_action(preset: str, buttons: Qt.MouseButton, mods: Qt.KeyboardModifier) -> str | None:
-    """'orbit', 'pan', 'zoom_roll', 'look' or None for a drag with these buttons and modifiers."""
+    """Returns what a drag does.
+
+    Args:
+        preset: The controls preset (RULES).
+        buttons: The mouse buttons held.
+        mods: The keyboard modifiers held.
+
+    Returns:
+        'orbit', 'pan', 'zoom_roll', 'look', or None.
+    """
     pressed = (bool(buttons & b) for b in (B.LeftButton, B.MiddleButton, B.RightButton))
     held = (bool(mods & m) for m in (M.ShiftModifier, M.ControlModifier, M.AltModifier))
     return RULES.get(preset, _structura)(*pressed, *held)
 
 
 def locked(dx: float, dy: float, lock: str) -> tuple[float, float]:
-    """A drag constrained to one axis: 'horizontal' keeps dx, 'vertical' keeps dy, 'free' both."""
+    """Returns a drag constrained to one axis.
+
+    Args:
+        dx: Horizontal movement.
+        dy: Vertical movement.
+        lock: 'horizontal' keeps dx, 'vertical' keeps dy, 'free' both.
+    """
     if lock == "horizontal":
         return dx, 0.0
     if lock == "vertical":
@@ -77,6 +92,12 @@ class Navigator:
     """Turns mouse drags, the wheel and fly keys into OrbitController moves."""
 
     def __init__(self, orbit: OrbitController, preset: str = "structura") -> None:
+        """Creates a navigator for one viewport.
+
+        Args:
+            orbit: The camera controller it moves.
+            preset: The controls preset.
+        """
         self.orbit, self.preset = orbit, preset
         self.lock = "free"  # the persistent orbit lock (LOCKS)
         self.last: QPoint | None = None
@@ -85,6 +106,11 @@ class Navigator:
         self._ctrl_lock: str | None = None
 
     def press(self, event: QMouseEvent) -> None:
+        """Starts a drag: remembers where, and what it does.
+
+        Args:
+            event: The mouse press.
+        """
         self.last = event.position().toPoint()
         self.action = drag_action(self.preset, event.buttons(), event.modifiers())
         self._drag, self._ctrl_lock = QPoint(), None
@@ -102,7 +128,14 @@ class Navigator:
         return factor, self.lock
 
     def move(self, event: QMouseEvent) -> bool:
-        """True when the camera moved."""
+        """Continues a drag.
+
+        Args:
+            event: The mouse move.
+
+        Returns:
+            True when the camera moved.
+        """
         if self.last is None:
             return False
         pos = event.position().toPoint()
@@ -129,11 +162,23 @@ class Navigator:
         self.last, self.action = None, None
 
     def wheel(self, steps: float, mods: Qt.KeyboardModifier = M.NoModifier) -> None:
+        """Dollies toward the target.
+
+        Args:
+            steps: Wheel steps (positive: closer).
+            mods: The modifiers held: Shift makes a quarter step.
+        """
         self.orbit.dolly(steps * (SLOW if mods & M.ShiftModifier else 1.0))
 
     def key(self, event: QKeyEvent) -> bool:
-        """W A S D / Q E fly the camera (the Structura preset, whenever the viewport has the focus; Shift: a
-        quarter step); True when the camera moved."""
+        """Flies with W A S D / Q E (the Structura preset, whenever the viewport has the focus).
+
+        Args:
+            event: The key press; Shift makes a quarter step.
+
+        Returns:
+            True when the camera moved.
+        """
         move = FLY_KEYS.get(Qt.Key(event.key()))
         if move is None or (self.preset not in MODIFIER_KEYS and self.action != "look"):
             return False

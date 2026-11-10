@@ -69,7 +69,18 @@ def _rgb(value: Any) -> tuple[float, float, float] | str:
 
 
 def build_material(name: str, entries: dict[str, Any]) -> Material:
-    """The material a block declares (unknown keys are ignored; block_check reports them)."""
+    """Builds the material a block declares.
+
+    Args:
+        name: The material's name.
+        entries: The block's entries; unknown keys are ignored (block_check reports them).
+
+    Returns:
+        The material: its preset (if any) with the block's values over it.
+
+    Raises:
+        ValueError: A colour value is not a colour.
+    """
     entries = {k: v for k, v in entries.items() if k in MATERIAL_KEYS}
     start = presets().get(str(entries.get("preset", "")), Material())
     data = {k: v for k, v in entries.items() if k not in ("preset", "emission", "base", "attenuation_color")}
@@ -97,6 +108,15 @@ def _blank(text: str, start: int, end: int) -> str:
 
 
 def extract_blocks(text: str) -> Extracted:
+    """Takes the v2 blocks out of a script.
+
+    Args:
+        text: The script.
+
+    Returns:
+        The text with every block blanked out (line numbers kept), the declarations they make, and the block
+        diagnostics (W115, W117, E017, malformed blocks).
+    """
     materials: dict[str, Material] = {}
     lights: list[LightSpec] = []
     singles: dict[str, dict[str, Any]] = {"environment": {}, "camera": {}, "render": {}}

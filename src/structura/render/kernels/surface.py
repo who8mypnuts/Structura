@@ -37,8 +37,19 @@ def surface_at(sc: SceneBufs, prim: u32) -> Surface:
 
 @func
 def tangent_angle(sc: SceneBufs, prim: u32, mat: u32, n: vec3) -> f32:
-    """The anisotropy axis — the instance's local x axis projected onto the surface — as an angle in the local
-    shading frame (sampling.to_local). 0 for isotropic materials and for primitives without a local frame."""
+    """Returns the anisotropy axis as an angle in the local shading frame (sampling.to_local).
+
+    The axis is the instance's local x axis projected onto the surface.
+
+    Args:
+        sc: The scene buffers.
+        prim: The primitive hit.
+        mat: Offset of its material record.
+        n: The shading normal.
+
+    Returns:
+        The angle in radians; 0 for isotropic materials and primitives without a local frame.
+    """
     if sc.mat_f[mat + M_ANISOTROPY] == 0.0:
         return 0.0
     b = prim * PRIM_F

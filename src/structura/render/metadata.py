@@ -28,8 +28,17 @@ def render_metadata(
     embed_script: bool = True,
     display: Display | None = None,
 ) -> dict[str, str]:
-    """The 'structura:' entries; ``display`` (the exposure, view and look the image was saved with, when not
-    the settings' own — the Render view's tool bar) is recorded in the settings."""
+    """Returns the reproducibility metadata of a render, as 'structura:' keyed text entries.
+
+    Args:
+        settings: The render settings.
+        camera: The camera the image was rendered with.
+        script: The script text (its SHA-256 is always stored).
+        params: Parameter values.
+        embed_script: Whether the script text itself is stored.
+        display: The exposure, view and look the image was saved with when they are not the settings' own (the
+            Render view's tool bar); they are recorded in the settings.
+    """
     if display is not None:
         settings = replace(settings, exposure=display.exposure, view=display.view, post=display.post)
     meta = {

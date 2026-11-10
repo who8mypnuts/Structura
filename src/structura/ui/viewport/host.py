@@ -49,8 +49,14 @@ BACKEND_KEY = "viewport/backend"  # Preferences ▸ Viewport ▸ Viewport engine
 
 
 def apply_backend_preference(settings: SettingsService) -> None:
-    """Before the QApplication: the Preferences choice becomes STRUCTURA_PREVIEW unless the environment set it
-    (gpu: the GL viewport even when the probe fails; cpu: the compute preview)."""
+    """Before the QApplication exists: Preferences ▸ Viewport engine becomes STRUCTURA_PREVIEW.
+
+    The environment wins when it sets STRUCTURA_PREVIEW already.
+
+    Args:
+        settings: The preferences ('gpu' forces the OpenGL viewport even when the check fails; 'cpu' the compute
+            viewport).
+    """
     choice = str(settings.value(BACKEND_KEY, "auto")).lower()
     if choice in ("gpu", "cpu") and "STRUCTURA_PREVIEW" not in os.environ:
         os.environ["STRUCTURA_PREVIEW"] = choice
@@ -80,12 +86,22 @@ def gpu_preview_usable() -> bool:
 
 
 class ViewportHost(QStackedWidget):
+    """The viewport: the OpenGL widget when the start-up check allows it, else (and for the Rendered view) the
+    compute viewport; the overlays on top; picking, framing, standard views and camera moves.
+    """
+
     picked = Signal(object)
     camera_changed = Signal(object)
     mode_changed = Signal(str)  # "gpu" | "cpu" | "off"
     menu_requested = Signal(QPoint)  # a right-click in either viewport (widget position): the viewport menu
 
     def __init__(self, renders: RenderService, parent: QWidget | None = None) -> None:
+        """Creates the viewports the mode allows and the overlay.
+
+        Args:
+            renders: The render service (the compute viewport and the Rendered view render through it).
+            parent: The parent widget.
+        """
         super().__init__(parent)
         self.mode = preferred_backend()
         self.compute = ComputeViewport(renders, device=preview_device())
@@ -120,8 +136,10 @@ class ViewportHost(QStackedWidget):
         self.animate_moves: Callable[[], bool] = lambda: True  # the window: False with "Reduce motion"
         self.motion = CameraMotion(self.set_camera, self._animated, self)
         self.camera_changed.connect(self.overlay.set_camera)
-        if self.gl is not None:  # every GL frame re-composites the window: the QPainter overlay must follow,
-            self.gl.frameSwapped.connect(self.overlay.update)  # or it vanishes while the view refines
+        if self.gl is not None:
+            # Every GL frame re-composites the window; a QPainter overlay that is not repainted with it
+            # vanishes while the view refines (the accumulation frames after a change).
+            self.gl.frameSwapped.connect(self.overlay.update)
 
     def set_rendered(self, on: bool) -> None:
         """The Rendered view: the viewport path-traces the script's render settings progressively (the compute
@@ -183,7 +201,11 @@ class ViewportHost(QStackedWidget):
                 widget.orbit.trackball = preset == "legacy"  # Structure Synth rotated about the view axes
 
     def set_orbit_lock(self, lock: str) -> None:
-        """View ▸ Orbit Lock: 'free', 'horizontal' (turn around the structure only) or 'vertical'."""
+        """Sets the orbit lock of both viewports.
+
+        Args:
+            lock: 'free', 'horizontal' (turn around the structure only) or 'vertical'.
+        """
         for widget in (self.gl, self.compute):
             if widget is not None:
                 widget.navigator.lock = lock
@@ -262,7 +284,7 @@ class ViewportHost(QStackedWidget):
         self.motion.move(self.camera(), camera)
 
     def selected_row(self) -> int | None:
-        """The SceneIR row of the clicked object, if one is selected."""
+        """Returns the SceneIR row of the clicked object, or None when nothing is selected."""
         row = self._options.selected
         return row if self.scene is not None and row is not None and 0 <= row < len(self.scene) else None
 
