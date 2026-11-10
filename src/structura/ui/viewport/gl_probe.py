@@ -17,7 +17,7 @@ from dataclasses import dataclass
 from functools import cache
 
 from PySide6.QtCore import QtMsgType, qInstallMessageHandler
-from PySide6.QtGui import QOffscreenSurface, QOpenGLContext, QSurfaceFormat
+from PySide6.QtGui import QOffscreenSurface, QOpenGLContext, QSurface, QSurfaceFormat, QWindow
 
 MIN_VERSION = (3, 3)  # GLSL 330 shaders (docs/08 §3)
 HEADLESS_PLATFORMS = ("offscreen", "minimal")  # no window system: a child GL widget never initialises
@@ -92,20 +92,35 @@ def parse_version(text: str) -> tuple[int, int] | None:
     return (int(match.group(1)), int(match.group(2))) if match else None
 
 
+def _version_strings(context: QOpenGLContext) -> tuple[str, str]:
+    functions = context.functions()
+    version, renderer = functions.glGetString(GL_VERSION), functions.glGetString(GL_RENDERER)
+    context.doneCurrent()
+    return str(version or ""), str(renderer or "")
+
+
 def _query(context: QOpenGLContext, fmt: QSurfaceFormat) -> tuple[str, str] | str:
-    """(GL_VERSION, GL_RENDERER) with the context current, or the reason it could not be made current."""
+    """(GL_VERSION, GL_RENDERER) with the context current on an offscreen surface — or, when the platform
+    cannot make it current there (some Wayland/EGL stacks have no pbuffer for the config), on a hidden window
+    — else the reason."""
     surface = QOffscreenSurface()
     surface.setFormat(fmt)
     surface.create()
     try:
-        if not context.makeCurrent(surface):
-            return "the context could not be made current"
-        functions = context.functions()
-        version, renderer = functions.glGetString(GL_VERSION), functions.glGetString(GL_RENDERER)
-        context.doneCurrent()
-        return str(version or ""), str(renderer or "")
+        if context.makeCurrent(surface):
+            return _version_strings(context)
     finally:
         surface.destroy()
+    window = QWindow()
+    window.setSurfaceType(QSurface.SurfaceType.OpenGLSurface)
+    window.setFormat(fmt)
+    window.create()
+    try:
+        if context.makeCurrent(window):
+            return _version_strings(context)
+    finally:
+        window.destroy()
+    return "the context could not be made current (offscreen surface and hidden window)"
 
 
 def try_format(label: str, fmt: QSurfaceFormat) -> Attempt:

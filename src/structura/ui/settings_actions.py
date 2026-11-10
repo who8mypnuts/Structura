@@ -71,10 +71,16 @@ class SettingsActions(QObject):
         folders = str(self.value("paths/library", "")).split(os.pathsep)
         set_library_paths([Path(f.strip()) for f in folders if f.strip()])
         w.viewport.set_navigation(str(self.value("viewport/controls", "structura")))
+        w.viewport.set_orbit_lock(str(self.value("viewport/orbit_lock", "free")))
         w.viewport.animate_moves = lambda: not bool(self.value("appearance/reduce_motion", False))
         logging.getLogger("structura").setLevel(LOG_LEVELS.get(str(self.value("advanced/log_level", "info")), 20))
         self._apply_preset()
         w.apply_theme(w.themes.theme)
+
+    def set_preference(self, key: str, value: object) -> None:
+        """A preference changed from a menu (orbit lock, controls): store it and apply everything."""
+        self.w.settings.set_value(key, value)
+        self.apply()
 
     def _theme_id(self) -> str:
         chosen = str(self.value("appearance/theme", self.w.themes.theme.meta.id))

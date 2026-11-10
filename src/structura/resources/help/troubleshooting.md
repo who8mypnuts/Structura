@@ -20,7 +20,11 @@ failing: on a GPU (CUDA, OpenCL or wgpu) when one is available, otherwise on the
 - **Linux, Wayland.** When native Wayland gives no desktop OpenGL, Structura restarts itself once on XWayland
   and remembers the choice if that works. To force it, start with `QT_QPA_PLATFORM=xcb structura-gui`.
 - **Check what works.** `structura doctor` shows each attempt, including the XWayland one.
-- **Override the choice.** `STRUCTURA_PREVIEW=gpu|cpu|off` sets the preview mode.
+- **The banner's Details** lists every OpenGL context the check tried and why it failed; **Use OpenGL
+  anyway** forces the OpenGL viewport from the next start (the same as Preferences ▸ Viewport ▸ Viewport
+  engine ▸ gpu). Try that when `glxinfo` shows OpenGL 4.x but the check fails — some driver and compositor
+  combinations refuse the check's offscreen context yet run the viewport fine.
+- **Override the choice.** `STRUCTURA_PREVIEW=gpu|cpu|off` sets the preview mode (over the preference).
   `STRUCTURA_PREVIEW_DEVICE=cuda|opencl|wgpu|cpu` picks the device of the compute preview.
 
 ## Renders use the CPU

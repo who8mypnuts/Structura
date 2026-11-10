@@ -36,6 +36,7 @@ class ComputeViewport(QWidget):
     clicked = Signal(QPoint, bool)  # widget position, Alt held: the host picks on the CPU
     frame_requested = Signal(bool)  # F: frame all; Shift+F: frame the selection
     view_requested = Signal(str)  # a keypad standard view (navigation.numpad_view)
+    menu_requested = Signal(QPoint)  # a right-click without a drag: the viewport menu
 
     def __init__(self, renders: RenderService, parent: QWidget | None = None, device: str = "auto") -> None:
         super().__init__(parent)
@@ -150,12 +151,15 @@ class ComputeViewport(QWidget):
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:  # noqa: N802
         pos = event.position().toPoint()
         if self._press is not None and (pos - self._press).manhattanLength() <= CLICK_SLOP:
-            self.clicked.emit(pos, bool(event.modifiers() & Qt.KeyboardModifier.AltModifier))
+            if event.button() == Qt.MouseButton.RightButton:
+                self.menu_requested.emit(pos)
+            else:
+                self.clicked.emit(pos, bool(event.modifiers() & Qt.KeyboardModifier.AltModifier))
         self._press = None
         self.navigator.release()
 
     def wheelEvent(self, event: QWheelEvent) -> None:  # noqa: N802
-        self.navigator.wheel(event.angleDelta().y() / 120.0)
+        self.navigator.wheel(event.angleDelta().y() / 120.0, event.modifiers())
         self._moved()
 
     def keyPressEvent(self, event: QKeyEvent) -> None:  # noqa: N802

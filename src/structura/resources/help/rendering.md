@@ -22,7 +22,7 @@ Structura has two engines:
 - The **Inspector** panel describes the object you clicked (kind, generation, tag, colour, position, size,
   the line that made it) and selects everything alike: the same call site, tag, generation or kind.
   **Isolate Selection** hides everything else in the viewport; **View ▸ Show All** brings it back.
-- **View ▸ X-Ray** makes the structure see-through in the viewport.
+- **View ▸ X-Ray** makes the structure see-through in the viewport; choosing a look (or X-Ray again) ends it.
 - **View ▸ Rendered View** (Ctrl+Alt+V) path-traces the viewport itself with the script's render settings,
   refining while the camera rests — like Blender's rendered view.
 - **Alt+click** a surface to focus the camera there (depth of field in renders); **Shift+F** frames the

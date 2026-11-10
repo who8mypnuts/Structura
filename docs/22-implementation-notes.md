@@ -187,6 +187,10 @@ detail is in [PROGRESS.md](PROGRESS.md).
   documented but not implemented; the user guide's v2 example did not compile (a loop followed by a
   transform list — the documentation's v2 examples are now compiled by a test).
 
+- **Round 2 (owner feedback):** the viewport menu and modifier keys (`ui/viewport/navigation.py`, `ui/
+  viewport_menu.py`), live Preferences preview, the renderer's scene-version key (X-ray), overlay repaint on
+  `frameSwapped`, the probe's hidden-window fallback and the honoured Viewport engine preference.
+
 ## 3. Hardware checks for the owner
 
 1. `pytest -m gpu` and the full parity suite. The `device` fixture includes CUDA, so every parity test also
@@ -215,7 +219,10 @@ detail is in [PROGRESS.md](PROGRESS.md).
     shift/tilt/bias/anamorphic and fisheye paths compile for CUDA in the sandbox — `tests/parity/
     test_cuda_compile.py` — but have only run on the CPU backend); render the *Structura v2* examples; try a
     turntable with video; apply each lighting rig to one of your scripts.
-13. (Owner review) Decide the installers' PyMeshLab licensing (ADR-0010 amendment 1) before the first public
+13. (Round 2) If the viewport still says OpenGL 3.3 is unavailable on the NVIDIA machine: send the banner's
+    *Details* (or `structura doctor`), then try *Use OpenGL anyway*; with `WAYLAND_DISPLAY` set, also
+    `QT_QPA_PLATFORM=xcb structura-gui`.
+14. (Owner review) Decide the installers' PyMeshLab licensing (ADR-0010 amendment 1) before the first public
     installer; on Linux check the AppImage finds `libOpenGL.so.0`.
 
 ## 4. Backlog — planned but not built

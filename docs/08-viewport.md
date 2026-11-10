@@ -135,10 +135,14 @@ flowchart LR
 | Action | Structura (default) | Legacy preset (1.5) | Blender preset |
 |--------|---------------------|---------------------|----------------|
 | Orbit | LMB drag | LMB drag | MMB drag |
-| Pan | MMB drag / Shift+LMB | RMB drag / Ctrl+LMB | Shift+MMB |
-| Dolly | Wheel (toward the cursor) | Wheel | Wheel |
+| Pan | MMB or RMB drag | RMB drag / Ctrl+LMB | Shift+MMB |
+| Dolly | Wheel (Shift: fine steps) | Wheel | Wheel |
 | Zoom + roll | Alt+LMB | Shift+LMB / LMB+RMB | Ctrl+MMB |
-| Fly | RMB + WASD/QE | — | Shift+` |
+| Look around | Alt+RMB | — | — |
+| Fly | W A S D / Q E (the viewport focused; Shift: slow) | — | — |
+| Slow (¼ speed) | Shift while dragging | — | — |
+| One axis | Ctrl while orbiting or panning; View ▸ Orbit Lock for good | Orbit Lock | Orbit Lock |
+| Context menu | Right-click | Right-click | Right-click |
 | Frame all / selection | `F` / `Shift+F` | Reset view | Home / Numpad . |
 | Standard views | Numpad 1/3/7 (+Ctrl), Numpad 5 persp/ortho | — | same |
 
@@ -146,9 +150,13 @@ flowchart LR
 - **Copy camera to script** writes 1.5 `set` lines (v1) or a `camera {}` block (v2) via the exact mapping in
   [07](07-scene-model.md) §5.
 
-> **As built (M10):** `ui/viewport/navigation.py` maps mouse buttons to orbit / pan / zoom-roll / fly for the
-> three presets in the table (Preferences ▸ Viewport controls), shared by both viewports. Fly is RMB + W A S
-> D / Q E. F frames everything, Shift+F the selection. Standard views (front … isometric) are View ▸
+> **As built (M10, M12):** `ui/viewport/navigation.py` maps mouse buttons to orbit / pan / zoom-roll / look
+> for the three presets in the table (Preferences ▸ Viewport controls, or the viewport menu), shared by both
+> viewports. In the Structura preset W A S D / Q E fly whenever the viewport has the focus, Shift slows every
+> drag, wheel step and fly step to a quarter, Ctrl locks a drag to its dominant axis, and the **orbit lock**
+> (free / horizontal / vertical) does that for good. A right-click opens the **viewport menu**
+> (`ui/viewport_menu.py`: framing, standard views, looks, overlays, orbit lock, controls, Copy Camera to
+> Script, the rendered view), built from the command registry. F frames everything, Shift+F the selection. Standard views (front … isometric) are View ▸
 > Standard Views, buttons in the Camera panel, and keypad 1 / 3 / 7 (Ctrl: the opposite side) and 5
 > (isometric). Camera moves glide over 200 ms (`camera_motion.py`) unless Reduce motion is on. Orbit is
 > turntable, and trackball with the Structure Synth controls. Copy Camera to Script is

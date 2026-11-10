@@ -23,6 +23,7 @@ from ...preview.instances import PreviewScene
 from ...preview.options import PreviewOptions
 from ...services.jobs import FunctionJob, Lane
 from ...services.render import RenderService
+from ...services.settings import SettingsService
 from . import gl_probe
 from .camera_motion import CameraMotion
 from .compute_viewport import ComputeViewport
@@ -42,6 +43,17 @@ def preview_label(mode: str) -> str:
 def preview_device() -> str:
     """The compute device of the fallback preview: STRUCTURA_PREVIEW_DEVICE, else the best available."""
     return os.environ.get("STRUCTURA_PREVIEW_DEVICE", "auto")
+
+
+BACKEND_KEY = "viewport/backend"  # Preferences ▸ Viewport ▸ Viewport engine: auto | gpu | cpu
+
+
+def apply_backend_preference(settings: SettingsService) -> None:
+    """Before the QApplication: the Preferences choice becomes STRUCTURA_PREVIEW unless the environment set it
+    (gpu: the GL viewport even when the probe fails; cpu: the compute preview)."""
+    choice = str(settings.value(BACKEND_KEY, "auto")).lower()
+    if choice in ("gpu", "cpu") and "STRUCTURA_PREVIEW" not in os.environ:
+        os.environ["STRUCTURA_PREVIEW"] = choice
 
 
 def preferred_backend() -> str:
@@ -71,6 +83,7 @@ class ViewportHost(QStackedWidget):
     picked = Signal(object)
     camera_changed = Signal(object)
     mode_changed = Signal(str)  # "gpu" | "cpu" | "off"
+    menu_requested = Signal(QPoint)  # a right-click in either viewport (widget position): the viewport menu
 
     def __init__(self, renders: RenderService, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -87,12 +100,14 @@ class ViewportHost(QStackedWidget):
             self.gl.clicked.connect(self._clicked)
             self.gl.frame_requested.connect(self._frame)
             self.gl.view_requested.connect(self.standard_view)
+            self.gl.menu_requested.connect(self.menu_requested)
         self.addWidget(self.compute)
         self.compute.picked.connect(self.picked)
         self.compute.camera_changed.connect(self.camera_changed)
         self.compute.clicked.connect(self._clicked)
         self.compute.frame_requested.connect(self._frame)
         self.compute.view_requested.connect(self.standard_view)
+        self.compute.menu_requested.connect(self.menu_requested)
         self.compute.device_changed.connect(self._compute_device)
         self._options = PreviewOptions()
         self._watchdog = QTimer(self)  # some platforms never initialise a child QOpenGLWidget
@@ -105,6 +120,8 @@ class ViewportHost(QStackedWidget):
         self.animate_moves: Callable[[], bool] = lambda: True  # the window: False with "Reduce motion"
         self.motion = CameraMotion(self.set_camera, self._animated, self)
         self.camera_changed.connect(self.overlay.set_camera)
+        if self.gl is not None:  # every GL frame re-composites the window: the QPainter overlay must follow,
+            self.gl.frameSwapped.connect(self.overlay.update)  # or it vanishes while the view refines
 
     def set_rendered(self, on: bool) -> None:
         """The Rendered view: the viewport path-traces the script's render settings progressively (the compute
@@ -164,6 +181,16 @@ class ViewportHost(QStackedWidget):
             if widget is not None:
                 widget.navigator.preset = preset
                 widget.orbit.trackball = preset == "legacy"  # Structure Synth rotated about the view axes
+
+    def set_orbit_lock(self, lock: str) -> None:
+        """View ▸ Orbit Lock: 'free', 'horizontal' (turn around the structure only) or 'vertical'."""
+        for widget in (self.gl, self.compute):
+            if widget is not None:
+                widget.navigator.lock = lock
+
+    @property
+    def orbit_lock(self) -> str:
+        return self.compute.navigator.lock
 
     def set_overlays(self, overlays: Overlays, grid: bool) -> None:
         """Axis gizmo, bounds and HUD (both viewports); the ground grid (the GPU viewport draws it)."""

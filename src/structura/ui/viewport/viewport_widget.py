@@ -31,6 +31,7 @@ class ViewportWidget(QOpenGLWidget):
     clicked = Signal(QPoint, bool)  # widget position, Alt held (Alt+click focuses the camera there)
     frame_requested = Signal(bool)  # F: frame all; Shift+F: frame the selection
     view_requested = Signal(str)  # a keypad standard view (navigation.numpad_view)
+    menu_requested = Signal(QPoint)  # a right-click without a drag: the viewport menu
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -126,7 +127,9 @@ class ViewportWidget(QOpenGLWidget):
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:  # noqa: N802
         pos = event.position().toPoint()
         if self._press is not None and (pos - self._press).manhattanLength() <= CLICK_SLOP:
-            if event.modifiers() & Qt.KeyboardModifier.AltModifier:
+            if event.button() == Qt.MouseButton.RightButton:
+                self.menu_requested.emit(pos)
+            elif event.modifiers() & Qt.KeyboardModifier.AltModifier:
                 self.clicked.emit(pos, True)
             else:
                 self.pick_at(pos)
@@ -143,7 +146,7 @@ class ViewportWidget(QOpenGLWidget):
         self.picked.emit(row)
 
     def wheelEvent(self, event: QWheelEvent) -> None:  # noqa: N802
-        self.navigator.wheel(event.angleDelta().y() / 120.0)
+        self.navigator.wheel(event.angleDelta().y() / 120.0, event.modifiers())
         self._camera_moved()
 
     def keyPressEvent(self, event: Any) -> None:  # noqa: N802

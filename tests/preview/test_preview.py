@@ -88,6 +88,20 @@ def test_accumulation_converges_and_then_stops(setup: tuple[PreviewRenderer, Any
     assert renderer.render(moved, fbo, (W, H), options) == 1  # any change restarts
 
 
+def test_a_new_scene_restarts_accumulation(setup: tuple[PreviewRenderer, Any, Camera]) -> None:
+    """X-ray off after on: the scene is uploaded again; the converged frame of the old one must not stay
+    (the old key used id(), which a new GpuScene often gets back)."""
+    renderer, fbo, camera = setup
+    options = PreviewOptions(ssao=False)
+    for _ in range(ACCUMULATE):
+        renderer.render(camera, fbo, (W, H), options)
+    assert renderer.converged
+    scene = renderer.scene
+    assert scene is not None
+    renderer.set_scene(scene)
+    assert renderer.render(camera, fbo, (W, H), options) == 1
+
+
 def test_empty_scene_draws_the_background(ctx: Any) -> None:
     renderer = PreviewRenderer(ctx)
     fbo = ctx.framebuffer([ctx.texture((W, H), 4)])

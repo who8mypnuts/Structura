@@ -17,7 +17,7 @@ from ..ui.fonts import register_fonts
 from ..ui.i18n import install as install_translators
 from ..ui.viewport import xwayland
 from ..ui.viewport.gl_probe import preferred_format, probe
-from ..ui.viewport.host import preferred_backend
+from ..ui.viewport.host import apply_backend_preference, preferred_backend
 from ..ui.warmup import WarmUp
 from ..ui.watchdog import StallWatchdog
 from .diagnostics import Diagnostics
@@ -48,6 +48,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     diagnostics = Diagnostics(settings.directory() / "logs")
     diagnostics.install()
     xwayland.apply_hint(settings)
+    apply_backend_preference(settings)
     app = create_app(args)
     gl_ok = preferred_backend() == "gpu"  # runs the OpenGL probe before any window exists
     if not gl_ok:

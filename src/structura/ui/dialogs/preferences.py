@@ -8,6 +8,8 @@ import shutil
 from pathlib import Path
 
 import platformdirs
+from PySide6.QtCore import Signal
+from PySide6.QtGui import QShowEvent
 from PySide6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
@@ -69,7 +71,11 @@ def _specs() -> dict[str, tuple[ParamSpec, ...]]:
         "Viewport": (
             ParamSpec("viewport/controls", ParamType.ENUM, "structura", "Viewport controls",
                       choices=("structura", "legacy", "blender")),
-            ParamSpec("viewport/backend", ParamType.ENUM, "auto", "Viewport (restart)", choices=("auto", "gpu", "cpu")),
+            ParamSpec("viewport/orbit_lock", ParamType.ENUM, "free", "Orbit lock (one axis while orbiting and panning)",
+                      choices=("free", "horizontal", "vertical")),
+            ParamSpec("viewport/backend", ParamType.ENUM, "auto",
+                      "Viewport engine (restart): auto; gpu = OpenGL even when the start-up check fails; cpu = compute",
+                      choices=("auto", "gpu", "cpu")),
         ),
         "Rendering": (
             ParamSpec("render/device", ParamType.ENUM, "auto", "Render device", choices=NAMES),
@@ -106,7 +112,12 @@ def clear_caches(root: Path | None = None) -> int:
     return removed
 
 
+LIVE_PREFIXES = ("appearance/", "editor/")  # previewed in the window while the dialog is open
+
+
 class PreferencesDialog(QDialog):
+    previewed = Signal(str, object)  # an appearance or editor preference changed: show it at once
+
     def __init__(self, settings: SettingsService, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setWindowTitle(tr("Preferences"))
@@ -119,6 +130,7 @@ class PreferencesDialog(QDialog):
                   "Advanced": tr("Advanced")}  # fmt: skip
         for section, specs in _specs().items():
             form = ParamForm(specs, {s.key: settings.value(s.key, s.default) for s in specs})
+            form.changed.connect(self._changed)
             self.forms.append(form)
             page = self._advanced(form) if section == "Advanced" else form
             scroll = QScrollArea()
@@ -133,6 +145,28 @@ class PreferencesDialog(QDialog):
         layout.addWidget(self.tabs, 1)
         layout.addWidget(buttons)
         self.reset_layout_requested = False
+        self._sized = False
+
+    def showEvent(self, event: QShowEvent) -> None:  # noqa: N802
+        super().showEvent(event)
+        if not self._sized:  # once, with the window's fonts and style applied (the hints are final then)
+            self._sized = True
+            self._size_to_content()
+
+    def _size_to_content(self) -> None:
+        """Wide enough for every tab title and the widest page, tall enough for the tallest page (a tab widget
+        sizes itself to the first page alone, which squashed the dialog)."""
+        pages = [self.tabs.widget(i).widget() for i in range(self.tabs.count())]  # type: ignore[union-attr]
+        width = max(self.tabs.tabBar().sizeHint().width() + 48, *(p.sizeHint().width() + 72 for p in pages), 640)
+        height = max(*(p.sizeHint().height() + 140 for p in pages), 420)
+        screen = self.screen().availableGeometry() if self.screen() else None
+        if screen is not None:
+            width, height = min(width, screen.width() - 80), min(height, screen.height() - 80)
+        self.resize(width, height)
+
+    def _changed(self, key: str, value: object) -> None:
+        if key.startswith(LIVE_PREFIXES):
+            self.previewed.emit(key, value)
 
     def _advanced(self, form: ParamForm) -> QWidget:
         page = QWidget()

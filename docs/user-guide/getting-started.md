@@ -54,9 +54,11 @@ what was found.
 
 2. With **live build** on (the ⚡ button), the structure appears in the viewport as you type. Otherwise press
    **F5**.
-3. Orbit with the left mouse button, pan with the middle one, zoom with the wheel; hold the right button to
-   look around and fly with W A S D / Q E. **View ▸ Frame All** fits the structure. **Preferences ▸
-   Viewport controls** switches to Structure Synth's or Blender's mouse layout.
+3. Orbit with the left mouse button, pan with the middle or the right one, zoom with the wheel; Alt+right
+   drag looks around, and W A S D / Q E fly while the viewport has the focus. **Shift** slows any of these to
+   a quarter, **Ctrl** keeps a drag on one axis, and **View ▸ Orbit Lock** does that permanently. A
+   **right-click** opens the viewport menu: framing, standard views, looks, overlays, the orbit lock and the
+   mouse layout (Structura, Structure Synth or Blender). **View ▸ Frame All** fits the structure.
 4. Click an object: the editor jumps to the rule call that made it.
 5. **Alt+drag** over the `6` after `rz`: dragging left or right changes the number and rebuilds live (Shift =
    fine, Ctrl = coarse; the whole drag is one undo step).

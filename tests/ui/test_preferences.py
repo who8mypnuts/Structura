@@ -62,3 +62,35 @@ def test_the_memory_guard_refuses_a_render_that_does_not_fit(
     monkeypatch.setattr(render_actions, "available_bytes", lambda: 1024)
     assert window.render_actions.guarded_source() is None
     assert "memory guard" in window.status.currentMessage()
+
+
+def test_the_dialog_opens_wide_enough_for_its_tabs_and_pages(window: MainWindow) -> None:
+    dialog = PreferencesDialog(window.settings, window)
+    dialog.show()
+    assert dialog.width() >= dialog.tabs.tabBar().sizeHint().width() + 40 and dialog.height() >= 420
+    widest = max(dialog.tabs.widget(i).widget().sizeHint().width() for i in range(dialog.tabs.count()))  # type: ignore[union-attr]
+    cap = dialog.screen().availableGeometry().width() - 80  # a small screen caps the width
+    assert dialog.width() >= min(widest + 60, cap)
+    dialog.close()
+
+
+def test_theme_changes_show_at_once_and_cancel_puts_them_back(
+    window: MainWindow, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from PySide6.QtWidgets import QComboBox, QDialog  # noqa: PLC0415
+
+    before = window.themes.theme.meta.id
+    other = "nord" if before != "nord" else "structura-light"
+    seen: list[str] = []
+
+    def exec_(dialog: PreferencesDialog) -> int:
+        combo = dialog.forms[1].widgets["appearance/theme"]
+        assert isinstance(combo, QComboBox)
+        combo.setCurrentText(other)  # previewed while the dialog is open
+        seen.append(window.themes.theme.meta.id)
+        return QDialog.DialogCode.Rejected
+
+    monkeypatch.setattr(PreferencesDialog, "exec", exec_)
+    window.dialogs.preferences()
+    assert seen == [other] and window.themes.theme.meta.id == before  # cancelled: the old theme again
+    assert window.settings.value("appearance/theme", before) == before

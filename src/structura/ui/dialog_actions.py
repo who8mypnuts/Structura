@@ -10,7 +10,7 @@ from PySide6.QtWidgets import QDialog, QMessageBox
 
 from .. import __version__
 from .dialogs.keymap_editor import KeymapEditor
-from .dialogs.preferences import PreferencesDialog
+from .dialogs.preferences import LIVE_PREFIXES, PreferencesDialog
 from .dialogs.theme_editor import ThemeEditor
 from .dialogs.theme_picker import ThemePicker
 
@@ -24,12 +24,23 @@ class DialogActions(QObject):
         self.w = window
 
     def preferences(self) -> None:
+        """Appearance and editor choices show in the window while the dialog is open; Cancel puts them back."""
         dialog = PreferencesDialog(self.w.settings, self.w)
+        before = {key: value for key, value in dialog.values().items() if key.startswith(LIVE_PREFIXES)}
+        dialog.previewed.connect(self._preview)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             dialog.apply()
             self.w.apply_settings()
             if dialog.reset_layout_requested:
                 self.w.workspaces.reset_layout()
+            return
+        for key, value in before.items():
+            self.w.settings.set_value(key, value)
+        self.w.apply_settings()
+
+    def _preview(self, key: str, value: object) -> None:
+        self.w.settings.set_value(key, value)
+        self.w.apply_settings()
 
     def choose_theme(self) -> None:
         ThemePicker(self.w.themes, self.w).exec()

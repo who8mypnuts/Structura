@@ -18,8 +18,9 @@ NONE = M.NoModifier
 @pytest.mark.parametrize(
     ("preset", "buttons", "mods", "action"),
     [("structura", B.LeftButton, NONE, "orbit"), ("structura", B.MiddleButton, NONE, "pan"),
-     ("structura", B.LeftButton, M.ShiftModifier, "pan"), ("structura", B.LeftButton, M.AltModifier, "zoom_roll"),
-     ("structura", B.RightButton, NONE, "fly"),
+     ("structura", B.LeftButton, M.ShiftModifier, "orbit"), ("structura", B.LeftButton, M.AltModifier, "zoom_roll"),
+     ("structura", B.RightButton, NONE, "pan"), ("structura", B.RightButton, M.AltModifier, "look"),
+     ("structura", B.LeftButton, M.ControlModifier, "orbit"),
      ("legacy", B.LeftButton, NONE, "orbit"), ("legacy", B.RightButton, NONE, "pan"),
      ("legacy", B.LeftButton, M.ControlModifier, "pan"), ("legacy", B.LeftButton | B.RightButton, NONE, "zoom_roll"),
      ("blender", B.LeftButton, NONE, None), ("blender", B.MiddleButton, NONE, "orbit"),
@@ -29,22 +30,64 @@ def test_presets_map_buttons_to_actions(preset: str, buttons: object, mods: obje
     assert drag_action(preset, buttons, mods) == action  # type: ignore[arg-type]
 
 
-def _mouse(kind: QMouseEvent.Type, pos: QPoint, buttons: Qt.MouseButton) -> QMouseEvent:
-    return QMouseEvent(kind, QPointF(pos), QPointF(pos), Qt.MouseButton.NoButton, buttons, NONE)
+def _mouse(
+    kind: QMouseEvent.Type, pos: QPoint, buttons: Qt.MouseButton, mods: Qt.KeyboardModifier = NONE
+) -> QMouseEvent:
+    return QMouseEvent(kind, QPointF(pos), QPointF(pos), Qt.MouseButton.NoButton, buttons, mods)
 
 
-def test_flying_turns_about_the_eye_and_wasd_moves_it(qapp: object) -> None:
+def _drag(nav: Navigator, buttons: Qt.MouseButton, *points: tuple[int, int], mods: Qt.KeyboardModifier = NONE) -> None:
+    nav.press(_mouse(QMouseEvent.Type.MouseButtonPress, QPoint(0, 0), buttons, mods))
+    for x, y in points:
+        nav.move(_mouse(QMouseEvent.Type.MouseMove, QPoint(x, y), buttons, mods))
+    nav.release()
+
+
+def test_looking_around_turns_about_the_eye_and_wasd_flies(qapp: object) -> None:
     orbit = OrbitController(Camera((0.0, 0.0, 10.0), (0.0, 0.0, 0.0)))
     nav = Navigator(orbit)
-    nav.press(_mouse(QMouseEvent.Type.MouseButtonPress, QPoint(0, 0), B.RightButton))
-    nav.move(_mouse(QMouseEvent.Type.MouseMove, QPoint(40, 0), B.RightButton))
+    nav.press(_mouse(QMouseEvent.Type.MouseButtonPress, QPoint(0, 0), B.RightButton, M.AltModifier))
+    nav.move(_mouse(QMouseEvent.Type.MouseMove, QPoint(40, 0), B.RightButton, M.AltModifier))
     assert np.allclose(orbit.camera().eye, (0.0, 0.0, 10.0)) and not np.allclose(orbit.camera().target, (0, 0, 0))
+    nav.release()
     before = np.asarray(orbit.camera().eye)
-    assert nav.key(QKeyEvent(QKeyEvent.Type.KeyPress, Qt.Key.Key_W, NONE))
+    assert nav.key(QKeyEvent(QKeyEvent.Type.KeyPress, Qt.Key.Key_W, NONE))  # whenever the viewport has the focus
     moved = np.asarray(orbit.camera().eye) - before
     assert np.allclose(moved / np.linalg.norm(moved), orbit.forward) and np.isclose(np.linalg.norm(moved), 0.5)
-    nav.release()
-    assert not nav.key(QKeyEvent(QKeyEvent.Type.KeyPress, Qt.Key.Key_W, NONE))  # only while flying
+    before = np.asarray(orbit.camera().eye)
+    assert nav.key(QKeyEvent(QKeyEvent.Type.KeyPress, Qt.Key.Key_W, M.ShiftModifier))  # Shift: a quarter step
+    assert np.isclose(np.linalg.norm(np.asarray(orbit.camera().eye) - before), 0.125)
+    nav.preset = "legacy"
+    assert not nav.key(QKeyEvent(QKeyEvent.Type.KeyPress, Qt.Key.Key_W, NONE))  # 1.5 controls have no flying
+
+
+def test_shift_slows_and_ctrl_locks_a_drag_to_one_axis(qapp: object) -> None:
+    def orbited(mods: Qt.KeyboardModifier, *points: tuple[int, int]) -> np.ndarray:
+        orbit = OrbitController(Camera((0.0, 0.0, 10.0), (0.0, 0.0, 0.0)))
+        _drag(Navigator(orbit), B.LeftButton, *points, mods=mods)
+        return np.asarray(orbit.camera().eye)
+
+    plain, slow = orbited(NONE, (40, 0)), orbited(M.ShiftModifier, (40, 0))
+    assert abs(slow[0]) < abs(plain[0]) / 3  # a quarter of the turn
+    diagonal = orbited(NONE, (30, 20))
+    assert diagonal[0] != 0 and diagonal[1] != 0
+    locked = orbited(M.ControlModifier, (6, 2), (30, 20))  # mostly horizontal: the eye stays level
+    assert locked[0] != 0 and np.isclose(locked[1], 0.0)
+    vertical = orbited(M.ControlModifier, (2, 6), (20, 30))
+    assert np.isclose(vertical[0], 0.0) and vertical[1] != 0
+
+
+def test_the_orbit_lock_constrains_every_drag(qapp: object) -> None:
+    orbit = OrbitController(Camera((0.0, 0.0, 10.0), (0.0, 0.0, 0.0)))
+    nav = Navigator(orbit)
+    nav.lock = "horizontal"
+    _drag(nav, B.LeftButton, (30, 30))
+    assert np.isclose(orbit.camera().eye[1], 0.0) and orbit.camera().eye[0] != 0
+    nav.lock = "vertical"
+    _drag(nav, B.RightButton, (30, 30))  # pan, locked too
+    assert np.isclose(orbit.camera().target[0], 0.0) and orbit.camera().target[1] != 0
+    nav.wheel(1.0, M.ShiftModifier)
+    assert orbit.distance > 10 * 0.88  # a slow wheel step
 
 
 def test_trackball_orbits_about_the_view_and_passes_the_poles() -> None:

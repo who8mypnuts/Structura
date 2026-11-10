@@ -48,6 +48,10 @@
       <translation>[Bàçk ~]</translation>
     </message>
     <message>
+      <source>Blender</source>
+      <translation>[Bléñdér ~~]</translation>
+    </message>
+    <message>
       <source>Blender script (.py + .npz)…</source>
       <translation>[Bléñdér sçrîpt (.pý + .ñpz)… ~~~~~~~~]</translation>
     </message>
@@ -126,6 +130,10 @@
     <message>
       <source>Console</source>
       <translation>[Çöñsölé ~~]</translation>
+    </message>
+    <message>
+      <source>Constrain orbiting and panning to one axis (Ctrl while dragging does it for one drag)</source>
+      <translation>[Çöñstràîñ örbîtîñg àñd pàññîñg tö öñé àxîs (Çtrl whîlé dràggîñg döés ît för öñé dràg) ~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Convert to EisenScript v2</source>
@@ -268,6 +276,10 @@
       <translation>[Fràmé thé strûçtûré ~~~~~]</translation>
     </message>
     <message>
+      <source>Free</source>
+      <translation>[Fréé ~]</translation>
+    </message>
+    <message>
       <source>Front</source>
       <translation>[Fröñt ~]</translation>
     </message>
@@ -290,6 +302,10 @@
     <message>
       <source>History</source>
       <translation>[Hîstörý ~~]</translation>
+    </message>
+    <message>
+      <source>Horizontal Only</source>
+      <translation>[Hörîzöñtàl Öñlý ~~~~]</translation>
     </message>
     <message>
       <source>How the picked object was made: its chain of rule calls</source>
@@ -342,6 +358,10 @@
     <message>
       <source>Lights</source>
       <translation>[Lîghts ~]</translation>
+    </message>
+    <message>
+      <source>Lit, with ambient occlusion and shadows</source>
+      <translation>[Lît, wîth àmbîéñt öççlûsîöñ àñd shàdöws ~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Live Build</source>
@@ -410,6 +430,10 @@
     <message>
       <source>Object, time and memory limits for every build</source>
       <translation>[Öbjéçt, tîmé àñd mémörý lîmîts för évérý bûîld ~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>One neutral material, for the shapes alone</source>
+      <translation>[Öñé ñéûtràl màtérîàl, för thé shàpés àlöñé ~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>Only the image, full screen (Esc returns)</source>
@@ -740,6 +764,18 @@
       <translation>[Stöp thé bûîld ör sçrîpt ~~~~~~~]</translation>
     </message>
     <message>
+      <source>Structura</source>
+      <translation>[Strûçtûrà ~~]</translation>
+    </message>
+    <message>
+      <source>Structure Synth</source>
+      <translation>[Strûçtûré Sýñth ~~~~]</translation>
+    </message>
+    <message>
+      <source>Structure Synth's headlight look</source>
+      <translation>[Strûçtûré Sýñth's héàdlîght löök ~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>Sunflow scene (.sc)…</source>
       <translation>[Sûñflöw sçéñé (.sç)… ~~~~~~]</translation>
     </message>
@@ -766,6 +802,10 @@
     <message>
       <source>The last render's report on the clipboard, ready for a forum post or a bug report</source>
       <translation>[Thé làst réñdér's répört öñ thé çlîpböàrd, réàdý för à förûm pöst ör à bûg répört ~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>The mouse layout of the viewport (Preferences ▸ Viewport)</source>
+      <translation>[Thé möûsé làýöût öf thé vîéwpört (Préféréñçés ▸ Vîéwpört) ~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>The scripts of a crashed session whose recovery you declined</source>
@@ -826,6 +866,10 @@
     <message>
       <source>Variations</source>
       <translation>[Vàrîàtîöñs ~~~]</translation>
+    </message>
+    <message>
+      <source>Vertical Only</source>
+      <translation>[Vértîçàl Öñlý ~~~]</translation>
     </message>
     <message>
       <source>Vim keybindings</source>
@@ -895,6 +939,10 @@
       <translation>[Çölöûr Bý ~~]</translation>
     </message>
     <message>
+      <source>Controls</source>
+      <translation>[Çöñtröls ~~]</translation>
+    </message>
+    <message>
       <source>Edit</source>
       <translation>[Édît ~]</translation>
     </message>
@@ -925,6 +973,10 @@
     <message>
       <source>Open Recent</source>
       <translation>[Öpéñ Réçéñt ~~~]</translation>
+    </message>
+    <message>
+      <source>Orbit Lock</source>
+      <translation>[Örbît Löçk ~~~]</translation>
     </message>
     <message>
       <source>Overlays</source>
@@ -1067,6 +1119,10 @@
     <message>
       <source>$FILE is the exported file; %NAME% / $NAME are environment variables. You are asked before it runs.</source>
       <translation>[$FÎLÉ îs thé éxpörtéd fîlé; %ÑÀMÉ% / $ÑÀMÉ àré éñvîröñméñt vàrîàblés. Ýöû àré àskéd béföré ît rûñs. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>'structura doctor' prints the same check, with the devices.</source>
+      <translation>['strûçtûrà döçtör' prîñts thé sàmé çhéçk, wîth thé dévîçés. ~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>(current options)</source>
@@ -1881,8 +1937,8 @@
       <translation>[Öpéñ sçrîpts ~~~]</translation>
     </message>
     <message>
-      <source>OpenGL 3.3 is not available, so the viewport draws with the render kernels ({mode}). 'structura doctor' shows why; the troubleshooting guide lists fixes.</source>
-      <translation>[ÖpéñGL 3.3 îs ñöt àvàîlàblé, sö thé vîéwpört dràws wîth thé réñdér kérñéls ({mode}). 'strûçtûrà döçtör' shöws whý; thé tröûbléshöötîñg gûîdé lîsts fîxés. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
+      <source>OpenGL check</source>
+      <translation>[ÖpéñGL çhéçk ~~~]</translation>
     </message>
     <message>
       <source>Open…</source>
@@ -1987,6 +2043,10 @@
     <message>
       <source>Python scripts (*.py)</source>
       <translation>[Pýthöñ sçrîpts (*.pý) ~~~~~~]</translation>
+    </message>
+    <message>
+      <source>Qt platform: {platform}</source>
+      <translation>[Qt plàtförm: {platform} ~~~~~~]</translation>
     </message>
     <message>
       <source>Quality</source>
@@ -2441,6 +2501,10 @@
       <translation>[Témplàté téxt ~~~]</translation>
     </message>
     <message>
+      <source>The OpenGL viewport is forced from the next start (Preferences ▸ Viewport).</source>
+      <translation>[Thé ÖpéñGL vîéwpört îs förçéd fröm thé ñéxt stàrt (Préféréñçés ▸ Vîéwpört). ~~~~~~~~~~~~~~~~~~~~~~]</translation>
+    </message>
+    <message>
       <source>The camera orbits the current view's target. The timeline's camera path is replaced; its range becomes one seamless loop.</source>
       <translation>[Thé çàmérà örbîts thé çûrréñt vîéw's tàrgét. Thé tîmélîñé's çàmérà pàth îs réplàçéd; îts ràñgé béçömés öñé séàmléss lööp. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
@@ -2475,6 +2539,10 @@
     <message>
       <source>The script wants to run:</source>
       <translation>[Thé sçrîpt wàñts tö rûñ: ~~~~~~~]</translation>
+    </message>
+    <message>
+      <source>The start-up check found no desktop OpenGL 3.3 context, so the viewport draws with the render kernels ({mode}). Details shows what was tried; 'Use OpenGL anyway' forces the OpenGL viewport on the next start (Preferences ▸ Viewport ▸ Viewport engine).</source>
+      <translation>[Thé stàrt-ûp çhéçk föûñd ñö désktöp ÖpéñGL 3.3 çöñtéxt, sö thé vîéwpört dràws wîth thé réñdér kérñéls ({mode}). Détàîls shöws whàt wàs trîéd; 'Ûsé ÖpéñGL àñýwàý' förçés thé ÖpéñGL vîéwpört öñ thé ñéxt stàrt (Préféréñçés ▸ Vîéwpört ▸ Vîéwpört éñgîñé). ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]</translation>
     </message>
     <message>
       <source>The template '{name}'</source>
@@ -2527,6 +2595,10 @@
     <message>
       <source>Up</source>
       <translation>[Ûp ~]</translation>
+    </message>
+    <message>
+      <source>Use OpenGL anyway</source>
+      <translation>[Ûsé ÖpéñGL àñýwàý ~~~~~]</translation>
     </message>
     <message>
       <source>Use the structure's colours</source>

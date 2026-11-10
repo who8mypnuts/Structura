@@ -92,6 +92,7 @@ class PreviewRenderer:
         self._no_highlight = _mask_texture(ctx, np.zeros(1, np.uint8), 1)
         self.highlight: Any = None  # provenance hover: one texel per SceneIR row
         self._highlight_version = 0
+        self._scene_version = 0
         self.adaptive = AdaptiveQuality(ctx)
         self.reduced = False  # the last frame skipped SSAO (the camera moves and full frames are slow)
         self._shadow_key: tuple[object, ...] | None = None
@@ -102,6 +103,7 @@ class PreviewRenderer:
         if self.gpu is not None:
             self.gpu.release()
         self._shadow_key = None
+        self._scene_version += 1  # (not id(): a freed GpuScene's id is often reused by the next one)
         self.gpu = GpuScene(self.ctx, self.programs, scene) if scene is not None else None
 
     def set_highlight(self, rows: np.ndarray | None, count: int) -> None:
@@ -129,7 +131,7 @@ class PreviewRenderer:
             if self.targets is not None:
                 self.targets.release()
             self.targets = Targets(self.ctx, w, h)
-        key = (camera, (w, h), options, id(self.gpu), self._highlight_version)
+        key = (camera, (w, h), options, self._scene_version, self._highlight_version)
         moving = accumulate and key != self._key
         if not accumulate or key != self._key or self.samples >= ACCUMULATE:
             self.samples = 0 if (not accumulate or key != self._key) else self.samples

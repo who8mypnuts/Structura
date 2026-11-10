@@ -69,7 +69,10 @@ class BuildActions(QObject):
         self.w.workbench.set_seed(seed)
 
     def set_look(self, look: str) -> None:
+        """View ▸ Look: the viewport's shading; choosing a look also ends X-ray (a see-through variant of any look)."""
         self.w.viewport.set_options(replace(self.w.viewport.options, look=look))
+        if self.w.workbench.view.xray:
+            self.toggle_xray()
 
     def set_color_by(self, mode: str) -> None:
         """Colour the viewport by how the structure was made (renders and exports keep the authored colours)."""

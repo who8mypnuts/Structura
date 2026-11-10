@@ -88,9 +88,7 @@ def _view_help(w: MainWindow, has_tab: Predicate) -> list[Command]:
         *(Command(f"view.camera_{name}", title, _viewer(w, name), "", "View", 1, submenu="Standard Views")
           for name, title in VIEW_TITLES.items()),
         Command("view.fullscreen", "Full Screen", w.dialogs.toggle_fullscreen, "F11", "View", 1),
-        Command("view.look_studio", "Look: Studio", lambda: w.build_actions.set_look("studio"), "", "View", 2),
-        Command("view.look_legacy", "Look: Legacy", lambda: w.build_actions.set_look("legacy"), "", "View", 2),
-        Command("view.look_clay", "Look: Clay", lambda: w.build_actions.set_look("clay"), "", "View", 2),
+        *_looks(w),
         Command("view.xray", "X-Ray", w.build_actions.toggle_xray, "", "View", 2, checkable=True,
                 checked=lambda: w.workbench.view.xray, tip="See through the structure (the viewport only)"),
         Command("view.rendered", "Rendered View", lambda: w.viewport.set_rendered(not w.viewport.rendered),
@@ -98,8 +96,6 @@ def _view_help(w: MainWindow, has_tab: Predicate) -> list[Command]:
                 tip="Path-trace the viewport with the script's render settings (as in Blender's rendered view)"),
         Command("view.show_all", "Show All", lambda: w.build_actions.isolate(None), "", "View", 2,
                 tip="Show the objects hidden by Isolate Selection (Inspector)"),
-        Command("view.look_technical", "Look: Technical", lambda: w.build_actions.set_look("technical"), "", "View", 2,
-                tip="Flat colours with dark edges"),
         Command("view.theme", "Choose Theme…", w.dialogs.choose_theme, "Ctrl+K, Ctrl+T", "View", 3),
         Command("view.theme_edit", "Edit Theme…", w.dialogs.edit_theme, "", "View", 3,
                 tip="Colours, contrast and syntax styles of the current theme"),
@@ -142,7 +138,31 @@ def _colors(w: MainWindow, has_tab: Predicate) -> list[Command]:
         handler, on = _overlay(w, name)
         commands.append(Command(f"view.overlay_{name}", title, handler, "", "View", 2, checkable=True, checked=on,
                                 submenu="Overlays"))  # fmt: skip
-    return commands
+    return commands + _navigation(w)
+
+
+LOCK_TITLES = {"free": "Free", "horizontal": "Horizontal Only", "vertical": "Vertical Only"}
+CONTROL_TITLES = {"structura": "Structura", "legacy": "Structure Synth", "blender": "Blender"}
+
+
+def _navigation(w: MainWindow) -> list[Command]:
+    """Orbit lock and controls preset: View submenus and the viewport menu; both are preferences."""
+
+    def choose(key: str, value: str) -> Callable[[], None]:
+        return lambda: w.settings_actions.set_preference(key, value)
+
+    def chosen(key: str, value: str, default: str) -> Callable[[], bool]:
+        return lambda: str(w.settings.value(key, default)) == value
+
+    locks = [Command(f"view.orbit_lock_{lock}", title, choose("viewport/orbit_lock", lock), "", "View", 2,
+                     checkable=True, checked=chosen("viewport/orbit_lock", lock, "free"), submenu="Orbit Lock",
+                     tip="Constrain orbiting and panning to one axis (Ctrl while dragging does it for one drag)")
+             for lock, title in LOCK_TITLES.items()]  # fmt: skip
+    controls = [Command(f"view.controls_{preset}", title, choose("viewport/controls", preset), "", "View", 2,
+                        checkable=True, checked=chosen("viewport/controls", preset, "structura"), submenu="Controls",
+                        tip="The mouse layout of the viewport (Preferences ▸ Viewport)")
+                for preset, title in CONTROL_TITLES.items()]  # fmt: skip
+    return locks + controls
 
 
 VIEW_TITLES = {"front": "Front", "back": "Back", "right": "Right", "left": "Left", "top": "Top", "bottom": "Bottom",
@@ -185,6 +205,25 @@ def _build_render(w: MainWindow, has_tab: Predicate) -> list[Command]:
         Command("timeline.key_camera", "Key Camera", w.timeline.key_camera, "", "View", 5, enabled=has_tab,
                 tip="Key the viewport camera at the current frame"),
     ]  # fmt: skip
+
+
+LOOK_TITLES = {"studio": "Look: Studio", "legacy": "Look: Legacy", "clay": "Look: Clay", "technical": "Look: Technical"}
+LOOK_TIPS = {"studio": "Lit, with ambient occlusion and shadows", "legacy": "Structure Synth's headlight look",
+             "clay": "One neutral material, for the shapes alone",
+             "technical": "Flat colours with dark edges"}  # fmt: skip
+
+
+def _looks(w: MainWindow) -> list[Command]:
+    """The viewport looks: one is always checked; choosing one also ends X-ray."""
+
+    def choose(look: str) -> Callable[[], None]:
+        return lambda: w.build_actions.set_look(look)
+
+    def current(look: str) -> Callable[[], bool]:
+        return lambda: w.viewport.options.look == look and not w.workbench.view.xray
+
+    return [Command(f"view.look_{look}", title, choose(look), "", "View", 2, checkable=True, checked=current(look),
+                    tip=LOOK_TIPS[look]) for look, title in LOOK_TITLES.items()]  # fmt: skip
 
 
 def _render(w: MainWindow, has_tab: Predicate) -> list[Command]:

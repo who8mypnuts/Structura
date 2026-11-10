@@ -1234,3 +1234,19 @@ was carried out phase by phase, each closed with the full gate set.
 
 See [22](22-implementation-notes.md) §3 items 12–13: GPU parity for the new kernel paths on the GTX 1660,
 and the installers' PyMeshLab licensing.
+
+### Round 2 (owner feedback on the build)
+
+- Preferences opened squashed (a QTabWidget sizes itself to its first page): the dialog now sizes itself to
+  every tab and page on first show; appearance and editor changes are previewed live and reverted on Cancel.
+- X-ray could not be left: `PreviewRenderer.render` keyed its converged-frame cache on `id(gpu_scene)`, which
+  a new GpuScene often gets back after the old one is freed — the old frame was redisplayed. A scene version
+  counter replaces it; choosing a look also ends X-ray and the looks are checkable.
+- The axis gizmo vanished after toggling the ground grid: the QPainter overlay widget over the QOpenGLWidget
+  was not repainted while the GL view refined (accumulation frames); `frameSwapped` now repaints it.
+- "OpenGL 3.3 isn't available" on an NVIDIA 4.6 driver: not reproducible here; the probe gained a hidden-window
+  fallback when the offscreen surface cannot be made current, the banner shows every attempt and offers
+  *Use OpenGL anyway*, and Preferences ▸ Viewport ▸ Viewport engine (which existed but was never read) now sets
+  `STRUCTURA_PREVIEW` before the probe. The owner's `structura doctor` output decides the next step.
+- Viewport controls: right-click menu, RMB pan, Alt+RMB look, Shift slow, Ctrl one-axis, View ▸ Orbit Lock and
+  View ▸ Controls; W A S D fly whenever the viewport has the focus.

@@ -81,6 +81,7 @@ from .statusbar import StatusBar
 from .theming import apply_theme
 from .timeline_actions import TimelineActions
 from .viewport.host import ViewportHost, preview_label
+from .viewport_menu import ViewportMenu
 from .welcome import WelcomePage
 from .widgets.banner import Banner
 from .widgets.toast import ToastStack
@@ -125,7 +126,7 @@ class MainWindow(QMainWindow):
         self.errors = ErrorReporter(self)
         self.material_actions, self.light_actions = MaterialActions(self), LightActions(self)
         self.registry = CommandRegistry(self)
-        self.command_palette = CommandPalette(self.registry, self)
+        self.viewport_menu, self.command_palette = ViewportMenu(self), CommandPalette(self.registry, self)
         self.quick_open = QuickOpen(self)
         register_builtin(self.registry, self)
         self.keymap = Keymap(self.registry, self.settings)

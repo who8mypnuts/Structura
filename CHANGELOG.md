@@ -8,6 +8,23 @@ semantic versioning. The detailed record, with every deviation from the plan, is
 The first complete implementation of the plan in [docs/](docs/README.md) (milestones M0–M8, M10 and M11; M9
 waits on the owner's platform checks).
 
+### Owner review, round 2: viewport controls and fixes
+
+- **Viewport controls:** right-click opens a viewport menu (framing, standard views, looks, overlays, orbit
+  lock, controls, Copy Camera to Script, Rendered View); the right button pans, Alt+right looks around, W A S
+  D / Q E fly whenever the viewport has the focus; Shift slows drags, the wheel and flying to a quarter; Ctrl
+  locks a drag to one axis; **View ▸ Orbit Lock** (free / horizontal / vertical) and **View ▸ Controls** are
+  preferences reachable from the menu.
+- **Preferences** open at a size that fits every tab and page; theme, font, density and editor choices show in
+  the window while the dialog is open (Cancel puts them back). Preferences ▸ Viewport ▸ Viewport engine is
+  honoured (gpu forces the OpenGL viewport even when the start-up check fails).
+- **OpenGL check:** falls back to a hidden window when the offscreen surface cannot be made current (some
+  Wayland/EGL stacks); the fallback banner has Details (every attempt) and Use OpenGL anyway.
+- **Fixed:** the viewport kept showing the old image after X-ray was switched off (a freed GL scene's `id()`
+  was reused, so the converged frame was redisplayed); choosing a look now also ends X-ray, and the looks show
+  which is active; the axis gizmo (and every overlay) vanished while the GL viewport refined after the ground
+  grid was toggled.
+
 ### Owner review: glass, lenses, looks, recovery and clean-up
 
 - **Glass:** coloured glass whose colour deepens with thickness (`attenuation_color`, `attenuation_distance`,

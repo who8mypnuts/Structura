@@ -8,9 +8,11 @@ from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QObject, Slot
 from PySide6.QtGui import QGuiApplication
+from PySide6.QtWidgets import QMessageBox
 
 from .i18n import tr
-from .viewport.gl_probe import HEADLESS_PLATFORMS
+from .viewport.gl_probe import HEADLESS_PLATFORMS, probe
+from .viewport.host import BACKEND_KEY
 
 if TYPE_CHECKING:
     from .app_window import MainWindow
@@ -51,7 +53,19 @@ class Banners(QObject):
         if mode in ("gpu", "off", "rendered") or FALLBACK in self.offered or headless:
             return
         self.offered.add(FALLBACK)
-        text = tr("OpenGL 3.3 is not available, so the viewport draws with the render kernels ({mode}). "
-                  "'structura doctor' shows why; the troubleshooting guide lists fixes.")  # fmt: skip
+        text = tr("The start-up check found no desktop OpenGL 3.3 context, so the viewport draws with the render "
+                  "kernels ({mode}). Details shows what was tried; 'Use OpenGL anyway' forces the OpenGL "
+                  "viewport on the next start (Preferences ▸ Viewport ▸ Viewport engine).")  # fmt: skip
         text = text.format(mode=mode.upper())
-        self.w.banner.show_message(FALLBACK, text)
+        actions = ((tr("Details"), self._probe_details), (tr("Use OpenGL anyway"), self._force_opengl))
+        self.w.banner.show_message(FALLBACK, text, actions)
+
+    def _probe_details(self) -> None:
+        lines = [f"{'ok' if a.ok else 'no'}  {a.label}: {a.detail}" for a in probe().attempts]
+        where = tr("Qt platform: {platform}").format(platform=QGuiApplication.platformName())
+        text = "\n".join([where, *lines, "", tr("'structura doctor' prints the same check, with the devices.")])
+        QMessageBox.information(self.w, tr("OpenGL check"), text)
+
+    def _force_opengl(self) -> None:
+        self.w.settings.set_value(BACKEND_KEY, "gpu")
+        self.w.show_message(tr("The OpenGL viewport is forced from the next start (Preferences ▸ Viewport)."))
