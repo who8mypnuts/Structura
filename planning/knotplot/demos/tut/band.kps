@@ -1,0 +1,21 @@
+require KPbuild 4739
+
+delete all
+scenery init
+
+alloc 9999
+
+colour off
+
+knot 1
+fitto 9
+
+cyl-rad = 2
+hstart = \rr360
+double
+disp t
+
+scenery object .link
+
+delete all
+scenery on

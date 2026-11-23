@@ -1,0 +1,376 @@
+styleguide {
+	version = 1.5
+	date = "Sep 12 1992 00:19:32"
+	languageType = USA
+}
+
+design design-1 {
+	model like model model-1
+	preferences like preferences preferences-1
+	windows are {
+		sketchWindow sketchWindow-1
+	}
+}
+model model-1 {
+	world like assembly World
+	inventory = {
+		materials are {
+			material "Canary Yellow"
+			material Charcoal
+			material Eggshell
+			material "Emerald Green"
+			material Scarlet
+			material Tangerine
+			material Ultramarine
+		}
+		backdrops are {
+			colorBackdrop White
+		}
+		qualities are {
+			quality Faceted
+			quality Phong
+			quality Phong,Anti-alias
+			quality "Ray Trace"
+			quality "Ray Trace,Photo-Real"
+		}
+		resolutions are {
+			resolution 4:2:2
+			resolution NTSC
+			resolution PAL
+			resolution Preview
+			resolution Slide
+		}
+	}
+	groundPlane like ground plane-1
+}
+preferences preferences-1 {
+	currentMaterial like material Eggshell
+	activeColor = [ 255 0 0 255 ]
+	liveColor = [ 0 226 0 255 ]
+	groundPlaneColor = [ 161 161 161 255 ]
+	dormantGeometryColor = [ 0 0 0 255 ]
+	dormantGuidesColor = [ 0 239 239 255 ]
+	dormantLightsColor = [ 255 155 0 255 ]
+	dormantViewsColor = [ 233 102 220 255 ]
+	selectedComponentColor = [ 131 9 196 255 ]
+	editGuidesColor = [ 0 0 255 255 ]
+	curveSmoothness = 8
+	surfaceSmoothness = 4
+	currentUnit = 4
+	viewSize like resolution Preview
+	groundPlaneLength = 24
+	groundPlaneWidth = 24
+	groundPlaneVisible? = 1
+	planeDivisionsSize = 1
+	majorDivisionsEvery = 6
+	renderSetup like renderSettings renderSettings-1
+	showMessages? = 1
+	modalRefresh? = 1
+	createCaps? = 1
+	distanceMeasure = 0.25
+	angleMeasure = 5
+	scaleMeasure = 5
+	useMeasure? = 0
+	defaultWireframeSmoothness = 2
+	defaultRenderSmoothness = 5
+}
+sketchWindow sketchWindow-1 {
+	defaultView = {
+		shape like viewShape viewShape-1
+		scale = [ 1 1 1 ]
+		orientation = [ 0.779528732301 0.322891373179 0.53672722741 75.3175696006 ]
+		translation = [ 0 0 46.1024945095 ]
+	}
+	rectangle = [ 43 62 619 810 ]
+}
+assembly World {
+	shape like assemblyShape World-Shape
+	scale = [ 1 1 1 ]
+	orientation = [ 1 1 1 0 ]
+	translation = [ 0 0 0 ]
+	material like material Eggshell
+	materialInherited? = 0
+}
+material "Canary Yellow" {
+	illuminationModel = 3
+	diffuseness = 1
+	cosinePower = 16
+	eccentricity = 0.13
+	refractiveIndex = 1
+	color = {
+		value = [ 53.5866330968 0.758037689784 1 ]
+		alpha = 1
+	}
+	colorPatternUsed? = 0
+	useIncandescence? = 0
+	incandescence = {
+		value = [ 0 0 0 ]
+		alpha = 1
+	}
+	specularColorSource = 1
+	specularFraction = 0.25
+	transparency = 0
+	transparencyPatternUsed? = 0
+	reflectivity = 0.221
+	finishPatternUsed? = 0
+}
+material Charcoal {
+	illuminationModel = 3
+	diffuseness = 0.852633333333
+	cosinePower = 16
+	eccentricity = 0.13
+	refractiveIndex = 1
+	color = {
+		value = [ 90.5781643397 0.0100556954299 0.157900358587 ]
+		alpha = 1
+	}
+	colorPatternUsed? = 0
+	useIncandescence? = 0
+	incandescence = {
+		value = [ 0 0 0 ]
+		alpha = 1
+	}
+	specularColorSource = 0.4
+	specularFraction = 0.5
+	transparency = 0
+	transparencyPatternUsed? = 0
+	reflectivity = 0
+	finishPatternUsed? = 0
+}
+material Eggshell {
+	illuminationModel = 0
+	diffuseness = 0.9
+	cosinePower = 16
+	eccentricity = 0.21
+	refractiveIndex = 1
+	color = {
+		value = [ 90.001373312 0.00999465934234 0.85526817731 ]
+		alpha = 1
+	}
+	colorPatternUsed? = 0
+	useIncandescence? = 0
+	incandescence = {
+		value = [ 0 0 0 ]
+		alpha = 1
+	}
+	specularColorSource = 1
+	specularFraction = 0.25
+	transparency = 0
+	transparencyPatternUsed? = 0
+	reflectivity = 0
+	finishPatternUsed? = 0
+}
+material "Emerald Green" {
+	illuminationModel = 3
+	diffuseness = 0.9
+	cosinePower = 32
+	eccentricity = 0.13
+	refractiveIndex = 1
+	color = {
+		value = [ 153.431906615 0.939147020676 0.67763790341 ]
+		alpha = 1
+	}
+	colorPatternUsed? = 0
+	useIncandescence? = 0
+	incandescence = {
+		value = [ 0 0 0 ]
+		alpha = 1
+	}
+	specularColorSource = 1
+	specularFraction = 0.75
+	transparency = 0
+	transparencyPatternUsed? = 0
+	reflectivity = 0.2
+	finishPatternUsed? = 0
+}
+material Scarlet {
+	illuminationModel = 3
+	diffuseness = 0.9
+	cosinePower = 32
+	eccentricity = 0.13
+	refractiveIndex = 1
+	color = {
+		value = [ 0 1 1 ]
+		alpha = 1
+	}
+	colorPatternUsed? = 0
+	useIncandescence? = 0
+	incandescence = {
+		value = [ 0 0 0 ]
+		alpha = 1
+	}
+	specularColorSource = 0.8
+	specularFraction = 1
+	transparency = 0
+	transparencyPatternUsed? = 0
+	reflectivity = 0.2
+	finishPatternUsed? = 0
+}
+material Tangerine {
+	illuminationModel = 3
+	diffuseness = 1
+	cosinePower = 16
+	eccentricity = 0.13
+	refractiveIndex = 1
+	color = {
+		value = [ 25.922636759 0.800579842832 1 ]
+		alpha = 1
+	}
+	colorPatternUsed? = 0
+	useIncandescence? = 0
+	incandescence = {
+		value = [ 0 0 0 ]
+		alpha = 1
+	}
+	specularColorSource = 0.8
+	specularFraction = 0.5
+	transparency = 0
+	transparencyPatternUsed? = 0
+	reflectivity = 0.2
+	finishPatternUsed? = 0
+}
+material Ultramarine {
+	illuminationModel = 3
+	diffuseness = 0.9
+	cosinePower = 32
+	eccentricity = 0.13
+	refractiveIndex = 1
+	color = {
+		value = [ 218.345616846 0.854291599908 1 ]
+		alpha = 1
+	}
+	colorPatternUsed? = 0
+	useIncandescence? = 0
+	incandescence = {
+		value = [ 0 0 0 ]
+		alpha = 1
+	}
+	specularColorSource = 1
+	specularFraction = 1
+	transparency = 0
+	transparencyPatternUsed? = 0
+	reflectivity = 0.2
+	finishPatternUsed? = 0
+}
+colorBackdrop White {
+	color = {
+		value = [ 0 0 1 ]
+		alpha = 1
+	}
+}
+quality Faceted {
+	maxReflectionsPerRay = 0
+	maxRefractionsPerRay = 6
+	edgeSmoothness = 0
+	shadingMethod = 1
+	hasShadows? = 0
+	rayTracing? = 0
+	cartoonDist = 0
+}
+quality Phong {
+	maxReflectionsPerRay = 0
+	maxRefractionsPerRay = 6
+	edgeSmoothness = 0
+	shadingMethod = 3
+	hasShadows? = 0
+	rayTracing? = 0
+	cartoonDist = 0
+}
+quality Phong,Anti-alias {
+	maxReflectionsPerRay = 0
+	maxRefractionsPerRay = 6
+	edgeSmoothness = 2
+	shadingMethod = 3
+	hasShadows? = 0
+	rayTracing? = 0
+	cartoonDist = 0
+}
+quality "Ray Trace" {
+	maxReflectionsPerRay = 2
+	maxRefractionsPerRay = 6
+	edgeSmoothness = 0
+	shadingMethod = 3
+	hasShadows? = 0
+	rayTracing? = 1
+	cartoonDist = 0
+}
+quality "Ray Trace,Photo-Real" {
+	maxReflectionsPerRay = 3
+	maxRefractionsPerRay = 6
+	edgeSmoothness = 3
+	shadingMethod = 3
+	hasShadows? = 1
+	rayTracing? = 1
+	cartoonDist = 0
+}
+resolution 4:2:2 {
+	width = 720
+	height = 486
+}
+resolution NTSC {
+	width = 640
+	height = 480
+}
+resolution PAL {
+	width = 780
+	height = 576
+}
+resolution Preview {
+	width = 320
+	height = 240
+}
+resolution Slide {
+	width = 2048
+	height = 1366
+}
+ground plane-1 {
+	shape like groundShape plane-1-Shape
+	scale = [ 12 12 1 ]
+	orientation = [ 12 12 1 0 ]
+	translation = [ 0 0 0 ]
+}
+renderSettings renderSettings-1 {
+	sunlightColor = {
+		value = [ 0 0 1 ]
+		alpha = 1
+	}
+	ambientLightColor = {
+		value = [ 0 0 0.500007629511 ]
+		alpha = 1
+	}
+	ambientDirection = [ 0 0 0 ]
+	quality like quality Faceted
+	resolution like resolution Preview
+}
+viewShape viewShape-1 {
+	aspectRatio = 0.75
+	focalDistance = 1
+	iconSize = 1
+}
+assemblyShape World-Shape {
+	components are {
+		ground plane-1
+		assembly torus
+	}
+}
+groundShape plane-1-Shape {
+}
+assembly torus {
+	shape like assemblyShape torus-Shape
+	scale = [ 1 1 1 ]
+	orientation = [ 1 1 1 0 ]
+	translation = [ 0 0 0 ]
+	material like material Eggshell
+}
+assemblyShape torus-Shape {
+	components are {
+		surface surface-2
+	}
+}
+surface surface-2 {
+	shape like surfaceShape surface-2-Shape
+	scale = [ 1 1 1 ]
+	orientation = [ 1 1 1 0 ]
+	translation = [ 0 0 0 ]
+	material like material Eggshell
+}

@@ -1,0 +1,24 @@
+reset all
+verb=f
+silent=t
+back=0
+hsta=\rr360
+scale=.23
+cyl=\rr[.2/.44]
+ortho
+knot cd
+func init
+func silent
+func 1 <21feb07a.kps
+func 2 idle
+func 7 "fitto 16;cent mass"
+
+idle "warp sann .999;func exec 7"
+
+silent=f
+echo 
+echo 
+echo " *** Example of the use of `warp sannulus' command"
+echo "     Press F1 to load another knot, F2 to stop the warping"
+echo 
+

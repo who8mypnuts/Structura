@@ -1,0 +1,41 @@
+reset all
+panel off
+silent = t
+
+special backdrop
+if \rr3 < 2 then "<Backdrops.kps"
+
+persp 600 1 20    % Otherwise backdrop will disappear!
+
+matrgb knot .5 .5 .5 s
+matrgb knot .2 .5 1  d
+matrgb knot 0  .2 .2 a
+
+cyl = .06
+scale = .88
+mode cfb
+
+if \rr1 < .5 then "load demos-demo2.k" else "conway 22"
+
+align ax
+<randorient.kps
+about x \rr[-40/40]
+<relax1-extra.kps
+
+charge=15
+hooke=1
+tinc=15
+ago 102
+
+Draw = off
+mode s
+sat = .8
+Draw = on
+
+
+<inflate-n-explode.kps
+
+
+
+silent = f
+panel on

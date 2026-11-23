@@ -1,0 +1,30 @@
+reset all
+
+texture reset
+back=0
+disp t
+
+Draw=f
+new=f
+line dir 1 0 0
+line num 22
+#4 line;about z 90
+
+if \rr3 < 1 then "hincr=0"
+if \rr2 < 1 then "about z 45"
+hstar=\rr360
+cyl=\rr[.2/.4]
+
+if \rr2 < 1 then "delete all;unknot 222;fitto 11"
+
+Draw=t
+disp t
+
+gflush
+tex view
+
+cyl=.9
+par0 = 50299566 
+
+texture appmode replace
+

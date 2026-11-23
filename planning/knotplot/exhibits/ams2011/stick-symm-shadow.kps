@@ -1,0 +1,25 @@
+
+mathsv k 0 0 0 e
+mathsv k 0 0 0 d
+mathsv k 0 0 0 s
+mathsv k 0 0 0 a
+mathsv b 0 0 0 e
+mathsv b 0 0 0 s
+mathsv b 0 0 0 d
+mathsv b 0 0 0 a
+
+cyl=.05
+
+bead = .05
+
+nstring +20 -45 "Shadow" 1
+disp t
+
+nap 2
+
+if \rr1 < .5 then "#90 about x 1;disp t" else "#90 about x -1;disp t"
+nap 2
+if \rr1 < .5 then "#90 about y 1;disp t" else "#90 about y -1;disp t"
+nap 2
+if \rr1 < .5 then "#90 about x 1;disp t" else "#90 about x -1;disp t"
+nap 2

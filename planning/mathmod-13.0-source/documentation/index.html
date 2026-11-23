@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html>
+<body>
+<center><font size="20">MathMod: An Interactive Plotting Program</font><br>
+<img src="https://a.fsdn.com/con/app/proj/mathmod/screenshots/Screen%20Shot%202019-04-24%20at%205.20.26%20AM.png/max/max/1"    width="50%" height="50%" ></center>
+<h2>Table of contents:</h2>
+<ul>
+<li><a href="#About">About MathMod</a>
+<ol>
+ <li><a href="#Introduction">Introduction</a>
+ <li><a href="#Copyright">Copyright</a>
+ <li><a href="#Download">Download</a>
+ <li><a href="#Compile">Compile MathMod from source</a>
+ <li><a href="#Run">Run MathMod packages</a>
+ <li><a href="#Docum">Documentation</a>
+ <li><a href="#Release">Release Notes</a>
+ <li><a href="#Assistance">Seeking-assistance</a>
+ <li><a href="#Tutorials">Videos tutorials</a>
+</ol>
+ <li><a href="#IntroductionPariso">Introduction to Parametric/Implicit Equations</a>
+ <ol>
+ <li><a href="#Parametric_equation">Parametric equation</a>
+ <li><a href="#Parametric_surface">Parametric surface</a>
+ <li><a href="#Implicit_function">Implicit function</a>
+ <li><a href="#Implicit_surface">Implicit surface</a>
+ <li><a href="#Complex_function">Functions of a Complex Variable</a>
+ <li><a href="#Complex_visualization">Visualizing Functions of a Complex Variable</a>
+ </ol>
+ <li><a href="#Procedural_texture">Procedural texture</a>
+ <ol>
+ <li><a href="#Solid_texturing">Solid texturing</a>
+ <li><a href="#Cellular_texturing">Cellular texturing</a>
+ </ol>
+ <li><a href="#MathMod_scripts">MathMod scripts</a>
+ <ol>
+ <li><a href="#Scripts_format">Scripts file format</a>
+ <li><a href="#Supported_objects">Supported mathematical objects</a>
+ <li><a href="#Mandatory_Keys">Mandatory Keys</a>
+ <li><a href="#Optional_Keys">Optional Keys</a>
+ <li><a href="#Texture_Pigment">Texture and Pigment</a>
+ <ol>
+ <li><a href="#Texture">Texture object</a>
+ <li><a href="#Pigment">Pigment object</a>
+ <li><a href="#ScriptsExamples">Scripts Examples</a>
+ </ol>
+ <li><a href="#InternalFunctions">Internal Functions</a>
+ <li><a href="#InternalFParameters">Internal parameters</a>
+ <li><a href="#UserDefinedVariables">User defined variables</a>
+ <li><a href="#SupportedOperatorsFunctions">Supported operators and mathematical functions</a>
+</ol>
+
+<li><a href="#Configuration">Configuration file</a>
+
+<li><a href="#AnimMorph">Animation and Morph effect</a>
+<ol>
+<li><a href="#Morph">Morph effect</a>
+<li><a href="#Rotation">Rotation</a>
+<li><a href="#movie">Making animated GIF or videos</a>
+</ol>
+
+<li><a href="#GUI">MathMod's GUI Reference</a>
+<ol>
+<li><a href="#Menu">Menu Items</a>
+<ol>
+  <li><a href="#ProjectMenu">The Project Menu</a>
+  <li><a href="#OptionsMenu">The Options Menu</a>
+  <li><a href="#ExportMenu">The Export Menu</a>
+  <li><a href="#HelpMenu">The Help Menu</a>
+</ol>
+<li><a href="#TabbedPages">Tabbed pages</a>
+<ol>
+  <li><a href="#ModelDetails">The "Model Details" page</a>
+  <li><a href="#ScriptEdit">The "Script Edit" page</a>
+  <li><a href="#ViewControls">The "View Controls" page</a>
+  <li><a href="#Appearance">The "Appearance" page</a>
+  <li><a href="#Sliders">The "Sliders" page</a>
+</ol>
+</ol>
+<li><a href="#Examples">Scripts examples</a>
+ <ol>
+  <li><a href="#Models_Intersection">Models_Intersection</a>
+  <li><a href="#CellNoiseSchwarz">CellNoiseSchwarz</a>
+  <li><a href="#The_Dome_v1">The_Dome_v1</a>
+  <li><a href="#Pariso_02">Pariso_02</a>
+  <li><a href="#Arena_02">Arena_02</a>
+ </ol>
+</ul>
+
+<a name="About"></a>
+<h2>About MathMod</h2>
+<ol>
+<a name="Introduction"></a>
+<li>
+<h3>Introduction</h3>
+MathMod is a portable interactive plotting and graphing program for Windows, Linux, MacOSX and many other platforms.<br>
+MathMod allows to plot 3D mathematical surfaces, described by implicit or parametric equations, and offers a very large database of model samples that can be generated with it. It's Free and Open Source under the terms of the GPL licence version 2 or later.<br>
+Apart from visualizing the actual shape, you are also free to edit the scripts and equations in order to understand how each parameter influences and reshapes the model.<br>
+Moreover, it allows to export it's mathematical models to OBJ format and generate animations that showcase how the model morphs as it is given new parameters to work with.<br>
+</li>
+<a name="Copyright"></a>
+<li><h3>Copyright</h3>
+
+<pre>Copyright (C) 2021 by Abderrahman Taha
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the
+Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA</pre>
+</li>
+<a name="Download"></a>
+<li>
+<h3>Download</h3>
+<b>Current MathMod version is 13.0</b><br>
+Primary download sites on SourceForge and GitHub:<br>
+<ol>
+ <li><a href=https://github.com/parisolab/mathmod/releases>GitHub</a></li>
+ <li><a href=https://sourceforge.net/projects/mathmod/>SourceForge</a></li>
+</ol>
+Video to show <a href="https://youtu.be/u1ZfI4DRQnc">MathMod ability to animate a combination of parametric and iso surfaces</a>
+</li>
+
+<a name="Compile"></a>
+<li>
+<h3>Compile MathMod from source</h3>
+<ol>
+ <li>Download <a href=https://download.qt.io/official_releases/qt/>Qt</a></li>
+ <li>Download <a href=https://github.com/parisolab/mathmod/releases>MathMod's source code</a></li>
+ <li> In a command line window, execute: "qmake; make"  OR use the qt-creator IDE to compile MathMod.pro project</li>
+ <li> Troubleshooting:<br>
+      1) First thing to try to solve a compilation issue is to open "drawingoptions.ui" with your current qt-creator and save it again.<br>
+      This simple procedure will generate an UI file that is compatible with your installed QT version.<br>
+</li>
+</ol>
+</li>
+
+<a name="Run"></a>
+<li>
+<h3>Run MathMod packages</h3>
+<ol>
+ <li><b>Linux:</b><br>
+ In a command line terminal:<br>
+ 1) cd mathmod-xx.x-Linu64-static<br>
+ 2) ./RunMathMod.sh &<br>
+ or<br>
+ 2) sh RunMathMod.sh &<br>
+ If step (2) didn't work, try :<br>
+ 1) sudo ./RunMathMod.sh<br>
+ 2) chmod +x RunMathMod.sh<br>
+ 3) ./RunMathMod.sh<br>
+</li>
+ <li><b>RaspberryPiOS (32):</b><br>
+ 1) Download and unzip mathmod-xx.x-RaspberrypiOS32.zip<br>
+ 2) Install qt: sudo apt-get install -y qt5-default<br>
+ 3) cd mathmod-xx.x-RaspberrypiOS32<br>
+ 4) ./mathmod<br>
+ See how <a href="https://youtu.be/72q15_UuAG8">MathMod-11.0 performs on a RaspberryPi4 with RaspberryPiOS(32)</a><br>
+ </li>
+</ol>
+</li>
+
+<a name="Docum"></a>
+<li>
+<h3>Documentation</h3>
+The documentation's lacation path is set from MathMod's configuration file mathmodconfig.js from either:<br>
+1) "ReleaseInfos"-->"DocPartialPath": In this case, the documentation's location path will be MathMod's exec file location "+" "DocPartialPath"<br>
+2) "ReleaseInfos"-->"DocAbsolutePath" : It will be used by default if it isn't null<br>
+</li>
+
+<a name="Release"></a>
+<li>
+<h3>Release Notes</h3>
+<i><b>MathMod Version 13.0 Release Notes</b>
+</i>
+ <ol>
+<li> Script generator to add thickness to iso/parametric surfaces </li>
+<li> Undo/Redo commands for navigating through previous scripts</li>
+<li> New scripts, Bug-fixes, code optimization and documentation update</li>
+<li> For a complete list of changes made during the course of development, please visit: <a href="https://github.com/users/parisolab/projects/2">MathMod-13.0</a></li>
+</ol>
+Release Notes date: 29/10/2025
+</li>
+<a name="Assistance"></a>
+<li>
+<h3>Seeking-assistance</h3>
+<p align="center"><span style=" font-size:12pt;">Author: Abderrahman Taha (</span><a href="taha_ab@yahoo.fr"><span style=" font-size:12pt; text-decoration: underline; color:#60999e;">taha_ab@yahoo.fr</span></a><span style=" font-size:12pt;">)</span></p>
+<p align="center"><span style=" font-size:12pt;">GitHub: </span><a href="https://github.com/parisolab/mathmod"><span style=" text-decoration: underline; color:#0000ff;">https://github.com/parisolab/mathmod</span></a></p>
+<p align="center"><span style=" font-size:10pt;">Home:</span><a href="https://sourceforge.net/projects/mathmod"><span style=" text-decoration: underline; color:#0000ff;">https://sourceforge.net/projects/mathmod</span></a></p>
+<p align="center"><span style=" font-size:10pt;">FaceBook:</span><a href="https://www.facebook.com/parisolab/"><span style=" text-decoration: underline; color:#0000ff;">https://www.facebook.com/parisolab/</span></a></p>
+<p align="center"><span style=" font-size:10pt;">Twitter :</span><a href="https://twitter.com/parisolab"><span style=" text-decoration: underline; color:#0000ff;">https://twitter.com/parisolab</span></a></p>
+</li>
+
+ <a name="Tutorials"></a>
+ <li>
+ <h3>Videos tutorials</h3>
+ There are <a href="https://www.youtube.com/playlist?list=PLpGUO13v3lbcm28gvuIEbwDPN6Te7MHmo">15 videos tutorials on Youtube</a>
+<ol>
+<li><a href="https://youtu.be/u3GIPxbEOzk">Tutorial 15: How to compile MathMod from source</a></li>
+<li><a href="https://youtu.be/Zb1DPjvUsAk">Tutorial 14: How to save temporary new scripts without editing MathMod's collection file</a></li>
+<li><a href="https://youtu.be/hpdhbWJApCk">Tutorial 13: How to create animated GIF images with MathMod and Gimp</a></li>
+<li><a href="https://youtu.be/9OzciHp6d_E">Tutorial 12 : How to use MathMod texture and pigmentation provided collections</a></li>
+<li><a href="https://youtu.be/zZ1mOIdRbYU">Tutorial 11 : How to edit a script with more than one component</a></li>
+<li><a href="https://youtu.be/-j-hbuXrQ1w">Tutorial 09: Steps to build the "Gyroid Ball" script animation</a></li>
+<li><a href="https://youtu.be/t-L3wDU9P74">Tutorial 08 : Video to show how to run the Gyroid Ball script animation</a></li>
+<li><a href="https://youtu.be/cbbAl2E1Je8">Tutorial 06: How to modify colors and textures</a></li>
+<li><a href="https://youtu.be/VQMGqM1cVfg">Tutorial 05: How to select/Deselect part of the surface by using the CND equation</a></li>
+<li><a href="https://youtu.be/KIxT1kMNjYc">Tutorial 04 : How to configure MathMod's Look & Feel</a></li>
+<li><a href="https://youtu.be/uPYA8iL2cI0">Tutorial 02: How to create/update a collection file for MathMod</a></li>
+<li><a href="https://youtu.be/L9mg9SXlLTY">Tutorial 01: How to load a collection file in MathMod</a></li>
+</ol>
+ </li>
+</ol>
+
+
+<a name="IntroductionPariso"></a>
+<h2>Introduction to parametric and implicit Equations</h2>
+<a name="Parametric_equation"></a>
+<ol>
+<li><h3>Parametric equation</h3>
+In mathematics, a parametric equation defines a group of quantities as functions of one or more independent variables called parameters.<br>
+Parametric equations are commonly used to express the coordinates of the points that make up a geometric object such as a curve or surface, in which case the equations are collectively called a parametric representation or parameterization (alternatively spelled as parametrisation) of the object.<br>
+For example, the equations : x = cos(t) y = sin(t)<br>
+form a parametric representation of the unit circle, where t is the parameter: A point (x, y) is on the unit circle if and only if there is a value of t such that these two equations generate that point.<br>
+In addition to curves and surfaces, parametric equations can describe manifolds and algebraic varieties of higher dimension, with the number of parameters being equal to the dimension of the manifold or variety, and the number of equations being equal to the dimension of the space in which the manifold or variety is considered.
+</li>
+<a name="Parametric_surface"></a>
+<li>
+<h3>Parametric surface</h3>
+A parametric surface is the image of an open subset of the Euclidean plane (typically R^2) by a continuous function, in a topological space, generally a Euclidean space of dimension at least three. Usually the function is supposed to be continuously differentiable.
+</li>
+<a name="Implicit_function"></a>
+<li>
+<h3> Implicit function</h3>
+In mathematics, an implicit equation is a relation of the form R ( x 1 , … , x n ) = 0 , where R is a function of several variables (often a polynomial).<br>
+For example, the implicit equation of the unit circle is x 2 + y 2 − 1 = 0 .
+</li>
+
+<a name="Implicit_surface"></a>
+<li><h3> Implicit surface</h3>
+An implicit surface in a Euclidean space (or, more generally, in an affine space) of dimension 3 is the set of the common zeros of a differentiable function of three variables<br>
+
+<code>f ( x , y , z ) = 0 </code>
+</li>
+
+<a name="Complex_function"></a>
+<li><h3> Functions of a Complex Variable</h3>
+In mathematics, a complex number is a number that can be expressed in the form a + bi,
+where a and b are real numbers, and i is a symbol called the imaginary unit,
+and satisfying the equation i^2 = −1.<br>
+A complex function F = U+iV of a complex variable z=u+iv is introduced as a
+complex-valued function of two real variables, u and v : F(z) = F(u+iv) = U(u, v) +iV(u, v).<br>
+Hence, to specify a complex function it is enough to specify two real functions: U(u, v) and V(u, v).<br>
+<code>To give a simple example of this, consider f(z) = z^2 ==>
+f(u+iv) = u^2 - v^2 +i2*u*v</code>
+</li>
+
+<a name="Complex_visualization"></a>
+<li><h3> Visualizing Functions of a Complex Variable</h3>
+A function of a complex variable, w = f(z), can be thought in terms of its real components:
+ f(u+iv) = U(u,v) + iV(u,v).<br>
+MathMod supported ways to visualize the set of points (u, v, U, V) satisfying this equation:
+<ul>
+        <li>Explicitly dropping one of the coordinates allows us to render a 3D surface.
+        We can also encode the remaining coordinate by coloring the surface(not yet supported)<br>
+        <a href="#Complex3D_01">Script sample</a>
+                <ul>
+                        <li>(u, v, U) can be seen by graphing Re(f(u+iv))</li>
+                        <li>(u, v, V) can be seen by graphing Im(f(u+iv))</li>
+                        <li>(u, U, V) can be seen by graphing the real part of the inverse of f.</li>
+                        <li>(v, U, V) can be seen by graphing the imaginary part of the inverse of f.</li>
+                        <li>We can also graph the magnitude or phase of f(u+iv).</li>
+                </ul>
+                </li>
+        <li>The points (u, v, U, V) represent a surface in four dimensions.<br>
+        This surface can be drawn using perspective projection in much the same way 3D surfaces are rendered on screen.<br>
+        <a href="#Complex4D_Saddle">Script sample</a>
+        </li>
+</ul>
+
+</li>
+</ol>
+
+<a name="Procedural_texture"></a>
+<h2> Procedural texture</h2>
+<ol>
+In computer graphics, a procedural texture is a texture created using a mathematical description (i.e. an algorithm) rather than directly stored data.<br> The advantage of this approach is low storage cost, unlimited texture resolution and easy texture mapping.<br> These kinds of textures are often used to model surface or volumetric representations of natural elements such as wood, marble, granite, metal, stone, and others.<br>
+<a name="Solid_texturing"></a>
+<li>
+<h3> Solid texturing</h3>
+Solid texturing is a process where the texture generating function is evaluated over R^3 at each visible surface point of the model so the resulting material properties (like color, shininess or normal) depends only on their 3D position, not their parametrized 2D surface position like in traditional 2D texture mapping.<br> Consequently, solid textures are unaffected by distortions of the surface parameter space, such as you might see near the poles of a sphere.<br>
+Initially these functions were based on simple combination of procedural noise functions like Simplex noise or Perlin noise.<br>
+</li>
+<a name="Cellular_texturing"></a>
+<li>
+<h3> Cellular texturing</h3>
+Cellular texturing differs from the majority of other procedural texture generating techniques as it does not depend on noise functions as its basis, although it is often used to complement the technique.<br>
+Cellular textures are based on feature points which are scattered over a three-dimensional space.<br> These points are then used to split up the space into small, randomly tiled regions called cells.<br> These cells often look like "lizard scales", "pebbles", or "flagstones". Even though these regions are discrete, the cellular basis function itself is continuous and can be evaluated anywhere in space. Worley noise is a common type of cellular texture<br>
+</li>
+</ol>
+<a name="MathMod_scripts"></a>
+<h2> MathMod scripts</h2>
+<a name="Scripts_format"></a>
+<ol>
+<li>
+<h3>Scripts file format</h3>
+MathMod scripts are in JSON file format.
+A JSON file is a file that stores simple data structures and objects in JavaScript Object Notation (JSON) format, which is a standard data interchange format. It is primarily used for transmitting data between a web application and a server.<br>
+
+JSON objects are written in key/value pairs. Keys must be strings, and values must be a valid JSON data type (string, number, object, array, boolean or null). Keys and values are separated by a colon. Each key/value pair is separated by a comma.<br>
+</li>
+<a name="Supported_objects"></a>
+<li>
+<h3>Supported mathematical objects:</h3>
+There are six major type of mathematical objects supported by MathMod:<br>
+
+1.  <b>"Iso3D"</b>   : Isosurfaces<br>
+2.  <b>"Param3D"</b>  : 3D parametric surfaces<br>
+3.  <b>"Param3D_C"</b>  : 3D complex surfaces<br>
+4.  <b>"Param4D"</b>   : 4D parametric surfaces<br>
+5.  <b>"Param4D_C"</b>   : 4D complex surfaces<br>
+6.  <b>"ParIso"</b>    : Isosurfaces + 3D parametric surfaces ("Iso3D" + "Param3D")<br>
+</li>
+<a name="Mandatory_Keys"></a>
+<li>
+<h3>Mandatory Keys:</h3>
+For all objects types:
+<p><table border=2>
+<tr>
+<td><code>"Name"</code></td>
+<td>The script name is required and must be unique for each script. It's used to identify a script when stored in a collection file.</td>
+</tr>
+
+<tr>
+<td><code>"Component"</code></td>
+<td>A mathematical object can be a composition of more than one mathematical equation.
+ To help identify each component in a set of mathematically defined surfaces,  you must give each component a name (not necessarily unique though).</td>
+</tr>
+</table>
+
+Mandatory Keys For <b>"Iso3D"</b>:
+<p><table border=2>
+<tr>
+<td><code>"Fxyz"</code></td>
+<td>implicit equations</td>
+</tr>
+
+<tr>
+<td><code>"Xmax", "Xmin", "Ymax", "Ymin", "Zmax", "Zmin"</code></td>
+<td>Isosurface definition domain limits.</td>
+</tr>
+</table>
+
+Mandatory Keys For <b>"Param3D"</b>, <b>"Param3D_C"</b>, <b>"Param4D"</b> and <b>"Param4D_C"</b>:
+<p><table border=2>
+<tr>
+<td><code>"Fx","Fy","Fz"</code></td>
+<td>Parametric equations in the 3D space. <code>"Fw"</code> is required as the fourth dimension ("Param4D")</td>
+</tr>
+
+<tr>
+<td><code>"Umax","Umin","Vmax","Vmin"</code></td>
+<td>Domain limits for u and v parameters.</td>
+</tr>
+</table>
+</li>
+
+<a name="Optional_Keys"></a>
+<li>
+<h3>Optional Keys:</h3>
+<p><table border=2>
+<tr>
+<td><code>"Funct"</code></td>
+<td>
+User defined functions. Example:
+<br> <code>"Funct": ["Si=sinx", "Co=cos(y), "SC=Si(x,y,z,t)*Co(x,y,z,t)"]</code>
+</td>
+</tr>
+<tr>
+<td><code>"Const"</code></td>
+<td>
+User defined Constantes. Example:
+<br><code>"Const": ["N=5", "P=pi/2", "E=N*P"]</code>
+</td>
+</tr>
+<tr>
+<td><code>"Cnd"</code></td>
+<td>
+An implicit equation (according to x,y and z) to characterize a region in 3D space. The number of equations must be the same as the number of components.
+Example for an object including three components:
+<br><code>"Cnd":["x>0", "", "y<0"]</code>
+<br> See the <a href="#Models_Intersection">"Models_Intersection"</a> script
+</td>
+</tr>
+
+<tr>
+<td><code>"Grid"</code></td>
+<td>
+User defined grid values. The number of grid values is related to the number of components.
+Isosurfaces require one grid value for each component (ie: the same grid value for "x", "y" and "z") but parametric surfaces require two (ie one for "u" and one for "v")
+Example for a parametric surface with one component:
+<br><code>"Grid":["100", "150"]</code>
+<br> See the <a href="#Models_Intersection">"Models_Intersection"</a> script
+</td>
+</tr>
+<tr>
+<td><code>"Sliders"</code></td>
+<td>
+Sliders are useful for interactive modification of one or more parameter used in the script. Example:
+<br><pre>"Sliders": {
+        "Name": ["N","R"],
+        "Min": ["0","0"],
+        "Max": ["50","50"],
+        "Step": ["1","1"],
+        "Position": ["10","16"]
+    }</pre>
+<ul>
+<li><code>"Name"</code> : The parameters names (ie. N, R).
+<li><code>"Min", "Max"</code> : Minimum and maximum values for N and R.
+<li><code>"Step"</code> : Value used to adjust each parameter.
+<li><code>"Position"</code> : Saved values for each parameter (N, R)=(10, 16).
+</ul>
+<br> Function used in the <a href="#The_Dome_v1">The_Dome_v1</a> script
+</td>
+</tr>
+<tr>
+<td><code>"Description"</code></td>
+<td>
+You can give it another name (ie: "Infos" , ...) or delete it from the script (relevant for the user not the program). Example:
+<br><code>"Description": ["Blobby Torus by Abderrahman Taha 07/10/2019"]</code>
+</td>
+</tr>
+
+<tr>
+<td><code>"Vect"</code></td>
+<td>
+(experimental) Define a set of variables (type double). For example, to create 10 variables, use:
+<br><code>"Vect":["10"]</code>
+</td>
+</tr>
+
+</table>
+</li>
+<em>Any added new key will be simply ignored by MathMod unless it violates some syntax format rules for Objects in JSON</em>
+
+<a name="Texture_Pigment"></a>
+<li>
+<h3>Texture and Pigment:</h3>
+<ol>
+<a name="Texture"></a>
+<li>
+<b>"Texture"</b>: The texture generating function is evaluated over R^3 at each visible surface point of the model.<br>
+MathMod support the RGB color model and it's alternative representation HSV (also known as HSB. NB:HSV components are in the range [0…1].<br>
+Accepted parameters for the texture of parametric surfaces : "x,y,z,u,v,i_indx,j_indx,indx,max_i,max_j,cmpId,t,Z"<br>
+Accepted parameters for the texture of implicit surfaces : "x,y,z,t,cmpId,indx,x_step,y_step,z_step,max_ijk,x_sup,y_sup,z_sup,x_inf,y_inf,z_inf"<br>
+Script sample:<br>
+<pre>"Texture": {
+   "Name": "Lines",
+   "Noise": "NoiseW(x,y,z,(1),(2),(0))",
+   "Colors": [
+     "R=cos((x*x+y*y+z*z)*pi)",
+     "G=cos((x*x+y*y+z*z)*pi)*cos(x*pi)",
+     "B=sin(y*pi)*cos(x*pi)",
+     "T=1"
+}</pre>
+</li>
+<a name="Pigment"></a>
+<li>
+<b>"Pigment"</b>: Pigment definition.<br>
+Most of the color patterns do not use abrupt color changes of just two or three colors like those in the brick, checker or hexagon patterns. They instead use smooth transitions of many colors that gradually change from one point to the next. The colors are defined in a pigment modifier that describes how the pattern blends from one color to the next.<br>
+Each of the various pattern types available is in fact a mathematical function that takes any x, y, z location and turns it into a number. That number is used to specify what mix of colors to use from the color map: The pattern function gradient is evaluated and compared to the value of the first element in the "Vrgba" list (ie: "V=..."): if Gradient(x,y,z) is less than V[i] , color(x,y,z) = (R[i], G[i], B[i], A[i]) where "i" is the index of the "Color" object. Example : <br>
+<pre>"Pigment": {
+         "Gradient": "3*atan((x*x*y*z)*pi)*cos(y*y*z*pi)",
+         "Name": "Pigment",
+         "Noise": "NoiseW(x,y,z,(1),(2),(0))",
+         "Colors": [
+             {
+                 "Color": {
+                     "Name": "Gold",
+                     "Vrgba": ["V=0/10","R=9/10","G=7/10","B=1/10","A=1"]
+                 }
+             },
+             {
+                 "Color": {
+                     "Name": "Red",
+                     "Vrgba": ["V=3/10","R=1","G=1/10","B=31/100","A=1"]
+                 }
+             },
+             {
+                 "Color": {
+                     "Name": "Green",
+                     "Vrgba": ["V=5/10","R=1/10","G=7/10","B=1/10","A=1"]
+              }
+          }
+     ]
+}</pre>
+</li>
+
+<a name="ScriptsExamples"></a>
+<li>
+<b> Scripts examples:</b>
+<ol>
+ <li><a href="#Models_Intersection">Models_Intersection</a></li>
+ <li><a href="#CellNoiseSchwarz">CellNoiseSchwarz</a></li>
+ <li><a href="#The_Dome_v1">The_Dome_v1</a></li>
+ <li><a href="#Pariso_02">Pariso_02</a></li>
+</ol>
+</li>
+</ol>
+</li>
+
+<a name="InternalFunctions"></a>
+<li>
+<h3>Internal functions </h3>
+
+<p><table border=2>
+ <tr>
+  <td><code>NoiseP</code></td>
+  <td>
+<p>
+  <code>NoiseP(x,y,z,Octaves,Lacunarity,Gain)</code> Perlin noise is a type of gradient noise developed by Ken Perlin in 1983 as a result of his frustration with the "machine-like" look of computer-generated imagery (CGI) at the time. He formally described his findings in a SIGGRAPH paper in 1985 called An image Synthesizer.
+<ul>
+ <li>
+   <code>Octaves</code> : the number of levels of detail you want you Perlin noise to have.
+ <li>
+   <code>Lacunarity</code> : number that determines how much detail is added or removed at each octave (adjusts frequency).
+ <li>
+   <code>Gain</code> : number that determines how much each octave contributes to the overall shape (adjusts amplitude).
+</ul>
+ <br> Function used in the "Perlin_Schwarz" script
+</td>
+ </tr>
+
+<tr>
+  <td><code>NoiseW</code></td>
+  <td>
+<p>
+  <code>NoiseW(x,y,z,(A),(B),(C))</code> Worley noise is a noise function introduced by Steven Worley in 1996. In computer graphics it is used to create procedural textures, that is textures that are created automatically in arbitrary precision and do not have to be drawn by hand. Worley noise comes close to simulating textures of stone, water, or cell noise.
+<ul>
+ <li>
+   <code>A, B, C</code> : Numbers between 0..2
+</ul>
+ <br> Function used in the "CellNoiseSchwarz" script
+</td>
+ </tr>
+
+ <tr>
+  <td><code>f_hex_y</code></td>
+  <td>
+<p>
+  <code>f_hex_y(x,y,z, P0)</code>. This is function forms a lattice of infinite boxes stretching along the z-axis.
+ The fatness is controlled by the threshold value. These boxes are rotated 60 degrees around centers, which are
+ 0.8660254 or cos(30) away from each other. This function is also useful as pigment function.
+<ul>
+
+ <li>
+   <code>P0</code> : No effect (but the syntax requires at least one parameter)
+</ul>
+<br>
+   Function used in "Wall_Pattern_..." scripts (5 scripts in total)
+</td>
+ </tr>
+
+ <tr>
+  <td><code>fmesh</code></td>
+  <td>
+  <p>
+  <code>f_mesh1(x,y,z, P0, P1, P2, P3, P4)</code> The overall thickness of the threads is controlled by the
+ isosurface threshold, not by a parameter. If you render a mesh1 with zero threshold, the threads have zero thickness
+ and are therefore invisible. Parameters P2 and P4 control the shape of the thread relative to this threshold
+ parameter.
+<ul>
+ <li>
+   <code>P0</code> : Distance between neighboring threads in the x direction
+ <li>
+   <code>P1</code> : Distance between neighboring threads in the z direction
+ <li>
+   <code>P2</code> : Relative thickness in the x and z directions
+ <li>
+   <code>P3</code> : Amplitude of the weaving effect. Set to zero for a flat grid
+ <li>
+   <code>P4</code> : Relative thickness in the y direction
+</ul>
+ <br> Function used in the "Straw Basket_02" script
+</td>
+ </tr>
+  <tr>
+   <td><code>fhelix1</code></td>
+   <td>
+<p>
+  <code>f_helix1(x,y,z, P0, P1, P2, P3, P4, P5, P6)</code>
+<ul>
+ <li>
+   <code>P0</code> : Number of helixes - e.g. 2 for a double helix
+ <li>
+   <code>P1</code> : Period - is related to the number of turns per unit length
+ <li>
+   <code>P2</code> : Minor radius (major radius &gt; minor radius)
+ <li>
+   <code>P3</code> : Major radius
+ <li>
+   <code>P4</code> : Shape parameter. If this is greater than 1 then the tube becomes fatter in the y direction
+ <li>
+   <code>P5</code> : cross section type, (0.0 to 1.0 = square ... rounded to circle, over 2.0 to 3.0 = rounded to diamond and concave diamond)
+ <li>
+   <code>P6</code> : Cross section rotation angle (degrees)
+</ul>
+Function use in "fhelix" and "Tori of helices" scripts
+   </td>
+  </tr>
+  <tr>
+   <td><code>fhelix2</code></td>
+   <td>
+<p>
+  <code>f_helix2(x,y,z, P0, P1, P2, P3, P4, P5, P6)</code>. Needs a negated function
+<ul>
+ <li>
+   <code>P0</code> : Not used
+ <li>
+   <code>P1</code> : Period - is related to the number of turns per unit length
+ <li>
+   <code>P2</code> : Minor radius (minor radius &gt; major radius)
+ <li>
+   <code>P3</code> : Major radius
+ <li>
+   <code>P4</code> : Not used
+ <li>
+   <code>P5</code> : cross section type, (0.0 to 1.0 = square ... rounded to circle, over 2.0 to 3.0 = rounded to diamond and concave diamond)
+ <li>
+   <code>P6</code> : Cross section rotation angle (degrees)
+</ul>
+</td>
+ </tr>
+ <tr>
+  <td><code>CmpId(0)</code></td>
+  <td>Return the compound ID. Available only inside the "Funct" objects array. Example:
+ <pre>
+ "Funct": [
+            "Yx=(k1+k0*cos(u))*cos(v)*CmpId(0)",
+            "Yy=(k1+k0*cos(u))*sin(v)",
+            "Yz=k0*sin(u)",
+            ...
+          ]
+ </pre>Used in the "Chained_Sinusoid" script. </td>
+ </tr>
+
+<tr>
+ <td><code>JuliaFractal</code></td>
+ <td>Return the JuliaFractal value. Example:
+<pre>
+"Fx": ["u"],
+"Fy": ["v"],
+"Fz": ["JuliaFractal(u,v,Realc,Imagc,Iter)/8000"]
+</pre>See "JuliaFractal" script </td>
+</tr>
+
+<tr>
+ <td><code>MandelFractal</code></td>
+ <td>Return the JuliaFractal value. Example:
+<pre>
+"Fxyz": ["-((x^2+y^2-(MandelFractal(-z,sqrt(x*x+y*y), Iter)/Iter)^2))"],
+</pre>See "MandelTemple" script </td>
+</tr>
+
+
+</table>
+<a name="InternalFParameters"></a>
+<li>
+<h3>Internal parameters</h3>
+<ul>
+<li>
+<h3>Isosurfaces</h3>
+<p><table border=2>
+<tr>
+ <td><code>ThreadId</code></td>
+ <td>Return the Thread ID. Example: To draw the isosurface portion calculated by the thread number 1
+<pre>"Fxyz": [" if(ThreadId=1, cos(x) + cos(y) + cos(z), 0)"]</pre></td>
+</tr>
+<tr>
+ <td><code>max_ijk</code></td>
+ <td>Refers to the Grid maximum value. Example:
+ <pre>"Grid": ["150"] --> max_ijk=150</pre></td>
+</tr>
+<tr>
+ <td><code>i_indx,j_indx,k_indx</code></td>
+ <td>The index of the current voxel being evaluated</td>
+</tr>
+</table>
+<li>
+<h3>Isosurfaces textures</h3>
+<p><table border=2>
+
+<tr>
+ <td><code>indx</code></td>
+ <td>Return the current vertex index.</td>
+</tr>
+
+<tr>
+ <td><code>max_ijk</code></td>
+ <td>Refers to the Grid maximum value. Example:
+ <pre>
+ "Grid": ["150"] --> max_ijk=150
+ </pre>
+ </td>
+</tr>
+
+<tr>
+ <td><code>x_sup,y_sup,z_sup,x_inf,y_inf,z_inf</code></td>
+ <td> The isosurface definition domaine limits.
+ <pre>
+ "Xmin": ["10"] , "Xmax": ["pi"] --> x_inf=0 and x_sup=pi
+ </pre>
+ </td>
+</tr>
+
+<tr>
+ <td><code>x_step,y_step,z_step</code></td>
+ <td>
+ <pre>
+ x_step=(x_sup-x_inf)/max_ijk
+ </pre>
+ </td>
+</tr>
+
+<tr>
+ <td><code>cmpId</code></td>
+ <td>The compound ID.
+</td>
+</tr>
+
+</table>
+
+<li>
+<h3>Parametric surfaces</h3>
+<p><table border=2>
+
+<tr>
+ <td><code>ThreadId</code></td>
+ <td>Return the Thread ID </td>
+</tr>
+
+</table>
+
+<li>
+<h3>Parametric textures</h3>
+<p><table border=2>
+<tr>
+ <td><code>i_indx , j_indx</code></td>
+ <td>Return the current i and j indexes.
+</tr>
+<tr>
+ <td><code>max_i , max_j</code></td>
+ <td>Return the grid values. Example:
+ <pre>
+ "Grid": ["150","200"] --> In this case: max_i=150 and max_j=200
+ </pre>
+</tr>
+<tr>
+ <td><code>indx</code></td>
+ <td>Return the current index (ie: indx=i*max_j+j)
+</tr>
+<tr>
+ <td><code>cmpId</code></td>
+ <td>Return the compound ID. Available only inside the "Texture" object. Example:
+<pre>"Texture": {
+       "Colors": [
+           "R=if(cmpId = (130), (6/10), (7/10))",
+           "G=if((cmpId = 130), (1/10), (5/10))",
+           "B=if((cmpId = 130), (3/10), (0))",
+           "T=if((cmpId = 130), (7/10), (1))"
+       ],
+       "Name": "Gold",
+       "Noise": ""
+   }</pre>
+Used in the "BlackHole" script.
+</td>
+</tr>
+</table>
+</ul>
+
+</li>
+
+</li>
+
+
+<a name="UserDefinedVariables"></a>
+<li>
+<h3>User Defined Variables </h3>
+<p><table border=2>
+<tr>
+<td><code>"Vect"</code></td>
+<td>
+(Experimental) Define a set of variables (type double).
+(<a href="#Arena_02">Script example</a>)
+</td>
+</tr>
+
+<tr>
+ <td><code>csd(N)</code></td>
+ <td>(Experimental) Return the value of the variable at the index N.
+ (<a href="#Arena_02">Script example</a>)
+</tr>
+
+<tr>
+ <td><code>psh(N, val)</code></td>
+ <td>(Experimental) Save the value "val" into the variable at index N.
+ (<a href="#Arena_02">Script example</a>)
+</tr>
+</table>
+</li>
+
+
+<a name="SupportedOperatorsFunctions"></a>
+<li>
+<h3>Supported operators and mathematical functions: </h3>
+<p>The function string understood by MathMod is very similar (but not
+completely identical in all aspects) to mathematical expressions in the
+C/C++ languages.
+Arithmetic float expressions can be created from float literals, variables
+or functions using the following operators in this order of precedence:
+
+<p>List of mathematic operators:
+
+<p><table border=2>
+ <tr>
+  <td><code>()</code></td>
+  <td>expressions in parentheses first</td>
+ </tr><tr>
+  <td><code>A unit</code></td>
+  <td>a unit multiplier (if one has been added)</td>
+ </tr><tr>
+  <td><code>A^B</code></td>
+  <td>exponentiation (A raised to the power B)</td>
+ </tr><tr>
+  <td><code>-A</code></td>
+  <td>unary minus</td>
+ </tr><tr>
+  <td><code>!A</code></td>
+  <td>unary logical not (result is 1 if <code>int(A)</code> is 0, else 0)</td>
+ </tr><tr>
+  <td><code>A*B  A/B  A%B</code></td>
+  <td>multiplication, division and modulo</td>
+ </tr><tr>
+  <td><code>A+B  A-B</code></td>
+  <td>addition and subtraction</td>
+ </tr><tr>
+  <td><code>A=B  A&lt;B  A&lt;=B<br>A!=B  A&gt;B  A&gt;=B</code></td>
+  <td>comparison between A and B (result is either 0 or 1)</td>
+ </tr><tr>
+  <td><code>A&amp;B</code></td>
+  <td>result is 1 if <code>int(A)</code> and <code>int(B)</code> differ from
+      0, else 0.<br>
+      Note: Regardless of the values, both operands are always
+      evaluated. However, if the expression is optimized, it may
+      be changed such that only one of the operands is evaluated,
+      according to standard shortcut logical operation semantics.</td>
+ </tr><tr>
+  <td><code>A|B</code></td>
+  <td>result is 1 if <code>int(A)</code> or <code>int(B)</code> differ from 0,
+      else 0.<br>
+      Note: Regardless of the values, both operands are always
+      evaluated. However, if the expression is optimized, it may
+      be changed such that only one of the operands is evaluated,
+      according to standard shortcut logical operation semantics.</td>
+ </tr>
+</table>
+
+
+<p>List of mathematical functions:
+
+<p><table border=2>
+<tr>
+ <td><code>abs(A)</code></td>
+ <td>Absolute value (magnitude) of A.
+     With real numbers, if A is negative, returns -A otherwise returns A.
+     With complex numbers, equivalent to <code>hypot(real(x),imag(x))</code>.</td>
+</tr><tr>
+  <td><code>acos(A)</code></td>
+  <td>Arc-cosine of A. Returns the angle, measured in radians, whose cosine is A.</td>
+</tr><tr>
+  <td><code>acosh(A)</code></td>
+  <td>Same as acos() but for hyperbolic cosine.</td>
+</tr><tr>
+  <td><code>arg(A)</code></td>
+  <td>Phase angle of complex number A. Equivalent to <code>atan2(imag(x),real(x))</code>.</td>
+</tr><tr>
+  <td><code>asin(A)</code></td>
+  <td>Arc-sine of A. Returns the angle, measured in radians, whose sine is A.</td>
+</tr><tr>
+  <td><code>asinh(A)</code></td>
+  <td>Same as asin() but for hyperbolic sine.</td>
+</tr><tr>
+  <td><code>atan(A)</code></td>
+  <td>Arc-tangent of (A). Returns the angle, measured in radians,
+      whose tangent is A.</td>
+</tr><tr>
+  <td><code>atan2(A,B)</code></td>
+  <td>Principal arc-tangent of A/B, using the signs of the
+      two arguments to determine the quadrant of the result.
+      Returns the solution to the two expressions
+      hypot(A,B)*sin(x)=A, hypot(A,B)*cos(x)=B.
+      The return value is in range -pi to pi, inclusive.</td>
+</tr><tr>
+  <td><code>atanh(A)</code></td>
+  <td>Same as atan() but for hyperbolic tangent.</td>
+</tr><tr>
+  <td><code>cbrt(A)</code></td>
+  <td>Cube root of A. Returns a solution to expression pow(x,3)=A.</td>
+</tr><tr>
+  <td><code>conj(A)</code></td>
+  <td>Complex conjugate of A. Equivalent to <code>real(x) - 1i*imag(x)</code> or <code>polar(abs(x),-arg(x))</code>.</td>
+</tr><tr>
+  <td><code>ceil(A)</code></td>
+  <td>Ceiling of A. Returns the smallest integer not smaller than A.
+      Rounds up to the next higher integer. E.g. -2.9, -2.5 and -2.1 are
+    rounded to -2.0, and 2.9, 2.5 and 2.1 are rounded to 3.0.</td>
+</tr><tr>
+  <td><code>cos(A)</code></td>
+  <td>Cosine of A. Returns the cosine of the angle A, where A is
+      measured in radians.</td>
+</tr><tr>
+  <td><code>cosh(A)</code></td>
+  <td>Same as cos() but for hyperbolic cosine.</td>
+</tr><tr>
+  <td><code>cot(A)</code></td>
+  <td>Cotangent of A. Equivalent to <code>1/tan(A)</code>.</td>
+</tr><tr>
+  <td><code>eval(...)</code></td>
+  <td>This a recursive call to the function to be evaluated. The
+      number of parameters must be the same as the number of parameters
+      taken by the function. Must be called inside <code>if()</code> to avoid
+      infinite recursion.</td>
+</tr><tr>
+  <td><code>exp(A)</code></td>
+  <td>Exponential of A. Returns the value of e raised to the power
+      A where e is the base of the natural logarithm, i.e. the
+      non-repeating value approximately equal to 2.71828182846.</td>
+</tr><tr>
+  <td><code>exp2(A)</code></td>
+  <td>Base 2 exponential of A. Equivalent to <code>pow(2,A)</code>.</td>
+</tr><tr>
+  <td><code>floor(A)</code></td>
+  <td>Floor of A. Returns the largest integer not greater than A. Rounds
+      down to the next lower integer.
+      E.g. -2.9, -2.5 and -2.1 are rounded to -3.0,
+      and 2.9, 2.5 and 2.1 are rounded to 2.0.</td>
+</tr><tr>
+  <td><code>hypot(A,B)</code></td>
+  <td>Euclidean distance function. Equivalent to <code>sqrt(A^2+B^2)</code>.</td>
+</tr><tr>
+  <td><code>if(A,B,C)</code></td>
+  <td>If int(A) differs from 0, the return value of this function is B,
+      else C. Only the parameter which needs to be evaluated is
+      evaluated, the other parameter is skipped; this makes it safe to
+      use <code>eval()</code> in them.</td>
+</tr><tr>
+  <td><code>imag(A)</code></td>
+  <td>Return the imaginary part of complex number A. Equivalent to <code>abs(A)*sin(arg(A))</code>.</td>
+</tr><tr>
+  <td><code>int(A)</code></td>
+  <td>Rounds A to the closest integer. Equidistant values are rounded away from
+    zero. E.g. -2.9 and -2.5 are rounded to -3.0; -2.1 is rounded to -2.0,
+    and 2.9 and 2.5 are rounded to 3.0; 2.1 is rounded to 2.0.</td>
+</tr><tr>
+  <td><code>log(A)</code></td>
+  <td>Natural (base e) logarithm of A. Returns the solution to expression exp(x)=A.</td>
+</tr><tr>
+  <td><code>log2(A)</code></td>
+  <td>Base 2 logarithm of A. Equivalent to <code>log(A)/log(2)</code>.</td>
+</tr><tr>
+  <td><code>log10(A)</code></td>
+  <td>Base 10 logarithm of A.</td>
+</tr><tr>
+  <td><code>max(A,B)</code></td>
+  <td>If A&gt;B, the result is A, else B.</td>
+</tr><tr>
+  <td><code>min(A,B)</code></td>
+  <td>If A&lt;B, the result is A, else B.</td>
+</tr>
+<tr>
+<td><code>real(A)</code></td>
+<td>Return the real part of complex number A. Equivalent to <code>abs(A)*cos(arg(A))</code>.</td>
+</tr>
+<tr>
+  <td><code>polar(A,B)</code></td>
+  <td>Returns a complex number from magnitude A, phase angle B (in radians).
+      Equivalent to <code>real(A)*(cos(real(B))+1i*sin(real(B)))</code>.</td>
+</tr>
+<tr>
+  <td><code>sec(A)</code></td>
+  <td>Secant of A. Equivalent to <code>1/cos(A)</code>.</td>
+</tr>
+<tr>
+  <td><code>sin(A)</code></td>
+  <td>Sine of A. Returns the sine of the angle A, where A is
+      measured in radians.</td>
+</tr>
+<tr>
+  <td><code>sinh(A)</code></td>
+  <td>Same as sin() but for hyperbolic sine.</td>
+</tr>
+<tr>
+  <td><code>sqrt(A)</code></td>
+  <td>Square root of A. Returns a solution to expression pow(x,2)=A.</td>
+</tr>
+<tr>
+  <td><code>tan(A)</code></td>
+  <td>Tangent of A. Returns the tangent of the angle A, where A
+      is measured in radians.</td>
+</tr><tr>
+  <td><code>tanh(A)</code></td>
+  <td>Same as tan() but for hyperbolic tangent.</td>
+</tr><tr>
+  <td><code>trunc(A)</code></td>
+  <td>Truncated value of A. Returns an integer corresponding to the value
+    of A without its fractional part.
+    E.g. -2.9, -2.5 and -2.1 are rounded to -2.0,
+    and 2.9, 2.5 and 2.1 are rounded to 2.0.</td>
+</tr>
+</table>
+</li>
+
+
+</li>
+</ol>
+<a name="Configuration"></a>
+<h2>Configuration file</h2>
+<p>"mathmodconfig.js" file is the main source for MathMod's parameters settings.<br>
+MathMod uses an integrated configuration file but it can generate a copy for you when needed. Here is how:
+<ol>
+<li>Create a new folder (exemple: "myfolder")</li>
+<li>Open a command line terminal and execute : <code>mathmod  MyfolderPath/myfolder</code> (replace "MyfolderPath" by the complete path to "myfolder")</li>
+<li>MathMod will generate three files in "myfolder": "mathmodconfig.js", "mathmodcollection.js" and "advancedmodels.js"</li>
+<li>Close MathMod and add your modifications to "mathmodconfig.js". The next time you execute
+<code>mathmod  MyfolderPath/myfolder</code> , MathMod will use "mathmodcollection.js" in myfolder as it's configuration file and "mathmodcollection.js" as it's integrated scripts collection.</li><br>
+</ol>
+<p><table border=2>
+ <tr>
+  <td><code>"Parameters": {
+        "IsoMaxGrid": 500,
+        "InitIsoGrid": 40,
+        "ParMaxGrid": 5000,
+        "InitParGrid": 50
+    }</code></td>
+  <td>Maximum and current grid value setting for iso/parametric surfaces.
+"IsoMaxGrid" and "ParMaxGrid" can be set from the GUI (See attached <a href="images/Modeldetails/isosurface/iso3.png">image</a>)</td>
+ </tr>
+ <tr>
+  <td><code>"StartOptions": {
+        "Model": "CloseIso_1"
+    }</code></td>
+  <td>Set the first script to be rendered when MathMod starts (by default it's the "CloseIso_1" script)</td>
+ </tr>
+ <tr>
+  <td><code>"Localization": {
+        "AutomaticDetection": true,
+        "DotSymbol": "."
+    }</code></td>
+  <td></td>
+ </tr>
+ <tr>
+  <td><code>"OpenGlConfig": {
+        "GL_SPECULAR": [50, 50, 50, 100],
+        "GL_SHININESS": 110
+    }</code></td>
+  <td>OpenGL setting for MathMod's 3D viewer window. OpenGL settings can also be modified from the GUI (see attached <a href="images/Appearance/Specular.png">image</a>)</td>
+ </tr>
+ <tr>
+  <td><code>"ThreadsConfig": {
+        "AutoDetect": true,
+        "ThreadsNumber": 8,
+        "MinThreadsNumber": 1,
+        "MaxThreadsNumber": 64
+    }</code></td>
+  <td><a href="images/Appearance/Threads.png">image</a></td>
+ </tr>
+ <tr>
+  <td><code>"WindowPosition": {
+        "ControlX": 20,
+        "ControlY": 20,
+        "GlwinX": 580,
+        "GlwinY": 20
+    }</code></td>
+  <td></td>
+ </tr>
+ <tr>
+  <td><code>"WindowSize": {
+        "ControlH": 750,
+        "ControlW": 538,
+        "GlwinH": 750,
+        "GlwinW": 750
+    }</code></td>
+  <td></td>
+ </tr>
+ <tr>
+  <td><code>"CalculFactorConfig": {
+        "FactX": 4,
+        "FactY": 4,
+        "FactZ": 4
+    }</code></td>
+  <td>Only for isosurfaces: sets a cube of (4*4*4) points to be calculated "at once".</td>
+ </tr>
+ <tr>
+  <td><code>"Styles": {
+        "PredefinedStyle": [ "Default", "Fusion", "Windows","WindowsXp"],
+        "UsedStyle": "Fusion"
+    }</code></td>
+  <td>By default, MathMod uses the dark mode "Fusion". <a href="images/ToolBar/themes.png">image</a></td>
+ </tr>
+ <tr>
+  <td><code>"Themes": {
+        "PredefinedThemes": [ "Default", "Dark", "MyTheme"],
+        "UsedTheme": "Dark",
+        "MyTheme": {
+            "Window":[53,53,53],
+            "WindowText":[255, 255, 255],
+            "Base":[15,15,15],
+            "AlternateBase":[53,53,53],
+            "ToolTipBase":[255, 255, 255],
+            "ToolTipText":[255, 255, 255],
+            "Text":[2, 2, 255],
+            "Button":[53,53,53],
+            "ButtonText":[255, 255, 255],
+            "BrightText":[255, 0, 0],
+            "Highlight":[142,45,197],
+            "HighlightedText":[0, 0, 0]
+        }
+    }</code></td>
+  <td>By default, MathMod uses the dark mode "Fusion". To test other themes, use the "look And feel" page in the "Configurations Options" window. <a href="images/ToolBar/Preferences.png">image</a> </td>
+ </tr>
+</table>
+
+<a name="AnimMorph"></a>
+<h2>Animations and Morph transitions</h2>
+<ol>
+<a name="Morph"></a>
+<li><h2>Morph effect</h2>
+<p>MathMod is home to many interesting animations and transitions.
+The morph effect take place with the use of the "t" parameter and the morph effect activation (and deactivation) with "CtRl+p".
+The Morph transition lets you create a seamless object animation from one "t" time parametr value to another.
+Example: <pre>
+{
+    "Param3D": {
+        "Description": ["Sinus Animation by Abderrahman Taha"],
+        "Name": ["SinusPar"],
+        "Component": ["Sinus"],
+        "Fx": ["u"],
+        "Fy": ["v"],
+        "Fz": ["-sin(-t+3*pi*((u)^2+(v)^2))/10"],
+        "Umax": ["1"],
+        "Umin": ["-1"],
+        "Vmax": ["1"],
+        "Vmin": ["-1"]
+    }
+}</pre>
+<a name="Rotation"></a>
+<li><h2>Rotation</h2>
+The rotation animation activation (and deactivation) take place with "CtRl+a". Also, the
+<a href="images/ViewControls/ViewControls.png">"Rotations Controls"</a> section helps set the axe and speed of the rotation.
+<a name="movie"></a>
+<li><h2>Making animated GIF or videos</h2>
+This <a href="https://youtu.be/hpdhbWJApCk">video explain how to create animated GIF</a> with MathMod and Gimp.<br>
+See also some animated GIF made with MathMod on <a href="https://www.reddit.com/user/parisolab/posts/">Reddit</a> and
+<a href="https://gfycat.com/@parisolab">gfycat</a>
+</ol>
+
+<a name="GUI"></a>
+<h2> MathMod's GUI Reference</h2>
+<a name="Menu"></a>
+<h2>Menu Items</h2>
+<ol>
+  <a name="ProjectMenu"></a>
+  <li><h3>The Project Menu</h3>
+  <a href="images/Menu/ProjectMenu/ProjectMenu.png">Project Menu</a>
+  </li>
+  <a name="OptionsMenu"></a>
+  <li><h3>The Options Menu</h3>
+  <a href="images/Menu/OptionsMenu/OptionsMenu.png">Options Menu</a>
+  </li>
+  <a name="ExportMenu"></a>
+  <li><h3>The Export Menu</h3>
+  <a href="images/Menu/ExportMenu/ExportMenu.png">Export Menu</a>
+  </li>
+  <a name="HelpMenu"></a>
+  <li><h3>The Help Menu</h3></li>
+</ol>
+  <a name="TabbedPages"></a>
+  <h2>Tabbed pages</h2>
+<ol>
+  <a name="ModelDetails"></a>
+  <li><h3>The "Model Details" page</h3>
+  <a href="images/ModelDetails/Isosurface/iso1.png">Isosurface details page</a><br>
+  <a href="images/ModelDetails/parametric/par1.png">3D Parametric details page</a><br>
+  <a href="images/ModelDetails/parametric/par5.png">4D Parametric details page</a><br>
+  <a href="images/ModelDetails/pariso/pariso.png">Pariso object details page</a>
+  </li>
+  <a name="ScriptEdit"></a>
+  <li><h3>The "Script Edit" page</h3>
+  <a href="images/ScriptEdit/ScriptEdit.png">Script Edit page</a>
+  </li>
+  <a name="ViewControls"></a>
+  <li><h3>The "View Controls" page</h3>
+  <a href="images/ViewControls/viewcontrols_cnd.png">CND page</a>
+  <a href="images/ViewControls/viewcontrols_rotation.png">Rotation page</a>
+  <a href="images/ViewControls/viewcontrols_timestep.png">Time Step page</a>
+  <a href="images/ViewControls/viewcontrols_exportscal.png">Export Scal page</a>
+  </li>
+  <a name="Appearance"></a>
+  <li><h3>The "Appearance" page</h3>
+  <a href="images/Appearance/colors.png">Colors page</a><br>
+  <a href="images/Appearance/texture.png">Texture page</a><br>
+  <a href="images/Appearance/specular.png">Specular page</a><br>
+  <a href="images/Appearance/ambient.png">Ambient page</a><br>
+  <a href="images/Appearance/diffuse.png">Diffuse page</a><br>
+  <a href="images/Appearance/threads.png">Threads page</a><br>
+  </li>
+  <a name="Sliders"></a>
+  <li><h3>The "Sliders" page</h3></li>
+</ol>
+
+<a name="Examples"></a>
+<h2>Scripts Examples</h2>
+<ol>
+<a name="Models_Intersection"></a>
+<li><pre>
+{
+    "Iso3D": {
+        "Description": ["Models Intersection by Abderrahman Taha 20/02/2020"],
+        "Name": ["Models_Intersection"],
+        "Component": ["Schwarz","Plan"],
+        "Cnd": ["(x-y-(3/2)*z<0)",""],
+        "Fxyz": ["cos(x-4*sin(t*pi))+cos(y)+cos(z)","x-y-(3/2)*z-(1/100)"],
+        "Grid": ["30","20"],
+        "Xmax": ["4+4*sin(t*pi)","6"],
+        "Xmin": ["-4+4*sin(t*pi)","-6"],
+        "Ymax": ["4","6"],
+        "Ymin": ["-4","-6"],
+        "Zmax": ["4","6"],
+        "Zmin": ["-4","-6"]
+    }
+}
+</pre>
+<a href="images/Examples/Models_Intersection.png">See attached image</a>
+
+<a name="CellNoiseSchwarz"></a>
+<li><pre>
+    {
+        "Iso3D": {
+            "Description": ["CellNoiseSchwarz by Abderrahman Taha 08/03/2020"],
+            "Name": ["CellNoiseSchwarz"],
+            "Component": ["Schwarz"],
+            "Fxyz": ["cos(x)+cos(y)+cos(z)-NoiseW(x,y,z,(1),(2),(0))"],
+            "Xmax": ["4"],
+            "Xmin": ["-4"],
+            "Ymax": ["4"],
+            "Ymin": ["-4"],
+            "Zmax": ["4"],
+            "Zmin": ["-4"
+            ]
+        },
+        "Texture": {
+            "Colors": ["R=cos(x)*sin(z)+3/10","G=sin(x)*cos(y)+3/10","B=sin(y)*cos(z)+3/10","T=1"],
+            "Name": "Lines3",
+            "Noise": "NoiseW(x,y,z,(1),(2),(0))"
+        }
+    }
+</pre>
+<a href="images/Examples/CellNoiseSchwarz.png">See attached image</a>
+
+<a name="The_Dome_v1"></a>
+<li><pre>
+{
+    "Iso3D": {
+        "Description": ["The Dome by Abderrahman Taha 10/08/2018"],
+        "Name": ["The_Dome_v1"],
+        "Component": ["The_Dome_01"],
+        "Const": ["c=1/1000","Th=6/10","N=10","R=16"],
+        "Funct": [
+        "Scherk=sinh(x)*sinh(y)-4*sin(z)",
+        "Scherk2=Scherk(N*atan2(x,sqrt(y*y+z*z)),(sqrt(x*x+y*y+z*z)-R),N*atan2(z,y),t)",
+        "IsoExterior=Scherk2(x,y,z,t)",
+        "DFx=((IsoExterior(x+c,y,z,t)-IsoExterior(x,y,z,t))/c)",
+        "DFy=((IsoExterior(x,y+c,z,t)-IsoExterior(x,y,z,t))/c)",
+        "DFz=((IsoExterior(x,y,z+c,t)-IsoExterior(x,y,z,t))/c)",
+        "Rapp=x/sqrt(x*x+y*y+z*z)",
+        "Iso3=(IsoExterior(x- Th*Rapp(DFx(x,y,z,t),DFy(x,y,z,t),DFz(x,y,z,t),t),y-Th*Rapp(DFy(x,y,z,t),DFx(x,y,z,t),DFz(x,y,z,t),t),z-Th*Rapp(DFz(x,y,z,t),DFx(x,y,z,t),DFy(x,y,z,t),t), t))",
+        "Iso2=(IsoExterior(x+ Th*Rapp(DFx(x,y,z,t),DFy(x,y,z,t),DFz(x,y,z,t),t),y+Th*Rapp(DFy(x,y,z,t),DFx(x,y,z,t),DFz(x,y,z,t),t),z+Th*Rapp(DFz(x,y,z,t),DFx(x,y,z,t),DFy(x,y,z,t),t), t))",
+        "TickIsoExterior=(Iso2(x,y,z,t)*Iso3(x,y,z,t))"
+        ],
+        "Fxyz": ["if((sqrt(x*x+y*y+z*z)-24) < (0),TickIsoExterior(z,y,x,t),(1))"],
+        "Xmax": ["27"],
+        "Xmin": ["-27"],
+        "Ymax": ["27"],
+        "Ymin": ["-27"],
+        "Zmax": ["18"],
+        "Zmin": ["-18"]
+    },
+    "Sliders": {
+        "Max": ["50","50"],
+        "Min": ["0","0"],
+        "Name": ["N","R"],
+        "Position": ["10","16"],
+        "Step": ["1","1"]
+    },
+    "Texture": {
+        "Colors": ["R=(7/10)*(cos(x)*cos(y)*cos(z))^(1/10)","G=(7/10)","B=(7/10)","T=1"],
+        "Name": "Lines",
+        "Noise": ""
+    }
+}
+</pre>
+<a href="images/Examples/The_Dome_v1.png">See attached image</a>
+
+<a name="Complex3D_01"></a>
+<li><pre>
+{
+    "Param3D_C": {
+        "Description": ["Complex3D_01 by Abderrahman Taha 28/04/2021"],
+        "Description": ["Complex function: f(z)=2*z^2+ 2*z +2"],
+        "Name": ["Complex3D_01"],
+        "Component": ["complex"],
+        "Fx": ["u"],
+        "Fy": ["v"],
+        "Fz": ["abs(2*z*z+2*z+2)/3"],
+        "Umax": ["1"],
+        "Umin": ["-2"],
+        "Vmax": ["2"],
+        "Vmin": ["-2"]
+    }
+}
+</pre>
+<a href="images/Examples/Complex3D_01.png">See attached image</a>
+
+
+<a name="Complex4D_Saddle"></a>
+<li><pre>
+{
+    "Param4D_C": {
+        "Description": ["Complex_Saddle by Abderrahman Taha 28/04/2021"],
+        "Component": ["Saddle"],
+        "Name": ["Complex4D_Saddle"],
+        "Fx": ["u"],
+        "Fy": ["v"],
+        "Fz": ["real(z*z)/2"],
+        "Fw": ["imag(z*z)/2"],
+        "Umax": ["2"],
+        "Umin": ["-2"],
+        "Vmax": ["2"],
+        "Vmin": ["-2"]
+    }
+}
+</pre>
+<a href="images/Examples/Complex4D_Saddle.png">See attached image</a>
+
+
+
+
+<a name="Pariso_02"></a>
+<li><pre>
+{
+    "Name": "Pariso_02",
+    "ParIso": [
+        {
+            "Param3D": {
+                "Description": ["Blobby Torus by Abderrahman Taha 07/10/2019"],
+                "Name": ["Blobby_Torus"],
+                "Component": ["BlobbyTorus"],
+                "Funct": ["G1=(8+(sin(2*(u-v+t+sin(v-u)))+3)*cos(u))*cos(v)","G2=(8+(sin(2*(u-v+t+sin(v-u)))+3)*cos(u))*sin(v)","G3=((sin(2*(u-v+t+sin(v-u)))+3)*sin(u))"],
+                "Fx": ["-G1(u,v,t)"],
+                "Fy": ["G2(u,v,t)"],
+                "Fz": ["G3(u,v,t)-10"],
+                "Grid": ["100","200"],
+                "Umax": ["2*pi"],
+                "Umin": ["0"],
+                "Vmax": ["2*pi"],
+                "Vmin": ["0"]
+            },
+            "Texture": {
+                "Colors": ["R= if((abs(7*u)%pi/2 & abs(7*v)%pi/3),(6/10),1) ","G= if((abs(7*u)%pi/2| abs(7*v)%pi/3),(8/10),(4/10)) ","B= if((abs(7*u)%pi/2| abs(7*v)%pi/3),(6/10),(1/10)) ","T=1"],
+                "Name": "Candy",
+                "Noise": "1"
+            }
+        },
+        {
+            "Iso3D": {
+                "Description": ["Models Intersection by Abderrahman Taha 04/11/2019"],
+                "Name": ["Models_Intersection"],
+                "Component": ["Schwarz","Plan"],
+                "Cnd": ["(x-y-(3/2)*z<0)",""],
+                "Fxyz": ["cos(x-4*sin(t*pi))+cos(y)+cos(z)","x-y-(3/2)*z-(1/100)"],
+                "Xmax": ["4+4*sin(t*pi)","6"],
+                "Xmin": ["-4+4*sin(t*pi)","-6"],
+                "Ymax": ["4","6"],
+                "Ymin": ["-4","-6"],
+                "Zmax": ["4","6"],
+                "Zmin": ["-4","-6"]
+            }
+        }
+    ]
+}
+</pre>
+<a href="images/Examples/Pariso_02.png">See attached image</a>
+
+<a name="Arena_02"></a>
+<li><pre>
+{
+    "Iso3D": {
+        "Description": ["Arena_02 using user defined variables by Abderrahman Taha 27/06/2020"],
+        "Name": ["Arena_02"],
+        "Component": ["Arena"],
+        "Const": ["c=1/10000",
+            "th=6/10",
+            "N=10"],
+        "Vect": ["4"],
+        "Funct": ["Scherk=sinh(x)*sinh(y)-4*sin(z)",
+            "IsoExterior =Scherk(x,sqrt(y*y+z*z)-(16),N*atan2(z,y),t)",
+            "DFx=((IsoExterior(x+c,y,z,t)-IsoExterior(x,y,z,t))/c)",
+            "DFy=((IsoExterior(x,y+c,z,t)-IsoExterior(x,y,z,t))/c)",
+            "DFz=((IsoExterior(x,y,z+c,t)-IsoExterior(x,y,z,t))/c)",
+            "Rapp=(th/sqrt(x*x+y*y+z*z))",
+            "ThickIsoExterior=  psh(0, DFx(x,y,z,t)) * psh(1, DFy(x,y,z,t)) * psh(2, DFz(x,y,z,t)) * (psh(3, Rapp(csd(0) , csd(1) , csd(2),t)))  * (IsoExterior(x-csd(0)*csd(3) ,y-csd(1)*csd(3),z-csd(2)*csd(3),t))*(IsoExterior(x+csd(0)*csd(3) ,y+csd(1)*csd(3),z+csd(2)*csd(3),t))"],
+        "Fxyz": ["if((sqrt(x*x+y*y+z*z) - 27) < 0 & abs(x) < (99/10) ,ThickIsoExterior(x,y,z,t), 1)"],
+        "Xmax": ["10"],
+        "Xmin": ["-10"],
+        "Ymax": ["28"],
+        "Ymin": ["-28"],
+        "Zmax": ["28"],
+        "Zmin": ["-28"]
+    }
+}
+</pre>
+<a href="images/Examples/Arena_02.png">See attached image</a>
+
+</ol>
+
+References:
+<ol>
+<li><a href="https://en.wikipedia.org/wiki/Procedural_texture#Solid_texturing">Solid_texturing</a></li>
+<li><a href="https://www.povray.org/documentation/view/3.6.1/335/">Povray documentation</a></li>
+<li><a href="https://www.povray.org/documentation/view/3.6.1/448/">Povray Internal functions</a></li>
+<li><a href="http://www.econym.demon.co.uk/isotut/substitute.htm">Isosurfaces tutorial</a></li>
+<li><a href="http://www.f-lohmueller.de/pov_tut/all_shapes/shapes940e.htm">Povray scripts</a></li>
+</ol>
+</body>
+</html>

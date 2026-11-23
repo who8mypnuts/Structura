@@ -1,0 +1,94 @@
+reset all
+
+verbose=f          % turn off unnecessary verbosity
+
+mass off
+silent=t
+
+Draw=f                 % turn off drawing whilst creating random knot
+
+% following four lines reset to KnotPlot's default dynamics
+grav=f               
+wall=f
+force 2
+velfo=f              
+
+coll a                 % allow knot to pass thru itself
+go 0                   % stop relaxing
+
+until time 3           % abort until after 3 seconds
+until trial 999999     % but don't abort because of number of trials
+
+new=f
+%unknot 100 16
+backface f
+delete all
+frame reset
+frame comm "line num \ri[11/22];line"  % was 22/44
+frame 0 num \ri[3/9]                   % was 3/5
+new=t
+
+jitter 9999999         % randomize bead positions
+fitto .1               % smush knot to a small ball
+until thick 1 "ago 4"  % relax, allowing pass-thrus, until thick
+coll n                 % forbid collisions (pass-thrus), as usual
+Draw=t
+centre
+trans 0 0 12
+silent=f
+echo 
+echo "Bunch of strings"
+
+
+save |x
+delete all
+%unknot 100 20
+%load ravenna.k;scale 4 4 0
+load 30jan14.k
+<randorient.kps
+scale \rr[1/2]
+about z \rr360
+load comb |x
+mass all 1
+mass comp 0 0
+
+%sphere on
+%sphere 50
+
+
+hstar=0
+hincr=20
+% This file is read in by all the script files dropA.kps, dropB.kps, etc.
+
+% misc preferences
+
+verbose=f          % turn off unnecessary verbosity
+cyl=.8             % width of string
+%spec +grid         % turn on grid (plane z=0)
+
+% set up dynamics
+
+3dop grav 0 0 -1   % direction `gravity' acts in
+grav = t           % turn `gravity' on
+velfo = t          % turn on velocity damping force
+wall=t             % enable wall forces
+walindex=2         % wall perp to z axis (use 0 for perp to x, 
+                   % 1 for perp to y)
+walvalue=\pcyl     % wall at level equal to cyl-rad
+coll n             % don't allow knot to pass thru itself or others
+
+dstep=3            % increase this if your computer has a slow 
+                   % graphics card but a fast CPU
+
+force 1            % allow beads to have inertia
+scale = 0.1
+rotate norotate
+rotate z 0.000000
+rotate y -0.000000
+rotate x -64.499997
+%tanf = t
+
+ago 700
+tanf =t
+go                 % relax `forever'
+

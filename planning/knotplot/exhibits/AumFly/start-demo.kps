@@ -1,0 +1,6 @@
+% Script generated at Wed Feb  7 20:25:34 2007
+
+
+% The kps files below are read in with a tfunc in order
+% to allow the chance for windows to open.
+if KPbuild > 3992 then "tfunc .4 <start-demo2.kps" else "tfunc .4 <kp-nogo.kps"

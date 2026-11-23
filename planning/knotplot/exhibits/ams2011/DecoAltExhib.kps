@@ -1,0 +1,3 @@
+load unsafeknot.k
+until timelimit 15
+until safe "knot cd;fitto 16;cent mass;alternate;refine 3"

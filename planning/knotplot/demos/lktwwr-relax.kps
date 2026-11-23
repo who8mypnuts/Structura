@@ -1,0 +1,18 @@
+require KPbuild 4691
+txt delete group 1
+txt delete group 0
+txt delete group 8
+
+fullscreen on
+
+tfunc reset
+
+%tfunc .01 <lktwwr-new2.kps 0 rep 10 30
+
+
+alias ~step "silent=t;pars;load |x;swirl $0;save |x;cyl-rad=.02;double;warp install;load |tor;warp along;parr;silent=f"
+alias ~step "silent=t;Draw=f;pars;load |x;ago 1;save |x;cyl-rad=.02;double;warp install;load |tor;warp along;parr;Draw=t;silent=f"
+alias ~idle "idle {~step $0}"
+
+
+if \rr2 < 1 then "~idle .01" else "~idle -.01"

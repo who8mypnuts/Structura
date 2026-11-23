@@ -1,0 +1,58 @@
+echo " "
+echo " "
+echo Demo `painting'
+<painting.kps
+echo " "
+echo " "
+echo Demo `painting'
+<painting.kps
+echo " "
+echo " "
+echo Demo `StElmo'
+<StElmo.kps
+echo " "
+echo " "
+echo Demo `StElmo'
+<StElmo.kps
+echo " "
+echo " "
+echo Demo `graphicsH'
+<graphicsH.kps
+echo " "
+echo " "
+echo Demo `graphicsHa'
+<graphicsHa.kps
+echo " "
+echo " "
+echo Demo `graphicsEa'
+<graphicsEa.kps
+echo " "
+echo " "
+echo Demo `graphicsEb'
+<graphicsEb.kps
+echo " "
+echo " "
+echo Demo `graphicsEc'
+<graphicsEc.kps
+echo " "
+echo " "
+echo Demo `graphicsI'
+<graphicsI.kps
+echo " "
+echo " "
+echo Demo `graphicsJ'
+<graphicsJ.kps
+echo " "
+echo " "
+echo Demo `BjorkA'
+<BjorkA.kps
+echo " "
+echo " "
+echo Demo `violently-happy'
+<violently-happy.kps
+echo " "
+echo " "
+echo " "
+echo All done!
+echo " "
+

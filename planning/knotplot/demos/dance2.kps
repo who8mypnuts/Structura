@@ -1,0 +1,59 @@
+% based on 21dec21.kps in ~/projects/knots/helix/spirals
+
+reset all
+silent = true
+cyl-rad = 0.13
+vscale = 0.338860
+
+new = false
+vcn = 1
+vcphi = 3.14159
+vcA = 1
+hstart = \rr360
+
+unknot 4
+about z 45
+#3 split
+fitto npx 12
+fitto npy 22
+save |rect
+delete all
+
+frame command "line number \ri[4/12];line -4 %d 0  4 %d 0"
+frame -12 to 12
+scale 1 .5 1
+alias ~rev "revbeads \ri[1/25]"
+
+
+swap random
+
+
+tfunction .1 ~rev 0 rep .5 1
+
+jitter .1
+scale 1 1 0
+
+
+
+unknot 100 13
+%load comb |rect
+
+swap rev
+revbeads random
+
+mass all 1
+mass comp 0 0
+tanf = on
+safe
+
+go 
+
+
+hide 0
+silent = false
+#3 echo
+
+show fps euler
+if \rr2 < 1 then "rotate x \rr[-44/-68]"
+
+

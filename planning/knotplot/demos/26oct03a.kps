@@ -1,0 +1,30 @@
+reset all
+
+silent=t
+
+knot num \ri[2/22]
+<randorient.kps
+
+fitto 10
+
+cyl=.001
+refine 6
+double
+warp install
+
+cyl=.2
+unknot 9 .4
+about x 90
+trans 10 0 0
+#79 about z 4.5;dup;about z -4.5 0
+
+new=f
+unknot 102 10
+
+
+warp along
+
+mcyl all .2
+mcyl 80 .4
+
+silent=f

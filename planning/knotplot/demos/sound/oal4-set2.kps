@@ -1,0 +1,17 @@
+txt delete group 108
+txt push
+txt font 3
+txt cent
+txt group 108
+oal alloff
+~att 0 120 pluck1
+~att 1 105 pluck2
+~att 2 90  pluck3
+~att 3 75  pluck1
+~att 4 60  pluck2
+~att 5 45  pluck3
+~att 6 30  pluck1
+~att 7 15  pluck2
+~att 8 0   pluck3
+txt pop
+

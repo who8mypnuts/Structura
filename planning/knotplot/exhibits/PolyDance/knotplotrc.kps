@@ -1,0 +1,6 @@
+func 1 <dispatch.kps
+func 9 <alldemos.kps
+func 12 tfunc -1
+panic = 0   % prevents panic exits (not reset with `reset all')
+if par0 == 0 then <start-demo.kps
+par0 = 0

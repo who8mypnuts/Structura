@@ -1,0 +1,18 @@
+txt delete group 108
+txt push
+txt font 3
+txt cent
+txt group 108
+oal alloff
+alias ~cat "nap .1;~att $0 $1 $2"
+~cat 0 120 hello
+~cat 1 105 hello
+~cat 2 90  hello
+~cat 3 75  hello
+~cat 4 60  hello
+~cat 5 45  hello
+~cat 6 30  hello
+~cat 7 15  hello
+~cat 8 0   hello
+txt pop
+

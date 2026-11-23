@@ -1,0 +1,18 @@
+knot numb \ri[251/342] mscl
+silent=t
+save |tmp
+keep 0
+bfacf load
+load |tmp
+keep 1
+bfacf combine
+
+<bfacf/phage-cavity.kps
+
+
+txt clobber on
+txt font 2
+txt fill off
+txt cent
+txt c -44 "configuration 5"
+silent=f

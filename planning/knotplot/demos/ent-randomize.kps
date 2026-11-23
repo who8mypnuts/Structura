@@ -1,0 +1,46 @@
+save |tmp
+reset all
+entang -setthin
+load |tmp
+jitter 9999999
+fitto .1
+
+txt font 4
+txt 20 -20 "Relaxing until safe..."
+txt font 3
+txt 20 -40 "(allowing intersections)"
+txt on
+until timelimit 22
+coll a
+dstep = 5
+timer start
+until safe "ago 11"
+timer stop
+coll n
+dbmin = 5
+%echo 
+%timer print
+%echo
+%exit
+txt delete all
+txt font 4
+txt 20 -20 "Relaxing normally..."
+txt font 3
+txt 20 -40 "(preventing intersections)"
+txt clobber on
+txt space _
+frame comm "txt 20 -60 step_%d_of_9;delete down -4;ago 33"
+
+stus=1
+%#8 delete down -4;ago 33
+frame 1 to 8
+
+txt 20 -60 step_9_of_9
+ago 88
+txt delete all
+align ax
+txt font 4
+txt 20 -20 "Random knot"
+txt font 3
+txt 20 -40 "(principal axes aligned to coordinate axes)"
+untran

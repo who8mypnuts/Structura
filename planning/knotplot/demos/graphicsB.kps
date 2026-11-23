@@ -1,0 +1,55 @@
+reset all
+silent=t
+
+hstar=\rr360
+par0 = \rr7
+
+if par0 < .5 then "back=0;par0=11"
+if par0 < 6 then "back=xffffff;par0=22"
+if par0 < 6.5 then "back=x996633;par0=22"
+
+
+disp t
+gflush
+
+if \rr3 < 2 then knot else "knot spe"
+
+if KPbuild > 3188 "shift random"
+
+refl r
+cent mass
+
+fog on
+fog colour
+if sstereo then "fog range 25 35"
+
+if \rr6 < 1 then "glop poly l"
+satu=\rr1
+
+if \rr7 < 1 then "texture SphereMap;sat=\rr.5"
+
+coll a
+force 1
+tfunc allowreset
+tfunc 2 "go 99999"
+fixc=t
+if \rr4 < 1 then "open all"
+if \rr1 < .8 then "velf=t"
+velmag=\rr[.03/.1]
+
+silent=f
+
+func init
+func silent
+func 1 <graphicsB.kps
+
+
+echo " "
+echo " "
+echo "  ***** Randomized demo, try it again!"
+echo " "
+
+
+
+
+

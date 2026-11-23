@@ -1,0 +1,51 @@
+reset all
+
+silent=t
+verbose=f
+Draw=f
+
+func init
+func silent
+func 1 <weaveB.kps 
+
+line numb 15
+line
+centre
+refl r
+cyl=.1
+stus=11
+
+func 2 "cut \ri[44/108];keep 0"
+func 4 "<weaveA_new.kps"
+
+func s 12 "txt delete be"
+
+func exec 4
+idle "ago 44;split cyl 0"
+
+txt init
+txt centre
+txt font 4
+txt c -20 "Weaving"
+txt font 2
+txt c -55 "be sure you see all four buttons at the bottom of this window!"
+
+txt right
+
+txt fcolour hsv:102.2/.4/.4 .6
+txt fill on
+txt lineskip -24
+txt -20 20 "rerun demo" "func exec s 12;read weaveB.kps"
+txt -20 a "join ends" "func exec s 12;read weaveA_join.kps"
+txt -20 a "trim string" "func exec s 12;func exec 2"
+txt -20 a "change weaver" "func exec s 12;func exec 4"
+txt on
+
+echo
+echo
+echo " *** Click on `change weaver' button to change orientation, size, and speed of weaver (some weave better than others)."
+echo "     Click on `join ends' button to make open string into a knot."
+echo "     Be sure you see all four buttons at bottom of view window."
+echo
+
+<fun-with-accbuff.kps

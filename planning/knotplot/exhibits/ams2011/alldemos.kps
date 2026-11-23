@@ -1,0 +1,126 @@
+echo " "
+echo " "
+echo Demo `magnetic1'
+<magnetic1.kps
+echo " "
+echo " "
+echo Demo `weaveA'
+<weaveA.kps
+echo " "
+echo " "
+echo Demo `random-chain'
+<random-chain.kps
+echo " "
+echo " "
+echo Demo `gravity'
+<gravity.kps
+echo " "
+echo " "
+echo Demo `newhopf'
+<newhopf.kps
+echo " "
+echo " "
+echo Demo `splaits'
+<splaits.kps
+echo " "
+echo " "
+echo Demo `plaits'
+<plaits.kps
+echo " "
+echo " "
+echo Demo `simple-relax'
+<simple-relax.kps
+echo " "
+echo " "
+echo Demo `10sep05a'
+<10sep05a.kps
+echo " "
+echo " "
+echo Demo `thingtoss'
+<thingtoss.kps
+echo " "
+echo " "
+echo Demo `graphs'
+<graphs.kps
+echo " "
+echo " "
+echo Demo `linkRings'
+<linkRings.kps
+echo " "
+echo " "
+echo Demo `orbit'
+<orbit.kps
+echo " "
+echo " "
+echo Demo `violently-happy'
+<violently-happy.kps
+echo " "
+echo " "
+echo Demo `20oct05a'
+<20oct05a.kps
+echo " "
+echo " "
+echo Demo `KnotPaint2'
+<KnotPaint2.kps
+echo " "
+echo " "
+echo Demo `Mandala3b'
+<Mandala3b.kps
+echo " "
+echo " "
+echo Demo `marcus'
+<marcus.kps
+echo " "
+echo " "
+echo Demo `Dolphins'
+<Dolphins.kps
+echo " "
+echo " "
+echo Demo `say/intro'
+<say/intro.kps
+echo " "
+echo " "
+echo Demo `4d-spun-knot'
+<4d-spun-knot.kps
+echo " "
+echo " "
+echo Demo `StElmo'
+<StElmo.kps
+echo " "
+echo " "
+echo Demo `ConeyMagic2'
+<ConeyMagic2.kps
+echo " "
+echo " "
+echo Demo `PA'
+<PA.kps
+echo " "
+echo " "
+echo Demo `ringToss'
+<ringToss.kps
+echo " "
+echo " "
+echo Demo `new_monster'
+<new_monster.kps
+echo " "
+echo " "
+echo Demo `brunnian'
+<brunnian.kps
+echo " "
+echo " "
+echo Demo `braids'
+<braids.kps
+echo " "
+echo " "
+echo Demo `twist-knot'
+<twist-knot.kps
+echo " "
+echo " "
+echo Demo `fly-thru'
+<fly-thru.kps
+echo " "
+echo " "
+echo " "
+echo All done!
+echo " "
+

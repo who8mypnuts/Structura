@@ -1,0 +1,47 @@
+if par1 == 3642963 then "delete all" else "reset all"
+
+
+
+silent=t
+zbuff t
+blend sa msa  % the default
+back=#000
+<fun-with-accbuff.kps
+scale = 0.458638
+if \rr4 < 3 then "mode B" else "mode fB"
+line num 3
+line dir 0 0 1
+line
+elec=f
+mech=f
+bead = \rr[.05/.23]
+coll a
+therm=t
+thfstr=\rr[.1/1.2]
+fscale=1
+par1 = 3642963
+idle "ago 1;grminor=\ri[3/15];grmajor=\ri[2/8];disp t;addbead \rr+-10 \rr+-10 \rr+-10"
+spec grid
+func silent
+func init
+func 1 <FreakyA.kps
+hstart=\rr360
+mathsv s 0 0 0 s
+value=\rr.3
+if \rr3 < 2 then "draw spec" else "draw norm"
+if \rr3 < 1 then "cyl=\rr[.1/.2];mode sBf;blend one one;zbuff f;glop backface t;ncur=13"
+silent=f
+
+tfunc \rr1 "3dop colG \rr1 \rr1 \rr1" 0 rep 1 4
+tfunc \rr1 "3dop colg \rr1 \rr1 \rr1" 0 rep 1 4
+
+echo 
+echo 
+echo "  *** After being freaked out for a while, try rotating the scene with the trackball!"
+echo "      Press F1 to rerun demo (different everytime)."
+echo 
+
+
+say -voice Trinoids
+bindkey " " "say freaky"
+say -on

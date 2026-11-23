@@ -1,0 +1,10 @@
+echo " "
+echo " "
+echo Demo `glueing-graphs'
+<glueing-graphs.kps
+echo " "
+echo " "
+echo " "
+echo All done!
+echo " "
+

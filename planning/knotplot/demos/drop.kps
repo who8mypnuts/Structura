@@ -1,0 +1,25 @@
+% This file is read in by all the script files dropA.kps, dropB.kps, etc.
+
+% misc preferences
+
+verbose=f          % turn off unnecessary verbosity
+cyl=.8             % width of string
+spec +grid         % turn on grid (plane z=0)
+
+% set up dynamics
+
+3dop gravity 0 0 -1   % direction `gravity' acts in
+grav = t              % turn `gravity' on
+velfo = t          % turn on velocity damping force
+wall=t             % enable wall forces
+walindex=2         % wall perp to z axis (use 0 for perp to x, 
+                   % 1 for perp to y)
+walvalue=\pcyl     % wall at level equal to cyl-rad
+coll n             % don't allow knot to pass thru itself or others
+
+dstep=3            % increase this if your computer has a slow 
+                   % graphics card but a fast CPU
+
+force 1            % allow beads to have inertia
+
+go                 % relax `forever'

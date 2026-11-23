@@ -1,0 +1,5 @@
+frame reset
+frame comm "tangle %d,"
+frame \ri[2/5]
+if \rr2 < 1 then "tangle z,"
+if \rr3 < 1 then "tangle @,"

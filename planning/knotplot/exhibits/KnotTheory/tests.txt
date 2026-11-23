@@ -1,0 +1,4 @@
+KnotPaint_stereo 0 0 1
+knottype_stereo 10 15 2
+electricity_stereo 30 40 2
+fly-thru_stereo 10 20 2

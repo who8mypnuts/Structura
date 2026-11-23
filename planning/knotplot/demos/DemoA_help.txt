@@ -1,0 +1,17 @@
+DemoA Help
+
+Probably, not much help is needed for this control panel.  However a few points
+are worth mentioning:
+
+   --- many of the demos are randomized, so they are different every time you
+       run them
+
+   --- most of the demos, but not all, work in anaglyph stereo mode. 
+
+   --- some demos have their own little help pages.  over time the number that 
+       have will increase.   update your KnotPlot frequently.
+
+
+
+
+

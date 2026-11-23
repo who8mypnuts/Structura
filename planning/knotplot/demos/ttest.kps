@@ -1,0 +1,14 @@
+reset all
+
+cyl=.5
+scale=.2
+
+tangle clear
+
+frame comm "tangle %dr,"
+
+#6 frame \ri[2/7];frame \ri[2/7];frame \ri[2/6];tangle ##,
+
+tangle t
+
+go

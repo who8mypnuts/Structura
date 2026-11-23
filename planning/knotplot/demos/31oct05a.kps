@@ -1,0 +1,9 @@
+reset all
+
+knot 1
+coll a
+force 1
+
+Draw=f
+sform=11
+idle "ago 1;save;nbead 12;disp t;load"

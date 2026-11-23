@@ -1,0 +1,52 @@
+require KPbuild 4994   % for L-systems implemented without constructor (27 July 2021)
+
+require accbuff
+reset all
+
+silent=t
+alloc 7000
+go beadlimit 7777
+verbose=f
+back = black
+disp t
+
+scale = .096
+cyl-rad = \rr[.1/.8]
+value= \rr[.5/1]
+hstart=\rr360
+ortho
+mathsv s 0 0 0 s
+
+if \rr11 < 1 then "draw brok"
+
+lsys init
+lsys axiom X
+lsys X XFYFX+F+YFXFY-F-XFYFX
+lsys Y YFXFY-F-XFYFX+F+YFXFY
+lsys delta 90
+lsys 4
+<randorient.kps
+
+
+func init 
+func silent
+func 1 <lsystems1.kps
+
+
+<fun-with-accbuff.kps
+
+alias ~finish "draw spec;~init"
+
+%alias ~init "head tset \rr[22/222] 1 ~finish"
+alias ~init "head tset \rr[22/444] 1"
+
+%sat=0;<random-lights
+
+~init
+func 4 "mode l;mech=f;elec=f;coll a;tanf=t;go"
+
+idle "head tdraw"
+
+silent=f
+#10 echo
+func 1 <lsystems1.kps

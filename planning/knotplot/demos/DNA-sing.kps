@@ -1,0 +1,13 @@
+
+silent = t
+dna sing
+txt push
+txt expire 12
+txt cent
+txt fill on
+txt font 4
+txt group 102
+txt c c "stop singing" "txt delete group 102;.killall say"
+txt pop
+silent = f
+

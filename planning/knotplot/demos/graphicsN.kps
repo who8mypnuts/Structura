@@ -1,0 +1,31 @@
+reset all
+
+
+cyl=\rr[.6/.9]
+
+par0 = \rr2.1
+
+if par0 < 1.1 then "back=0"
+if par0 > 2 then "back=white"
+
+
+hsta = \rr360
+vcn=\ri[2/3]
+if \rr10 < 3 then "vcn=\ri[1/5]"
+vcA=1
+
+if \rr1 < .1 then "knot s" else knot
+<randorient.kps
+if \rr2 < 1 then revb
+
+par0 = \rr2
+
+if par0 < 1 then "texture lupin"
+if par0 < .5 then "sat=.3"
+
+if \rr3 < 1 then "zbuff f;blend one one;back=0"
+
+if \rr12 < 1 then "draw brok;twfix"
+
+idle "anim vcphi 0 6.283185 1.6"
+

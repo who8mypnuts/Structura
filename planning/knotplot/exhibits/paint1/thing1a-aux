@@ -1,0 +1,8 @@
+Draw=f
+if \rr99 < 33 then "frame \ri[0/23]"
+if \rr99 < 80 then "torus \rr99 \rr99 \rr99;about z \rr360" else "unknot \ri[3/30] \rr[1/10];about z \rr360"
+if \rr99 < 20 then "clrfun zf;disp t;clrfun z"
+if \rr99 < 3 then "reflect r"
+if \rr99 < 1 then "read thing1-multi"
+Draw=t
+tfunc \rr[200/800] "read thing1a-aux" 1

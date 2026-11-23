@@ -1,0 +1,2 @@
+if win32 then "button 11 P <procomp_DemoB.kps -1 -1 0 0"
+if linux then "button 11 P <procomp_DemoB.kps -1 -1 0 0"

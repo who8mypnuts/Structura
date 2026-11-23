@@ -1,0 +1,61 @@
+reset all
+silent=t
+verbose=f
+
+unknot \ri[108/324]
+velf=t
+coll a
+force 1
+jitter 99999
+fitto .1
+go
+vcn=\ri[3/12]
+vcA = \rr[.5/1]
+cyl-rad = \rr[.1/.4]
+%surf radf arc vcn mul vcphi add T \rr{3/16} mul add cos vcA mul \rr[.1/1] add clamp cyl mul
+surf radf arc vcn mul vcphi add T \rr{1/5} mul add cos vcA mul \rr[.1/1] add clamp cyl mul
+go
+back=#000 
+verb=f
+hstart=\rr360
+
+ncur=\ri[5/8]
+
+draw spec
+dfunc symm \ri[3/12] \ri2
+cmode -1
+cmode 3 1 1 1
+tanf=t
+
+alias ~ah "txt hide \rr[5/7]"
+func 1 <surf2.kps
+
+txt fcolour royalblue .6
+
+~ah
+txt fill on
+txt font 3
+txt cent
+txt c 20 "reload demo" <surf2.kps
+
+txt right
+txt lineskip -25
+
+~ah
+txt font 4
+txt fill on
+txt -15 15 ? "help popup surf2.kps handoff"
+txt font 3
+
+~ah
+txt -15 a1.5 fullscreen "full toggle"
+txt fill off
+txt -10 a toggle:
+txt fill on
+
+txt on
+
+~ah
+txt autohide on   % should be the last txt command
+
+silent=f

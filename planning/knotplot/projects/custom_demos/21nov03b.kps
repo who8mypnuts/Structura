@@ -1,0 +1,29 @@
+reset all
+silent=t
+mode f
+ortho
+knot cd
+fitto 16
+clrfun z
+zbuff f
+force 1
+coll a
+back t
+scale=\rr[.3/2]
+tanf=on
+go 999999999
+par scale
+
+func silent
+func init
+
+func 5 <flicker_test2.kps
+
+silent=f
+
+echo 
+echo 
+echo "For this demo to look correct, your graphics must pass the flicker test."
+echo "Press F5 to run the flicker test."
+echo
+

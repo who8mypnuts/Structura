@@ -1,0 +1,45 @@
+require KPbuild 4524
+silent = t
+
+% also used by collideD.kps
+
+oal persistent off
+oal close
+
+alias ~att "oal fadein \rr[1/3] source $0 wav $2 attach bcomp $1 on"
+
+
+oal init
+oal listener screen
+oal doppler 1 \rr[.01/.02]
+oal alloff
+
+alias ~att "oal fadein \rr[1/3] source $0 wav $2 attach bcomp $1 on"
+~att 1 1 buzz
+~att 2 2 buzz
+~att 3 3 buzz
+~att 4 4 buzz
+alias ~att "oal fadein \rr[1/3] source $0 wav $2 attach ecomp $1 on"
+~att 5 1 buzz
+~att 6 2 buzz
+~att 7 3 buzz
+~att 8 4 buzz
+
+oal pitch 1 c 0
+oal pitch 2 c 204
+oal pitch 3 c 386
+oal pitch 4 c 498
+oal pitch 5 c 702
+oal pitch 6 c 884
+oal pitch 7 c 1088
+oal pitch 8 c 1200
+
+oal pitch all cr -600
+
+oal gain all 1
+oal velmul \rr[11/111]
+
+silent=f
+
+
+

@@ -1,0 +1,23 @@
+reset all
+panel off
+silent = t
+dstep = \ri[1/3]
+
+if \rr1 < .5 then "special backdrop"
+persp 60 1 20    % Otherwise backdrop will disappear!
+scale=.88
+
+hstart=\rr[0/55]
+cyl=.2
+
+
+collision allow      % turn off collision checking
+force 1              % Newtonian force 
+velforce = true      % but damped 
+velmag = .2          % magnitude of velocity dependant force
+
+if \rr1 < .4 then "load demos-demo0.k" else "load demos-demo2.k"
+go 99999
+
+silent = f
+panel on

@@ -1,0 +1,14 @@
+cp ~/demos/bfacf/initial/3_1#3_1 6c_1
+cp ~/demos/bfacf/initial/3_1s#3_1s 6c_1s
+cp ~/demos/bfacf/initial/3_1#3_1s 6c_2
+cp ~/demos/bfacf/initial/3_1#4_1 7c_1
+cp ~/demos/bfacf/initial/3_1s#4_1 7c_1s
+cp ~/demos/bfacf/initial/3_1#5_1 8c_1
+cp ~/demos/bfacf/initial/3_1s#5_1s 8c_1s
+cp ~/demos/bfacf/initial/3_1s#5_1 8c_2
+cp ~/demos/bfacf/initial/3_1#5_1s 8c_2s
+cp ~/demos/bfacf/initial/3_1#5_2 8c_3
+cp ~/demos/bfacf/initial/3_1s#5_2s 8c_3s
+cp ~/demos/bfacf/initial/3_1s#5_2 8c_4
+cp ~/demos/bfacf/initial/3_1#5_2s 8c_4s
+cp ~/demos/bfacf/initial/4_1#4_1 8c_5

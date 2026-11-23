@@ -1,0 +1,20 @@
+reset all
+sbuff
+silent=t
+hstart=\rr[0/360]
+Draw=f
+if \rr100 < 97 then "spec back;hsta=\rr[10/50]"
+if \rr1 < 0.5 then "back=0"
+clrfun zf
+font 4
+spe +vwt
+
+nstring lm cm "Prime knots of eight crossings."
+
+disp t
+spec
+clrfun n
+frame comm "knot num %d;fitto 9;vport tile %d 5;disp t;gflush"
+frame 16 to 36
+nap \rr[5/8]
+silent=f

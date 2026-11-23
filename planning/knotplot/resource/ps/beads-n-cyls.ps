@@ -1,0 +1,82 @@
+%% Start of beads-n-cyls.ps
+
+%  Rob Scharein, 9 June 2023
+
+0.8 beadR mul /beadr exch def
+0.5 cylR mul /cylr exch def
+
+/BColCOMP {            % Default border colour
+  BLACK
+} def  
+      
+/FColCOMP {            % Default fill colour
+  WHITE
+} def  
+      
+
+/bdCOMP {              % Draw a bead at (xloc, yloc)
+  0 setlinewidth
+  BColCOMP 
+  /yloc exch def
+  /xloc exch def
+
+  newpath
+  xloc yloc moveto
+  xloc yloc beadR 0 360 arc
+  fill
+
+  newpath
+  FColCOMP
+  xloc yloc moveto
+  xloc yloc beadr 0 360 arc
+  fill
+
+} def
+
+/ucCOMP {          % Draw a cylinder fragment extending from (xloc1, yloc1)
+  0 setlinecap     % to (xloc2, yloc2).  The fragment is not capped.  This
+  /yloc2 exch def  % corresponds to a cylinder fragment that does not end
+  /xloc2 exch def  % at a bead that is below it.
+  /yloc1 exch def
+  /xloc1 exch def
+
+  cylR setlinewidth
+  BLACK
+  newpath
+  xloc1 yloc1 moveto
+  xloc2 yloc2 lineto
+  stroke
+
+  cylr setlinewidth
+  WHITE
+  newpath
+  xloc1 yloc1 moveto
+  xloc2 yloc2 lineto
+  stroke
+} def
+
+/ccCOMP {           % Draw a cylinder fragment extending from (xloc1, yloc1)
+  1 setlinecap      % to (xloc2, yloc2).  The fragment is capped.  This 
+  /yloc2 exch def   % corresponds to a cylinder fragment that has a terminus
+  /xloc2 exch def   % ending at a bead that is below it.
+  /yloc1 exch def
+  /xloc1 exch def
+
+  cylR setlinewidth
+  BLACK
+  newpath
+  xloc1 yloc1 moveto
+  xloc2 yloc2 lineto
+  stroke
+
+  cylr setlinewidth
+  WHITE
+  newpath
+  xloc1 yloc1 moveto
+  xloc2 yloc2 lineto
+  stroke
+} def
+
+%% End of beads-n-cyls.ps
+
+

@@ -1,0 +1,32 @@
+%`-
+
+require KPbuild 4225
+
+reset all 
+silent=t
+scale = 1.121498
+bfacf init
+
+
+energy model nbead
+energy format "Nedges = %.0f"
+
+show energy
+alloc 7000
+load birman-clk.k
+bfacf load
+%bfacf centre on
+txt font 4
+txt centre
+txt c -20 "Birman Unknot on the Lattice"
+txt font 3
+txt expire 12
+txt c a "(click on the `run' button on the Control Panel)"
+scale = 0.053614
+viewmatrix 0.788011 -0.615662 0.000000 0.615662 0.788011 0.000000
+
+
+txt on
+
+silent=f
+

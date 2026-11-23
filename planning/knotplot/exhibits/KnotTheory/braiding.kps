@@ -1,0 +1,11 @@
+reset all
+
+auto=f
+hsta=\rr[10/190]
+hincr=0
+scale = 0.081264
+cyl-rad = 1.125495
+
+frame comm "braid (Ab)^%d;trans to -5 55.2 0;disp t;nap .5"
+
+frame 1 to 6

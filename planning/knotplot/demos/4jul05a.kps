@@ -1,0 +1,23 @@
+reset all
+back=0
+disp t
+fog on
+
+3dop bgimage lupin
+spec bgimage
+scale=\rr[.46/.58]
+cyl=.06
+%vcn=8
+vcA=.8
+vcphi=\rr6.28
+ortho
+par0=\ri[12/22]
+par1=\ri[12/22]
+hstart=\rr360
+celtic grid \ppar0 \ppar1
+celtic copy
+sphere \rr[1/4] 0 0  \rr[2/5]
+if \rr2 < 1 then "about z 45"
+
+moebius
+fitto 10

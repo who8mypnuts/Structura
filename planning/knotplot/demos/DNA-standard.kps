@@ -1,0 +1,21 @@
+% this is the definition for the Standard Model of DNA
+
+
+dna atom 3          % we have 3 types of atoms
+dna atom shape 0    % the shape is a sphere
+% usage of the following three commands is:
+% dna atom ATOMTYPE RADIUS RED GREEN BLUE
+dna atom 0 .75 .7 .7 .7  % carbon
+dna atom 1  .8 .2 .4 1   % nitrogen
+dna atom 2 .85  1 .4 .2  % oxygen
+
+dna base 4       % we have 4 types of base pairs
+% usage of the following four commands is:
+% dna base BASETYPE DEFINITIONFILE
+dna base 0 adenine.txt
+dna base 1 thymine.txt
+dna base 2 guanine.txt
+dna base 3 cytosine.txt
+
+% draw as fancy atoms rather than simple slabs
+dna draw fancy

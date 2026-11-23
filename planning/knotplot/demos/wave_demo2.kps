@@ -1,0 +1,38 @@
+%reset all
+if par9 != 8263493 then "reset all;back=#000" else <wave-init.kps
+
+silent=t
+
+%mode cbw
+mode w
+cradius=.06
+sradius = 0.06
+vscale = 0.15
+trx=-3
+
+wavefront nwaves 222
+%wavefront c 5
+wavefront c \rr[2/7]
+wavefront skip 80
+wavefront init
+
+vscale = 0.298422
+
+verbose = f
+
+coll a
+force 1
+
+unknot
+
+go inf limit 30
+
+func init
+func silent
+
+
+alias ~sel2 "txt set selected"
+<wave_demo_aux.kps
+alias ~sel2 nop
+txt exec w 109
+silent=f

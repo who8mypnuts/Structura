@@ -1,0 +1,1 @@
+if \rr2 < 1 then <torus-random.kps else <torus-ordered.kps

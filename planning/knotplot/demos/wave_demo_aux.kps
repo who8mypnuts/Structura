@@ -1,0 +1,180 @@
+require KPbuild 4691
+require KPbuild 4569
+
+if exists say then "say -on;say -bg"
+
+txt clobber on
+
+if par9 != 8263493 then "alias ~toggleblend ~blendon"
+alias ~blendon  "alias ~toggleblend ~blendoff;back=#000;blend one one;zbuff f;txt exec w 109;~blurtblendon"
+alias ~blendoff "alias ~toggleblend ~blendon;blend sa msa;zbuff t;~blurtblendoff"
+
+alias ~blurtblendon "txt push;txt cent;txt fill off;txt font 4;txt colour #aaa;txt expire \rr[7/9];txt c -108 {blending turned on, try a random wave colour};txt pop"
+
+alias ~blurtblendoff "txt push;txt cent;txt fill off;txt font 4;txt expire \rr[7/9];txt c -108 {blending turned off};txt pop"
+
+
+
+par9 = 8263493
+
+func s 1 <wave_demo1.kps
+func s 2 <wave_demo2.kps
+func s 3 <wave_demo3.kps
+func s 4 <wave_demo4.kps
+func s 5 <wave_demo5.kps
+func s 6 <wave_demo6.kps
+
+alias ~ah "txt hide \rr[5/7]"
+txt hide \rr[7/7.6]
+txt font 4
+txt centre
+txt c -20 "demo of `wavefront' command"
+
+txt fcolour royalblue .6
+txt scolour #000
+txt sfcolour #fb0 .8
+
+~ah
+
+txt fill on
+txt cent
+txt font 3
+txt c 20 "reload demo" <wave_demos.kps
+
+txt right
+txt lineskip -25
+
+~ah
+
+txt font 4
+txt fill on
+txt -14 14 ? "help popup file-not-found.kps handoff"
+txt font 3
+
+~ah
+
+txt -15 a1.5 fullscreen "full toggle"
+txt -15 a    blending   ~toggleblend
+txt fill off
+txt -10 a toggle:
+txt fill on
+
+func 2 mode w
+func 3 mode wb
+func 4 mode wbc
+
+~ah
+txt push
+txt group 109
+txt select on
+txt phantom wbc
+txt -15 a1.5 "wbc" "mode wbc"
+txt -15 a    "wb"  "mode wb"
+txt -15 a    "w"   "mode w"
+txt fill off
+txt phantom
+txt select off
+txt -10 a "mode:"
+txt pop
+
+func 9 "go;echo;echo;echo Frame speed limiting off.;echo;echo"
+func 10 "go inf limit 30;echo;echo;echo Frame speed limiting set to 30fps.;echo;echo"
+func 11 "go inf limit 60;echo;echo;echo Frame speed limiting set to 60fps.;echo;echo"
+func 12 "go inf limit 90;echo;echo;echo Frame speed limiting set to 90fps.;echo;echo"
+
+~ah
+
+txt fill on
+txt phantom none
+txt select on
+txt group 110
+txt -15 a1.5 none "func exec 9"
+txt -15 a    90   "func exec 12"
+txt -15 a    60   "func exec 11"
+txt -15 a    30   "func exec 10"
+txt set selected
+txt select off
+txt phantom
+txt fill off
+txt -10 a "fps limit:"
+txt pop
+
+
+func 5 back=0
+func 6 back=blue
+func 7 back=#444
+
+~ah
+alias ~bcolour "back=rgb:$0/$1/$2"
+txt fill on
+txt phantom random
+txt group 111
+txt -15 a1.5    random   "~bcolour \rr1 \rr1 \rr1" 
+txt L a0    blue     "back=blue"
+txt -15 a    grey     "back=#444"
+txt L a0    orange   "back=rgb:1/.5/0"
+txt -15 a    white    "back=#fff"
+txt L a0    black    "back=#000"
+txt phantom
+txt fill off
+txt -10 a "background:"
+txt pop
+
+
+~ah
+alias ~winfo "verbose=t;record winfo {cmode ?;wave info;echo};verbose=f;say done"
+
+
+alias ~wcolour "cmode 0;wave mode 0;wave rgb $0 $1 $2"
+alias ~wcmod "echo;echo;echo same as typing;cmode -1;cmode 3 1 1 1;wave cmod $0 $1 $2 $3;wave mode 1;echo into this window (try other values)" 
+txt fill on
+txt phantom random2
+txt group 112
+txt -15 a1.5 record ~winfo
+txt -15 a1.25 random5  "par2=\rr{10/108};par3=\ppar2;test paradj 3 -1;~wcmod \ppar2 \rr[.75/1] \rr[.75/1] \ppar3"
+txt L a0    random4  "~wcmod \rr{10/108} \rr[.75/1] \rr[.85/1] \rr{10/108}"
+txt -15 a    random3  "~wcmod \rr{10/108} \rr[.5/1] \rr[.5/1] 0"
+txt L a0    random2  "~wcmod \rr{10/108} 1 1 0"
+txt -15 a    random1  "~wcolour \rr1 \rr1 \rr1" 
+txt L a0    blue     "~wcolour 0 0 1"
+txt -15 a    white    "~wcolour 1 1 1" 
+txt L a0    black    "~wcolour 0 0 0" 
+txt -15 a    orange   "~wcolour 1 .5 0" 
+txt L a0    red   "~wcolour 1 0 0" 
+txt phantom
+txt fill off
+txt -10 a "wave colour:"
+txt pop
+
+
+
+~ah
+txt push
+txt left
+txt select on
+txt group 108
+txt 15 15 "wave 6" <wave_demo6.kps
+~sel6
+txt 15 a  "wave 5" <wave_demo5.kps
+~sel5
+txt 15 a  "wave 4" <wave_demo4.kps
+~sel4
+txt 15 a  "wave 3" <wave_demo3.kps
+~sel3
+txt 15 a  "wave 2" <wave_demo2.kps
+~sel2
+txt 15 a  "wave 1" <wave_demo1.kps
+~sel1
+txt fill off
+txt 10 a "select a demo:"
+txt select off
+
+txt pop
+
+~ah
+
+txt autohide on   % should be the last txt command
+txt on
+
+
+

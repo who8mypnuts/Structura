@@ -1,0 +1,46 @@
+
+delete all
+
+line dir 1 0 0
+line numb 34
+line -17 -17 0
+
+#3 dupl;about z -90 0;about z 90
+
+join all
+
+trans 0 0 -1
+bfacf load
+trans 0 0 2
+bfacf comb
+
+bfacf centre off
+spec bfacf
+
+% don't show all the lattice
+bfacf latshow -20 -20 -5 20 20 6
+
+% fill a big block
+bfacf fill -20 -20 -3 20 20 4
+% but clear most of the inside
+bfacf clear -13 -13 -5 13 13 5
+
+% extrude a pipe inside the filled part
+bfacf clear -19 -19 -2 -15 19 3
+% and another on the opposite side
+bfacf clear 15 -19 -2 19 19 3
+
+% do two more pipes, swapping x and y
+bfacf clear -19 -19 -2 19 -15 3
+bfacf clear -19 15 -2 19 19 3
+
+
+
+% don't forget to refill the location where the knot is!
+bfacf fill
+
+txt clobber on
+txt font 2
+txt fill off
+txt cent
+txt c -44 "configuration 4"

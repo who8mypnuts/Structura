@@ -1,0 +1,90 @@
+reset all
+panel off
+silent = t
+
+Draw=f
+% special backdrop
+special +energy
+dstep=3
+drop all 17 13 -10
+drop ca 0xff300000
+drop cb 0xff300000
+drop cc 0xff000000
+drop cd 0xff000000
+
+matrgb knot .5 .5 .5 s
+matrgb knot .2 .5 1  d
+matrgb knot 0  .2 .2 a
+
+cyl = .06
+scale = .64
+mode cfb
+back = 0
+load demos-demo3.k
+Draw =t
+
+charge 15
+hooke 1
+time 15
+ago 102
+special -energy
+
+Draw = off
+mode s
+sat = .8
+Draw = on
+
+anim cyl .06 .6 27 log
+
+
+twfix
+
+
+broff = .01
+draw broke
+
+
+
+
+matrgb knot 0.100 0 0 e
+display
+matrgb knot 0.150 0 0 e
+display
+matrgb knot 0.200 0 0 e
+display
+matrgb knot 0.250 0 0 e
+display
+matrgb knot 0.300 0 0 e
+display
+matrgb knot 0.350 0 0 e
+display
+matrgb knot 0.400 0 0 e
+display
+matrgb knot 0.450 0 0 e
+display
+matrgb knot 0.500 0 0 e
+display
+matrgb knot 0.550 0 0 e
+display
+matrgb knot 0.600 0 0 e
+display
+matrgb knot 0.650 0 0 e
+display
+matrgb knot 0.700 0 0 e
+display
+matrgb knot 0.750 0 0 e
+display
+matrgb knot 0.800 0 0 e
+display
+matrgb knot 0.850 0 0 e
+display
+matrgb knot 0.900 0 0 e
+display
+matrgb knot 0.950 0 0 e
+display
+
+anim broff .01 5 14 log
+
+
+silent = f
+panel on

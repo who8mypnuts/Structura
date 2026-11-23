@@ -1,0 +1,41 @@
+reset all
+back f  % to prevent bad lighting
+
+func 12 <new_monster.kps
+font 4
+silent=t
+Draw = f
+ncur = 3
+nseg = 12
+cyl = .44
+hstart = \rr[0/44]
+satu = \rr[.7/1]
+mode s
+back=0
+scale=.25
+
+drop all 52 35 -20
+
+if \rr1 < .8 then "spe back"
+
+%drop ca 0xff000000
+%drop cb 0xff000000
+%drop cc 0xff440044
+%drop cd 0xff440044
+
+if \rr1 < .333 then "drop ca 0x99ff;drop cb 0x99ff;drop cc 0;drop cd 0;hstar=200"
+txt font 4
+txt on
+txt centre
+txt clobber on
+
+if \rr1 < .5 then "rota z 180"
+silent=f
+
+frame comm "read nonp%d.kps"
+frame \ri[0/7]
+
+txt c 60 "Unknot or Trefoil?"
+
+if \rr1 < .5 then <new_monsterA.kps else <new_monsterB.kps
+

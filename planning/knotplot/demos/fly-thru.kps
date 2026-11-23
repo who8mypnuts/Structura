@@ -1,0 +1,86 @@
+reset all
+silent=t
+back=black
+txt font 4
+txt colour orange
+txt cent
+alias ~gl <almost-reset.kps
+alias ~ah "txt hide \rr[5/6]"    % this is just for fun
+
+~ah
+txt c -30 "fly thru a knot!"
+
+txt fill on
+txt fcolour royalblue .7
+
+~ah
+
+txt c-108 -70 1 "~gl;<graphicsE.kps"
+~ah
+txt c-54 -70 2 "~gl;<graphicsEa.kps"
+~ah
+txt c -70 3 "~gl;<graphicsEb.kps"
+~ah
+txt c+54 -70 4 "~gl;<graphicsEc.kps"
+~ah
+txt c+108 -70 5 "~gl;<aum-fly.kps"
+~ah
+
+txt push
+txt fill off
+txt expire 7
+txt c -110 "click one of the buttons above (each is different every time)"
+txt pop
+
+txt lineskip -25
+txt fcolour royalblue .6
+txt colour #fff
+
+~ah
+txt right
+txt font 4
+txt -14 14 ? "help popup 23jun05c.kps handoff"
+txt font 3
+
+% slfjsdlfj
+
+~ah
+
+txt -15 a1.5 fullscreen "full toggle"
+txt fill off
+txt -10 a toggle:
+txt fill on
+
+
+~ah
+txt -15 a2 "lights" <random-lights
+~ah
+txt -15 a "mode b" "mode b;draw norm"
+~ah
+txt -15 a "mode cb" "mode cb"
+~ah
+txt -15 a "mode sb" "mode sb"
+~ah
+txt -15 a "broken" "mode s;draw brok"
+~ah
+%txt -15 a "" "clrf z;zbuff t"
+%txt -15 a "" "clrf zf"
+~ah
+txt -15 a "twist" "mode s;twfix \rr+-222"
+~ah
+txt -15 a "cyl/nseg" "cyl=\rr[.2/2];nseg=\ri[3/9]"
+~ah
+txt -15 a "persp" "persp 160 .02 33;value=.6;zbuff f;blend one one;clrf zf"
+~ah
+txt -15 a "anorm" "cyl=.1;nseg=3;mode s;draw anorm;atw=t;twfix"
+~ah
+txt fill off
+~ah
+txt -10 a options:
+
+txt autohide on   % should be the last txt command
+
+txt on
+
+silent=f
+#3 echo

@@ -1,0 +1,79 @@
+require KPbuild 4736   % for the `scenery object .flags' feature
+
+delete all
+scenery init
+untran
+
+knot 1
+fitto 10
+cyl-rad = .1
+<randorient.kps
+
+% make a double 
+double
+
+% install knot as warping path
+warp install
+
+% get rid of the evidence
+delete all
+
+scale=.36
+cyl-rad = .1
+
+% braid with two strings and 23 trivial generators
+braid -strings 2 0^23
+%braid -strings 2 0^23 a^4
+
+% swirl end by 720 degrees so things will line up
+swirl ends 720
+
+% fit to an average edge length of 1
+fitto avlength 1
+
+% warp the rectangular region (projection of bounding box
+% of current knot to xy-plane) to an annulus, leaving a 
+% space between the ends of 1
+warp rec2ann 1
+
+% join up all open ends
+join all
+
+% warp a regular torus bounding the current link
+% to the warping path previously installed
+warp along
+
+% improve the quality by refining a bit
+refine 6
+
+
+% set scenery flags to do backface culling
+scenery object .flags 4
+
+% change component colours and force a redisplay 
+colour all turquoise
+disp t
+
+% create a scenery object based on current link
+scenery object .link
+
+% reverse orientation of both components
+revbeads
+
+% change the colour and force a redisplay
+colour all midnightblue
+disp t
+
+% create another scenery object with reverse facing
+% normal vectors from previous object
+scen object .link
+
+% colour the components 
+colour all burntorange
+
+% show the scenery
+scenery on
+
+
+scale = .35
+

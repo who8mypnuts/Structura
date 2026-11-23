@@ -1,0 +1,4 @@
+button 8 Unknown1 <monster-anim.kps 5 -1 33.75 10
+button 8 Unknown2 <Tmonster-anim.kps -1  -1 33.75 10
+button 8 "Nasty" <freedman-anim.kps  -1 -1 33.75 10
+button 8 "Brunnian" <brun-relax-anim.kps  -1 -1 33.75 10

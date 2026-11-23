@@ -1,0 +1,6 @@
+par0
+10 conway 3
+5 conway 2
+7 conway 4
+4 conway 32
+1 conway 2,3,2

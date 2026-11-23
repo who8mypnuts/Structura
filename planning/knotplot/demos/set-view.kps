@@ -1,0 +1,5 @@
+rotate x -55       % rotate view, can also use left mouse button 
+                   % in view window (no affect on dynamics)
+scale=.2           % scale view, can also use right mouse button 
+                   % in view window  (no affect on dynamics)
+grsize=20          % size of grid

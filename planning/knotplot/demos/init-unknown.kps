@@ -1,0 +1,23 @@
+reset all
+
+ncur = 3
+nseg = 10
+cyl = \rr[.3/.44]
+hstart = 44
+satu = .7
+mode s
+
+if \rr2 < 1 then "rotate z 180"
+
+scale=.27
+drop all 52 35 -20
+
+if stereo then "back=black" else "spec back"
+
+drop ca black
+drop cb black
+drop cc #404
+drop cd #404
+
+
+par2 = 235724

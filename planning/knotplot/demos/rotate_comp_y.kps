@@ -1,0 +1,10 @@
+% rotate component par1 at a rate of par2 degrees per second
+% for par3 seconds
+
+nop \t0          % initialize clock
+par0 = \ppar2    % degrees per second
+
+silent=t
+until timelimit \ppar3
+until Ncomp 0 "about yc \T1 \ppar1;disp t"
+silent=f

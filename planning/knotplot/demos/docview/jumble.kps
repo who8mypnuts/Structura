@@ -1,0 +1,20 @@
+scale=.35
+untran
+~nogo
+jitter 99999
+fitto \rr[10/15]
+velf=t
+coll a
+force 1
+txt push
+txt font 4
+txt fill on
+txt group 32475
+txt delete group 32475
+txt cent
+txt c -30 "click here" "go;txt delete group 32475"
+txt fill off
+txt font 3
+%txt c -50 "click button above"
+
+txt pop

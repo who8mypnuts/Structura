@@ -1,0 +1,34 @@
+require KPbuild 4965
+
+ncur = 2
+nseg = 7
+cyl = .44
+hstart = 0
+satu = 1
+mode s
+spe -vwt
+scale = 0.118616
+
+silent = true
+rotate home
+Draw = false
+
+popview = false
+
+
+
+silent = false
+
+load Monster.movie
+
+ncur = 3
+refine nbead 20
+power=2
+coll a
+Draw = t
+go 200
+
+
+Draw = t
+
+

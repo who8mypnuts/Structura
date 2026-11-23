@@ -1,0 +1,137 @@
+reset all
+
+texture appmode modu
+% render scenery
+Draw=f
+scenery sncyl 1.6
+scenery scale .042
+scenery offset 0 0 -.2
+tangle 1.
+scenery snapshot txt 1
+tangle 2.
+scale 1 1.2 1
+scenery snapshot txt 2
+tangle 3.
+scale 1 1.7 1
+scenery snapshot txt 3
+tangle 2@.
+scenery snapshot txt 4
+tangle 3@.
+scenery snapshot txt 5
+tangle $.
+scenery snapshot txt 6
+tangle |.
+scenery snapshot txt 7
+load question_mark.k
+hincr=0
+scenery snapshot txt 8
+delete all
+persp 60  %  because snapshots switch to ortho? 
+Draw=t
+
+echo 
+echo
+echo
+silent=t
+tgfuzz=0.001
+
+%hstart = \rr[46/188]
+
+%if \rr16 < 15 then "mode s;cyl=.15" else "mode cb;cyl=.07"
+mode s
+cyl-rad=.3
+
+
+alias ~2 "tgvas=2;tangle 1`t;~clearngo"
+alias ~3 "tgvas=4;tangle |`t;~clearngo"
+alias ~4 "tgvas=2;tangle 3@!#`t:~clearngo"
+alias ~5 "tgvas=4;tangle 3@!z#`t;~clearngo"
+alias ~6 "tgvas=2;read thold_random.kps;~clearngo"
+alias ~8 "tgvas=4;tangle 3`t;~clearngo"
+alias ~9 "tgvas=4;tangle 3@`t;~clearngo"
+alias ~10 "tgvas=4;tangle 2`t;~clearngo"
+alias ~7 "tgvas=4;tangle 2@`t;~clearngo"
+
+alias ~clearngo "tangle clear;read thold_go.kps"
+alias ~c11 "go 0;txt delete start;txt delete stop;txt delete with;scale=.35;untran"
+alias ~c12 "fitto \ppar0;tholder norm;tholder install t;show tholders;hincr=0"
+
+txt init
+s
+txt centre
+txt space _
+
+% set up txt buttons that scenery will attach to
+
+txt fill off
+txt font 4
+txt lineskip -60
+txt colour #fff 0.6
+txt 40 30 "embed" "cyl=.3;~2"
+txt 40 a "embed" "cyl=.3;~10"
+txt 40 a "embed" "cyl=.2;~8"
+txt 40 a "embed" "cyl=.3;~7"
+txt 40 a "embed" "cyl=.2;~9"
+txt 40 a "embed" "cyl=.2;~4"
+txt 40 a "embed" "cyl=.3;~3"
+txt 40 a "embed" "cyl=.3;~6"
+
+txt lineskip -20
+txt font 2
+txt fill on
+
+txt colour #fff
+txt fill off
+if KPbuild < 4013 then "txt -20 10 _" else "txt set y 10"
+txt fill on
+
+txt -20 a "N&D" "~c11;read thold_nm.kps;~c12"
+txt -20 a 10*v "~c11;read thold_10stvar.kps;~c12"
+txt -20 a 11* "~c11;read thold_11st.kps;~c12"
+txt -20 a 10** "~c11;read thold_10sst.kps;~c12"
+txt -20 a 9* "~c11;read thold_9st.kps;~c12"
+txt -20 a 6** "~c11;read thold_6sst.kps;~c12"
+txt -20 a D "~c11;read thold_denom.kps;~c12"
+
+txt fill off
+if KPbuild < 4013 then "txt -20 10 _" else "txt set y 10"
+txt fill on
+
+txt -60 a cube "~c11;read thold_cube.kps;~c12"
+txt -60 a sup "~c11;read thold_3st.kps;~c12"
+%txt -60 a 8*v "~c11;read thold_8stvar.kps;~c12"
+txt -60 a 10*** "~c11;read thold_10ssst.kps;~c12"
+txt -60 a 10* "~c11;read thold_10st.kps;~c12"
+txt -60 a 8* "~c11;read thold_8st.kps;~c12"
+txt -60 a 6* "~c11;read thold_6st.kps;~c12"
+txt -60 a N "~c11;read thold_numer.kps;~c12"
+
+txt fill off
+txt -40 a holders:
+txt lineskip -14
+txt -40 a tangle
+
+txt clobber on
+
+% leave button state for titles:
+txt fill off
+txt font 4
+txt centre
+
+txt on
+scenery on
+
+% multiif  thold.txt > thold_if.kps
+<thold_if.kps
+
+~c12
+
+silent=f
+echo
+echo
+echo
+echo "  *** Press F1 to rerun demo."
+echo "      Use the on-screen `embed' buttons to embed different tangles in the tangle template"
+echo "      or choose a new tangle holder from the choices on the bottom left of the window."
+
+

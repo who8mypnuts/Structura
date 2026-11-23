@@ -1,0 +1,196 @@
+require KPbuild 4996   % for save |c when there are no beads
+                       % also for KnotPlot scripts with parameters (added 14 August 2021)
+
+require KPbuild 5004   % for Lua (added 21 March - 18 May 2022)
+require KPbuild 5005   % for ARM vs x86_64
+require KPbuild 5008   % for sradius, cradius, bradius, vscale
+require KPbuild 5016   % executeKP takes up to nine arguments
+require KPbuild 5017   % executeKP can take unlimited number of arguments
+require KPbuild 5018
+
+% Default DemoA.kps file.
+% This file defines the DemoA control panel.
+% If you want to make your a custom DemoA panel, create your a DemoA.kps
+% file and put it in the KnotPlot read path ahead of the demos folder.
+
+% This is the file that defines the buttons seen on the demos
+% panel.  It is easy to make a custom demo panel by simply 
+% creating your own DemoA.kps file in a directory somewhere and
+% running KnotPlot from that directory.  KnotPlot will read in
+% the first DemoA.kps file it finds in its path.  
+% To see what the current path is, enter the KnotPlot command `path'.
+
+% See the file DemoB.kps in this directory for more examples.
+
+% First button location should always be absolute.
+
+% Arguments for the button command are:
+
+%  argu 1 - number or name of the control panel you want the button on
+%  argu 2 - label for button, use quotation marks for more than one word
+%  argu 3 - action for button, ignored if a label
+%  argu 4 - x location of lower left corner of button, use -1 for auto-placement
+%  argu 5 - y location of lower left corner of button, use -1 for auto-placement
+%  argu 6 - x size of button
+%  argu 7 - y size of button
+%  argu 8 - (optional) button flags (4 means button is a label)
+%  argu 9 - subpanel the button should go on
+
+%echo " "
+%echo " "
+%echo "DemoA panel initialized from definition in" \f "(demos folder)."
+%echo " "
+
+
+panel off  % comment this out to watch the panel being drawn
+
+button Nbuttons 5
+button hspace 4 
+button pos 1
+button blank _
+button height 8
+
+button Nbuttons 4
+
+
+button DemoA "Knot theory" dum 4 275 102 10 4
+
+button DemoA "guess knot" "lua run GuessKnot" -2 -1 0 0
+button DemoA "(un)knot?" "lua run Freedman"  -1 -1 0 0
+button DemoA "Perko pair" "lua run Perko"  -1 -1 0 0
+button DemoA "Brunnian" "lua run Brunnian"  -1 -1 0 0
+button DemoA  BruChain "lua run Brunnian-chain" -1 -1 0 0
+%button DemoA "Whitehead" <whitehead-anim.kps  -1 -1 0 0
+button DemoA "random braid" <randbraid2.kps -1 -1 0 0
+button DemoA "random braid" "lua run random-braid 5" -1 -1 0 0
+%button DemoA "Lk=Tw+Wr" <lktwwr.kps -1 -1 0 0
+button DemoA Redm._moves <redm_moves.kps -1 -1 0 0
+button DemoA chirality "if \rr100 < 50 then <ChiralKnotsB.kps else <ChiralKnotsBc.kps" -1 -1 0 0
+
+button DemoA "min step"  "read min-step.kps 3.1 75 mscl/2.b 0"  -1 -1 0 0 
+
+% moebius inversion demo here  
+%button DemoB "Za" <7jun05a.kps -1 -1 0 0
+%button DemoB "Zb" <7jun05b.kps -1 -1 0 0
+
+button DemoA "twist knot" <new_twist.kps -1 -1 0 0
+%button DemoA torus_knots <torus-knots.kps -1 -1 0 0
+%button DemoA satellite_knot <satellite.kps -1 -1 0 0
+button DemoA Lissajous <Lissajous.kps -1 -1 0 0
+
+button DemoA tangles <tangle-templates.kps -1 -1 0 0
+
+button DemoA "rat tang" <rat_tangle.kps -1 -1 0 0
+%button DemoA "rat tang" <rat_tangle_old.kps -1 -1 0 0
+button DemoA ACN <ACN-static.kps -1 -1 0 0
+button DemoA "BB frame" <BBframe.kps -1 -1 0 0
+
+button DemoA "moebius" <moebius-inversion.kps -1 -1 0 0
+button DemoA "magnetic" <magnetic1.kps  -1 -1 0 0
+button DemoA "codes" <knot-codes.kps -1 -1 0 0
+%button DemoA "stick knots" <stick-knots.kps   -1 -1 0 0
+%button DemoA "rad tube" <rad-tube.kps -1 -1 0 0
+
+%button DemoA " " "echo;echo;echo Coming soon...;echo" -1 -1 0 0
+
+
+button DemoA "Dynamics & Relaxations" dum -2 -1 102 10 4
+
+button DemoA Split/delete <split-delete.kps  -2 -1 0 0
+button DemoA Forces <fwf.kps -1 -1 0 0
+%button DemoA Anchors <28jul00a.kps -1 -1 0 0
+button DemoA FreeDrag <FreeDrag.kps -1 -1 0 0
+%button DemoA Gravity <gravity.kps  -1 -1 0 0
+
+button DemoA ringpack <ring-pack.kps -1 -1 0 0
+button DemoA hedgehog <hedgehog.kps -1 -1 0 0 
+if spenabled then "button DemoA spool <spool1.kps -1 -1 0 0"
+
+parsave
+par2 = \rr25
+if par2 < 10 then "button DemoA crankshaft <mangle-demo.kps -1 -1 0 0 ;par2=27"
+if par2 < 26 then "button DemoA crankshaft <mangle-demo2.kps -1 -1 0 0 ;par2=27"
+parrestore
+
+button DemoA "chains" <chains.kps -1 -1 0 0
+button DemoA "rchain" <random-chain.kps   -1 -1 0 0
+%button DemoA "stick things" <stick-things.kps   -1 -1 0 0
+button DemoA "cable" <cable.kps -1 -1 0 0
+button DemoA weave  <weaveA.kps  -1 -1 0 0
+button DemoA "braid warp" <braidwarp.kps -1 -1 0 0
+if stereo then nop else "button DemoA shadows <shadows.kps -1 -1 0 0"
+button DemoA Lorenz <lorenz-idle.kps -1 -1 0 0
+button DemoA DNA <DNA.kps -1 -1 0 0
+%if KPbuild > 3181 then "button DemoA THK <turkshead2.kps -1 -1 0 0"
+%if KPbuild > 3181 then "button DemoA alt_deco <altdeco.kps -1 -1 0 0"
+%if KPbuild > 3181 then "button DemoA alt_deco_moeb <altdeco-moeb.kps -1 -1 0 0"
+%button DemoA Cubic_SAW <CubicSAW.kps -1 -1 0 0  REMOVED 18 February 2021
+%button DemoA random <rand_anchors.kps -1 -1 0 0
+button DemoA Hopf <newhopf.kps -1 -1 0 0
+button DemoA star/box <starbox.kps -1 -1 0 0
+button DemoA celtic <22nov11.kps -1 -1 0 0
+button DemoA plaits <plaits.kps -1 -1 0 0
+button DemoA splaits <splaits.kps -1 -1 0 0
+
+%button DemoA sum <test-sum-3comp.kps -1 -1 0 0
+
+button DemoA "ant neck" <AntoinesNecklace.kps -1 -1 0 0
+button DemoA trapped <trapped.kps -1 -1 0 0
+
+button DemoA "Simple" <simple-relax.kps -1 -1 0 0
+%button DemoA "Ring toss" <7jun00a.kps  -1 -1 0 0
+%button DemoA "Anchors" <anchor-demoA -1 -1 0 0
+button DemoA Graphs <graphs.kps   -1 -1 0 0
+%button DemoA "open end" <open-end.kps -1 -1 0 0
+%button DemoA "undo" <slide-knot.kps -1 -1 0 0
+%button DemoA "Ring toss" <ringToss.kps  -1 -1 0 0
+button DemoA Thing_toss <thingtoss.kps -1 -1 0 0
+button DemoA "Link rings" <linkRings.kps  -1 -1 0 0
+%button DemoA arcs <arcs.kps -1 -1 0 0      % merge with helix
+%button DemoA helix <helix.kps -1 -1 0 0    
+
+%if exists colabex/start-demo.kps then <exib-buttons.kps
+   
+button DemoA "Tutorials" dum  -2 -1 102 10 4
+
+button DemoA rotate  <tut/rotate.kps  -2 -1 0 0
+%button DemoA scripts <tut/scripts.kps -1 -1 0 0
+button DemoA text <tut/txt.kps -1 -1 0 0
+button DemoA scenery <tut/scenery-demo1.kps -1 -1 0 0
+button DemoA YouTube "www knotplot.com/tutorials" -1 -1 0 0 
+%button DemoA poly <tut/eobj-examples.kps -1 -1 0 0
+
+
+button DemoA "Lua scripted demos (new! 3 April 2022)"  aaa -2 -1 102 10 4
+button DemoA "guess knot" "lua debug on;lua run GuessKnot;lua debug off" -2 -1 0 0
+button DemoA "(un)knot?" "lua debug on;lua run Freedman;lua debug off"  -1 -1 0 0
+button DemoA "Perko pair" "lua debug on;lua run Perko;lua debug off"  -1 -1 0 0
+button DemoA "Brunnian" "lua debug on;lua run Brunnian;lua debug off"  -1 -1 0 0
+
+button DemoA helix   "lua debug on;lua run helix.lua;lua debug off" -1 -1 0 0
+button DemoA construction  "lua debug on;lua run construction.lua;lua debug off" -1 -1 0 0
+
+button DemoA info  "lua debug on;lua run info;lua debug off" -1 -1 0 0
+button DemoA torus  "lua debug on;lua run torus;lua debug off" -1 -1 0 0
+button DemoA relax-s  "lua debug on;lua run relax-s;lua debug off" -1 -1 0 0
+button DemoA relax-t  "lua debug on;lua run relax-t;lua debug off" -1 -1 0 0
+button DemoA cut  "lua debug on;lua run cut2;lua debug off" -1 -1 0 0
+button DemoA celtic  "lua debug on;lua run celtic-ball;lua debug off" -1 -1 0 0
+button DemoA templates "lua debug on;lua run templates;lua debug off"   -1  -1   0 0
+button DemoA colour "lua debug on;lua run colour;lua debug off"   -1  -1   0 0
+
+  
+%button Nbuttons 3
+%button hspace 4
+%button pos 1
+%button DemoA "This layout subject to change." nop -1 10 0 0 4
+
+panel on
+
+if KPbuild < 3516 then "<warn_KPbuild.kps"
+
+
+button height 10
+
+<demo_panel_upgrade.kps
+

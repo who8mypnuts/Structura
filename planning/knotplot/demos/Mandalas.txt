@@ -1,0 +1,8 @@
+par9
+10 read Mandala1.kps
+5 read Mandala2.kps
+10 read Mandala3.kps
+12 read Mandala3a.kps
+14 read Mandala3b.kps
+9 read Mandala4.kps
+5 read Mandala4b.kps

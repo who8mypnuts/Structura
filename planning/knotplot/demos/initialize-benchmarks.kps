@@ -1,0 +1,85 @@
+% KnotPlot Benchmarks
+
+
+button bench "Benchmarks and other tests" nop 5 270 40 10 4
+
+button Bench "reset all"  "reset all"   -2 -1 40 10
+button Bench "resize view window" "resize 700" -1 -1 50 10
+
+button Bench "Graphics bound benchmarks" dum -2 -1 150 10 4
+
+button Nbuttons 6
+button hspace 3
+
+button Bench GLinfo "echo;echo;GLinfo" -2 -1 0 10
+button Bench GLinfo_full "echo;echo;GLinfo full view" -1 -1 -2 10
+button Bench "print fps" "par fps" -1 -1 0 10
+
+button Bench "spin A" <../benchmarks/spinA-bm.kps -2 -1 0 10
+button Bench "spin As" <../benchmarks/spinAs-bm.kps -1 -1 0 10
+button Bench "spin Aa" <../benchmarks/spinAa-bm.kps -1 -1 0 10
+
+button Bench "spin B" <../benchmarks/spinB-bm.kps -1 -1 0 10
+button Bench "spin Bs" <../benchmarks/spinBs-bm.kps -1 -1 0 10
+
+button Bench "spin C" <../benchmarks/spinC-bm.kps -1 -1 0 10
+button Bench "spin Cc" <../benchmarks/spinCc-bm.kps -1 -1 0 10
+
+button Bench "relax A" <../benchmarks/relaxA-bm.kps -2 -1 0 10
+button Bench "relax Af" <../benchmarks/relaxAf-bm.kps -1 -1 0 10
+button Bench "relax B" <../benchmarks/relaxB-bm.kps -1 -1 0 10
+button Bench "relax C" <../benchmarks/relaxC-bm.kps -1 -1 0 10
+button Bench "relax D" <../benchmarks/relaxD-bm.kps -1 -1 0 10
+%button Bench "relax E" <../benchmarks/relaxE-bm.kps -1 -1 0 10
+%button Bench "relax F" <../benchmarks/relaxF-bm.kps -1 -1 0 10
+
+button Bench "text A" <../benchmarks/textA-bm.kps -2 -1 0 10
+button Bench "text B" <../benchmarks/textB-bm.kps -1 -1 0 10
+%button Bench "text C" <../benchmarks/textC-bm.kps -1 -1 0 10
+%button Bench "text D" <../benchmarks/textD-bm.kps -1 -1 0 10
+
+button Bench "scenery A" <../benchmarks/sceneryA-bm.kps -2 -1 0 10
+button Bench "scenery B" <../benchmarks/sceneryB-bm.kps -1 -1 0 10
+%button Bench "scenery C" <../benchmarks/sceneryC-bm.kps -1 -1 0 10
+%button Bench "scenery D" <../benchmarks/sceneryD-bm.kps -1 -1 0 10
+
+%button Bench "Texture mapping" nop 5 -1 150 20 4
+
+button Bench "env A" <../benchmarks/envA-bm.kps -2 -1 0 10
+button Bench "env B" <../benchmarks/envB-bm.kps -1 -1 0 10
+button Bench "env C" <../benchmarks/envC-bm.kps -1 -1 0 10
+button Bench "env D" <../benchmarks/envD-bm.kps -1 -1 0 10
+button Bench "env E" <../benchmarks/envE-bm.kps -1 -1 0 10
+
+%button Bench "env F" <../benchmarks/envF-bm.kps -1 -1 0 10
+
+% i've broken the font rendering, so this benchmark is pointless...   :-(
+%button Bench "misc A" <../benchmarks/miscA-bm.kps -2 -1 0 10
+
+button Bench "CPU bound benchmarks" dum 5 -1 150 10 4
+button Bench "CPU B" <../benchmarks/cpuB-bm.kps -2 -1 0 10
+button Bench "CPU Bc" <../benchmarks/cpuBc-bm.kps -1 -1 0 10
+button Bench "CPU Ba" <../benchmarks/cpuBa-bm.kps -1 -1 0 10
+button Bench "CPU SE" <../benchmarks/cpuSE-bm.kps -1 -1 0 10
+button Bench "CPU MAG" <../benchmarks/cpuMAG-bm.kps -1 -1 0 10
+
+button bench "Other graphics tests" nop -2 -1 88 10 4
+
+button Bench "accbuff A" <../benchmarks/abuffA-bm.kps -2 -1 -2 10
+button Bench "accbuff B" <../benchmarks/abuffB-bm.kps -1 -1 -2 10
+button Bench "accbuff C" <../benchmarks/abuffC-bm.kps -1 -1 -2 10
+
+<init-benchmarks-aux.kps
+
+
+button Nbuttons 5
+button hspace 3
+button pos 1
+button Bench "Return to DemoB panel" "panel set DemoB;wlay stan" 4 30  -3 15
+
+button Bench "visit KnotPlot benchmarks web site" "www knotplot.com/benchmarks" 4 5 -3 15
+
+echo " " 
+echo " " 
+echo " " 
+GLinfo

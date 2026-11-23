@@ -1,0 +1,27 @@
+elec=t
+mech=t
+amech=f
+velfo=f
+drag=f
+therm=f
+tanf=f
+spring=1.4
+mass off
+mcyl off
+Draw=t
+coll fast
+force 2
+clrfun zf
+
+gravity = on
+grastrength = 0.010000
+
+delete all
+
+new = true
+dstep = 4
+
+self 1 1 1 1 1 1
+
+
+

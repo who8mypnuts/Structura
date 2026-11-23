@@ -1,0 +1,39 @@
+
+silent=t
+
+tfunc reset
+oal gain all 0
+frame comm "oal gain %d 1"
+frame 0 numb 8
+
+oal velmul 0
+~usvm
+~usvd
+
+alias ~perf "if \rr2 < 1 then {oal pitch $0 1} else {oal pitch $0 1.333333}"
+alias qfix
+
+frame comm "~perf %d"
+frame 0 to 7
+
+frame init
+
+oal pitch all cr -250
+
+txt delete group 777333
+
+txt push
+txt group 777333
+txt font 4
+txt fill off
+txt cent
+txt expire 7
+txt c -33 "perfect fourth pitch differences for first 8 sources"
+txt font 3
+txt c -55 "velocity multiplier set to 0"
+txt fill on
+txt c -77 "Wikipedia article" "www en.wikipedia.org/wiki/Perfect_fourth"
+txt pop
+
+
+silent = f

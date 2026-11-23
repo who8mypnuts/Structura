@@ -1,0 +1,8 @@
+if par0 != 86329566 then <init-textureD.kps
+hstar=\rr360
+sat=.3
+scale=.55
+if \rr1 < .1 then "knot spe" else knot
+if \rr2 < 1 then "texture appmode modu" else "texture appmode repla"
+<demo-relaxA.kps
+texture on

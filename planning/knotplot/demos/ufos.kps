@@ -1,0 +1,92 @@
+require KPbuild 4359
+
+reset all
+silent=t
+back=0
+disp t
+
+
+Draw=f
+
+delete all
+Draw=t
+coll allow
+silent=t
+tg1off = \rr[2/6]
+
+dstep = 1
+hstar=\rr360
+auto-colour=off
+hincr=\rr[20/180]
+satu=\rr[.7/1.0]
+ncur=\ri[3/4]
+nseg=14
+cyl=\rr[.3/.5]
+force 1
+velfo=t
+vcA=\rr[.2/.9]
+if \rr1 < .8 then "mathsv s \rr55 1 \rr1 e"
+if \rr1 < .05 then "vcn=\ri[1/5]"
+velmag=\rr[.05/.1]
+back=0
+glop backface f
+
+alias ~unk "unknot 9 2 \rr+-3 \rr+-3 \rr+-3 rand"
+
+new=f
+#2 ~unk
+proj r
+centre
+
+<randorient.kps
+if \rr1 < .5 then "refl rr" else "refl r"
+if \rr1 < .01 then "draw spec"
+if \rr1 < .4 then "scale \rr[.5/2] \rr[.5/2] \rr[.5/2]"
+
+if \rr11 < 1 then "mode cBf;cyl=0.18;bead=0.3"
+
+ascal=.02
+fscale=39
+
+if \rr1 < .01 then "spec;tex SphereMap;texture mode modu;sat=\rr.5;cyl=1"
+%if \rr1 < .01 then "spec;tex SphereMap;texture mode replace;sat=\rr.5;cyl=1"
+%if \rr9 < 1 then "read electric.kps;ncur=4;spec"
+if \rr9 < 1 then "<fun-with-accbuff.kps"
+
+if \rr2 < 1 then "fixcofm=t" else "fixcofm=f"
+tanf=t
+
+surf radf arc vcn mul vcphi add csquare vcA mul 1 add cyl mul
+vcn=\ri[2/5]
+vcphi = \rr6.28
+vcA = \rr[.4/.9]
+
+go 
+silent=f
+
+echo " "
+echo " "
+
+echo " *** Press F1 to add a saucer! "
+echo "     Press F2 to turn on auto-align. Gives neat coordinated movement, just like real UFOs!"
+echo "     Press F3 to F10 for other effects."
+echo " "
+
+func silent
+func init
+%play init
+
+func 1 "sile=t;~unk;sile=f"
+func 2 "silent=f;echo;echo;echo Auto-align on (turn off with F12);echo;<specommalignaxes.kps"
+func 3 "scale .8 .8 .8;silent=f;echo Press F3 a bunch of times, then press F4!"
+func 4 <ufos_aux.kps
+func 5 "fitto \rr[.5/1]"
+func 6 "swirl \rr[-111/111]"
+func 7 "delete random"
+func 8 revb
+func 9 mode sA
+func 10 draw spec
+
+func 12 "silent=f;echo;echo;echo Auto-align off (turn on with F2);echo;spec"
+
+

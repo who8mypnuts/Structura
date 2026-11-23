@@ -1,0 +1,62 @@
+reset all
+func 12 <cubicSAW.kps
+until timelimit 22
+3dop bead 30 30
+back=#004
+mode cB
+cyl=.1
+bead=.16
+Draw=f
+stu=11
+
+scale = 0.5
+
+<cubicSAW-aux.kps
+until safe <cubicSAW-aux.kps
+
+%load dumSAW.k
+open all
+
+align ax
+
+rotate x \rr360
+rotate y \rr360
+rotate z \rr360
+refl rr
+txt font 4
+txt centre
+txt clobber on 
+txt c 40 "Random walk on cubic lattice (open)"
+txt on
+
+nap 1
+
+
+nop \t0    % initialize clock
+par=45  % degrees per second
+% about x for 4 seconds at par0 degrees per second
+until timelimit 4
+until Ncomp 0 "about x \T1;disp t"
+
+
+disp t
+Draw=t
+
+nap 1
+close all
+txt c 40 "Random walk on cubic lattice (closed)"
+disp t
+
+nap 1
+txt c 40 "Simplifying knot"
+disp t
+
+%idle "ago 11;del down -3"
+silent=t
+until timelimit 40
+until nbeadslt 6  "ago 11;del down -3"
+silent=f
+ago 22
+nap 2
+
+

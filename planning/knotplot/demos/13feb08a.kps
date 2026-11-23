@@ -1,0 +1,32 @@
+require KPbuild 4100
+
+reset all
+func init
+func silent
+func 1 <13feb08a.kps
+silent=t
+verbose=f
+
+
+mode cb
+load ravenna.k
+double
+
+mode cb
+cyl=.1
+
+
+scale = 0.189740
+spec lab
+
+cut 388
+cut 777
+join all
+%cut 388
+%cut 389
+
+silent=f
+echo 
+echo 
+echo 
+echo 

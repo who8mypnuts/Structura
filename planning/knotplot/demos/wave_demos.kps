@@ -1,0 +1,15 @@
+reset all
+
+require KPbuild 4569
+
+
+%% Generated Fri Feb 23 08:56:11 2007
+%% with command line: c:\usr\KnotPlot\resource\win32\multiif.exe demos/wave_demos.txt
+par0 = \rr60
+if par0 < 10 then "read wave_demo1.kps;par0=62"
+if par0 < 20 then "read wave_demo2.kps;par0=62"
+if par0 < 30 then "read wave_demo3.kps;par0=62"
+if par0 < 40 then "read wave_demo4.kps;par0=62"
+if par0 < 50 then "read wave_demo5.kps;par0=62"
+if par0 < 61 then "read wave_demo6.kps;par0=62"
+

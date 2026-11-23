@@ -1,0 +1,61 @@
+reset all
+func init
+func silent
+silent=t
+func 1 <25jun05a.kps
+func 4 "tanf=t;tanmag=.005"
+%func 5 "3dop bead 30 30"
+bead=.6
+back=0
+spring = 1.2
+mode B
+mathsv b 0 0 0 e
+mathsv b 0 0 1 d
+3dop bead 15 15
+<random-lights
+%dstep=6
+elec=t
+charge=.13
+mech=f
+coll a
+force 1
+velf=t
+%velmag=\rr[.2/.8]
+velmag=.5
+amech=t
+new=f
+scale=.16
+
+#4 unknot \ri[10/20]
+
+trans -10  10 0 0 
+trans  10  10 0 1 
+trans -10 -10 0 2 
+trans  10 -10 0 3 
+
+<randorient.kps
+shift \rr222
+shift random
+
+velf = t
+
+ago 102
+open all
+velf=t
+ago 333
+velf=f
+go 999999999
+
+
+
+exit
+
+%tfunc \rr[2/11] "open all;velf=f"
+%tfunc \rr[11/22] "velf=t;velmag=.01"
+%tfunc \rr[22/66] "close all"
+silent=f
+
+echo 
+echo 
+%echo "  *** Press F5 for super-luxo beads."
+echo

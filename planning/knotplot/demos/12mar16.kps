@@ -1,0 +1,17 @@
+reset all
+alloc 9000
+back=black
+new=f
+mode b
+line dir 1 0 0
+lin numb 20
+#20 line;trans 0 1 0
+
+save |x
+delete all
+#20 load comb |x;trans 0 0 1
+
+bead = 0.15
+fitto 20
+
+centre

@@ -1,0 +1,47 @@
+reset all
+
+func init
+func silent
+
+func 1 <randbraid2.kps
+
+Draw=f
+if stereo then "back=0"
+silent=t
+braid -open a
+delete all
+scale=.075
+hstart=\rr360
+
+background = "Lupin Gray"
+
+if \rr1 < .5 then "rota y 180"
+
+silent=f
+random braid \ri[3/7] \ri[6/13]
+echo " "
+echo "*** Click on the `close braid' button in the view window."
+echo " "
+
+txt init
+txt fcolour "Royal Blue" .7
+txt font 4
+txt left
+txt clobber on
+txt 10 -22 "Random braid"
+txt font 3
+txt fill on
+txt right
+txt -15 -200 "close braid" <warpbraid2.kps
+txt on
+
+disp t
+
+func 2  <warpbraid2.kps
+
+par0 = 2934793    % Magic number used in warpbraid.kps
+
+Draw=t
+
+func 9 "test scale .7"
+func 11 "test scale 1.4"

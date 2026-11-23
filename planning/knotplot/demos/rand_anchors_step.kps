@@ -1,0 +1,8 @@
+save
+jit 4
+% should really study how the following scale factor affects the
+% overall size after a lot of iterations.
+scale .99 .99 .99
+anchor
+load *
+ago 33

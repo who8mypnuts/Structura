@@ -1,0 +1,5 @@
+par2
+1 read CubicSAW_axes.kps
+3 read CubicSAW_noncent.kps
+8 read CubicSAW_bbox.kps
+44 read CubicSAW_cofm.kps

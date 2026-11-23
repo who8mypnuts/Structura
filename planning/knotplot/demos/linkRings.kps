@@ -1,0 +1,55 @@
+require KPbuild 4815
+
+reset all
+
+
+silent=t
+dbmin=5
+new = f
+cyl=.4
+scale=.22
+
+frame comm "unknot \ri[5/17]"
+frame 0 numb \ri[8/17]
+
+jitter 99999
+fitto 8
+ascale = 0.03
+fscale = 5
+cyl-rad = 0.37
+velforce = on
+drag = on
+
+scale = 0.2
+show orientation
+mathsv a 22 0.4 0.8
+%field type mag trace grid npoint 108 step .1 gsize 10 ncell 4
+    
+%mode sF
+
+new = f
+
+coll a
+force 1
+
+go
+silent=f
+txt centre
+
+%txt lineskip 17
+txt c -20 "dragging enabled, click in this window, then hover your mouse over one of the strings"
+txt c a "when you see a small white icosahedron appear, click down and drag with your mouse"
+txt c a "see if you can link up rings that aren't already linked"
+
+txt font 4
+txt fcolour royalblue .5
+txt fill on
+txt c 20 "rerun" <linkRings.kps
+txt on
+
+echo " "
+echo " "
+echo " *** Allowing crossing changes."
+echo " "
+
+

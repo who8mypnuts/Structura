@@ -1,0 +1,10 @@
+%% Generated Sat Oct 21 14:21:55 2006
+%% with command line: c:\usr\KnotPlot\resource\win32\multiif.exe simple-relax.txt
+par0 = \rr255
+if par0 < 10 then "read tref-relax.kps;par0=257"
+if par0 < 25 then "read fig8-relax.kps;par0=257"
+if par0 < 45 then "read 6.3-relax.kps;par0=257"
+if par0 < 60 then "read 7.1-relax.kps;par0=257"
+if par0 < 85 then "read relax2.kps;par0=257"
+if par0 < 170 then "read open-end.kps;par0=257"
+if par0 < 256 then "read slide-knot.kps;par0=257"

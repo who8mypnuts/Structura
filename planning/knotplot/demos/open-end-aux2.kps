@@ -1,0 +1,42 @@
+require KPbuild 4965
+silent=t
+
+swap randomize
+if \rr2 < 1 then "revb 0"
+
+swap randomize
+if \rr2 < 1 then "revb 0"
+
+swap randomize
+if \rr2 < 1 then "revb 0"
+
+swap randomize
+if \rr2 < 1 then "revb 0"
+
+shift \ri999
+open all
+
+if \rr2 < 1 then "cut \ri[2/32];del 0"
+if \rr10 < 3 then "hinc=0"
+
+<randorient.kps
+if \rr12 < 1 then "refl r"
+if \rr2 < 1 then "rot z 90"
+if \rr2 < 1 then "rot z 180"
+
+%nbead mult .6
+
+%fitto 5
+
+fixc=f
+if \rr5 < 1 then "fixc=t"
+
+if \rr7 < 1 then <specommalignaxes.kps
+
+
+dstep=\ri[1/4]
+
+go 
+coll a
+
+silent=f

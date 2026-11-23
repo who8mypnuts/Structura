@@ -1,0 +1,40 @@
+% Painting 
+
+
+% Rob Scharein --- 8 April 2002
+% based on 7oct94b
+
+reset all
+func init
+func 1 <paint1.kps
+light model onesided
+silent = t
+back = 0
+blend one one
+mathsv k 0 0 0 s
+mathsv k 0 0 0 d
+mathsv k 0 0 0 a
+
+mathsv b 0 0 0 s
+mathsv b 22 .9 .5 d
+mathsv b 0 0 0 e
+
+bead-rad = .05 
+sbuff
+clrfun zf
+disp t 
+disp t 
+backf t
+
+clrfun z
+value=.02
+cyl=.4
+knot num \ri[2/15]
+
+silent = f
+echo " "
+echo " "
+echo  "  *** Paint with mouse in main window"  
+echo " "
+
+

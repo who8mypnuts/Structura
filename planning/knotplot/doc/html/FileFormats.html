@@ -1,0 +1,127 @@
+<html>
+<head>
+<title>File formats used by KnotPlot</title>
+</head>
+
+
+<body bgcolor="#c0c0c0">
+
+<h1>File formats used by KnotPlot</h1>
+
+KnotPlot uses at least 15 different file formats, either as input
+or as output.  
+This page does not describe them all, just a few of the most important ones.
+<p>
+<a name="knotplot"></a>
+
+<hr>
+
+<h2>KnotPlot knot and link format</h2>
+
+This is probably the single most important file format used by KnotPlot.
+It is the format that the 
+<a href="commands.html#load">load</a> and <a href="commands.html#save">save</a>
+commands use (although both commands can also work with a simple ascii format).
+A simple program, <a href="../src/kpfsnoop.c">kpfsnoop.c</a> is provided for 
+examining the contents of KnotPlot files.
+Another program,  <a href="../src/unknot.c">unknot.c</a>  is included as 
+a complete example of writing a link file.
+Note that the load command can also read input data in the form of
+ascii text, similar to that output by the 
+<a href="commands.html#coords">coords</a> command.
+
+<p>
+
+This format consists of an ascii header, followed by one or more <i>fields</i> or sections.
+
+<h3>Header</h3>
+This can consist of arbitrary text but must begin with the string<p><b>
+
+<pre>KnotPlot 1.0</pre></b>
+
+indicating that the file is a KnotPlot version 1 file.
+The header ends with a control-L character (new-page character, ascii value 12) followed by exactly
+one character (of arbitrary value, but usually set to a new-line character).
+The reason for the control-L new-line combination is that this allows for easy viewing
+of the header using the UNIX command <kbd>more</kbd> without having to have
+to see any of the binary data that follows the header.
+
+<h3>Fields</h3>
+
+After the header, the file must contain at least one field.
+All fields are optional, except for the <b>endf</b> field, which must 
+be the last field present.
+Each field consists of a four character string which is the field name, followed
+by a data segment (possibly null).
+There are three types of fields, depending on the kind and amount of data following.
+The fields can be distinguished by the case of the first two characters in the field name:
+<dl>
+
+<dt>Both lower case
+<dd>This indicates a field that has a null data segment.  Examples are the
+<b>endf</b> and <b>comp</b> fields.
+Such fields are usually used to indicate an event
+or milestone of some sort, and they need no other
+data.
+
+<dt>Both upper case
+<dd>Following the field name, these fields have a four byte long which indicates the 
+number of remaining bytes in the data segment. Therefore if this number is K, the total
+length of the field (including the field name) is K + 8 bytes.  
+This makes it easy for software that doesn't understand how to deal with the field
+to simply skip the remaining part of the data segment by skipping the K bytes following
+the four byte long.
+Examples are the <b>LOCF</b> and <b>LOCS</b> fields.
+
+<dt>First character upper, second lower case
+<dd>The data segment in these fields consists of exactly the four bytes following the 
+field name.
+An example is the <b>Attr</b> field.
+
+</dl>
+
+<h4>endf field</h4>
+
+<h4>comp field</h4>
+
+<h4>LOCF field</h4>
+
+<h4>LOCS field</h4>
+
+<h4>IDEN field</h4>
+
+<h4>VIEW field</h4>
+
+<h4>COMM field</h4>
+
+<h4>Attr field</h4>
+
+<hr>
+<a name="PGM"></a>
+<h2>PGM format</h2>
+
+
+<hr>
+<a name="PPM"></a>
+<h2>PPM format</h2>
+
+
+
+
+<hr>
+
+[<a href="KnotPlotManual.html">KnotPlot Manual</a>], 
+[<a href="ViewWindow.html">View Window</a>], 
+[<a href="ControlPanel.html">Control Panel</a>], 
+[<a href="CommandWindow.html">Command Window</a>],
+[<a href="KPManOverView.html">Overview</a>]
+<br>
+[<a href="http://www.cs.ubc.ca/spider/scharein">Rob Scharein's</a>
+ main WWW site], 
+[<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/KnotPlot.html">KnotPlot Site</a>]
+
+
+
+</body>
+</html>
+

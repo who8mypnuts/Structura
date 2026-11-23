@@ -1,0 +1,22 @@
+reset all
+
+txt font 3
+txt left
+txt fill on
+
+txt 20 -20 "stop relaxing" "go 0"
+txt 20 a "drag" "zero;velf=t;elec=f;mech=f;drag=t;go"
+txt 20 a "relax" "velf=f;elec=t;mech=t;go"
+txt 20 a "rerun demo" "map demo"
+
+txt on
+
+mode cb
+cyl=.1
+
+map open 400
+coll a
+force 1
+knot 1
+go
+

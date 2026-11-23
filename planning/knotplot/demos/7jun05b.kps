@@ -1,0 +1,27 @@
+reset all
+
+silent = t
+sphere on
+
+scale = 0.345181
+cyl-rad = 0.139800
+
+func 3 "deform to \x 222;nap .2"
+func 4 "deform to \y 222;nap .2"
+%func 5 knot:refine 5:save |y:moeb:save |x:moeb:disp t:sanap .3
+func 5 knot num \ri[1/384] ms:fitto 10:split:split:split:split:split:save |y:moeb:save |x:moeb:disp t:sanap .3
+func 6 sphere \rr[3/8] \rr+-5 \rr+-5 \rr+-5
+
+func exec 6
+func exec 5
+
+idle "func exec 3;func exec 4"
+
+tfunc \rr[4/10] "func exec 6;func exec 5" 0 repeat 5 15
+
+
+% also neat to load from minimal stick catalogue and
+% replace the above refine by a #5 split
+
+% knot num \ri[1/384] ms
+

@@ -1,0 +1,40 @@
+
+% Modified 14 May 2003 to show off eofilling.
+
+% Draw a rotating torus knot as a shadow.
+
+reset all
+silent=t
+cyl-rad = \rr[.08/.2]
+scale = 0.348386
+value = 0.000000
+mathsv s 0 0 0 s
+ncur=7
+nseg=12
+ortho
+torus
+back=#fff
+
+if \rr5 < 1 then "mathsv s 0 0 1 e;back=0"
+if \rr1 < .9 then "rotate z 90"
+if \rr1 < .01 then "refl rr"
+
+% if value is 0 below, then the thing is white.  why?
+if \rr21 < 1 then "mathsv s \rr360 1 1 e;back=0;value=.001"
+
+
+%if \rr2 < 1 then "refine 3;mode E;read eofill-colour.kps"
+
+par0=\rr[30/102.2]
+nop \t0    % initialize clock
+idle "about x \T1"  % 1 unit per second, scaled by par0
+%idle "rotate k \T1"
+
+
+silent=f
+
+echo " "
+echo " "
+echo "  ***** Randomized demo, click it again!"
+echo " "
+

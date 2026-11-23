@@ -1,0 +1,22 @@
+txt group all off
+
+go 0
+
+alias ~goback  "head off;idle;txt delete group 654987;txt group all on"
+head tset 0 \ppar4 ~goback
+
+idle "head tdraw"
+
+txt push
+txt fill off
+txt group 654987
+txt font 3
+txt cent
+txt c 30 "you can rotate and scale knot while it's being drawn"
+txt fill on
+txt c a "create a new knot" ~goback
+%txt c a1.5 faster "test paradjust 4 1.4"
+%txt c a slower "test paradjust 4 .7142857"
+
+txt pop
+

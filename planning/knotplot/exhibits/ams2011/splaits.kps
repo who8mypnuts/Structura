@@ -1,0 +1,76 @@
+reset all
+
+func init 
+func silent
+silent = t
+back=0
+if \rr3 < 1 then <Backdrops.kps
+if stereo then "spec -back;back=0"
+rota x \rr360
+rota y \rr360
+rota z \rr360
+
+if \rr3 < 1 then "hsta=\rr360"
+if \rr5 < 1 then "cmode -1;cmode 3 1 1 1"
+
+frame comm "read lights%d.kps"
+func s 1 "silent=t;cmode 0;sat=0;frame \ri[0/6];silent=f"
+if \rr5 < 1 then "func exec s 1"
+
+% multiif < splaits1.txt
+par0 = \rr60
+if par0 < 30 then "scale=.072;par0=62"
+if par0 < 50 then "scale=.144667;par0=62"
+if par0 < 61 then "scale=.124493;par0=62"
+
+func s 2 "scale=.144667;persp \rr[85/140] .2 20"
+if \rr11 < 1 then "func exec s 2"
+
+func s 3 "func exec s 1;func exec s 2"
+
+func s 5 "<splaits_rotate.kps"
+
+% multiif < splaits2.txt
+par1 = \rr60
+if par1 < 30 then "load 15sep04a.k;par1=62"
+if par1 < 40 then "load CeltCube5.k;celt diag;celt copy;fitto 53;par1=62"
+if par1 < 50 then "load CeltCube6.k;celt diag;celt copy;fitto 53;par1=62"
+if par1 < 61 then "load CeltCube7.k;celt diag;celt copy;fitto 53;par1=62"
+
+tfunc .1 "celt clear;celt rand act .9;celt rand prim .1;celt rand sec .1;celt copy;fitto 44;disp t" 0 rep .2 .6
+
+alloc 8888
+alloc comp 1022
+
+func 1 <splaits.kps
+
+func 4 "silent=t;celt rand sec -1;celt rand prim -1;celt diag;celt copy;fitto 53;cent mass;silent=f"
+func 5 "silent=t;celt rand sec .1;celt diag;celt copy;fitto 53;cent mass;silent=f"
+func 6 "silent=t;celt rand sec \rr.1;celt diag;celt copy;fitto 53;cent mass;silent=f"
+func 7 "silent=t;celt rand sec \rr1;celt diag;celt copy;fitto 53;cent mass;silent=f"
+func 8 "silent=t;celt rand sec \rr[.7/1.3];celt diag;celt copy;fitto 53;cent mass;silent=f"
+func 9 "silent=t;celt rand prim .1;celt diag;celt copy;fitto 53;cent mass;silent=f"
+func 10 "silent=t;celt rand prim \rr.1;celt diag;celt copy;fitto 53;cent mass;silent=f"
+func 11 "silent=t;celt rand prim \rr1;celt diag;celt copy;fitto 53;cent mass;silent=f"
+func 12 "silent=t;celt rand prim \rr[.7/1.3];celt diag;celt copy;fitto 53;cent mass;silent=f"
+
+func 3 "silent=t;celt clear;celtic rand active \rr[.65/1];celt diag;celt copy;fitto 53;cent mass;silent=f""
+
+if \rr3 < 1 then "celtic rand active \rr[.65/1]"
+func exec \ri[4/12]
+
+func s 9 "silent=t;tfunc reset;celtic clear;func exec 5;func exec 9;silent=f"
+func s 10 <splaits_1comp.kps
+func s 11 <splaits_2comp.kps
+func s 12 <splaits_3comp.kps
+tfunc allowreset 
+tfunc 20 "echo;echo;echo Try pressing SHIFT-F10!;echo"
+
+silent=f
+
+echo 
+echo 
+echo " *** Splait (spherical plait) work."
+echo "     Press F3 thru F12 for different variations, F1 to rerun demo."
+echo "     Press SHIFT-F1 thru SHIFT-F3 for more effects."
+echo

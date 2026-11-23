@@ -1,0 +1,25 @@
+require KPbuild 4098
+
+reset all
+
+rota x -40
+silent=t
+func init
+func silent
+func 1 <scenery_demo1.kps
+
+load TrueLoveKnot.k
+scale 2
+spec grid
+
+<randorient.kps
+
+scale=\rr[.15/.2]
+
+scen on
+frame comm "scen obj coney bead %d;nap .03;disp t"
+
+frame 0 to 128 step 4
+
+silent=f
+

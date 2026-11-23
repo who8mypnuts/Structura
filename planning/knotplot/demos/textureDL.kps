@@ -1,0 +1,53 @@
+reset all
+
+func init
+func silent
+func 1 <textureDL.kps
+func 2 "silent=t;texture env cat2;silent=f"
+func 3 "silent=t;texture env lupin;silent=f"
+back=0
+disp t
+silent=t
+texture reset
+texture appmode replace
+texture environment lupin
+charge = 0.130000
+spring-length = 1.200000
+untran
+rot x \rr[-50/130]
+elecforce = on
+mechforce = off
+amechforce = on
+bead-radius = 0.600000
+velforce = on
+velmag = \rr[.05/.2]
+mode B
+scale = \rr[.6/1.3]
+knot
+mathsv b \rr360 \rr1 1 d
+glop backface t
+
+%tex lupin
+
+<randorient.kps
+if \rr10 < 3 then "texture appmode modu" else "texture appmode repla"
+
+if \rr5 < 4 then "tanf=on" else "tanf=off"
+tanmag=.005
+coll a
+force 1
+back=0
+texture on
+
+if \rr10 < 6 then "torus \ri[2/8] \ri[2/8] \ri[102/555];scale=\rr[.35/.48];untran;rota x \rr[50/130];revb rand;shift rand"
+tfunc 5 "revb rand" 0 rep 5 15
+
+go inf limit \rr[75/222]
+silent=f
+
+echo
+echo
+echo " *** Press F1 to rerun this demo,"
+echo "     F2 to change the cat, F3 to get Lupin back"
+echo
+

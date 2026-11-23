@@ -1,0 +1,33 @@
+
+bfacf init knotmode
+
+scale=.238
+
+load mscl/0.1
+trans 11 0 0
+save x int
+bfacf load x
+
+load mscl/0.1
+trans -10 0 0
+save x int
+bfacf comb x
+
+bfacf box 12
+bfacf latshow 13
+bfacf fill 0 11 11
+%spec bfacf
+bfacf copy
+
+mode l
+bfacf z 1
+
+bfacf step 1000000
+% could also try clearing a smaller hole
+bfacf clear 0 11 11
+%bfacf clear 0 4 4
+
+bfacf run 1000000
+
+
+func 9 accbuff clear

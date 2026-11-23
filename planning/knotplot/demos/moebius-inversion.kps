@@ -1,0 +1,160 @@
+%`-
+
+require KPbuild 5004   % for using movie instead of deform
+
+% based on 7jun05a and 7jun05b (written in Iowa City)
+% see also parpar.kps
+
+reset all
+func init
+func silent
+verbose=f
+silent=t
+
+sphere on
+
+alias ~invert-orig "moeb;save |inv;moeb;deform to |inv \ppar0"
+alias ~invert "movie init;movie new m $0 yes;movie add;moeb;movie add;movie show 1;movie play"
+
+alias ~blurt1 "echo changing sphere radius to $0 at position ($1, $2, $3)"
+alias ~blurt2 "echo this is equivalent to typing the command;echo sphere $0 $1 $2 $3;echo into the KnotPlot Command Window (this window)"
+
+alias ~sphere "sphere $0 $1 $2 $3;echo;echo;echo;~blurt1 $0 $1 $2 $3;~blurt2 $0 $1 $2 $3"
+
+scale = 0.35
+cyl-rad = 0.14
+
+func 1 <moebius-inversion.kps
+
+func 2 "knot num \ri[1/384] ms;fitto 10;untran;split;split;split;split;split"
+func 3 "knot;untran;refine 5"
+func 8 "knot cd;untran;refine 3"
+func 9 "torus \ri[1/7] \ri[1/23] 456;untran"
+func 4 "~sphere \rr[3/8] \rr+-5 \rr+-5 \rr+-5"
+func 5 "knot num \ri[1/250] mseq;fitto 10;untran;split;split;split;split;split"
+func 6 "knot num \ri[1/342] mscl;fitto 10;trans \rr+-1 \rr+-1 \rr+-1;untran;split;split;split;split;split"
+func 10 "knot spe;untran;refine 5"
+
+func 7 ~invert
+par0=1.08
+
+func exec \ri[2/3]
+func exec 4
+
+
+txt centre
+txt font 4
+txt c -20 "Moebius Inversion"
+txt font 3
+txt c a "(inversion through a sphere)"
+
+txt fcolour royalblue .5
+txt scolour #000
+txt sfcolour orange .9
+txt lineskip -24
+
+txt left
+
+txt fill on
+txt 15 15 "to origin" "sphere 0 0 0"
+txt 15 a "random" "func exec 4"
+txt fill off
+txt 10 a "move sphere:"
+
+txt fill on
+txt 15 a1.5 "centre" "centre mass"
+txt 15 a "random" "centre mass;trans \rr+-11 \rr+-11 \rr+-11"
+txt 15 a "fitto 12"  "fitto 12;centre mass"
+txt fill off
+txt 10 a "transform knot:"
+
+txt fill on
+
+
+line numb 30
+alias ~lines "delete all;#$0 line;proj r"
+
+txt 15 a1.5 lines "new=f;silent=t;~lines \ri[6/33];silent=f;new=t"
+txt 15 a "lattice" "func exec 6"
+txt 15 a "eq stick" "func exec 5"
+txt 15 a "stick" "func exec 2"
+txt 15 a "fancy" "func exec 8"
+txt 15 a "special" "func exec 10"
+txt 15 a "torus" "func exec 9"
+txt 15 a "smooth" "func exec 3"
+txt fill off
+txt 10 a "load new knot:"
+
+
+txt font 4
+txt fill on
+txt right
+txt -14 14 ? "help popup moebius-inversion.kps handoff"
+
+
+txt font 3
+txt fill on
+txt -15 60 fullscreen "full toggle"
+txt -15 a  sphere "sphere toggle"
+txt fill off
+txt -10 a toggle:
+
+
+txt select on
+txt fill on
+txt -15 a1.5 "o. fast" "par0=0.14;echo;echo;echo Inversion speed set to `overwhelmingly fast';echo"
+txt -15 a "v. fast" "par0=0.27;echo;echo;echo Inversion speed set to `very fast';echo"
+txt -15 a "fast" "par0=0.54;echo;echo;echo Inversion speed set to `fast';echo"
+txt -15 a "medium" "par0=1.08;echo;echo;echo Inversion speed set to `medium';echo"
+txt set selected  % sets the last txt object to be selected
+txt -15 a "slow" "par0=2.16;echo;echo;echo Inversion speed set to `slow';echo"
+txt -15 a "v. slow" "par0=4.32;echo;echo;echo Inversion speed set to `very slow';echo"
+txt -15 a "u. slow" "par0=8.64;echo;echo;echo Inversion speed set to `unusually slow';echo"
+txt fill off
+txt select off
+txt -10 a "inversion speed:"
+
+txt centre
+txt group 0
+txt fill on
+txt font 4
+txt c 30 invert "~invert \ppar0"
+txt on
+
+silent=f
+echo 
+echo
+echo " *** Click the `invert' button.  Press F1 to rerun demo"
+echo "     Use buttons on the right to adjust inversion speed, current speed is `medium'"
+echo
+
+verbose = t
+
+exit
+
+%`+
+
+Moebius Inversion
+
+Things to try:
+
+  --- rotate scene using left mouse button, scale with right mouse
+
+  --- try a sequence of inversions, moving the sphere between each
+
+  --- load a stick knot and invert it, note how the straight edges
+      transform into circular arcs
+
+  --- change the inversion speed if it's too fast or too slow
+
+  --- set the radius and/or position of the sphere explictly by 
+      entering commands into the KnotPlot Command Window, for example:
+      
+      command:                      what it does:
+
+      sphere 2 -4 1                 move sphere to (2, -4, 1)
+      sphere 9                      set radius to 9
+      sphere 3 -2 7 .3              set radius to 3 and move to (-2, 7, .3)
+
+
+Note: click on the button below to close this window:

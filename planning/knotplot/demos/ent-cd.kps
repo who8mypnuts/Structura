@@ -1,0 +1,8 @@
+mode s
+knot cd
+untran
+ortho
+cyl=.3
+until Ncomp 1 "knot cd"
+entang ts 12
+

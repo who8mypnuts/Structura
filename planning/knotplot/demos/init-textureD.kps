@@ -1,0 +1,7 @@
+reset all
+if \rr3 < 2 then "back = 0"
+disp t
+texture reset
+texture appmode replace
+texture environment SphereMap
+par0 = 86329566

@@ -1,0 +1,70 @@
+reset all
+silent=t
+knot 1
+<randorient.kps
+hstar=\rr360
+fitto 10
+cyl=.01
+save |path
+double
+refine 3
+warp install
+delete all
+cyl=.15
+new=f
+Draw=f
+d-torus = .1
+silent=f
+echo " " 
+echo " " 
+random braid 3 34
+save |braid
+scale .6 1 2
+warp rec2ann 1
+join all
+echo "warped along a knot."
+echo " " 
+silent=t
+warp along
+if \rr1 < .5 then "draw spec" else "draw norm"
+save |warped
+Draw=t
+
+idle "head tdraw"
+head tset \rr[222/777] 1 "idle;txt delete you;txt group 108 on"
+
+txt lineskip -24
+
+txt font 3
+txt fcolour royalblue .5
+
+
+txt right
+txt fill on
+txt -15 15 fullscreen "fullscreen toggle"
+txt -15 a  "rerun demo" <braidwarp.kps
+
+txt push
+txt group 108
+txt fill on
+txt -15 a2 "warped braid"  "load |warped"
+txt -15 a  "warp path"  "load |path"
+txt -15 a  "braid" "load |braid"
+txt fill off
+txt -10 a show:
+txt group 108 off
+txt pop
+
+txt fill off
+txt centre
+txt c 33 "you can rotate or scale the knot while it's being drawn"
+txt on
+
+
+silent=f
+
+
+
+
+
+

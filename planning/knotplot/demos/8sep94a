@@ -1,0 +1,19 @@
+reset all
+doublebuffer
+
+del all
+cyl = 2
+ncur = 10
+nseg = 3
+broff = -1.5
+blend one one
+zbuff f
+backface t
+back = 0
+draw broke
+scale = .347
+load 0.1
+about x 75
+
+anim twist 0 4444 555
+

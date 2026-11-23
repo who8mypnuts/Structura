@@ -1,0 +1,55 @@
+#!/bin/csh -f
+
+# Very basic constructor routine: KP-cons-bwregion
+# April 9, 1998
+# Rob Scharein
+
+# Constructor arguments:
+#    $0 Constructor executable file (this file).
+#    $1 First file read by KnotPlot (the prefile).
+#    $2 Second file read by KnotPlot (the postfile).
+#    $3 Type of machine we're running on (sgi, ibm, etc...)
+#    $4 A flag either 0 or 1.
+#    $5 Name of constructor.
+#       Anymore more arguments are the arguments to the contructor
+#       from the KnotPlot command line.
+
+
+if ($#argv < 6) then
+  set psfinal = psout
+else
+  set psfinal = $6
+endif
+
+switch ($4) 
+
+case 0:
+  echo psop \> $1.ext > $1
+  echo silent=t >> $1
+  echo save $1.save LOCF >> $1
+  echo refine 3 >> $1
+  echo save $1.k trace  >> $1
+  echo psop phantom .2 >> $1
+  echo psop bbox small >> $1
+  echo delete all >> $1
+  echo unknot 5 >> $1
+  echo psout $psfinal >> $1
+  echo psop phantom none >> $1
+  echo load $1.save >> $1
+  breaksw
+
+case 1:
+  set ext = `grep extension $1.ext | awk '{print $2}'`
+  echo silent=f > $2
+  set pstemp = $1.pstemp
+  head -18 $psfinal$ext > $pstemp
+  egrep 'psScale|psXoff|psYoff' $psfinal$ext >> $pstemp
+  echo 0 setlinewidth newpath >> $pstemp
+  tail +2 $1.k | awk '{printf("%f %f toPS ", $2, $3);if($1==0)printf("closepath moveto\n");else printf ("lineto\n");}' >> $pstemp
+  echo closepath eofill showpage >> $pstemp
+  mv $pstemp $psfinal$ext
+  echo echo \"PostScript written to file \`$psfinal$ext\'.\" >> $2
+  breaksw
+
+endsw
+

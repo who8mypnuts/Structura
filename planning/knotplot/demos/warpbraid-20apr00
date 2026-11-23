@@ -1,0 +1,12 @@
+% actually 27 april 
+
+panel off
+warp rec2ann 1
+disp t
+nap .5
+join all
+panel on
+echo " "
+echo " "
+echo "*** Resulting link may not be valid if original braid is too wide."
+echo " "

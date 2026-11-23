@@ -1,0 +1,31 @@
+
+#5 echo
+echo *** jittering may change knot type
+echo
+echo -f
+
+dbmin=5
+
+
+
+silent=t
+
+jitter \rr[1/2]
+
+dstep = 4
+coll a
+force 1
+velf=t
+until safe "ago 11"
+force 2
+coll f
+stus=1
+tfunc reset
+tfunc 1 "dele downto 0" 0 rep 5 10
+go
+silent=f
+
+
+
+
+

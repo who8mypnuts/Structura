@@ -1,0 +1,29 @@
+txt push
+txt group 5675
+txt expire 12
+txt delete group 5675
+txt fill off
+txt font 3
+txt cent
+txt lineskip 22
+txt c -45 "click the `play code' button that just appeared to"
+txt c a    "to play the gauss code as a musical sequence"
+txt c a1.4 "you might want to make sure the volume is not too loud"
+txt c a1.4 "some knots may take a while to play completely,"
+txt c a    "try a few small knots first before venturing into"
+txt c a    "really long knots (the playing cannot be interrupted)" 
+txt c a1.4 "the KnotPlot Command Window will tell you"
+txt c a     "the knot took to play"
+txt fill on
+txt c a1.4    ok "txt delete group 5675"
+txt delete "play init"
+txt group 5678 on
+txt pop
+
+play init
+~togauss
+
+untran
+load 3.1
+~stanorient
+func exec c 2

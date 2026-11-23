@@ -1,0 +1,14 @@
+
+
+button 15 "Init Lorenz" "<lorenz-idle2.kps" 5 240 50 15
+button 15 "Start" <start-Lorenz.kps 5 -1 33.75 15
+button 15 "Stop" "idle none" -1 -1 33.75 15
+
+button 15 "Trace on"  "clrfun nt" 5 -1 33.75 15
+button 15 "Trace off"  "clrfun zf;disp t" -1 -1 33.75 15
+button 15 "Clear"  "clrfun A" -1 -1 33.75 15
+
+button 15 "reset parameters" <lorenz-reset.kps 5 -1 50 15
+
+echo "Lorenz control panel initialized."
+

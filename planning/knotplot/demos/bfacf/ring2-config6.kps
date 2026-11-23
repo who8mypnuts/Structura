@@ -1,0 +1,66 @@
+
+delete all
+alloc 55555
+
+line dir 1 0 0
+line numb 34
+line -17 -17 0
+
+#3 dupl;about z -90 0;about z 90
+
+join all
+
+trans 0 0 -1
+bfacf load 
+trans 15 -2 0
+about x 90
+bfacf comb 
+
+bfacf centre off
+spec bfacf
+
+% don't show all the lattice
+
+bfacf latshow  -25 -25 -27 40 25 22
+bfacf box -25 -25 -27 40 25 22
+
+% fill a big block
+bfacf fill -20 -20 -3 20 20 4
+% but clear most of the inside
+bfacf clear -13 -13 -5 13 13 5
+
+% cross pipe
+%bfacf fill -20 -3 -3 20 3 4
+%bfacf clear -19 -2 -2 19 2 3
+
+
+% extrude a pipe inside the filled part
+bfacf clear -19 -19 -2 -15 19 3
+% and another on the opposite side
+bfacf clear 15 -19 -2 19 19 3
+
+
+% do two more pipes, swapping x and y
+bfacf clear -19 -19 -2 19 -15 3
+bfacf clear -19 15 -2 19 19 3
+
+
+
+% don't forget to refill the location where the knot is!
+bfacf fill
+
+txt delete hide
+
+txt font 3
+txt cent
+txt fill on
+txt c 30 "hide outer wall" "bfacf latshow  -24 -24 -26 39 24 21;txt delete hide"
+
+txt clobber on
+txt font 2
+txt fill off
+txt cent
+txt c -44 "configuration 6"
+
+%txt delete fill
+

@@ -1,0 +1,7 @@
+% used by `violently-happy.kps'
+
+if par2 != 738683223 then "vscale=\rr[.25/.4]"
+frame comm "line num \ri[8/13];line dir \rr+-1 \rr+-1 \rr+-1;line 0 0 0"
+frame 0 num \ri[5/10]
+
+if \rr2 < 1 then "fitto .01;velf=t"

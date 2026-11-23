@@ -1,0 +1,1 @@
+if par1 == 0 then "mode s;par1=2;cyl=.15;spec thold" else "mode cb;spec;par1=0;cyl=.07;spec thold"

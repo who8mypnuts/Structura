@@ -1,0 +1,81 @@
+require KPbuild 4691
+require KPbuild 4567
+
+reset all
+cyl-rad=.54
+scale=.1
+
+par0=1
+
+tfunc .1 "disp refr 1" 0 rep 1     % to make the buttons autohide
+                                   % don't use `disp t' since that seems
+                                   % to mess up the control panel sometimes
+
+silent=t
+verb=t
+%ortho
+txt init
+persp 45
+
+alias ~ah "txt hide \rr[5/7]"
+func 1 <22nov11.kps
+
+timer start
+txt fcolour royalblue .6
+txt sfcolour #fb0 .8
+txt scolour #000
+
+~ah
+txt fill on
+txt font 3
+txt cent
+txt c 20 "reload demo" <22nov11.kps
+
+txt right
+txt lineskip -25
+
+~ah
+txt font 4
+txt fill on
+txt -15 15 ? "help popup 22nov11.kps handoff"
+txt font 3
+
+~ah
+txt -15 a1.5 fullscreen "full toggle"
+txt fill off
+txt -10 a toggle:
+txt fill on
+
+txt on
+
+~ah
+txt autohide on   % should be the last txt command
+celtic nonug true
+until time 2
+
+alias ~part1 "silent=f;delete all;celtic smallest 24;if \ppar0 < 4 then {celtic smallest 70};celtic grid \ri[9/14];timer start;silent=f"
+
+alias ~part2 "silent=t;until ncomp \ppar0 {celtic rand sec \rr[.1/.3];celtic copy};silent=f"
+
+alias ~part3 "celtic copy;timer check;scale 2;ago 7"
+
+alias ~do-it "tfunc reset;~part1;~part2;~part3"
+
+txt left
+txt fill on
+txt 15 15 " 6 " "par0=6;~do-it"
+txt 15 a  " 5 " "par0=5;~do-it"
+txt 15 a  " 4 " "par0=4;~do-it"
+txt 15 a  " 3 " "par0=3;~do-it"
+txt 15 a  " 2 " "par0=2;~do-it"
+txt 15 a  " 1 " "par0=1;~do-it"
+txt fill off
+txt 10 a "strings:"
+txt 10 a.6 "number of"
+
+txt fill on
+txt 15 a2 "jitter" <jitter-celtic.kps
+
+
+~do-it
+

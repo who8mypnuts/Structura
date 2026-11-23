@@ -1,0 +1,19 @@
+
+The following directories are the source for these knots:
+
+/imager/project2/scharein/ThesisAux/work/min-sticks/5to8/min
+/imager/project2/scharein/ThesisAux/work/min-sticks/9C/min
+/imager/project2/scharein/ThesisAux/work/min-sticks/links/min
+/imager/project2/scharein/ThesisAux/work/min-sticks/10D/min
+
+All are in configurations that minimize the MD-energy.
+The xyz-axes are aligned with the principal axes of the knot,
+with the largest moment of inertia corresponding to the y-axis,
+and the smallest moment of inertia corresponding to the z-axis.
+
+The knots are scaled so that the distance of closest approach of
+any two non-adjacent edges is equal to 0.5.
+
+					rob scharein
+					19 feb 1998
+

@@ -1,0 +1,67 @@
+
+reset all
+silent = t
+cyl = .2
+
+par0=\rr5
+if par0 < 1 then "back=xff;par0=9"
+if par0 < 2 then "back=xff00;par0=9"
+if par0 < 3 then "back=xff0000;par0=9"
+if par0 < 3.5 then "back=xffffff;par0=9"
+if par0 < 5 then "back=0;par0=9"
+%disp t
+
+ncur = \ri[1/4]
+nseg = \ri[5/10]
+
+N-tor=\rr[14/55]
+new=f
+frame comm "translate  0 0 1;unknot"
+frame 0 num \ri[7/11]
+
+centre
+hstart=\rr360
+hinc = \rr+-55
+
+draw broken
+cyl = 2
+broff = -3.4
+glop backface t
+coll a
+force 1
+
+twfix \rr+-102
+scale=\rr[.25/.39]
+if \rr2 < 1 then "rot x \rr360"
+
+if \rr2 < 1 then "blend one one;zbuff f;back=0;value=.2;mathsv k 0 0 .1 s"
+
+
+func init
+func silent
+
+func 2 clrfun z
+func 3 clrfun zf
+func 4 twfix \rr+-102
+func 5 untran
+func 6 "broff=\rr+-4"
+func 7 "hstar=\rr360"
+
+func 1 <panes.kps
+
+tfunc \rr[.5/1.5] go
+
+if \rr4 < 2 then <fun-with-accbuff.kps
+
+if \rr3 < 2 then "mathsv s 0 0 0 s"
+
+silent = f
+
+echo
+echo
+echo " *** Try rotating the scene with the trackball (left mouse)"
+echo "     or scale the scene (right mouse)."
+echo " *** Press F2 to F7 for various effects."
+echo "     Press F1 to rerun demo."
+
+

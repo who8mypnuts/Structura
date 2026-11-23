@@ -1,0 +1,39 @@
+%! 3155
+ringToss 10 15 2
+relaxA 0 0 1 .4
+new_monster 0 0 1
+cubicSAW 0 0 1
+freedman 0 0 1
+brunnian 0 0 1 .05
+random-lights2 0 0 1
+random1 0 0 1
+twist-knot 0 0 1 .2
+%mandala1 0 0 1 .0033
+%zoom 0 0 1 .08
+%mandala2 0 0 1 .06
+%flowers 0 0 1 .07
+braids 0 0 1
+%glo-knot 0 0 1 .2
+combo-monster 0 0 1
+%3to7xing 0 0 1
+%8xing 0 0 1
+%KnotZoo 0 0 1 .2
+%torus 0 0 1 
+tref-drop 15 15.1 2
+D9 0 0 1 .4
+simp 0 0 1
+%knottype 10 15 2
+stick-symm 0 0 1 .5
+SE 15 30 2
+orbit 15 30 2
+%graphicsG 15 25 2
+open-end 10 15 2
+slide-knot 10 15 2
+PerkoExhib 0 0 1
+ring-pack 10 20 2
+ChiralKnots 0 0 1
+%DecorativeKnots 20 50 2
+%electricity 30 40 2
+fly-thru 10 20 2
+KnotPaint 10 15 2
+SeaThings 10 15 2

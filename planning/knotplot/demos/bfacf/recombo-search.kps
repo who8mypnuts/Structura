@@ -1,0 +1,16 @@
+~sinit
+~bload
+
+#10 echo
+
+verbose = f
+idle "bfacf step 0;~doit;bfacf recomb showsites;bfacf nap now"
+
+txt push
+txt centre
+txt font 3
+txt fill on
+txt group 108
+txt c 20 "stop searching" "idle;verbose=t;~but"
+txt pop
+

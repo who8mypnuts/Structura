@@ -1,0 +1,84 @@
+require KPbuild 4691
+% Demo of `mangle' command.
+
+
+require KPbuild 4350
+
+reset all
+
+
+func init
+func silent
+func 1 <mangle-demo2.kps
+
+echo 
+echo 
+echo "  *** Demo of crankshaft rotations (KnotPlot `mangle' command)"
+echo "      Use view window buttons to try different options for `mangle'"
+echo 
+
+verbose=f
+
+vscale = .35
+stusplit = 1
+
+
+cradius = .14
+bradius=.18
+mode cb
+
+txt init
+
+txt clobber on
+txt centre
+txt font 4
+txt c -20 "Crankshaft Rotations";
+txt font 3 
+txt c a "using the KnotPlot `mangle' command";
+txt left
+
+txt font 3
+txt fcolour royalblue .6
+
+txt push
+txt group 102
+txt font 4
+txt 10 455 "Select an option:"
+txt fill on
+txt lineskip 25
+txt font 3
+txt fill on
+txt 14 a "circle inside sphere" "~init;~bsphere;~circ"
+txt 14 a "circle outside sphere" "~init;~lsphere;~circ"
+txt 14 a "circle between spheres" "~init;~bsphere;~lsphere;~circ"
+txt 14 a "arc inside sphere" "~init;~bsphere;~arc"
+txt 14 a "arc outside sphere" "~init;~lsphere;~arc"
+txt 14 a "arc between spheres" "~init;~bsphere;~lsphere;~arc"
+txt 14 a "random braid" "~init2;~lsphere;random braid \ri[3/7] \ri[6/13];fitto 11;about y 90;warp rec2ann 20;refl x"
+txt pop
+
+alias ~circ "unknot \ri[77/108];shift rand;proj r"
+alias ~arc  "~circ;cut 0;cut \ri[40/60];keep 0"
+
+
+alias ~init "cradius=.14;mode cB;silent=t;scenery init;scenery on;mang ins -1;mang outs -1;~txtA;silent=f"
+alias ~init2 "mode s;silent=t;sradius=.15;scen init;scen on;mang ins -1;mang outs -1;~txtA;silent=f"
+alias ~bsphere "scen vscal 10;scen prio 0;scen obj eobj/sphere3;mangle inside 10"
+alias ~lsphere "scen vscal 6;scen prio 1;scen obj eobj/sphere2;mangle outside 6"
+alias ~txtA "txt push;txt cent;txt font 4;txt c 20 {start mangling!} {~smangle;txt group 102 off};txt pop"
+
+alias ~txtB "txt push;txt cent;txt font 4;txt c 20 {stop mangling} ~emangle;txt pop"
+
+
+
+alias ~smangle "txt delete start;idle {mangle 1 180};~txtB"
+
+alias ~emangle "idle;txt delete stop;txt group 102 on"
+
+txt right
+txt fill on
+txt font 3
+txt -15 40 "rerun this demo" <mangle-demo2.kps
+txt -15 15 "run another mangle demo" <mangle-demo.kps
+txt on
+verbose=t

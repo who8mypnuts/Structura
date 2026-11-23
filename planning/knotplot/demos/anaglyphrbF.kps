@@ -1,0 +1,8 @@
+reset all
+Draw=f
+
+
+anaglyph init
+anaglyph r.b
+
+<anaglyphF.kps

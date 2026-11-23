@@ -1,0 +1,174 @@
+%`-
+require KPbuild 4965   % for swap randomize
+
+% Antoine's Necklace 
+% Rob Scharein - April 8, 2002
+
+% For a discussion of the fundamental group of the complement
+% of Antoine's Necklace, see `Knots and Links'. 
+
+
+if par0 != 562014 then "reset all" else "delete all"
+
+<Backdrops.kps
+
+silent=t
+
+rotsense x L      % this is reset with the reset command (has been since 27 oct 2002)
+rotsense y L
+
+allocate beads 19888
+allocate comp 3000
+
+if par0 != 562014 then "Draw=f" else "Draw=t"
+
+drop all 50 9 -30
+
+% Set up the viewing coordinate system, these numbers may be
+% changed for different effects.
+
+untran
+
+if par0 == 562014 then "scale=.35" else "scale = 1"
+
+cyl-rad = 0.0448
+lxnseg = 20           % quality factors
+lxncur = 6            % for `luxo' mode.
+
+chnseg = 6           % quality factors
+chncur = 1            % for `cheapo' mode.
+
+pop                   % pop the view window forward.
+
+clrfun zf               % these are the default clear functions, here
+                      % in case they need to be reset.
+
+
+% Perhaps the following number should be 40 instead of 20, since each
+% stage of the construction should replace every component ring by the
+% same number of sub-rings.  But actually it doesn't really matter much
+% as the final object will still be a Cantor set.  The exact value of 
+% the fractal dimension will depend on details such as these, however.
+% The main reason for 20 instead of 40 is that it produces a better picture
+% than either 20 at every stage or 40 at every stage.
+
+d-chain=.85
+chain 20 7            % create a chain with 20 rings of 7 beads each.
+
+if par0 == 562014 then "disp;nap .1"
+
+fitto 1.5             % fit it to size of 1.5
+
+save |KP-antoines-necklace.dum    % save it as a temporary file.
+
+trans 10                              % translate it 10 units in x direction.
+if par0 == 562014 then "disp;nap .1"
+
+save |KP-antoines-necklace.dumm   % save the translated version.
+load |KP-antoines-necklace.dum    % load the untranslated version.
+
+if par0 == 562014 then "disp;nap .1"
+
+about y 90                            % rotate it about the y-axis        
+
+if par0 == 562014 then "disp;nap .1"
+
+trans 10                              % and translate it by 10.
+
+if par0 == 562014 then "disp;nap .1"
+about z 9                             % rotate it so it'll link with dumm.
+
+if par0 == 562014 then "disp;nap .1"
+
+load comb |KP-antoines-necklace.dumm  % combine with dumm, now we have
+if par0 == 562014 then "disp;nap .1"
+
+                                          % one pair of linked rings.
+
+if par0 == 562014 then "vscale=.35" else "vscale=.6"
+
+
+%seed 632868
+
+%seed 1022
+
+%load antoine.dum
+% Modify the file randomize-colours to get different effects.
+
+sat=1
+value=1
+cmode 0               % This undoes any other cmode commands.
+%<randomize-colours
+clrfun zf
+
+gflush
+
+% Draw the first big ring by duplicating it 19 more times.
+
+save |AntNeck_ring.k
+save |AntNeck_ring-accum.k
+
+if par0 != 562014 then "Draw=f" else "Draw=t"
+
+#19 read AntoinesNecklace_ring1.kps
+
+<AntoinesNecklace_ring-dup.kps
+untran
+about x 55
+disp
+trans 0 2.3 0
+disp
+
+
+swap randomize
+
+display true
+
+hinc = 9
+scale .8 .8 .8
+
+scale .8 .8 .8
+
+%cmode -1
+%cmode 3 1 1 1
+
+scale=.67
+
+%sbuff
+%cheapo
+
+
+Draw=t
+
+
+rotsense x R   % put it back to the default (not needed)
+rotsense y R
+
+%load |~     % deletes all RAM saved files
+
+silent=f
+
+func init
+func silent
+
+func 1 "swap randomize"
+func 2 "par0=562014;<AntoinesNecklace.kps"
+func 12 "help popup AntoinesNecklace.kps"
+
+echo 
+echo 
+echo " *** Press F1 to redo with different colours."
+echo "     Press F2 to watch the construction process."
+echo "     Press F12 for information about this demo."
+echo
+
+
+exit
+
+%`+
+
+For information on Antoine's Necklace see page 73 of
+Knots and Links by Dale Rolfsen
+
+
+

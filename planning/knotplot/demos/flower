@@ -1,0 +1,20 @@
+% Flower
+
+% This file creates an `Unknot Flower' 
+
+reset dclean
+silent = t
+backface f
+Draw=f
+unknot \ri[14/25]    % Random number of beads from 14 to 25 inclusive
+moire f .4 f f f     % Undocumented command!  (as of March 7, 1996)
+twfix
+disp t
+Draw=t
+silent=f
+
+echo " "
+echo " "
+echo "   ***  Try this demo several times."
+echo  "        Many flowers are `duds'."
+echo " "

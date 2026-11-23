@@ -1,0 +1,22 @@
+require KPbuild 4353 midi
+
+txt space _
+~ah
+txt 12 35 music_on ~musicon
+~ah
+txt 12 60 whoosh_on ~whooshon
+
+alias ~musicon "~ah;play init;txt delete music;txt 12 35 music_off ~musicoff"
+alias ~musicoff "~ah;play close;txt delete music;txt 12 35 music_on ~musicon"
+ 
+
+
+alias ~oal "oal fadein \rr[1/2] source 0 wav buzz attach ecomp 0 on;oal pitch 0 c \rr[-1200/222]"
+alias ~whooshon "~ah;oal init;oal listener screen;oal doppler 1 \rr[.01/.02];oal velmul \rr[55/555];~oal;txt delete whoosh;txt 12 60 whoosh_off ~whooshoff"
+alias ~whooshoff "~ah;oal close;txt delete whoosh;txt 12 60 whoosh_on ~whooshon"
+
+bindkey " " "~musicon;tfunc reset;~soundblast"
+
+frame comm "~play %d \rr[5/108]"
+
+alias ~soundblast "frame 20 to 108"

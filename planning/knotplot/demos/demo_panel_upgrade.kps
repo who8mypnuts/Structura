@@ -1,0 +1,55 @@
+require KPfreenr
+
+
+reset all
+
+silent=t
+ncurve = 7
+nsegments = 15
+vcn = 4
+vcphi = 0.000000
+vcA = 0.568359
+scale = 0.864361
+cyl-rad=.2
+load KnL_p139d.k
+
+go inf limit 108
+stus=1
+
+txt centre
+txt font 4
+txt c -30 "Welcome to the KnotPlot Demos"
+txt c a " "
+txt c a " "
+
+txt c a "You are running the evaluation version of KnotPlot,"
+txt c a "also known as KnotPlot Level 0."
+txt c a "In the evaluation version, some of the buttons"
+txt c a "are randomly chosen to be inactive."
+txt c a "A different selection of buttons is"
+txt c a "chosen each time you run KnotPlot."
+
+txt c a "If you want to see all the buttons all the time,"
+txt c a "please consider upgrading your copy of KnotPlot"
+txt c a "to Level 1 by clicking on the `upgrade now' button below."
+
+txt c a " "
+txt c a " "
+
+txt fill on
+txt colour #000
+txt fcolour hsv:33/0/1
+
+
+txt font 4
+txt c a  "upgrade now" <web-upgrade.kps
+
+txt fill off
+
+txt c a " "
+txt c a " "
+
+
+
+txt on
+silent=f

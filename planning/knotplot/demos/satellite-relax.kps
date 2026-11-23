@@ -1,0 +1,15 @@
+txt delete before
+stus = 2
+dstep = 3
+scenery off
+ago 55
+delete down 0
+go
+
+alias ~rerun "txt c 20 {rerun demo} {<satellite.kps}"
+alias ~align "txt c 20 {align axes} {untran;align axes;~rerun}"
+txt c 20 stop "go 0;~align"
+
+
+
+

@@ -1,0 +1,37 @@
+% This script may be used to convert all the knots and links in the 
+% basic catalogue to a different file format.  They are supplied in
+% the KnotPlot LOCS (short) file format.
+
+% Important note: If KnotPlot is started while in the `basic' directory
+% and this script is loaded, then the entire knot catalogue will be replaced
+% with a version in the selected file format.  If you prefer to keep the
+% original files, then create a new directory, start KnotPlot from the
+% new directory, and then load the script.  The files will be saved in the new
+% directory.
+
+% To use this script, start KnotPlot in either the `basic' directory (if you
+% are sure you want to replace the original files), or in some other directory
+% (if you want to create new files).  At the KnotPlot> prompt, enter 
+% 
+%      KnotPlot> <update-formats.kps
+%
+%         or
+%
+%      KnotPlot> read update-formats.kps
+
+
+reset all       % In case any `frame' options are bound.
+
+frame command "knot num %d, save *"
+
+% Uncomment one of the following, depending on the file format you desire.
+
+%sformat = 0    % KnotPlot LOCF format
+%sformat = 1    % KnotPlot LOCS format
+%sformat = 2    % KnotPlot LOCC format
+%sformat = 3    % Raw ascii text
+%sformat = 4    % KED format
+%sformat = 5    % Ming format
+
+frame 1 to 384
+

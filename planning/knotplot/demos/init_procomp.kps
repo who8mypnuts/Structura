@@ -1,0 +1,2 @@
+button Main "ProComp panel" "panel set pcomp"  4 277 40 10
+button pcomp Demo_A <procomp_DemoA.kps 50 30 20 10

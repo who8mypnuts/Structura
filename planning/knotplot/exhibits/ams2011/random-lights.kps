@@ -1,0 +1,49 @@
+% This is partly a demo of lighting features and 
+% partly a demo of the use of random parameters.
+
+% 6 April 2000, Rob Scharein
+
+reset all
+
+Draw = f
+
+back=0
+if \rr400 < 360 then knot else "knot spe"
+if \rr100 < 3 then "random tangle"
+align axes
+silent=t
+satu = 0.0    % looks cooler if knot surface is white
+
+light reset
+light off 0
+
+light define 1
+light hcolour \rr360 1 1    % Random hue, but max saturation and value
+light pos \rr[-30/30] \rr[-30/30] \rr[-30/30] 1
+light on 1
+
+light define 2
+light hcolour \rr360 1 1
+light pos \rr[-30/30] \rr[-30/30] \rr[-30/30] 1
+light on 2
+
+light define 3
+light hcolour \rr360 1 1
+light pos \rr[-30/30] \rr[-30/30] \rr[-30/30] 1
+light on 3
+
+if \rr1 < .4 then "draw flat" else "draw hflat"
+twfix \rr[-102/102]
+if \rr1 < .3 then "draw norm;twfix 0"
+
+coll a
+force 1
+ago \ri[300/700]
+fixcofm=t
+Draw = t
+
+
+silent=f
+
+
+

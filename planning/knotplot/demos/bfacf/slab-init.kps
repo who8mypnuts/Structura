@@ -1,0 +1,9 @@
+par0 = 9152998
+
+scale = 0.129235
+ccmode = 2
+cyl-rad = 0.100000
+bead-radius = 0.180000
+mode cB
+untran
+viewmatrix 1.000000 0.000000 0.000000 0.000000 0.622515 0.782608

@@ -1,0 +1,43 @@
+reset all
+
+% 6 July 2021
+% formerly 10sep05a.kps
+
+alias ~rerun "<10sep05a.kps"
+alias ~dynam "echo;echo;coll a;force 1;velf=t"
+
+background = black
+
+hstart = \rr360
+knot
+fitto 7
+until thick 2 "knot;fitto 7"
+<randorient.kps
+save |tmp1
+delete all
+
+par0=\ri[2/4]
+
+celtic box \ppar0 \ppar0 \ppar0
+until ncomp 1 "celtic random sec .1;celtic copy"
+fitto 10.2
+save |tmp2
+
+colour on
+
+load comb |tmp1
+mcyl all 1
+mcyl 0 .2
+colour 0 white
+
+
+stusplit = 3
+go
+
+echo 
+echo 
+echo " *** Trapped?"
+echo "     Press F1 to rerun."
+echo "     Press F2 for an alternate dynamics."
+echo
+

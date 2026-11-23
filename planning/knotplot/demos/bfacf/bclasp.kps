@@ -1,0 +1,149 @@
+require KPbuild 4691
+require KPbuild 4494
+
+reset all
+
+alias ~stopblink "tfunc reset;txt delete stop"
+
+bfacf init
+bfacf init knotmode
+ccmode=2
+
+txt clobber on
+txt font 4
+txt centre
+txt c -20 "parallel sites strand passage test"
+
+%bfacf nap .1
+play init
+
+alias ~sinit "scenery init;scenery object tclasp resident;scenery dscale .4;scenery on"
+alias ~bload "~stopblink;bfacf load;bfacf box 10;bfacf fill"
+
+bfacf centre off
+
+txt fill on
+txt fcolour "royal blue" .7
+txt font 3
+txt sfcolour orange .9
+
+alias ~but "txt delete stop;txt push;txt fill on;txt cent;txt group 108;txt c 20 {search for sites} <bfacf/bclasp-search.kps;txt pop"
+
+~but
+
+txt group 108 off
+par0 = 1
+
+alias ~kload "~delspb;verb=t;echo;echo;knot numb $0 mscl;verb=f;silen=t;~sinit;~bload;bfacf parsites mark;txt group 108 on;txt delete group 102;silent=f"
+alias ~kenload "~delspb;~stpbut;verb=t;echo;echo;load initpolygonR$0.txt;scale 2;split;centre;verb=f;silen=t;~sinit;~bload;bfacf parsites mark;txt group 108 on;txt delete group 102;silent=f"
+alias ~robload "~delspb;~stpbut;verb=t;echo;echo;load bfacf/bclasp-$0.k;scale 2;split;centre;verb=f;silen=t;~sinit;~bload;bfacf parsites mark;txt group 108 on;txt delete group 102;silent=f"
+
+txt left
+txt lineskip -25
+txt 15 15 "4-comp" "~kload \ri[379/383]"
+txt 15 a "3-comp"  "~kload \ri[343/378]"
+txt 15 a "2-comp"  "~kload \ri[251/342]"
+txt 15 a "1-comp"  "~kload \ri[1/250]"
+txt 15 a "ken R4" "~kenload 4"
+txt 15 a "ken R3" "~kenload 3"
+txt 15 a simple "~robload a"
+txt fill off
+txt 10 a "load:"
+
+txt push
+txt right
+txt fill on
+txt select on
+txt -15 15 "5 sites" "par0=5"
+txt -15 a "4 sites"  "par0=4"
+txt -15 a "3 sites"  "par0=3"
+txt -15 a "2 sites"  "par0=2"
+txt -15 a "1 site "  "par0=1"
+txt set selected
+txt fill off
+txt -10 a "search for:"
+txt select off
+txt pop
+
+txt push
+txt right
+txt select on
+txt group 23547
+txt fill on
+txt -15 a2 80 "bfacf nedg 80 1000"
+txt set selected
+txt -15 a 40 "bfacf nedg 40 1000"
+txt -15 a 0 "bfacf nedg 0 1000"
+bfacf nedg 80 1000
+txt fill off
+txt -10 a nedges:
+
+txt select off 
+
+txt fill on
+txt -15 a2 music "play toggle"
+txt -15 a markers "scen toggle"
+txt -15 a box "show ~bfacf"
+txt -15 a labels "show ~label"
+txt -15 a axes "show ~axes"
+txt -15 a grid "show ~grid"
+txt -15 a arrows "show ~orient"
+txt fill off
+txt -10 a toggle:
+
+txt pop
+
+txt push
+txt right
+txt fill on
+txt -15 a2 recover "go 1;load |ooo;bfacf load"
+txt -15 a identify "stus=1;save |ooo;go"
+txt -15 a blink ~blink
+txt pop
+
+alias ~blink "tfunc .1 ~swapblink 0 rep .5;~butblink"
+alias ~swapblink "if par4 == 0 then {par4=1;load |before} else {par4=0;load |after}"
+
+alias ~butblink "txt push;txt fill on;txt cent;txt font 4;txt c 140 {stop blink} {~stopblink;load |after};txt pop"
+
+
+dbmin = 5
+
+txt push
+txt group 102
+txt fill off
+txt cent
+txt font 4
+txt lineskip 44
+txt c -108 "This demo uses sound, make sure your volume is not too high"
+txt c a "the pitch of the note indicates the number of strand passage sites found"
+txt c a2 "click on one of the blue buttons in lower left this window to load something"
+txt c a "and the blue buttons in lower right to change number of sites to search for"
+txt c a "and then click on the `search for sites' button that will appear"
+txt c a2 "you can rotate and scale the scene during the search process,"
+txt c a "as well as load a new knot using one of the blue buttons"
+txt c a2 "NOTE: do not use the `step' or `run' buttons on the Control Panel"
+txt c a   "as this will mess things up, however, using the sliders is fine"
+txt pop
+
+txt on
+
+
+show orient
+3dop ostep 1
+3dop oscale .3
+
+scale=.8
+viewmatrix 0.777146 0.629320 0.000000 -0.230647 0.284825 0.930418
+
+alias ~delspb "txt delete {strand pass}"
+
+
+alias ~stpbut "txt push;txt fill on;txt cent;txt c 50 {strand pass} {save |before;bfacf parsites strp;bfacf copy;save |after;scenery off;~delspb};txt pop"
+
+
+%tfunc .3 "~robload a;read bfacf/bclasp.view;show axes grid orient"
+
+%alias b "bfacf parsites strp"
+
+<bfacf/bclasp.view

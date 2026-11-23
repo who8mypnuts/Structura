@@ -1,0 +1,17 @@
+Please use the menu entry 
+
+    Manuals-->TopoICE-->TopoICE-X Manual
+
+or
+
+    Manuals-->TopoICE-->TopoICE-X Examples
+
+
+You can access the menus by right-clicking (SHIFT-click on a Mac) on the 
+KnotPlot control panel.
+
+The manual and examples are also available from the KnotPlot download site at
+
+    www.knotplot.com/download
+
+

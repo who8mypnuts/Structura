@@ -1,0 +1,4 @@
+energy model nbead
+energy format "Nedges = %.0f"
+bfacf load
+

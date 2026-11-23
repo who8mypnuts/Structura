@@ -1,0 +1,69 @@
+% Demo file 4jun96a
+% Doing frame buffer tricks.
+
+% This file is an example of how to produce complicated
+% pictures of scenes not directly representable in KnotPlot.
+% The trick is to not clear the frame buffer or z-buffer
+% when drawing a new object.
+
+% In this toy example, suppose we'd like to draw thicker coordinate
+% axes than KnotPlot normally draws.  And we want them to be pink.
+% The idea is to use the `line' command to draw the axes one by one.
+
+% The other thing we do in this example is to leave traces of the
+% bead position during relaxation.
+
+reset all
+
+rot x -80      % rotate the view 
+rot z -140
+
+sbuff          % better to do this in single buffer mode
+
+
+scale = 1      % enlarge things
+
+mode cb        % cylinders and beads
+cyl=.07     
+
+con 2          % create a Hopf link with conway command
+
+clrf n         % now set clear function to `none'
+               % all drawing will now accumulate in the frame buffer.
+               % also the z-buffer will not be cleared with each
+               % drawing so that hidden surfaces are rendered correctly.
+               % enter the command `clrf zf' to get back to the normal
+               % clearing functions.
+
+
+bead=.03
+mode b         % only beads
+
+go 102         % relax it
+
+cyl = .2       % cylinder radius 
+mode s         % draw the link in its final smooth state
+
+del all        % get rid of the link
+
+
+% Now draw a bunch of pink coord axes for no good reason
+
+mode s
+hsta=0         % hue start in the reds
+sat=.4         % somewhat unsaturated colour
+cyl=.1         % thickness of coord axes
+
+line num 10    % ten beads in each coord axis
+line dir 1     % direction of x-axis
+line           % actually create the line
+
+line dir 0 1   % direction of y-axis
+line           % draw it
+
+line dir 0 0 1 % dirction of z-axis
+line           % draw it
+
+del all        % delete everything
+
+

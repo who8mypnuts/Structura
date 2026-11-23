@@ -1,0 +1,34 @@
+reset all
+mode cb
+cyl-rad = 0.12
+bead-radius = 0.18
+
+frame comm "proj random;trans \rr[11/44] 0 0 ;proj random;save |%d;sequ +"
+silent = t
+sequence open mscl/2.b
+
+frame 1 to 75
+
+frame comm "load combine |%d"
+
+alias ~combine "delete all;frame 1 to 75"
+%until once yes
+%until safe ~combine
+~combine
+
+ccmode = 2
+
+sequence close
+
+force 1
+coll a
+velf = t
+revbeads random
+
+silent = f
+
+echo
+echo
+echo 75 minimal step trefoils
+echo
+safe

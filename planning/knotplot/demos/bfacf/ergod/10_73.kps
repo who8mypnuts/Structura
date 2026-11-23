@@ -1,0 +1,39 @@
+require KPbuild 4251
+
+
+reset all
+mode cB
+cyl-rad=.1
+rotat x -30
+show bfacf
+
+txt clobber on
+
+alias ~foundnew "txt push;txt fill off;txt cent;txt font 3;txt c 60 {best min found has $0 edges};txt pop"
+alias qfix
+
+alias ~title "txt fill off;txt font 4;txt cent;txt c -30 {Ergodicity class $0 for 10_73}"
+alias qfix
+
+alias ~kload "load bfacf/ergod/10_73-1slab-$0.k;bfacf init;bfacf ldslab 1;;mode cB;show bfacf;bfacf step 108000;bfacf search on ~foundnew;bfacf target 108;bfacf run 1000000;~title $0"
+
+txt fill on
+txt fcolour hsv:108/.6/.6 .6
+
+txt font 3
+txt lineskip  -25
+txt left
+txt 15 15 "class 2" "~kload 2"
+txt 15 a "class 1" "~kload 1"
+
+txt fill on
+txt centre
+txt c 30 "load min" "bfacf init;mode cB;load |min;centre;trans to lattice;scale=.43"
+
+txt on
+
+scale = .135
+
+~kload \ri[1/2]
+
+

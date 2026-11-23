@@ -1,0 +1,39 @@
+
+% Example DemoA.kps file defining a custom DemoA panel
+% Look in the demos/DemoA.kps file (under the KnotPlot
+% home) to see how the default DemoA panel is defined.
+
+% In KnotPlot script files (such as this one), comments
+% are specified with a `%' character.  Everything after 
+% and including the `%' are ignored by KnotPlot.
+
+% Arguments for the button command are:
+
+%  argu 1 - number or name of the control panel you want the button on
+%  argu 2 - label for button, use quotation marks for more than one word
+%  argu 3 - action for button, ignored if a label
+%  argu 4 - x location of lower left corner of button, use -1 for auto-placement
+%  argu 5 - y location of lower left corner of button, use -1 for auto-placement
+%  argu 6 - x size of button, use 0 for auto-size
+%  argu 7 - y size of button
+%  argu 8 - (optional) button flags (4 means button is a label)
+ 
+button Nbuttons 4   % specifies how many buttons per row we want
+button hspace 4     % a space of 4 units between buttons
+                    % (the control panel is 160 units wide)
+
+button pos 0
+
+button DemoA Trefoil "load 3.1" -1 260 0 10 
+button DemoA "Fig 8" "load 4.1" -1 -1 0 10 
+button DemoA "Granny" "load Granny.k" -1 -1 0 10
+button DemoA Square "load Square.k" -1 -1 0 10
+
+% buttons can also run a script
+
+button DemoA "Ring toss" <ringToss.kps  -1 -1 0 10  % ringToss.kps located in demos folder
+button DemoA Neat <neat27.kps -1 -1 0 10
+button DemoA Fancy <neat3.kps -1 -1 0 10
+button DemoA ? <21nov03b.kps -1 -1 0 10
+
+

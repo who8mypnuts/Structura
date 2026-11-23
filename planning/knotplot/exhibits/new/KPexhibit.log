@@ -1,0 +1,45 @@
+KnotPlot exhibit started at Thu Nov  6 19:05:11 2003 with 12 sequences.
+KnotPlot exhibit exited at  Thu Nov  6 20:31:13 2003 after 1.43 hours.
+
+4967 demo sequences called.
+Sequence #3 (graphicsH) called most with 476 times.
+Sequence #10 (BjorkA) called least with 100 times.
+
+Sequence #0 (painting) called 453 times (1.000, 1.094).
+Sequence #1 (StElmo) called 453 times (1.000, 1.094).
+Sequence #2 (StElmo) called 366 times (0.600, 0.884).
+Sequence #3 (graphicsH) called 476 times (1.000, 1.150).
+Sequence #4 (graphicsHa) called 447 times (1.000, 1.080).
+Sequence #5 (graphicsEa) called 467 times (1.000, 1.128).
+Sequence #6 (graphicsEb) called 458 times (1.000, 1.107).
+Sequence #7 (graphicsEc) called 475 times (1.000, 1.148).
+Sequence #8 (graphicsI) called 348 times (0.600, 0.841).
+Sequence #9 (graphicsJ) called 458 times (1.000, 1.107).
+Sequence #10 (BjorkA) called 100 times (0.100, 0.242).
+Sequence #11 (violently-happy) called 466 times (1.000, 1.126).
+
+
+KnotPlot 0.9965 (build 3219L).
+Compiled at 18:03:21, Nov  5 2003 on `columba'.
+KnotPlot Home Directory: /home/rob.scharein/knotplot
+KnotPlot Resource Directory: /home/rob.scharein/knotplot/resource  (Distribution version #6).
+
+HOSTNAME = columba
+HOST = columba
+HOSTTYPE = i386-linux
+USER = rob.scharein
+USERNAME is not set
+HOME = /home/rob.scharein
+KNOTPLOT_PATH is not set
+
+OpenGL version: 1.4.0 NVIDIA 44.96
+Vendor: NVIDIA Corporation
+Renderer: GeForce4 Ti 4600/AGP/SSE/3DNOW!
+Extensions: GL_ARB_depth_texture GL_ARB_imaging GL_ARB_multisample GL_ARB_multitexture GL_ARB_point_parameters GL_ARB_shadow GL_ARB_texture_border_clamp GL_ARB_texture_compression GL_ARB_texture_cube_map GL_ARB_texture_env_add GL_ARB_texture_env_combine GL_ARB_texture_env_dot3 GL_ARB_texture_mirrored_repeat GL_ARB_transpose_matrix GL_ARB_vertex_buffer_object GL_ARB_vertex_program GL_ARB_window_pos GL_S3_s3tc GL_EXT_abgr GL_EXT_bgra GL_EXT_blend_color GL_EXT_blend_minmax GL_EXT_blend_subtract GL_EXT_compiled_vertex_array GL_EXT_draw_range_elements GL_EXT_fog_coord GL_EXT_multi_draw_arrays GL_EXT_packed_pixels GL_EXT_paletted_texture GL_EXT_point_parameters GL_EXT_rescale_normal GL_EXT_secondary_color GL_EXT_separate_specular_color GL_EXT_shadow_funcs GL_EXT_shared_texture_palette GL_EXT_stencil_wrap GL_EXT_texture3D GL_EXT_texture_compression_s3tc GL_EXT_texture_cube_map GL_EXT_texture_edge_clamp GL_EXT_texture_env_add GL_EXT_texture_env_combine GL_EXT_texture_env_dot3 GL_EXT_texture_filter_anisotropic GL_EXT_texture_lod GL_EXT_texture_lod_bias GL_EXT_texture_object GL_EXT_vertex_array GL_HP_occlusion_test GL_IBM_texture_mirrored_repeat GL_KTX_buffer_region GL_NV_blend_square GL_NV_copy_depth_to_color GL_NV_depth_clamp GL_NV_fence GL_NV_fog_distance GL_NV_light_max_exponent GL_NV_multisample_filter_hint GL_NV_occlusion_query GL_NV_packed_depth_stencil GL_NV_pixel_data_range GL_NV_point_sprite GL_NV_register_combiners GL_NV_register_combiners2 GL_NV_texgen_reflection GL_NV_texture_compression_vtc GL_NV_texture_env_combine4 GL_NV_texture_rectangle GL_NV_texture_shader GL_NV_texture_shader2 GL_NV_texture_shader3 GL_NV_vertex_array_range GL_NV_vertex_array_range2 GL_NV_vertex_program GL_NV_vertex_program1_1 GL_NVX_ycrcb GL_SGIS_generate_mipmap GL_SGIS_multitexture GL_SGIS_texture_lod GL_SGIX_depth_texture GL_SGIX_shadow 
+red buffer: 8 bits
+green buffer: 8 bits
+blue buffer: 8 bits
+z-buffer: 24 bits
+stencil: 8 bits
+max texture size: 4096
+max hardware lights: 8

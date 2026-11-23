@@ -1,0 +1,136 @@
+require KPbuild 4998  % for view command (replacement for viewmatrix)
+
+require KPbuild 4691
+require KPbuild 4556
+require KPbuild 4353
+reset all
+alias ~ah "txt awake \rr[2/5];txt hide \rr[8/12]"
+func init
+func silent
+silent=t
+verb=f
+back=black
+
+unknot 15 \rr[2/5]
+if \rr2 < 1 then revb
+about x 90
+about z 30
+trans 0 \rr[-8/-12] 4
+
+alias ~note "par0=$1;test paradj 0 .001 0;~play $0 \ppar0"
+alias ~play "tfunc $1 {play $0 0;play $0} 0 rep $1"
+
+
+par3 = \ri[102/108]
+tfunc .01 "play \ppar3 0;par3=\ri[102/108];play \ppar3;cmode -1" 0 rep 11 22
+
+par4 = \ri[66/108]
+tfunc .01 "play \ppar4 0;par4=\ri[66/102];play \ppar4;cmode -1;cmode 3 1 1 1" 0 rep 22 108
+
+
+alias ~rot "rotor period $0 color blue add $1;~note $2 $0"
+%rotor period \rr[200/1100] color blue add weaver
+~rot \rr[200/1100] weaver1 22
+
+unknot 15 \rr[3/7]
+trans 0 \rr[-8/-15] 4
+if \rr2 < 1 then revb
+%rotor period \rr[2000/3300] color blue add weaver2
+~rot \rr[2000/3300] weaver2 20
+
+silent=true
+func 2 <random-lights
+func 1 <ConeyMagic2.kps
+load coneymagic.k
+
+%show rotor
+
+mass on
+mass all 1
+mass 0 0
+
+trx = 3.193645
+try = -1.337632
+scale = 0.487033
+cyl-rad = 0.103873
+view matrix -0.042131 0.998636 0.030702 0.000279 -0.030717 0.999522
+
+scen on
+
+
+
+scen obj coney-rev
+%scen obj testC 0 0 -4
+scen scale 4
+scen obj snub_disicosidodecahedron_plus_dual 0 0 -4
+
+scen scale .2
+scen rotate yorien
+scen obj coney ecomp 0
+
+cmode 1 138.699592 124.041292 1.988674
+cmode 2 5.000000 2.000000 2.000000
+cmode 3 0.843475 0.284653 0.154694
+draw spec
+
+%luxo
+ncur=7
+nseg=15
+
+rotor let weaver1 pull lbead 0
+rotor let weaver2 pull bead 10
+
+force 1
+velf=t
+velmag=.4
+
+go
+stus=1
+
+%tfunc .1 "revb;split cyl 0;revb;mass all 1;mass 0 0" 0 rep 1
+
+
+txt font 4
+txt cent
+~ah
+txt awake \rr[.5/1.5]
+txt c -20 "Coney's Magic Show"
+txt font 3
+txt left
+
+txt fcolour "Swedish Blue" .4
+txt lineskip -22
+txt fill on
+~ah
+txt phantom "whoosh on"
+txt 12 10 labyrinth <ConeyRavenna1.kps
+~ah
+txt R a0 "fly" <ConeyFly.kps
+txt R a0 "flock" <ConeyFlock.kps
+
+if macos then <ConeyMusic.kps
+
+txt phantom
+~ah
+txt push
+txt right
+txt -12 10 fullscreen "full tog"
+txt cent
+~ah
+txt c 20 "reload demo" <ConeyMagic2.kps
+txt pop
+
+txt on
+
+
+~ah
+txt autohide on   % should be the last txt command
+
+silent=f
+echo
+echo
+echo
+echo
+echo Coney courtesy of David Bullock (press F3 to see Coney on YouTube)
+func 3 "www www.youtube.com/watch?v=ZaBIqbZgX58"
+echo

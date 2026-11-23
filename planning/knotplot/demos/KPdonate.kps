@@ -1,0 +1,23 @@
+button Main "Help keep the KnotPlot Project alive --->" nop 4 5 80 10 4
+button Main "Make a donation" "www hypnagogic.net/KPdonate" 100 5 56 10
+
+button DemoA "Help keep the KnotPlot Project alive --->" nop 4 5 80 10 4
+button DemoA "Make a donation" "www hypnagogic.net/KPdonate" 100 5 56 10
+
+button DemoB "Help keep the KnotPlot Project alive --->" nop 4 5 80 10 4
+button DemoB "Make a donation" "www hypnagogic.net/KPdonate" 100 5 56 10
+
+%button comp "Help keep the KnotPlot Project alive --->" nop 4 5 80 10 4
+%button comp "Make a donation" "www hypnagogic.net/KPdonate" 100 5 56 10
+
+button cons "Help keep the KnotPlot Project alive --->" nop 4 5 80 10 4
+button cons "Make a donation" "www hypnagogic.net/KPdonate" 100 5 56 10
+
+button export "Help keep the KnotPlot Project alive --->" nop 4 5 80 10 4
+button export "Make a donation" "www hypnagogic.net/KPdonate" 100 5 56 10
+
+button surf "Help keep the KnotPlot Project alive --->" nop 4 5 80 10 4
+button surf "Make a donation" "www hypnagogic.net/KPdonate" 100 5 56 10
+
+button cat "Help keep the KnotPlot Project alive --->" nop 4 5 80 10 4
+button cat "Make a donation" "www hypnagogic.net/KPdonate" 100 5 56 10

@@ -1,0 +1,9 @@
+demo: demo.o
+	cc -o demo.exe demo.o -lm
+
+clean:
+	touch dum demo0.kps
+	/bin/rm demo?.kps demo??.kps
+	/bin/rm *dum*
+	touch dum~
+	/bin/rm *~

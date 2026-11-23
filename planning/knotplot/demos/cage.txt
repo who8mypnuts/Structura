@@ -1,0 +1,7 @@
+par2
+10 read tetra_cage.kps
+15 read cube_cage.kps
+20 read octa_cage.kps
+20 read dodec_cage.kps
+20 read icos_cage.kps
+20 read peterson_graph.kps

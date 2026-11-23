@@ -1,0 +1,11 @@
+% First make a simple braid with terminal points along a x = const, z = const plane
+% Fit it so that the y extent is +=14.8 or so
+% for each component, do a dup.kps
+% then combine everthing at the end
+
+
+
+
+#6 dup last; ref yz last; tran 30; tran -30 0 0 last
+
+func 5 <dup.kps

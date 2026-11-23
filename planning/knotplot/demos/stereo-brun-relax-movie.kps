@@ -1,0 +1,20 @@
+silent = t
+
+Draw = f
+drop ca 0xff000000
+drop cb 0xff000000
+drop cc 0xffff0000
+drop cd 0xffff0000
+drop all 45 35 -20
+spe back
+cheapo
+cyl = .3
+
+
+
+silent = f
+
+load brunnian6.movie
+Draw = t
+
+

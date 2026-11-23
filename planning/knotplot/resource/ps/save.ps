@@ -1,0 +1,91 @@
+%% Start of balls-n-sticks.ps
+
+%  Rob Scharein
+%  June 20, 1994
+
+%  XXX drawing mode for beads and sticks.
+%  Not officially supported.
+
+%  Modified April 18, 1995 to (slightly) reduce file size.
+
+
+0.8 beadR mul /beadr exch def
+0.5 cylR mul /cylr exch def
+
+/BCol {            % Default border colour
+  0 setgray
+} def  
+      
+/FCol {            % Default fill colour
+  1 setgray
+} def  
+      
+
+/bd {              % Draw a bead at (xloc, yloc)
+  0 setlinewidth
+  BCol 
+  /yloc exch def
+  /xloc exch def
+
+  newpath
+  xloc yloc moveto
+  xloc yloc beadR 0 360 arc
+  fill
+
+  newpath
+  FCol 
+  xloc yloc moveto
+  xloc yloc beadr 0 360 arc
+  fill
+
+} def
+
+/uc {              % Draw a cylinder fragment extending from (xloc1, yloc1)
+  0 setlinecap     % to (xloc2, yloc2).  The fragment is not capped.  This
+  /yloc2 exch def  % corresponds to a cylinder fragment that does not end
+  /xloc2 exch def  % at a bead that is below it.
+  /yloc1 exch def
+  /xloc1 exch def
+
+  cylR setlinewidth
+  0 setgray
+  newpath
+  xloc1 yloc1 moveto
+  xloc2 yloc2 lineto
+  stroke
+
+  cylr setlinewidth
+  1 setgray
+  newpath
+  xloc1 yloc1 moveto
+  xloc2 yloc2 lineto
+  stroke
+} def
+
+
+
+/cc {               % Draw a cylinder fragment extending from (xloc1, yloc1)
+  1 setlinecap      % to (xloc2, yloc2).  The fragment is capped.  This 
+  /yloc2 exch def   % corresponds to a cylinder fragment that has a terminus
+  /xloc2 exch def   % ending at a bead that is below it.
+  /yloc1 exch def
+  /xloc1 exch def
+
+  cylR setlinewidth
+  0 setgray
+  newpath
+  xloc1 yloc1 moveto
+  xloc2 yloc2 lineto
+  stroke
+
+  cylr setlinewidth
+  1 setgray
+  newpath
+  xloc1 yloc1 moveto
+  xloc2 yloc2 lineto
+  stroke
+} def
+
+%% End of balls-n-sticks.ps
+
+

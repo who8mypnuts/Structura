@@ -1,0 +1,44 @@
+KnotPlot exhibit started at Sat Jun 14 23:14:56 2003 with 37 sequences.
+KnotPlot exhibit exited at  Sun Jun 15 02:07:28 2003 after 2.88 hours.
+
+509 demo sequences called.
+Sequence #23 (simp) called most with 21 times.
+Sequence #6 (brunnian) called least with 2 times.
+
+Sequence #0 (fig8) called 17 times (1.000, 1.236).
+Sequence #1 (ringToss) called 16 times (1.000, 1.163).
+Sequence #2 (relaxA) called 5 times (0.400, 0.363).
+Sequence #3 (new_monster) called 18 times (1.000, 1.308).
+Sequence #4 (cubicSAW) called 17 times (1.000, 1.236).
+Sequence #5 (freedman) called 19 times (1.000, 1.381).
+Sequence #6 (brunnian) called 2 times (0.050, 0.145).
+Sequence #7 (random-lights2) called 17 times (1.000, 1.236).
+Sequence #8 (trefoil1) called 19 times (1.000, 1.381).
+Sequence #9 (random1) called 19 times (1.000, 1.381).
+Sequence #10 (twist-knot) called 12 times (0.200, 0.872).
+Sequence #11 (zoom) called 2 times (0.080, 0.145).
+Sequence #12 (mandala2) called 3 times (0.060, 0.218).
+Sequence #13 (flowers) called 3 times (0.070, 0.218).
+Sequence #14 (braids) called 15 times (1.000, 1.090).
+Sequence #15 (glo-knot) called 6 times (0.200, 0.436).
+Sequence #16 (combo-monster) called 20 times (1.000, 1.454).
+Sequence #17 (stick-symm) called 8 times (0.500, 0.582).
+Sequence #18 (3to7xing) called 18 times (1.000, 1.308).
+Sequence #19 (8xing) called 19 times (1.000, 1.381).
+Sequence #20 (tref-drop) called 19 times (1.000, 1.381).
+Sequence #21 (D9) called 12 times (0.400, 0.872).
+Sequence #22 (torus) called 16 times (1.000, 1.163).
+Sequence #23 (simp) called 21 times (1.000, 1.527).
+Sequence #24 (knottype) called 18 times (1.000, 1.308).
+Sequence #25 (electricity) called 17 times (1.000, 1.236).
+Sequence #26 (fly-thru) called 18 times (1.000, 1.308).
+Sequence #27 (SE) called 15 times (1.000, 1.090).
+Sequence #28 (orbit) called 18 times (1.000, 1.308).
+Sequence #29 (graphicsG) called 17 times (1.000, 1.236).
+Sequence #30 (open-end) called 17 times (1.000, 1.236).
+Sequence #31 (slide-knot) called 17 times (1.000, 1.236).
+Sequence #32 (PerkoExhib) called 17 times (1.000, 1.236).
+Sequence #33 (kzoo4) called 3 times (0.070, 0.218).
+Sequence #34 (kzoo5) called 5 times (0.120, 0.363).
+Sequence #35 (kzoo6) called 8 times (0.200, 0.582).
+Sequence #36 (ring-pack) called 16 times (1.000, 1.163).

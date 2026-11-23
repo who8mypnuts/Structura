@@ -1,0 +1,6 @@
+Loading Scenery into KnotPlot (part 1)
+
+A wide variety of `scenery' may be loaded into KnotPlot.  This may
+consist of polygonal meshes, lines and points.  These are defined
+in an EOBJ file.
+

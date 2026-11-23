@@ -1,0 +1,55 @@
+
+% Idea #1
+
+
+/Patch {
+    /yd exch def   /xd exch def
+    /yc exch def   /xc exch def
+    /yb exch def   /xb exch def
+    /ya exch def   /xa exch def
+    /value exch def
+    /area exch def
+    1 setgray
+    newpath
+    xa ya moveto
+    xb yb lineto
+    xd yd lineto
+    xc yc lineto
+    xa ya lineto
+    fill
+    /bax {xb xa sub} def
+    /bay {yb ya sub} def
+    /cax {xc xa sub} def
+    /cay {yc ya sub} def
+    /ndots {1 value sub dup mul area mul .7 mul} def
+    0 setgray
+    newpath
+    putdots
+    stroke
+     } def
+
+.01 setlinewidth
+
+/putdots {
+  0 1 ndots {putdot} for} def
+
+/putdot {
+  pop
+  /rba {rand 2147483647 div} def
+  /rca {rand 2147483647 div} def
+  rba bax mul 
+  rca cax mul
+  add
+  xa add
+  rba bay mul
+  rca cay mul
+  add
+  ya add
+  moveto
+  0 0  rlineto
+} def
+  
+
+
+% end of Idea #1
+

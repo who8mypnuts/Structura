@@ -1,0 +1,83 @@
+BFACF Basic Help
+
+load... button:
+Click on this button to bring up a panel of choices of knots to load.  The knots with a `c'
+in their name are composite knots.  Here is a table of what they correspond to:
+       6c_1   3_1#3_1
+       6c_1s  3_1s#3_1s
+       6c_2   3_1#3_1s
+       7c_1   3_1#4_1
+       7c_1s  3_1s#4_1
+       8c_1   3_1#5_1
+       8c_1s  3_1s#5_1s
+       8c_2   3_1s#5_1
+       8c_2s  3_1#5_1s
+       8c_3   3_1#5_2
+       8c_3s  3_1s#5_2s
+       8c_4   3_1s#5_2
+       8c_4s  3_1#5_2s
+       8c_5   4_1#4_1
+
+
+link open obstacle obstacle2 buttons:
+Simple examples of what can be done with multi-component links, open-ended components and 
+freezing a component to make into a topological obstruction of some kind.
+ 
+centre on/off buttons:
+Recall that knots, especially small ones, tend to wander off and are no longer visible in the 
+view window. click on "centre on" to keep them centered in the view window. This is only a 
+display option, it doesn't affect the simulation.  The buttons are equivalent to the commands:
+bfacf centre on
+bfacf centre off
+
+freeze/thaw buttons:
+Optionally freeze or thaw one or more components. 
+
+embed button:
+Use this button to embed a smooth knot or two component link into the simple cubic lattice. 
+Doesn't always work, and you have to check that the knot type doesn't change.  If the command 
+reports that the "Current position is safe" and the min max max/min and aver lengths are 1.000,
+then you're probably OK.  Sometimes you may have to scale the knot (use the `scale' command, 
+see the manual).  You can make new cubic lattice knots, for example try the command sequence:
+load 5.2
+load sum 7.5
+and then click on the `embed' button. If you get what looks like a nice knot, click the button:
+
+bfacf load button:
+Loads a knot sitting in the KnotPlot Arena into the BFACF engine.  Equivalent to the command
+bfacf load
+KnotPlot will complain if it doesn't like what you're trying to load.  Only knots with one or
+two components may be loaded into the BFACF engine. 
+
+Simulation method: 
+You have the choice of two (soon three) simulation methods, BFACF and KJC (kink jump crankshaft).
+BFACF is ergodic and KJC isn't. However, KJC is length preserving and "ergodic enough" for some us,
+at least for long, loose knots. If you are using the KJC method, the z and p() sliders have no 
+meaning.
+
+Plot:
+Simulation needs to be running to see the plot update. If the plot is inappropriately scaled, try
+changing the scale with a command something like:
+plot scale 1.08
+plot scale 3
+(default is a scale of 1)
+
+set probs:
+These are convenience buttons to automatically set the probabilities. The "from z" button sets the 
+probabilities according to the standard formula. "0 only" is equivalent to the KnotPlot command
+bfacf prob 0 1 0
+and reduce equivalent to
+bfacf prob 0 1 1
+
+p(+2) p(0) p(-2) sliders:
+Set the probabilities for the different BFACF moves for your own crazy interests.  Useful for the
+minimal stick search, or to get very long knots. 
+
+z sliders:
+First slider goes from z=0 to z=0.208 (the critical value), giving you finer control over this
+range. The other slider is from z=0 to z=1.  Changing these slider values will automatically set
+the probabilities according to the formula.  To set a specific value for z, either use type it into
+the KnotPlot Command Window, for example:
+bfacf z .108
+or double click on the value field in the slider. 
+

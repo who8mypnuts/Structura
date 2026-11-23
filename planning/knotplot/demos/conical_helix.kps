@@ -1,0 +1,29 @@
+% how to make a conical helix
+
+% Rob Scharein, 15 May 2001
+
+
+reset all 
+cyl=.3
+draw spec
+
+line dir 0 .1   % about make a line in the y-direction
+line num 160    % with 160 beads
+
+line            % make the line
+centre          % and centre it.
+
+trans 3         % translate it off to one side
+swirl end 1800  % and give it a swirl.
+                % swirl amount is x full rotations.
+
+about x 90
+skew 3
+about x -90
+
+
+
+
+
+
+

@@ -1,0 +1,23 @@
+button 0 "Solver" "panel set 14" 82 282 15 10
+%tfunc .3 "wlay comp"
+%tfunc .4 "wlay stan"
+%wlay comp
+
+tg1*=6
+cyl=.4
+
+func 5 solv view -1
+func 6 solv view 1
+func 7 solv view -2
+func 8 solv view 2
+
+
+button 14 up "solv view 1" 5 30 20 10
+button 14 down "solv view -1" -1 -1 20 10
+
+button 14 "incr" "solv view 2" -1 -1 20 10
+button 14 "decr" "solv view -2" -1 -1 20 10
+
+button 14 "incr2" "solv view 3" -1 -1 20 10
+button 14 "decr2" "solv view -3" -1 -1 20 10
+

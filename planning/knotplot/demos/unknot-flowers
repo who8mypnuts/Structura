@@ -1,0 +1,20 @@
+alert "Press and hold any mouse button to exit." "Sure!" "OK, I guess."
+
+silent = t
+Draw=f
+
+pop
+
+resize full 
+resize full 
+resize full 
+resize full 
+
+
+
+cursor 11
+
+
+#999999 rot unit;unknot \ri[12/20]; moire f .4 f f f;twfix;disp t;chkmouse l m r "stop force"
+
+

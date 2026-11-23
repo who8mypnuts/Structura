@@ -1,0 +1,5 @@
+par4
+10 read textureA.kps
+20 read textureB.kps
+2 read textureC.kps
+20 read texturePaint1.kps

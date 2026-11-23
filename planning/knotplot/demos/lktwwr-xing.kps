@@ -1,0 +1,26 @@
+
+txt delete group 1008
+txt delete compute
+
+txt push
+txt fill off
+txt group 1008
+txt left
+txt font 3
+txt 10 10 d     % text `d' will be overwritten by dowker code
+txt set dowker  % sets the text of the last defined txt object to the current dowker code
+txt xing on
+
+show orient
+
+txt clobber on
+txt centre
+txt font 4
+txt fill on
+%txt c 60 "compute" "txt delete compute;txt fill off;txt push;txt group 1008;txt hack;txt pop"
+
+
+
+txt fill off
+
+txt pop

@@ -1,0 +1,30 @@
+txt fill on
+txt right
+txt font 3
+
+txt lineskip -24
+
+txt group 102
+txt -10 70 "fill cavity" <bfacf/fill.kps
+txt -10 a  "run normally" <bfacf/run.kps
+txt group 0
+
+txt -10 a2 "fullscreen" "full tog"
+
+txt -10 a2 "top" "ortho;untran"
+txt -10 a "side" "ortho;untran;rotat y -90;rot x -90"
+txt -10 a "front" "ortho;untran;rotat x -90"
+txt -10 a  "persp"   ~defview
+txt fill off
+txt -10 a "View:"
+
+txt font 4
+txt fill on
+txt right
+txt -14 14 ? "help popup bfacf/README-search.txt handoff"
+
+
+echo
+echo
+echo " *** Click on the `?' button in the view window for instructions"
+echo

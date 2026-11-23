@@ -1,0 +1,74 @@
+%alias play "pla $0;mbead $0 \ri+-1 \ri+-1 \ri+-1"
+
+%exit
+
+require KPbuild 4437 nopendingtfuncs
+
+reset all
+
+verbose = false
+silent=t
+
+alias ~colF "3dop colF \rr[260/290] 1 1;nlor par \rr[5/20] \rr[2/4] \rr[20/40]"
+
+alias ~note "tfunc $0 {play $0;mbead $0 \rr+-4 \rr+-4 \rr+-4} 0 rep $0"
+alias qfix
+
+frame command "~note %d;nap \rr.1"
+frame command "~note %d"
+
+play init
+frame 4 to 107
+
+alias ~note "tfunc $0 {play $0;~colF;mbead $0 \rr+-4 \rr+-4 \rr+-4} 0 rep $0"
+alias qfix
+frame 108
+
+N-torus = 109
+
+% the following doesn't really work
+%% Generated Thu Nov 25 15:09:44 2010
+%% with command line: multiif ascent.txt
+parsave
+par0 = \rr40
+if par0 < 10 then "unknot;par0=42"
+if par0 < 20 then "torus 2 3;par0=42"
+if par0 < 28 then "torus 5 2;par0=42"
+if par0 < 33 then "torus 2 5;par0=42"
+if par0 < 37 then "torus 5 2;par0=42"
+if par0 < 39 then "torus 2 7;par0=42"
+if par0 < 41 then "torus 7 2;par0=42"
+parrestore
+
+unknot
+
+
+cyl-rad=.14
+ncur=9
+about z \rr360
+revb rand
+scale \rr[3/6]
+scale = 0.102623
+
+bead-radius = 0.311468
+viewmatrix 1.000000 0.000000 0.000000 0.000000 0.325568 0.945519
+
+mode BF
+back=black
+
+field npoints 144
+field deltat 0.0004
+
+~colF
+
+txt expire 11
+txt font 4
+txt centre
+txt colour hsv:22/1/.6 .6
+txt c 20 "Ascent to the Attractor"
+txt on
+
+cursor 1
+
+silent = f
+#5 echo

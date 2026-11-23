@@ -1,0 +1,33 @@
+silent=t
+
+txt font 4
+txt colour orange
+txt cent
+txt expire 6
+txt lineskip 35
+txt c -30 "key press actions:"
+txt c a "spacebar -  toggle fullscreen"
+txt c a "c - clear window"
+txt c a "n - new map"
+txt c a "k - new colours"
+txt c a "e - try it!"
+txt c a "1 2 3 or 4 - four different centering modes"
+txt c a "r - rotate map 90 degrees CCW"
+txt c a "d - reset / rerun demo"
+txt c a "W - Wikipedia article on what you are seeing" 
+txt c a "? or / - this help text"
+
+txt font 3
+txt lineskip 22
+txt c a3 "NOTE 1: make sure THIS window has keyboard focus"
+txt c a  "when pressing one of the keys listed above"
+txt c a "(it should have keyboard focus now, click here if it doesn't)"
+
+txt c a2 "NOTE 2: you don't have to press any keys, each of the above"
+txt c a "actions will take place at random intervals (except for the last three)"
+
+txt c a2 "NOTE 3: other keys may do other things..."
+
+txt on
+
+silent=f

@@ -1,0 +1,36 @@
+reset all
+background = black
+draw brok
+
+load 10.102
+colour all white
+
+
+tfunc 1 "jitter 99999;fitto 11" 0 rep 1 5
+tfunc 1 "jitter 99999;fitto 11" 0 rep 1 5
+tfunc 1 "jitter 99999;fitto 11" 0 rep 1 5
+tfunc 1 "jitter 99999;fitto 11" 0 rep 1 5
+tfunc 1 "jitter 99999;fitto 11" 0 rep 1 5
+
+coll a
+force 1
+velf=t
+
+tfunc 1 "broff=\rr+-4" 0 rep 1 5
+tfunc 1 "broff=\rr+-4" 0 rep 1 5
+tfunc 1 "broff=\rr+-4" 0 rep 1 5
+tfunc 1 "broff=\rr+-4" 0 rep 1 5
+
+tfunc 1 "twfix \rr+-22222" 0 rep 1 5
+tfunc 1 "twfix \rr+-22222" 0 rep 1 5
+tfunc 1 "twfix \rr+-22222" 0 rep 1 5
+
+vscale = .822
+cursor 1
+
+luxo
+ 
+
+go
+
+

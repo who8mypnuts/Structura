@@ -1,0 +1,23 @@
+reset all
+ortho
+
+scale = 0.145467
+stu=11
+braid -str 2 0^6
+join all
+
+ago 55
+scale 1.3 1 1
+
+swirl end 225
+
+%swirl end 45
+
+warp rec -6
+about z 90
+centre
+
+ago 188
+centre
+ago 92
+centre

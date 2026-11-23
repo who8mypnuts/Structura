@@ -1,0 +1,18 @@
+
+delete all
+txt clobber on
+txt font 2
+txt fill off
+txt cent
+txt c -44 "8 xing knot"
+txt font 4
+txt left
+
+frame comm "load bfacf/initial/8_%d_coords.txt;bfacf load;txt 5 -20 8_%d"
+frame \ri[1/21]
+
+
+bfacf centre off
+spec bfacf
+
+~cavity

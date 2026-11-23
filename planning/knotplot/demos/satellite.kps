@@ -1,0 +1,125 @@
+require KPbuild 4993   % changed scenery method
+
+reset all
+
+% create a title and some buttons
+
+txt font 4
+txt centre
+txt c -20 "Satellite Knots"
+
+txt on
+txt clobber on
+txt fcolour royalblue .6
+
+% adjust viewing
+
+scale = .3
+persp 45
+
+% create the ???
+
+alias ~blurt "txt c 20 {$0}"
+alias ~wait "disp t;nap 1.4"
+
+~blurt "start with trefoil from Conway notation"
+%conway 3
+tangle 3
+about z 90
+reflect z
+~wait
+
+~blurt "relax a bit"
+ago 44
+~wait
+
+~blurt "refine 3 times, scale and relax"
+refine 3
+
+% could just do a `scale 2', but it's visually more interesting to scale in steps
+% 1.021227 == 2^(1/33)
+
+#33 scale 1.021227;disp t
+
+ago 44
+~wait
+
+
+% shift the start of the knot to minimum value of x
+
+shift minx
+
+% create the scenery tube
+
+~blurt "create the scenery tube"
+colour all white
+cyl-rad = 1.3
+scenery alpha .4
+scenery object .tube
+scenery on
+~wait
+scenery off
+colour off
+
+% create the warping path
+
+~blurt "create a warping path from current knot"
+cyl-rad=.2
+double
+warp bbconf
+warp install
+~wait
+
+delete all
+
+scale = .026
+cyl-rad=1
+% braid with from 2 to 6 crossings
+
+~blurt "create a braid"
+alias ~b "braid 0^9 a^$0 0^9"
+~b \ri[2/6]
+% scale in z-direction
+scale 1 1 2
+~wait
+
+% join all open ends and swirl by 33 degrees
+
+
+~blurt "join ends and swirl ends by 33 degrees"
+join all
+%swirl ends 33
+#33 swirl ends 1
+~wait
+
+% warp the rectangle (bounding box of projection
+% of knot to xy-plane) to an annulus, over warping
+% by a distance of 3 (negative value)
+
+~blurt "warp rectangle to annulus"
+warp rec2ann -5
+~wait
+
+% warp the contents of the tube to the warping path
+
+~blurt "warp tube along warping path"
+scale = .3
+cyl-rad = .2
+
+warp along
+~wait
+
+% refine a bit
+
+refine 2
+
+~blurt "show scenery"
+scenery on
+~wait
+
+txt delete show
+txt font 3
+txt c 80 "before relaxing, try rotating the view"
+txt fill on
+txt c 20 relax <satellite-relax.kps
+

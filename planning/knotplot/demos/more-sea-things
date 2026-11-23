@@ -1,0 +1,27 @@
+% More Sea Things
+% See the documentation in the file sea-things in this directory.
+
+reset all
+
+silent = t
+back = 0
+zbuff f
+backface t
+blend one one
+draw broke
+ncur = 10
+
+cyl = 2
+nseg = 3
+broff = -1.28
+
+silent = f
+knot 2
+silent = t
+
+twfix 23232
+silent = f
+
+
+
+

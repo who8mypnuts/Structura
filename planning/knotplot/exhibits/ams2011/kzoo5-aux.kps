@@ -1,0 +1,5 @@
+clrf z
+frame comm "knot;fitto 9;read rand_orient.kps;vport tile \ri[0/24] 5;disp t;nap .5"
+
+%frame 0 to \ri[10/40]
+frame 0 to \ri[10/11]

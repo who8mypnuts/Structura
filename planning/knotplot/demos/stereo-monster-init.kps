@@ -1,0 +1,36 @@
+reset all
+reset all
+
+
+Draw = f
+ncur = 2
+nseg = 7
+cyl = .44
+hstart = 0
+satu = 1
+mode s
+
+scale = 0.118616
+
+drop all 52 35 -20
+
+spe back
+
+drop ca 0xff000000
+drop cb 0xff000000
+drop cc 0xff440000
+drop cd 0xff440000
+
+3dop colt 0 1 1
+
+spe +vwt
+
+string 0 2 -9 3 6 "Monster Unknot"
+
+
+load monster
+
+Draw = t
+
+
+

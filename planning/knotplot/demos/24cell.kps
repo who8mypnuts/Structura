@@ -1,0 +1,6 @@
+
+if \rr2 < 1 then "spin 0 0 0" else "spin 135 0 0"
+4dop disp +p 3
+echo
+~label "Icositetrachoron (24-cell)"
+echo

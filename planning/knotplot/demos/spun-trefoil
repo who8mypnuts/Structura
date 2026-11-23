@@ -1,0 +1,172 @@
+reset all
+
+silent = t
+
+saxes 0 0 3
+saxes 1 1 3
+saxes 2 2 3
+
+4dto3d persp
+4dsm = 11
+4dsat=1
+4dhmult=3.7
+
+back = 0
+mode cb
+cyl=.1
+scale = .001
+
+load 3.1
+spe s
+
+anim scale .001 .7 40 log
+
+splane 0 4
+splane 1 5
+splane 2 6
+splane 3 7
+splane 4 8
+splane 5 9
+splane 6 10
+splane 7 11
+splane 8 12
+splane 9 13
+splane 10 14
+splane 11 15
+splane 12 16
+splane 13 17
+splane 14 18
+splane 15 19
+splane 16 20
+splane 17 21
+splane 18 22
+splane 19 23
+splane 20 24
+splane 21 25
+splane 22 26
+splane 23 27
+splane 24 28
+splane 25 29
+splane 26 30
+splane 27 31
+splane 28 32
+splane 29 33
+splane 30 34
+splane 31 35
+splane 32 36
+splane 33 37
+splane 34 38
+splane 35 39
+splane 36 40
+splane 37 41
+splane 38 42
+splane 39 43
+splane 40 44
+splane 41 45
+splane 42 46
+splane 43 0
+splane 44 1
+splane 45 2 
+splane 45 3
+splane 45 4 -3
+
+nap 1.3
+
+rot x 5
+rot x 5
+rot x 5
+rot x 5
+rot x 5
+rot x 5
+rot x 5
+rot x 5
+rot x 5
+rot x 5
+
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+
+rot z 5
+rot z 5
+rot z 5
+rot z 5
+rot z 5
+rot z 5
+rot z 5
+
+
+
+rot x 5
+rot x 5
+rot x 5
+rot x 5
+rot x 5
+rot x 5
+rot x 5
+rot x 5
+rot x 5
+rot x 5
+rot x 5
+
+
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+rot y 5
+
+
+
+anim scale .7 .38 20 log
+
+back = 0
+backface t
+zbuff f
+blend one one
+
+
+spin r r r
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+smovie 55 r2 r2 r2
+
+
+
+
+silent = f

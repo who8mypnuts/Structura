@@ -1,0 +1,32 @@
+reset all
+panel off
+silent = t
+
+dstep=2
+matrgb knot .5 .5 .5 s
+matrgb knot .2 .5 1  d
+matrgb knot 0  .2 .2 a
+
+cyl = .06
+scale = 1.02
+mode cfb
+
+tg1off=\rr[0/1]
+if \rr1 < .5 then "load demos-demo0.k" else "conway 3"
+align ax
+<randorient.kps
+about x \rr[-40/40]
+<relax1-extra.kps
+
+charge=15
+tinc=15
+ago 102
+Draw = off
+mode s
+sat = .8
+Draw = on
+
+<inflate-n-explode.kps
+
+silent = f
+panel on

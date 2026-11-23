@@ -1,0 +1,43 @@
+4D Help
+
+KnotPlot can display knots in four dimensions as well as three.  For a quick 
+start, click on `tsinit2', then change the value of `tsn' using the slider.
+Then click on `Spin'.  This creates a tsn-twist spun knot in 4D.  
+
+To rotate the knot in 4D, change the sliders `th0 inc', `th1 inc', or `th2 inc'
+to non-zero values, the click on `Start movie'. 
+
+The 4D knot is rendered according to the following:
+
+   --- the surface is created in 4D 
+
+   --- it is rotated in 4D according to which pair of coordinates are chosen
+       in the w z y z radio buttons, and the values of theta0, theta1, and 
+       theta2.  the default is 
+
+           --- rotate by theta0 keeping the xw plane fixed
+
+           --- rotate by theta1 keeping the yz plane fixed
+
+           --- rotate by theta2 keeping the zw plane fixed
+
+   --- project to 3D either using a perspective projection with eye distance
+       equal to the setting of the `4D eye' slider, OR using an orthographic
+       projection.  please ignore the `Weird' projection
+
+   --- the 3D projection is rotated, scaled, and translated in the normal
+       fashion before projecting to the 2D display screen
+
+
+
+Display options
+
+   Surface / 4D cube / Axes --- the `Surface' is the 4D knot itself, the 
+       `4D cube' is just the regular hypercube, and the `Axes' are the xyzw
+       coordinate axes
+
+   Depth / Latitude --- Default is to colour the surface according to what 
+       is essentially the `latitude' on the sphere.  Select `Depth' if you 
+       want to colour according to the dimension that is lost during the 
+       4D -> 3D mapping projection.
+

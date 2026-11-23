@@ -1,0 +1,11 @@
+reset all
+
+<stick-symm-aux.kps
+if \rr1 < .2 then <stick-symm-aux.kps
+if \rr1 < .1 then <stick-symm-aux.kps
+if \rr1 < .1 then <stick-symm-aux.kps
+if \rr1 < .05 then <stick-symm-aux.kps
+if \rr1 < .05 then <stick-symm-aux.kps
+if \rr1 < .05 then <stick-symm-aux.kps
+
+

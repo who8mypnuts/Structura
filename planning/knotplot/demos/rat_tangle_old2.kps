@@ -1,0 +1,204 @@
+%`-
+
+require KPbuild 4090 ifnot "reset all"
+
+reset all
+
+verbose=f
+silent=t
+Draw=f
+drag=t
+par0=14
+delete all
+ortho
+func init
+func silent
+
+func 1 <rat_tangle.kps
+
+
+unknot 108 8
+about z 90
+about y 90
+dupl
+trans -16 0 0 0
+centre
+fitto rad \ppar0
+Draw=f
+cyl-rad=.4
+glop back f
+
+sphere on
+sphere icos 2
+sphere \ppar0
+
+save |x
+about z 90
+load comb |x
+hincr=90
+save |x
+% component 0 is -y, 1 is +y, 2 is -x, 3 is +x
+keep 3
+
+rotor period 1000
+rotor add gumby phase 0 colour green
+rotor add pokey phase .5 colour orange
+rotor let gumby move lbead 1
+rotor let pokey move lbead 0
+
+load |x
+keep 2
+rotor add gumbo phase 0 colour orange
+rotor add gumba phase .5 colour green
+rotor let gumbo move fbead 1
+rotor let gumba move fbead 0
+rotor change gumbo -1 0
+rotor change gumba -1 0
+
+load |x
+keep 0
+refl x
+spec +grid
+rotor add goo phase 0 colour skyblue
+rotor add prickle phase .5 colour yellow
+rotor disable goo
+rotor disable prickle
+
+load |x
+keep 1
+rotor add nopey phase 0 colour red
+rotor add groobee phase .5 colour yellow
+rotor disable nopey
+rotor disable groobee
+
+rotor off all
+
+delete all
+line numb 22
+line dir 1 0 0
+new=f
+line 0 0 0
+line 0 5 0
+centre
+fitto rad \ppar0
+scale=.2
+stus=11
+mass open
+
+dstep=4
+ago 200
+spec 
+rotor disable all
+rotor on all
+
+Draw=t
+
+%spec +rotor
+
+func c 4 "rotor init;txt delete group 108;mass off;line numb 10"%;go 0;mode cb;cyl=.1"
+func c 5 "func exec c 4;line -11 -11 0 11 -11 0;line -11 11 0 11 11 0;join all"
+func c 6 "func exec c 4;line -11 -11 0 -11 11 0;line 11 -11 0 11 11 0;join all"
+
+
+func 11 "go inf limit 108"
+func 12 "go 0;delete all;spec rotor;spec +grid;rotor enable all;rotor on all;txt init;persp 60"
+
+func s 2 "rotor forward all;rotor enable pokey;rotor enable gumby"
+func s 3 "rotor reverse all;rotor enable pokey;rotor enable gumby"
+func s 4 "rotor forward all;rotor enable prickle;rotor enable goo"
+func s 5 "rotor reverse all;rotor enable prickle;rotor enable goo"
+func s 6 "rotor forward all;rotor enable gumba;rotor enable gumbo"
+func s 7 "rotor reverse all;rotor enable gumba;rotor enable gumbo"
+func s 8 "rotor forward all;rotor enable nopey;rotor enable groobee"
+func s 9 "rotor reverse all;rotor enable nopey;rotor enable groobee"
+
+func s 12 "func exec c 12;rotor let all move open x;ago 500;rotor disable all;go"
+
+func 2 "func exec s 2;func exec s 12"
+func 3 "func exec s 3;func exec s 12"
+func 4 "func exec s 4;func exec s 12"
+func 5 "func exec s 5;func exec s 12"
+
+func 6 "func exec s 6;func exec s 12"
+func 7 "func exec s 7;func exec s 12"
+func 8 "func exec s 8;func exec s 12"
+func 9 "func exec s 9;func exec s 12"
+
+func 10 "echo;echo;echo Twist took;timer start;func exec 2;timer check"
+func c 12 "txt delete be;txt delete bottom"
+
+%spec +fra
+
+txt init
+txt font 2
+txt left
+
+txt fcolour hsv:102.2/.4/.4 .6
+txt fill on
+txt lineskip -24
+txt 10 20 "rerun demo" "read rat_tangle.kps"
+txt group 108
+txt 10 a "unrotate" "func exec c 12;untran"
+%txt 10 a "remove string" "delete down -20;mass open"
+txt 10 a "toggle sphere" "func exec c 12;spec ~sphere"
+txt 10 a3 "denominator" "func exec c 6"
+txt 10 a "numerator"  "func exec c 5"
+txt fill off
+txt 7 a "make knot:"
+
+txt font 4
+txt centre
+txt fill on
+txt -90 c "+" "func exec 2"
+txt -50 c "-" "func exec 3"
+txt c 90 "+" "func exec 4"
+txt c 50 "-" "func exec 5"
+txt 90 c "+" "func exec 6"
+txt 50 c "-" "func exec 7"
+txt c -90 "+" "func exec 8"
+txt c -50 "-" "func exec 9"
+
+
+txt font 4
+txt left
+txt fill off
+txt group 0
+txt 10 -25 "Rational tangles"
+txt font 2
+txt 10 -45 "be sure that all buttons at"
+txt 10 -60 "bottom of window are visible"
+txt on
+
+txt font 4
+txt fill on
+txt right
+txt -14 13 ? "help popup rat_tangle.kps handoff"
+
+silent=f
+
+echo
+echo
+echo
+echo
+echo
+echo " *** Be sure all buttons at bottom of view window are visible"
+echo "     Click on the `+' or `-' buttons to twist the strand at that location"
+echo "     Try hovering your mouse over the string until you see something appear, then click and drag"
+go
+
+exit
+
+cyl=.1
+mode cb
+spec +lab
+label=1
+
+
+%`+
+
+Help for Rational tangles demo
+
+
+For more information on rational tangles, please refer to:
+
+http://knotplot.com/download/TanglePrimer.pdf   (press 

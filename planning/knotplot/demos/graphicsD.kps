@@ -1,0 +1,60 @@
+% 20 oct 2002
+
+reset all
+
+silent=t
+hstart=\rr55
+if \rr1 < .4 then "hstart=\rr360"
+if \rr12 < 1 then "saturation=0"
+vcA=1
+if \rr3 < 1 then "vcn=\ri[2/7]"
+
+unknot \ri[22/33]
+
+
+new=false
+if \rr15 < 1 then "unknot \ri[8/17] 2"
+
+about z 90
+
+new = true
+func 5 torus
+func 6 torus
+func 7 torus
+func 8 torus
+
+func 9 tangle 111111c
+
+
+scale=.5
+
+
+cyl-rad = 1.043649
+if \rr3 < 1 then "cyl=\rr[.5/2]"
+nsegments = 5
+ncurve = \ri[3/6]
+
+value = 0.02
+dfunc glowing 22
+mathsv k 0 0 .06 s
+fixcofm=t
+
+coll a
+force 1
+go
+
+tfunc 10 "jit .0001"
+
+% the following `tfunc reset' cancels the above tfunc.
+if \rr9 < 1 then "delete all;tfunc reset;tangle 111111c;scale=.3"
+
+silent=f
+
+echo "  "
+echo "  "
+echo "  "
+echo "  "
+echo "  "
+echo " *** please be patient and watch... "
+echo "  "
+

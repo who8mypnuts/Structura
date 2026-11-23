@@ -1,0 +1,18 @@
+require KPbuild 4691
+reset all
+back=black
+alias ~b "blink add {play $0;knot numb $0;hstart=\rr360;cyl-rad=\rr[.6/.9]}"
+
+
+blink number 108
+frame comm "~b %d"
+frame 30 to 84
+play init
+
+blink updown
+
+blink on
+tfunc 1 "blink \rr1" 0 rep 1 3
+tfunc 1 "resize 500"
+
+resize 500

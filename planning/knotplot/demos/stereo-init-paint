@@ -1,0 +1,35 @@
+reset all
+reset all
+
+silent = t
+blend one one
+back = 0
+cyl = .01
+bead-rad = .02
+coll a
+force 1
+
+scale = .52
+mode cb
+hooke 30
+mat-hsv k 222 .9 .1 d
+mat-hsv k 22 .96 0 s
+mat-hsv k  0 0 0 a
+
+mat-hsv b 0 0 0 e
+mat-hsv b 0 0 0 s
+mat-hsv b 22 .94 .9 d
+mat-hsv b 0 0 0 a
+time .13
+conway 3
+
+singlebuff
+clrfun 0
+disp
+disp
+clrfun 1
+
+
+
+silent = f
+

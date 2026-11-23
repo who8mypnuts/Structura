@@ -1,0 +1,41 @@
+% Avoid sketching to get perfect geometry.
+
+reset all        % Start from a clean slate.
+
+glop back t      % Turn off back facing polygons.
+back = 0         % Background colour is black.
+
+unknot 3         % Unknot with 3 beads (a triangle).
+split            % Split a couple of times to get more beads.
+split
+split 
+about x 20       % Rotate a bit.
+about y 20
+about z 20
+translate -2 -3 0
+save dummy
+about z 120
+load comb dummy
+about z 120
+load comb dummy
+
+go 22           % Relax a bit to remove sharp corners.
+centre
+scale = .42
+ncur = 4
+nseg = 3
+cyl = .77
+broff = .144
+twfix 44
+
+draw sbro
+
+% Uncomment the following when producing an image.
+
+%sbuff
+%pop
+%disp
+
+%ppm logo2 3
+
+

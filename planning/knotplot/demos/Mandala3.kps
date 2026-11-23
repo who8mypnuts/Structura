@@ -1,0 +1,38 @@
+reset all
+verb=f
+silent=t
+
+back=black
+
+
+
+func init
+func silent
+
+func 1 <Mandala3.kps
+func 2 "dfunc symm \ri[20/40] \ri2"
+func 3 "knot 2"
+func 5 "hstar=\rr[20/40];hincr=180"
+func 6 "hstar=0;hincr=120"
+
+
+scale = 0.401117
+cyl-rad = 0.057644
+
+disp t
+coll a
+force 1
+glop back f
+
+func exec 2
+func exec 3
+go
+
+<mandala-common.kps
+~title "Mandala 3"
+
+silent=f
+echo 
+echo
+echo " *** Press F1 to rerun, F2 to change symmetry type"
+echo "     Press F3 to change knot type, Press F5 or F6 to change colours"

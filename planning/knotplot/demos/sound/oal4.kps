@@ -1,0 +1,384 @@
+%`-
+require KPbuild 4560
+
+oal persistent off
+
+reset all
+
+
+
+silent = t
+verbose=f
+
+func 1 <sound/oal4.kps
+
+oal init
+
+cyl-rad=.1
+oal orient 0 0 1 0 1 0
+
+velforce = on
+velmag = 0.100000
+tanforce = on
+tanmag = 0.05
+coll a
+force 1
+fixcofm=t
+
+
+alias ~k "knot 1;if nbeads < 125 then {nbead 125}"
+alias qfix
+
+go inf limit 22
+
+alias ~word "txt hide 5555;txt bead $0 $1" 
+alias ~att "~word $1 $2;oal start \rr[.01/1] fadein \rr[1/2] source $0 wav $2 attach bead $1 on"
+
+rota  y 180
+%spec axes
+
+scenery vscale .5
+scenery object eobj/face
+scenery on
+
+alias ~ah "txt awake \rr[1/2];txt hide \rr[5/7]"
+
+~ah
+
+txt scolour #000
+txt sfcolour #fb0 .8
+
+txt font 3
+txt cent
+
+alias ~set "txt awake 0;<sound/oal4-set$0.kps"
+~set 1
+
+~k
+
+txt on
+
+oal doppler 1 \rr[.01/.02]
+
+alias ~roar "silent=t;tfunc reset;tfunc .1 {jitter 9999;fitto .1;~twistit} 0 rep .001 $0;silent=f"
+alias qfix
+
+alias ~blurt "echo;echo;echo equivalent to typing;echo ~roar $0;echo into this window (try other values)"
+alias ~vlurt "echo;echo;echo equivalent to typing;echo oal vel$0 $1;echo into this window (try other values)"
+alias ~velmul "~usvd;oal velmul $0;~vlurt mul $0"
+alias ~veldiv "~usvm;oal veldiv $0;~vlurt div $0"
+
+alias ~lcredit ~credit
+alias ~broar "~lcredit;alias ~lcredit nop;txt group 12634 on;~roar $0;~blurt $0;txt group 999 on"
+
+txt fcolour royalblue .6
+txt lineskip -25
+
+
+~ah
+txt font 3
+txt left
+txt fill on
+txt 15 30 "explode" "~credit;jitter 99999;fitto .1"
+
+~ah
+
+txt push
+txt phantom M
+txt fill on
+txt 15 a1.5  S "jitter \rr[1/4]"
+txt R a0 M "jitter \rr[4/8]"
+txt R a0 L "jitter \rr[8/12]"
+txt fill off
+txt phantom
+txt 10 a jitter:
+txt pop
+
+%txt 15 a "jitter large" "~credit;jitter \rr[12/24]"
+%txt 15 a "jitter medium" "~credit;jitter \rr[6/12]"
+%txt 15 a "jitter small" "~credit;jitter \rr[2/6]"
+
+~ah
+
+
+txt 15 a1.5 "torus" "torus 0 0 125"
+txt 15 a "new" "~k;~credit"
+txt push
+txt group 111
+txt 85 a0 reset "max-dr = 0.10;draw norm;cyl-rad=.1;silent=t;tfunc reset;silent=f;txt group 111 off;txt group 999 off"
+txt group 111 off
+txt pop
+txt fill off
+txt 10 a knot:
+
+~ah
+
+txt push
+txt group 8947623
+txt select on
+txt fill on
+txt left
+%txt delay 60
+txt 15 a1.5    "7" "~set 7;txt group 773320 off"
+txt R a0    "8" "~set 8;txt group 773320 off"
+txt 15 a     "5" "~set 5;txt group 773320 off"
+txt R a0    "6" "~set 6;txt group 773320 off"
+txt 15 a     "3" "~set 3;txt group 773320 off"
+txt R a0    "4" "~set 4;txt group 773320 off"
+txt 15 a     "1" "~set 1;txt group 773320 on"
+txt set selected
+txt R a0    "2" "~set 2;txt group 773320 off"
+txt group 773320
+txt R a0 credit "~credit;www www.youtube.com/watch?v=4d4rdat3HdA"
+txt fill off
+txt 10 a "sound set:"
+%if composed then nop else "txt group 8947623 off"
+txt pop
+
+txt select off
+
+~ah
+
+txt push
+txt phantom M
+txt fill on
+txt 15 a2.5  S "<sound/pitch-drift-S.kps"
+txt 43 a0 M "<sound/pitch-drift-M.kps"
+txt 71 a0 L "<sound/pitch-drift-L.kps"
+txt fill off
+txt phantom
+txt 10 a "pitch drift:"
+txt pop
+
+~ah
+
+txt fill on
+txt 15 a1.5 shuffle "oal shuffle"
+txt 15 a "-1 semitone" "oal pitch all cr -100"
+txt 15 a    "+1 semitone" "oal pitch all cr 100"
+txt fill off
+txt 10 a "pitch adjust:"
+
+~ah
+
+txt fill on
+txt phantom 5th
+txt 15 a1.5 "jnd" <sound/jnd.kps
+txt 15 a  4th <sound/4th.kps
+txt R a0 5th <sound/5th.kps
+txt R a0 tri <sound/tritone.kps
+txt R a0 oct <sound/octave.kps
+txt phantom pytha
+txt 15 a    "just"  <sound/just.kps
+txt R a0    "equal" <sound/equal.kps
+txt R a0    "pytha" <sound/pytha.kps
+txt phantom
+txt fill off
+txt 10 a "set tuning:"
+
+~ah
+txt fill on
+txt push
+txt group 2374
+txt select on
+txt 15 a1.5 screen <sound/oal4-screen.kps
+txt R a0   space  <sound/oal4-space.kps
+txt set selected
+txt select off
+txt fill off
+txt 10 a "fix listener to:"
+txt pop
+
+~ah
+
+txt fill on
+txt cent
+txt c 20 "reload demo" <sound/oal4.kps
+
+txt right
+
+~ah
+
+txt font 4
+txt fill on
+txt -14 14 ? "~credit;help popup sound/oal4.kps handoff"
+txt font 3
+
+% slfjsdlfj
+
+~ah
+
+txt -15 a1.5 fullscreen "~credit;full toggle"
+txt -15 a  listener "scen toggle"
+txt -15 a axes "show ~axes"
+txt -15 a path "mode ~s"
+txt fill off
+txt -10 a toggle:
+txt fill on
+
+~ah
+
+alias ~twistit nop
+
+%txt -15 30  " 1.6 " "~broar 1.6"
+txt phantom "stop!"
+txt push
+txt group 999
+txt -55 a1.5 "stop!" "silent=t;tfunc reset;silent=f;alias ~twistit nop;txt group 999 off"
+txt -15 a0 "!" "txt group 111 on;~credit;<sound/oal4-aux.kps"
+txt pop
+txt group 999 off
+txt -15 a   " 1.6 " "~broar 1.6"
+txt L a0  " 1.4 " "~broar 1.4"
+txt -15 a   " 1.2 " "~broar 1.2"
+txt L a0  " 1.0 " "~broar 1.0"
+txt -15 a   " 0.8 " "~broar 0.8"
+txt L a0  " 0.6 " "~broar 0.6"
+txt -15 a   " 0.4 " "~broar 0.4"
+txt L a0  " 0.2 " "~broar 0.2"
+txt fill off
+txt phantom
+txt -15 a "roar:"
+
+alias ~usvm "txt unselect group 22845634"
+alias ~usvd "txt unselect group 12634"
+~ah
+
+txt push
+txt group 22845634
+txt phantom 2000
+txt fill on
+txt select on
+txt -15 a1.5 2000 "~velmul 2000"
+txt L  a0  1000 "~velmul 1000"
+txt -15 a    500  "~velmul 500"
+txt L a0   200  "~velmul 200"
+txt -15 a    100  "~velmul 100"
+txt L a0   50  "~velmul 50"
+txt -15 a    20  "~velmul 20"
+txt L a0   10  "~velmul 10"
+txt -15 a    5  "~velmul 5"
+txt L a0   2  "~velmul 2"
+oal velmul 1
+txt -15 a    1  "~velmul 1"
+txt set selected
+txt L a0   0.5  "~velmul 0.5"
+txt fill off
+txt phantom
+txt -10 a "velocity multiplier:"
+txt pop
+~ah
+
+txt push
+txt group 12634
+txt phantom 2000
+txt fill on
+txt select on
+txt -15 a1.5 2000 "~veldiv 2000"
+txt L  a0  1000 "~veldiv 1000"
+txt -15 a    500  "~veldiv 500"
+txt L a0   200  "~veldiv 200"
+txt -15 a    100  "~veldiv 100"
+txt L a0   50  "~veldiv 50"
+txt -15 a    20  "~veldiv 20"
+txt L a0   10  "~veldiv 10"
+txt -15 a    5  "~veldiv 5"
+txt L a0   2  "~veldiv 2"
+txt -15 a    1  "~veldiv 1"
+txt L a0   0.5  "~veldiv 0.5"
+txt fill off
+txt phantom
+txt -10 a "velocity divider:"
+txt group 12634 off
+txt pop
+
+
+
+txt select off
+
+back=black
+
+mode s
+cyl=\rr[.05/.07]
+
+hstart = \rr[0/24]
+
+timer start
+alias ~sets "if T > 90 then {txt group 8947623 on}"
+alias qfix
+
+alias ~credit "test paradj 5 1 1;if \ppar5 > 11 then ~sets"
+alias qfix
+
+func 4 www en.wikipedia.org/wiki/OpenAL 
+func 5 www en.wikipedia.org/wiki/Doppler_effect
+
+~ah
+
+txt autohide on   % should be the last txt command
+
+silent = f
+
+#10 echo
+
+exit
+
+%`+
+
+OpenAL Demo
+
+This is a simple demo of using the OpenAL support within KnotPlot.
+Sounds are attached to various points along the knot. As the sounds
+move relative to the listener (represented by the head), the position
+of the sound in stereophonic space changes. Sounds moving towards or
+away from the listener undergo a realistic (but exaggerated) Doppler
+effect, heard as a change in pitch. 
+
+Things to note or to try:
+
+    --- the sound heard thru your speakers would be the sound you
+        would hear if your head were in the position of the virtual
+        listener.  if the sound is closer to the listener's right 
+        ear, you will hear the sound louder thru your right speaker.
+        rotating the scene will not change the sound you hear.
+
+    --- try loading different knots, jittering the knot and exploding
+
+    --- increase the magnitude of the Doppler effect by using a larger
+        velocity multiplier.  try this with sound set 8, after loading
+        the sound set, increase the multiplier to 2000 and wait until
+        the pings are out of sync, then go back to a lower multiplier
+        like 20, 50 or 100.
+
+    --- the different tunings in the "set tuning:" section make most 
+        sense for those sounds sets consisting of only one sample, 
+        in those cases you can hear the various scales involved. 
+        i would recommend set 5 (buzz) or 6 (ping2).   first load the
+        sound set, then set the tuning.  after that you may want to 
+        change the velocity multiplier to 10 or 20. 
+
+    --- after a while, click on one of the buttons in the "roar:"
+        section, i would recommend button "1.0".  after you do that
+        try the "!" button.  turn the volume down first, maybe. 
+
+    --- go to the "Dyna" control panel and unselect "tanf" and then
+        select "drag" (below).  now click in the main view window and 
+        hover your mouse near one of the moving words until you see a
+        little white ball appear.  when you do, click down and drag
+        the knot and the word someplace. try positioning the word close
+        to the listener's location (at the origin).
+
+        note that the listener is actually of zero size, so to get a 
+        more accurate notion of where you are position a sound source
+        you might want to turn the head off and the axes on. 
+        the listener is located where the x, y and z axes meet
+
+    --- be sure to click on the "credit" button to watch the delightful
+        YouTube video that is the source of the sound samples for set 1
+
+
+References:
+
+OpenAL --- en.wikipedia.org/wiki/OpenAL  (press F4 now)
+
+Doppler effect --- en.wikipedia.org/wiki/Doppler_effect (press F5 now)

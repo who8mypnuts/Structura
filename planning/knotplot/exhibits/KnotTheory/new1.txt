@@ -1,0 +1,4 @@
+random-lights2 0 0 1
+
+trefoil1 0 0 1
+

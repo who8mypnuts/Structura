@@ -1,0 +1,54 @@
+reset all
+light model onesided
+silent = t
+verbose=f
+blend one one
+back = 0
+cyl-rad = .01
+bradius=.01
+coll a
+force 1
+velf = t
+scale=1
+
+
+par0=\rr10
+
+%if par0 < 7 then "mode cb" else "mode b"
+mode cb
+
+%hooke=30
+mathsv k 22 .96 0 s
+mathsv k  0 0 0 a
+mathsv k 222 .9 .1 d
+
+mathsv b 0 0 0 e
+mathsv b 0 0 0 s
+mathsv b 22 .94 .9 d
+mathsv b 0 0 0 a
+
+if \rr9 < 3 then "mathsv k 22 .9 .1 d;mathsv b 222 .94 .9 d;bradius=\rr[.01/.02]"
+
+if \rr1022 < 1 then "mathsv k \rr360 .9 .1 d"
+
+unknot 6 1
+reflect r
+
+
+
+func init
+func silent
+func 3 "clrfun zf;disp t;disp t;clrfun z"
+func exec 3
+
+go 
+wand pull 0
+
+silent = f
+
+echo " "
+echo " "
+echo " *** Press F3 to clear."
+echo " "
+
+

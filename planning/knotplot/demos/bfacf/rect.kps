@@ -1,0 +1,18 @@
+if \ppar0 != 2577415 then <bfacf/rect-init.kps
+
+
+#4 echo
+txt init
+txt fcolour hsv:108/.6/.6 .6
+txt centre
+txt font 4
+txt c -20 "Rectangular cavity"
+txt on
+
+knot numb \ri[1/4] mscl
+bfacf load
+bfacf centre off  % best off for this example
+
+
+if \rr2 < 1 then "bfacf box 20 20 4" else "bfacf box 20 4 4"
+spec bfacf

@@ -1,0 +1,34 @@
+
+button Main "Go to the KnotPlot site at knotplot.com --->" nop 4 5 80 10 4
+button Main "go to site" "www knotplot.com" 110 5 46 10
+
+button DemoA "Go to the KnotPlot site at knotplot.com --->" nop 4 5 80 10 4
+button DemoA "go to site" "www knotplot.com" 110 5 46 10
+
+button DemoB "Go to the KnotPlot site at knotplot.com --->" nop 4 5 80 10 4
+button DemoB "go to site" "www knotplot.com" 110 5 46 10
+
+button Cons "Go to the KnotPlot site at knotplot.com --->" nop 4 5 80 10 4
+button Cons "go to site" "www knotplot.com" 110 5 46 10
+
+button Cat "Go to the KnotPlot site at knotplot.com --->" nop 4 5 80 10 4
+button Cat "go to site" "www knotplot.com" 110 5 46 10
+
+button Dyna "Go to the KnotPlot site at knotplot.com --->" nop 4 5 80 10 4
+button Dyna "go to site" "www knotplot.com" 110 5 46 10
+
+button Sketch "Go to the KnotPlot site at knotplot.com --->" nop 4 5 80 10 4
+button Sketch "go to site" "www knotplot.com" 110 5 46 10
+
+button Celtic "Go to the KnotPlot site at knotplot.com --->" nop 4 5 80 10 4
+button Celtic "go to site" "www knotplot.com" 110 5 46 10
+
+button Export "Go to the KnotPlot site at knotplot.com --->" nop 4 5 80 10 4
+button Export "go to site" "www knotplot.com" 110 5 46 10
+
+button Surf "Go to the KnotPlot site at knotplot.com --->" nop 4 5 80 10 4
+button Surf "go to site" "www knotplot.com" 110 5 46 10
+
+
+<startup_ICM2018.kps
+

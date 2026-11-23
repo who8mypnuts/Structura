@@ -1,0 +1,7 @@
+par8
+5   ~poly 5
+10 ~poly 8
+10 ~poly 16
+10 ~poly 24
+10 ~poly 120
+8 ~poly 600

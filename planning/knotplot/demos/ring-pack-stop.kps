@@ -1,0 +1,10 @@
+idle
+
+if athick < \ppar0 then "delete last"
+txt centre
+txt font 3
+txt fill on
+txt c 40 "begin packing" <ring-pack-start.kps
+txt c 10 clear "delete all"
+
+

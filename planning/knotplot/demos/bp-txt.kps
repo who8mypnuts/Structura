@@ -1,0 +1,6 @@
+txt push
+txt delete group 1198432890
+txt group 1198432890
+txt font 4
+txt left
+txt 10 -17 "sequences:"

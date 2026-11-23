@@ -1,0 +1,60 @@
+% splash screen for starting an exhibit
+
+reset all
+
+verbose=f
+txt centre
+txt font 4
+
+txt lineskip 24
+txt c -40 "KnotPlot NeverEnding Exhibit"
+txt font 3
+txt c a "(until you hit ESC)"
+txt c a " "
+txt font 4
+txt c a "Click on the `start exhibit' button"
+txt c a "below to start a NeverEnding exhibit"
+txt c a " "
+txt c a "KnotPlot will (by default) take over the full screen"
+txt c a "and run non-stop until you press the ESC key"
+txt c a " "
+txt fill on
+txt fcolour red
+
+%txt colour black
+txt c a "start exhibit" "func exec c 12"
+
+txt fill off
+txt c a " " 
+txt colour white
+txt font 4
+txt c a "After KnotPlot enters exhibit mode"
+txt c a "press the ESC key to quit"
+txt c a " " 
+txt font 2
+txt lineskip 15
+txt c a "To enable/disable KnotPlot going to fullscreen, edit your Preferences file (right click"
+txt c a "on Control Panel and select 'Preferences...') and add one of the following lines:" 
+txt c a " " 
+txt font 5
+txt c a "exhibit fullscreen on     % to enable fullscreen " 
+txt c a "exhibit fullscreen off    % to disable fullscreen" 
+txt c a " "
+txt font 2
+txt c a "This will be effective the next time you run KnotPlot."
+txt c a "To enable fullscreen mode for this KnotPlot session, press the F1 key now."
+txt c a "To disable fullscreen mode for this KnotPlot session, press the F2 key now."
+
+func init
+func silent
+func 1 "exhibit fullscreen on;echo;echo;echo KnotPlot will enter fullscreen mode upon start of exhibit;echo"
+func 2 "exhibit fullscreen off;echo;echo;echo KnotPlot will NOT enter fullscreen mode upon start of exhibit;echo"
+
+txt font 4
+txt fill on
+txt fcolour royalblue .7
+txt c a3 "don't start exhibit" "reset;panel set DemoB"
+
+
+txt on
+

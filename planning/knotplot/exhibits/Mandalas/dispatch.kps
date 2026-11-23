@@ -1,0 +1,3 @@
+curs 1
+if exists exhibit_config.kps then <exhibit_config.kps else "exhibit fullscreen go"
+demo

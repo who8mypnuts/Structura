@@ -1,0 +1,13 @@
+untran
+
+%% Generated Sat Nov 27 13:12:49 2010
+%% with command line: multiif stan2.txt
+%parsave
+par0 = \rr4
+if par0 < 1 then "nop;par0=6"
+if par0 < 2 then "rotate z 90;par0=6"
+if par0 < 3 then "rotate z 180;par0=6"
+if par0 < 5 then "rotate z 270;par0=6"
+%parrestore
+
+if \rr2 < 1 then "rotate j 180"

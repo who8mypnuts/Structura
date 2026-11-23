@@ -1,0 +1,21 @@
+reset all
+
+knot spe
+save |x
+
+unknot 3 1
+trans 6 0 0
+
+force 1
+coll a
+velf=t
+
+load comb |x
+
+leng
+wand pull 0
+colour 1 orange
+colour 0 red
+mcyl 0 .3
+mcyl 1 .9
+go 999999999

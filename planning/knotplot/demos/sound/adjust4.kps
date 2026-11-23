@@ -1,0 +1,31 @@
+tfunc reset 22
+
+tfunc 1 "oal pitch \ri32 cr -1200" 11 rep 1 7      % 1 octave down
+tfunc 1 "oal pitch \ri32 cr  1200" 11 rep 1 7      % 1 octave up
+tfunc 1 "oal pitch \ri32 c  \rr+-1200" 11 rep 1 7  % create dissonance
+
+% try to get back to just intonation:
+tfunc 1 "oal pitch \ri32 c 0" 11 rep 4 22
+tfunc 1 "oal pitch \ri32 c 204" 11 rep 4 22
+tfunc 1 "oal pitch \ri32 c 386" 11 rep 4 22
+tfunc 1 "oal pitch \ri32 c 498" 11 rep 4 22
+tfunc 1 "oal pitch \ri32 c 702" 11 rep 4 22
+tfunc 1 "oal pitch \ri32 c 884" 11 rep 4 22
+tfunc 1 "oal pitch \ri32 c 1088" 11 rep 4 22
+tfunc 1 "oal pitch \ri32 c 1200" 11 rep 4 22
+
+
+echo adjust4
+
+
+exit
+
+
+swirling should add more dissonance
+
+two competing forces: 
+
+  --- chaotic motion and dissonant
+
+  --- more relaxed and more consonant
+

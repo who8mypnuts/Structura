@@ -1,0 +1,46 @@
+
+reset all
+mode cb
+cyl=.06
+
+line num 5
+line dir 1.7 0
+line 0 0 0
+centre
+about y 30
+trans 0 -1 0
+
+#2 dup;about z 120;about z -120 0
+
+%about z 60
+scale 1 1 .2
+save dum.k
+
+silent=t
+
+frame comm "load dum.k;trform icos %d 7;save dum%d.k"
+frame 0 to 19
+
+delete all
+
+frame comm "load comb dum%d.k"
+frame 0 to 19
+
+silent=f
+
+
+join all
+mode s
+cyl=.2
+
+
+save ddum.k
+load ddum.k
+
+
+dstep=17
+
+#11 ago 33;par iter;thick
+
+save 14dec02b.k
+

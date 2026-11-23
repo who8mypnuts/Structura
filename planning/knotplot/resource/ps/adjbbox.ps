@@ -1,0 +1,74 @@
+%!
+
+% x1 y1 x2 y2 xl yl xh yh adjbbox -
+
+% Routine to adjust the bounding box from the
+% old bounding box x1 y1 x2 y2 to the
+% new bounding box xl yl xh yh
+
+/adjbbox {
+  /abbyh exch def
+  /abbxh exch def
+  /abbyl exch def
+  /abbxl exch def
+  /abby2 exch def
+  /abbx2 exch def
+  /abby1 exch def
+  /abbx1 exch def
+
+  abbyh abbyl sub
+  abby2 abby1 sub
+  div 
+  /abbys exch def
+
+  abbxh abbxl sub
+  abbx2 abbx1 sub
+  div
+  /abbxs exch def
+
+  abbx1 abbx2 add
+  2 div
+  /abbxd exch def
+
+  abby1 abby2 add
+  2 div
+  /abbyd exch def
+
+  abbxl abbxh add
+  2 div
+  /abbxc exch def
+ 
+  abbyl abbyh add
+  2 div
+  /abbyc exch def
+
+  abbxc  abbyc  translate
+  abbxs abbys scale
+  0 abbxd sub 0 abbyd sub translate
+  } def
+
+
+% margin centrebbox llx lly urx ury
+
+% Routine to return a bounding box centered on the page, with a left
+% and right margin of `margin' points.
+% Assumes page is 8.5 inches in x and 11 inches in y.
+
+% Example:
+%
+%      100 100 200 200      % Original bounding box.
+%      44 centrebbox        % New bounding box with margin of 44 points.
+%      adjbbox              % Adjusts the bounding box.
+%
+% Useful routine: pathbbox
+
+/centrebbox {
+	/cbboxmargin exch def
+	/cbboxxmax {8.5 72 mul} def
+	/cbboxycen {11  72 mul 2 div} def
+	/cbboxxrad {cbboxxmax cbboxmargin 2 mul sub 2 div} def
+	cbboxmargin
+	cbboxycen cbboxxrad sub
+	cbboxxmax cbboxmargin sub
+	cbboxycen cbboxxrad add
+} def

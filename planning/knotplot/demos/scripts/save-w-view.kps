@@ -1,0 +1,13 @@
+echo reset all > __tmp.view
+echo silent=t >> __tmp.view
+par back >> __tmp.view
+par nseg >> __tmp.view
+par ncur >> __tmp.view
+par hincr >> __tmp.view
+echo auto=off >> __tmp.view
+
+save __tmp.k
+view info >> __tmp.view
+echo silent=f >> __tmp.view
+.comm-knot.php __tmp.view __tmp.k myknot.k
+./bin/rm __tmp.k __tmp.view

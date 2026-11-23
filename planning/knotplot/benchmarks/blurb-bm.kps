@@ -1,0 +1,8 @@
+echo " "
+echo " "
+
+echo "  *** After measurement stabilizes, the number of frames per second will be displayed."
+echo "      You can rotate, scale, or translate the view window while knot is animating."
+echo "      Click on `reset all' to stop test, or try another benchmark."
+echo "      Compare your machine to others (click on the button to go to benchmarks web site)." 
+

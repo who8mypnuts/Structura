@@ -1,0 +1,29 @@
+% 27 oct 2002
+require KPbuild 4998  % for view command (replacement for viewmatrix)
+
+reset all
+
+silent=t
+glop backface t
+if \rr3 < 1 then "zbuff f;blend one one;back=0"
+if \rr1 < .9 then "back=0"
+
+if \rr1 < .5 then "trx = -12.033463" else "trx = 12.033463"
+try = -1.328872
+trz = 0.000000
+view matrix 0.974257 -0.224808 0.016828 0.044873 0.266538 0.962779
+sradius = 0.846760
+vscale=1.5
+if \rr2 < 1 then "chain \rr[9/25]" else "torus;try=1.09"
+saturation =\rr1
+
+if \rr13 < 1 then "cyl=\rr[3/7];zbuff f;blend one one;back=0"
+if \rr1 < .6 then "texture normal face" else "texture normal lupin"
+texture rep 0 0
+idle "about z .2"
+draw texture
+texture on
+
+if \rr5 < 1 then "dfunc glow;mathsv k 0 0 .1 s;value=.1;back=0"
+silent=f
+

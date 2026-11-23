@@ -1,0 +1,52 @@
+
+
+reset all
+silent=t
+back=#000
+verbose=f
+scenery rotate orient
+scenery dscale .3
+scenery on
+alias ~ah "txt hide \rr[5/7]"
+
+alias ~knot "N-torus = \rr[144/255];random euniform"
+
+mode 0
+velf=t
+coll a
+force 1
+tanf=t
+glop back t
+alias ~att2 "scenery object coney-carpet bead $0"
+alias ~att "~att2 \ri$0"
+frame comm "~att \cnbm1"
+alias ~attach "scenery delete;frame 0 number \ri[20/60]"
+
+
+go
+tfunc .1 "silent=t;~knot;~attach;silent=f" 0 rep 20 66
+
+txt fcolour royalblue .6
+txt right
+txt lineskip -25
+
+~ah
+
+txt font 4
+txt fill on
+txt -14 14 ? "help popup ConeyFly.kps handoff"
+txt font 3
+
+~ah
+
+txt -15 a1.5 fullscreen "full toggle"
+txt fill off
+txt -10 a toggle:
+txt fill on
+
+txt on
+~ah
+
+txt autohide on   % should be the last txt command
+
+silent=f

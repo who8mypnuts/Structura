@@ -1,0 +1,8 @@
+
+% used by `UnknotFlowes.kps'
+
+par0=\rr+-.2
+
+idle "about z \ppar0"
+
+<fun-with-accbuff.kps

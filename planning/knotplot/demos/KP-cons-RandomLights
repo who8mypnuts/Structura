@@ -1,0 +1,74 @@
+#!/bin/csh -f
+
+# Very basic constructor routine: KP-cons-RandomLights
+# Jan 21, 1997
+# Rob Scharein
+
+# More or less the same effect as the script `random-lights' in the
+# demos directory except implemented as a constructor.  It's a lot 
+# slower this way!
+
+# To use (in KnotPlot), type in: cons RandomLights
+
+# Constructor arguments:
+#    $0 Constructor executable file (this file).
+#    $1 First file read by KnotPlot.
+#    $2 Second file read by KnotPlot.
+#    $3 The type of machine we're running on (sgi, ibm, etc...)
+#    $4 A flag either 0 or 1.
+#    $5 Name of constructor.
+#       Anymore more arguments are the arguments to the contructor
+#       from the KnotPlot command line.
+
+switch ($4)
+case 0:
+  
+  touch $2
+
+# Find the `random' program itself.  Note, the following may not work
+# correctly if KnotPlot is run from the demos directory and . is in
+# the path before the demos directory.
+
+  set thisfile = $0
+  set demos = $thisfile:h
+  set kphome = $demos:h
+
+  set prog = $kphome/resource/$3/random
+  set n = `$prog 360 0 12`
+
+  echo "Draw = f" > $1
+  echo light reset >> $1
+  echo light unbind 0 >> $1
+
+  echo light hcolour $n[1] 1 1 >> $1
+  set x = `echo "$n[2] * .166 - 30" | bc -l`
+  set y = `echo "$n[3] * .166 - 30" | bc -l`
+  set z = `echo "$n[4] * .166 - 30" | bc -l`
+  echo light pos $x $y $z 1 >> $1
+  echo light define 2 >> $1
+  echo light bind 2 2 >> $1
+
+  echo light hcolour $n[5] 1 1 >> $1
+  set x = `echo "$n[6] * .166 - 30" | bc -l`
+  set y = `echo "$n[7] * .166 - 30" | bc -l`
+  set z = `echo "$n[8] * .166 - 30" | bc -l`
+  echo light pos $x $y $z 1 >> $1
+  echo light define 3 >> $1
+  echo light bind 3 3 >> $1
+
+  echo light hcolour $n[9] 1 1 >> $1
+  set x = `echo "$n[10] * .166 - 30" | bc -l`
+  set y = `echo "$n[11] * .166 - 30" | bc -l`
+  set z = `echo "$n[12] * .166 - 30" | bc -l`
+  echo light pos $x $y $z 1 >> $1
+  echo light define 4 >> $1
+  echo light bind 4 4 >> $1
+
+  echo "Draw = t" >> $1
+
+# Uncomment the following line to make a copy of the script used.
+# cp $1 rand-lights
+
+  breaksw
+endsw
+

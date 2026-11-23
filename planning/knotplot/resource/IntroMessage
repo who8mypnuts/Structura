@@ -1,0 +1,35 @@
+              .                                                     . . . .           
+          . .    . .                                              ..        .         
+                     .                                           .           .        
+        .                                                       ..  .. . . . .        
+       .     .  .     .                                      . . .           . .      
+       ..  .      .  .. .                                   .    .          ..   .    
+  .  .               .    .                               .       .        .      ..  
+        .                   .    Welcome to KnotPlot!     .         ..  ..          . 
+ .       .         ..                                    .            ..            . 
+.         .       .          .                           ..         .    ..         . 
+.           . . .            .                            .         .     .        .  
+  . .     .  .   .        . .                              .         .   .      . .   
+       .            .  .                                     . . .  . .... .  .       
+
+
+Brief guide to KnotPlot:
+
+    --- use the left mouse in the main (view) window to rotate the knot.
+    --- use the right mouse to scale it (move left and right).
+    --- click on the buttons at the top of the control panel to load a knot at random.
+    --- resize the windows as desired.
+    --- click on `zoo' to load a bunch of knots and links.
+    --- change `ncur', `nseg' to vary the rendering quality.
+    --- click on `twfix' button to get rid of the deficit angle.
+
+Fast Demos:
+
+    --- Click the `Demo' button, then `Load Demos'. 
+        `Main' returns you to initial control panel.
+
+For more information (you can access this page thru the pop-up menu as well):
+  
+        http://www.cs.ubc.ca/spider/scharein   then follow the "link" to 
+                                               the KnotPlot Site
+

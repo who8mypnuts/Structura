@@ -1,0 +1,122 @@
+require KPbuild 4691
+%`-
+require KPbuild 4644
+
+reset all
+
+silent = t
+txt on
+txt centre
+txt font 4
+txt c -20 "GLSL Demo"
+txt font 3
+txt c -40 "OpenGL Shading Language"
+
+txt c 83 "use the following command to enable this shader:"
+
+func 1 <glsl-demo.kps
+txt fill on
+txt fcolour royalblue .7
+txt c 20 "reload demo" <glsl-demo.kps
+
+atw=t
+
+bead = .67
+glsl moff .2
+velf = t
+force 1
+coll a
+
+txt clobber on
+alias ~txt "txt c 60 {glsl shader $0 $1}"
+
+
+alias ~sh "glsl shader $0 $1;~txt $0 $1"
+txt phantom "gooch 3"
+txt left
+txt lineskip -25
+txt fill on
+txt 15 15 toon "~sh toon"
+txt 15 a polkadot "~sh polkadot"
+txt 15 a brick "~sh brick"
+txt 15 a inferno "~sh inferno"
+txt 15 a wood2 "~sh wood2"
+txt 15 a wood1 "~sh wood1"
+txt 15 a lattice "~sh lattice"
+txt 15 a "gooch 3" "~sh gooch 3"
+txt 15 a  "gooch 2" "~sh gooch 2"
+txt 15 a  "gooch 1" "~sh gooch 1"
+txt 15 a  "gooch"   "~sh gooch"
+txt 15 a cloud1 "~sh cloud1"
+txt 15 a eroded "~sh eroded"
+txt 15 a  fire "~sh fire"
+txt phantom
+txt fill off
+txt 10 a shader:
+
+
+txt fill on
+txt phantom "knot sp"
+txt 15 a1.5  "knot sp" "untran;knot spec;twfix"
+txt 15 a "knot cd" "untran;knot cd;cyl-rad=\rr[.5/.8];twfix"
+txt 15 a knot "untran;knot;cyl-rad=\rr[.7/.9];twfix"
+txt fill off
+txt phantom
+txt 10 a "load:"
+
+txt font 4
+txt fill on
+txt right
+txt -15 15 ?  "help popup glsl-demo.kps handoff"
+
+txt font 3
+txt -15 a1.5 "fullscreen" "full toggle"
+txt fill off 
+txt -10 a toggle:
+
+txt fill on
+txt -15 a1.5 "fun 3" "knot;mode b;glsl moff \rr[.2/.4];glsl shader fire;proj r;go"
+txt fill off
+txt -10 a fun:
+
+txt centre
+txt font 4
+txt fill off
+knot
+~sh gooch \ri3
+
+silent = f
+#7 echo
+
+glop back f
+
+exit
+
+%`+
+OpenGL Shading Language Demo
+
+These shaders come from the book "OpenGL Shading Language, 2nd Edition", 
+also known as "The Orange Book" by Randi J. Rost and others. 
+
+Some of the shaders are not properly implemented in KnotPlot, in particular
+the `inferno' shader.  The `brick' shader is included but is not really suitable
+for knots, it seems.
+
+More to come soon, stay tuned!
+
+Things to try:
+  
+   --- load the `eroded' shader and try rotating the knot or set it relaxing.
+       if the relaxation is too fast, try a command something like the following:
+    
+           go inf limit 30
+
+       which will limit the relaxation rate to 30 frames per second
+
+   --- this demo turns off backface culling so that you can see the backfacing polygons
+       when using the `eroded' or `lattice' shaders.  to see what these shaders look like
+       with backface culling turned on, enter the KnotPlot command
+           
+           glop back on
+
+

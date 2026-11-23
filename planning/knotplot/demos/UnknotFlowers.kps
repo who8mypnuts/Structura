@@ -1,0 +1,46 @@
+% Flower
+
+% This file creates an `Unknot Flower' 
+
+reset dclean
+light model onesided
+silent = t
+glop backface f
+Draw=f
+unknot \ri[14/25]    % Random number of beads from 14 to 25 inclusive
+%moire f .4 f f f     % Undocumented command!  (as of March 7, 1996)
+moire f \rr[.2/.4] f f f     % Undocumented command!  (as of March 7, 1996)
+twfix
+disp t
+Draw=t
+silent=f
+
+%if \rr1 < 1 then "rot x \rr360;rot y \rr360;rot y \rr360"
+
+if \rr9 < 1 then <unkflo-aux.kps
+
+force 1
+coll a
+
+echo " "
+echo " "
+echo "   *** Try this demo several times (many flowers are `duds')."
+echo "   *** Try rotating the flower with the trackball."
+echo "       Press F2 to F6 for other effects."
+%echo "       F9 to stop rotation, F10 to change rotation speed or direction."
+echo "       F11 to unrotate, F1 to reload demo."
+
+func silent 
+func init
+
+func 6 "value=.01;mathsv k 0 0 .001 s;clrfun zf;disp t;clrfun z;silent=f;echo;echo;echo If not rotating, press F10.;echo"
+func 2 "value=.01;mathsv k 0 0 .001 s;clrfun zf;disp t;clrfun z;go 999999"
+func 3 "moire f \rr[.2/.4] f f f;value=.01;mathsv k 0 0 .001 s;clrfun zf;disp t;clrfun z"
+func 4 twfix \rr+-3333
+func 5 twfix \rr+-33333
+func 9 "idle;silent=f;echo;echo;echo Press F10 to start rotation.;echo"
+func 10 "read unkflo-aux.kps;silent=f;echo;echo;echo Press F9 to stop, F10 again for a different speed or direction.;echo"
+func 11 untran
+func 12 <UnknotFlowers.kps
+func 1 <UnknotFlowers.kps
+

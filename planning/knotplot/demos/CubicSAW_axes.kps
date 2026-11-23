@@ -1,0 +1,3 @@
+echo -n "      Aligning principal axes. "
+echo "Press F5, F6, or F7 for other centering options."
+idle "cubic step 1;align ax"

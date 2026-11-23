@@ -1,0 +1,27 @@
+reset all
+panel off
+silent = t
+
+special backdrop
+persp 600 1 20    % Otherwise backdrop will disappear!
+
+
+scale = .88
+cyl = .1
+mode s
+
+colour 0 orange
+load demos-demo2.k
+
+
+collision allow  % turn off collision checking
+force 1          % Newtonian force 
+velforce = true  % but damped 
+velmag = .2      % magnitude of velocity dependant force
+
+ago 204
+
+
+
+silent = f
+panel on

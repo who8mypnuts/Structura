@@ -1,0 +1,6 @@
+%! 3163
+StElmo 10 15 2
+graphicsH 10 15 2
+graphicsHa 10 15 2
+graphicsI 10 15 2
+graphicsJ 10 15 2

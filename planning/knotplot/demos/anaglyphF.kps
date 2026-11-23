@@ -1,0 +1,61 @@
+
+% Note: this file is shared by the non-anaglyph demo, so this file
+% should not use any anaglyph commands
+
+Draw=f
+silent=t
+mode cb
+cyl = .06
+load 3.1ts
+splane 48 0 7
+tsba=6
+tsbb=42
+tsn=1
+reset sliders
+
+disp t
+
+%4dop disp p
+cyl-rad = 0.033278
+scale = 1.645767
+spin 0 0 0
+
+4dto3d ortho
+
+func init
+func silent
+
+4deye=15
+
+
+func c 1 "4dto3d persp;par1=2"
+func c 2 "4dto3d ortho;par1=1"
+par1 = 1
+func 1 func exec c \ppar1
+
+func s 1 "panel set 4D;par2=2"
+func s 2 "panel set DemoB;par2=1"
+par2 = 1
+func 2 func exec s \ppar2
+
+func 3 <5cell.kps
+func 4 <8cell.kps
+func 5 <16cell.kps
+func 6 <24cell.kps
+func 7 <120cell.kps
+func 8 <600cell.kps
+
+% function keys 9 thru 12 are used for movies
+
+func exec \ri[3/8]
+% 24.60.18.130
+silent=f
+Draw=t
+echo "     Note: Most of the demos on the `DemoA' and `DemoB' panels will work in anaglyph mode."
+
+echo 
+echo " *** F1 to toggle between orthographic and perspective 4D->3D projection"
+echo "     F2 to toggle between 4D and DemoB panels"
+echo "     F3 to F8 for the six 4D regular polytopes (see astronomy.swin.edu.au/~pbourke/polyhedra/platonic4d)
+echo
+

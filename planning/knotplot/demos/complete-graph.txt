@@ -1,0 +1,5 @@
+par1
+10 read complete-graph5.kps
+15 read complete-graph6.kps
+15 read complete-graph7.kps
+15 read complete-graph8.kps

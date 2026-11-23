@@ -1,0 +1,82 @@
+reset all
+
+silent=t
+back f
+
+cyl=.2
+
+if \rr1 < .5 then "therm = t"
+
+line num 3
+
+new=f
+
+line dir 1 0 0
+frame comm "line 1 %d 0"
+frame 1 to 3
+line dir 0 1 0
+frame comm "line %d 1 0"
+frame 1 to 3
+
+fitto \rr[5/8]
+
+centre
+#44 swap
+
+
+silent=t
+hstart = \rr360
+%hincr=0
+%disp t
+%colour on
+
+
+
+%exit
+
+about x 90
+trans 0 -10 0 
+
+if \rr1 < .2 then "jit 1"
+if \rr1 < .01 then <tref-drop-randomize.kps
+
+if \rr1 < .3 then "trans \rr+-3 \rr+-3 \rr+-3"
+
+torus 2 3 \ri[20/33]
+%torus 2 5 \ri[20/33]
+scale .3 .3 .3 last
+trans 0 12 0 last
+refl grG last
+% equal chance of L or R hand tref
+if \rr2 < 1 then "refl grG last"
+
+if \rr2 < 1 then "refl x"
+if \rr2 < 1 then "refl z"
+
+frame comm "about y 90"
+frame 0 to \ri[1/4]
+
+mass all 0
+mass comp 6 1
+
+%power 3
+%charge 3
+
+%coll a
+force 1
+velfo = t
+grav =t
+self 0 0 0 0 0 0 
+silent=f
+go 999999
+
+echo " " 
+echo " " 
+echo " *** Dropping a trefoil onto a planar grid" 
+echo "         Press F3 to run this demo again (it's slightly different every time)" 
+echo "         Press F1 to hitch a trefoil to a pole" 
+echo "         Press F2 to drop a string with a fixed endpoint"
+echo " " 
+
+
+

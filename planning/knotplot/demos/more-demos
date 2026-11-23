@@ -1,0 +1,74 @@
+% See documentation in the file basic-demos in this directory
+
+
+panel set 11
+panel off
+button 8 "Next demos" "panel set 11" 130 5 25 12 
+
+button 11 Main "panel set 0" 135 288 20 15
+
+
+button 11 "Bizarre Things" dum     5 270  55 20 4
+button 11 "Sea Things" <sea-things 5 255 45 15    8
+% button 11 "(VGX, Impact, Onyx only)" dum 50 255  90 17 4
+button 11 "Trefoil 1" <9oct94f 5 -1 30 15
+button 11 "Trefoil 2" <9oct94g -1 -1 30 15
+button 11 "Paint 1" <7oct94b   -1 -1 30 15
+button 11 "Paint 2" <7oct94c   -1 -1 30 15
+button 11 "Paint 3" <setup-paint -1 -1 30 15
+button 11 "Wings" <wings -1 -1 30 15
+button 11 "Weird Cone" <29may96a -1 -1 70 15
+button 11 "Negative cylinder space" "< 7oct94e"   -1 -1 70 15
+button 11 "Make handcuff graph" <3jun96   -1 -1 70 15
+button 11 "Frame buffer tricks" <4jun96a -1 -1 70 15
+button 11 "Tangled mess" <4jun96b -1 -1 70 15
+button 11 "Fun with Forces" <fun-w-forces -1 -1 70 15
+%button 11 "Mangle a knot" <mangle-demo  -1 -1 70 15
+
+button 11 "  DNA  " <../projects/wqed/m4 -1 -1 33.75 15
+
+%button 11 "Delete beads" <delete-beads-demo 5 -1 70 15
+%button 11 "Add beads" <add-beads-demo -1 -1 70 15
+%button 11 "go 20" " go 20 " -1 -1 70 15
+
+button 11 "random braid" <randbraid-20apr00 -1 -1 70 15
+button 11 "warp the braid" <warpbraid-20apr00 -1 -1 70 15
+
+button 11 Stack <unknot-stack 5 -1 20 15
+button 11 Chain <tref-chain -1 -1 20 15
+button 11 Panes <panes -1 -1 20 15
+button 11 Flower <flower -1 -1 20 15
+button 11 "Mandala 1" <15apr98b.kps -1 -1 20 15
+button 11 "Mandala 2" <15apr98a.kps -1 -1 20 15
+ 
+
+button 11 "Random Lights" <random-lights 5 -1 30 15
+
+button 11 "  D9  " <D9.kps -1 -1 30 15
+%button 11 "torus" <torus-benchmark.kps -1 -1 30 15
+%button 11 " writhe "  <twist-n-writhe.kps  -1 -1 30 15
+
+button 11 "Moire patterns" dum 5 -1 65 20 4
+
+
+
+button 11 Fast dum 5 -1 12 6 4
+button 11 " a " <8sep94b  -1 -1 10 6  
+button 11 " b " <8sep94c  -1 -1 10 6   
+button 11 " c " <8sep94d  -1 -1 10 6   
+button 11 " d " <8sep94e  -1 -1 10 6   
+button 11 " e " <8sep94f   -1 -1 10 6  
+
+button 11 Med dum 5 -1 12 6 4
+button 11 " a " <9oct94a -1 -1 10 6
+button 11 " b " <9oct94b -1 -1 10 6
+button 11 " c " <9oct94c -1 -1 10 6
+button 11 " d " <9oct94d -1 -1 10 6
+button 11 " e " <9oct94e -1 -1 10 6
+
+
+
+button 11 "Prev demos" "panel set 8" 5 5 25 12 
+%button 11 "Next demos" "panel set 11" 130 5 25 12 
+
+panel on

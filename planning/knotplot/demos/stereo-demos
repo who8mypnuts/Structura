@@ -1,0 +1,17 @@
+reset all
+
+func 1 <stereo-tref-relaxB
+func 2 <stereo-7.1-relax
+
+func 5 <stereo-monster-init.kps
+func 6 <stereo-monster-movie.kps
+func 7 <stereo-brun-relax-init.kps
+func 8 <stereo-brun-relax-movie.kps
+
+func 9 <stereo-Hopf-sea-thing.kps
+func 10 <stereo-init-paint
+func 11 go \ri[100/200]
+func 12 clrfun zf:disp:disp:clrfun 1
+
+
+

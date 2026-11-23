@@ -1,0 +1,32 @@
+
+load  mscl/3.1
+bfacf load
+
+delete all
+new = f
+frame comm "unknot 6 %d"
+frame 1 to 30
+about x 90
+
+bfacf latshow 33
+
+
+cyl-rad=2
+
+bfacf fill tube
+bfacf dilate
+bfacf clear tube
+
+cyl-rad=.1
+bfacf copy
+spec bfacf
+
+% don't forget to refill the location where the knot is!
+bfacf fill
+bfacf copy
+
+txt clobber on
+txt font 2
+txt fill off
+txt cent
+txt c -44 "configuration 1"

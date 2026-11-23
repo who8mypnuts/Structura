@@ -1,0 +1,4 @@
+load tholdc.k
+par0=12
+echo "  *** Nine face polyhedron, version 2"
+txt c -30 "Nine face polyhedron, version 2"

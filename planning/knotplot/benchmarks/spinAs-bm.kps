@@ -1,0 +1,12 @@
+reset all
+
+torus 11 15 777
+twfix
+spec fra
+draw spec
+
+idle "about y 10"
+
+
+<../benchmarks/blurb-bm.kps
+

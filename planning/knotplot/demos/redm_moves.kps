@@ -1,0 +1,67 @@
+reset all
+
+silent=t
+verbose=f
+scale=.55
+cyl=.6
+auto=f
+hincr=0
+hstar=22
+func silent
+func init 
+
+glop back f
+txt space  _
+
+trackmouse rotate off
+trackmouse scale off
+trackmouse translate off
+
+par1 = 1
+par2 = 1
+par3 = 1
+
+txt fcolour royalblue .5
+
+func cs 12 "go forever limit 40;par1=1;par2=1;par3=1;txt fill on;txt c 20 {rerun demo} {read redm_moves.kps}"
+
+func s 1 "silent=t;del all;go 0;load red1-init.k;mass open;silent=f;func exec s 2;par1=3;par2=1;par3=1"
+func s 2 "echo;echo;echo Press F1 again to animate the move.;echo;txt c 20 {click to show move} {func exec 5}"
+func s 3 "func exec cs 12;txt fill off;txt c -20 Type_1_Reidemeister_move"
+
+func c 1 "silent=t;del all;go 0;load red2-init.k;mass open;silent=f;func exec c 2;par2=3;par1=1;par3=1"
+func c 2 "echo;echo;echo Press F2 again to animate the move.;echo;txt c 20 {click to show move} {func exec 6}"
+func c 3 "func exec cs 12;txt fill off;txt c -20 Type_2_Reidemeister_move"
+
+func sc 1 "silent=t;del all;go 0;load red3-init.k;mass open;silent=f;func exec sc 2;par3=3;par1=1;par2=1"
+func sc 2 "echo;echo;echo Press F3 again to animate the move.;echo;txt c 20 {click to show move} {func exec 7}"
+func sc 3 "func exec cs 12;txt fill off;txt c -20 Type_3_Reidemeister_move"
+
+
+func 5 "txt delete group 102;func exec s \ppar1"
+func 6 "txt delete group 102;func exec c \ppar2"
+func 7 "txt delete group 102;func exec sc \ppar3"
+
+
+func 1 <redm_moves.kps
+txt font 4
+txt cent
+txt clobber on
+txt group 102
+txt c 180 "Click on one of the buttons below to see a"
+txt c a "Reidemeister move of Type 1, 2 or 3:"
+txt lineskip 40
+txt fill on
+txt c a1.3 "Type 1" "func exec 5"
+txt c a "Type 2" "func exec 6"
+txt c a "Type 3" "func exec 7"
+txt group 0
+txt on
+
+silent=f
+
+echo 
+echo
+echo "  *** Press F1 to rerun demo"
+echo
+

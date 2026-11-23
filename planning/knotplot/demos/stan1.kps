@@ -1,0 +1,24 @@
+require KPbuild 4438
+
+reset all
+background = black
+ortho
+vscale = 0.4
+
+accbuff decay 0.980730
+accbuff accum 0.217651
+accbuff return 0.271498
+accbuff on
+accbuff clear
+
+mode F
+field type stan
+field npoints 2000
+field K \rr[.6/2]
+
+unknot 
+idle "jitter 9999;fitto 10;scale 1 1 0;3dop colF \rr360 1 1"
+
+tfunc .1 "accbuff clear;field K \rr[.6/2]" 0 rep 11 33
+
+

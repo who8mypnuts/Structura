@@ -1,0 +1,31 @@
+<bfacf/basicinit.kps
+ccmode=2
+
+bfacf cent off
+
+load mscl/2.2.1
+if \rr2 < 1 then "swap 0 1"
+bfacf load
+
+colour 0 red
+colour 1 peachpuff
+
+bfacf freeze 0
+
+
+
+txt font 3
+txt centre
+
+
+txt fcolour royalblue .6
+txt push
+txt expire 11
+txt c 45 "click on the `run' button on the KnotPlot Control Panel"
+txt pop
+
+txt fill on
+txt c 20 "reload obstacle1" <bfacf/obstacle1.kps
+
+txt on
+

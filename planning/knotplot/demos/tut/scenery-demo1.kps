@@ -1,0 +1,73 @@
+require KPbuild 4158
+
+reset all
+scale=.15
+
+func init
+func silent
+silent=t
+
+func 1 <tut/scenery-demo1.kps
+
+txt on
+txt font 4
+txt lineskip 22
+
+txt 10 -20 file doc/scenery-demo1.txt
+
+txt fcolour royalblue .5
+txt scolour #000
+txt sfcolour orange .9
+
+txt 10 a.8 "load:"
+txt fill on
+
+txt clobber on
+
+
+txt space @
+
+txt 70 a0 cube "~load eobj/cube"
+txt R a0 octahedron "~load eobj/octahedron"
+txt R a0 dodecahedron "~load eobj/dodecahedron"
+txt R a0 icosahedron "~load eobj/icosahedron"
+txt lineskip 40
+txt 70 a tetrahedron "~load eobj/tetrahedron"
+txt R a0 "blue cube" "~load eobj/bluecube;knot;fitto 15"
+txt R a0 aaaaH "~load eobj/aaaaH"
+txt R a0 Coney "~load coney"
+txt R a0 "snub d.p.d." "~load snub_disicosidodecahedron_plus_dual"
+txt R a0 "oct in dod" "~load oct-in-dod"
+txt R a0 cuboctahedron "~load eobj/cuboctahedron"
+
+alias ~defb "txt delete group 102;txt fill on;txt font 4;txt right;txt -20 c show@def {~blurt $0;help popup $0.eobj;~www}"
+alias qfix   % a hack until we get proper argument parsing!
+alias ~blurt "txt fill off;txt font 3;txt left;txt group 102;txt 10 120 {help window shows contents of file demos/$0.eobj};~file $0;txt group 0"
+alias qfix   % a hack until we get proper argument parsing!
+alias ~file "txt lineskip 18;txt 10 a {use the commands below:};txt font 5;txt 10 a file doc/scenery-demo1a.txt;txt 10 a {scenery obj $0}"
+alias qfix   % a hack until we get proper argument parsing!
+alias ~load "delete all;~defb $0;scenery init;scenery vscale 12;scenery on;scen obj $0"
+alias ~www "txt push;txt right;txt fill on;txt font 3;txt -10 10 EOBJ@website {www hypnagogic.net/poly/data};txt fill off;txt -5 30 get@more@scenery:;txt pop"
+alias qfix   % a hack until we get proper argument parsing!
+
+txt push
+txt lineskip 24
+txt right
+txt fill off
+txt -10 -20 "scenery demos:"
+txt fill on
+txt font 3
+txt select on
+txt -10 a "part 4" <tut/scenery-demo4.kps
+txt L a0 "part 3" <tut/scenery-demo3.kps
+txt L a0 "part 2" <tut/scenery-demo2.kps
+txt L a0 "part 1" <tut/scenery-demo1.kps
+txt set selected
+txt -10 a "part 8" <tut/scenery-demo8.kps
+txt L a0 "part 7" <tut/scenery-demo7.kps
+txt L a0 "part 6" <tut/scenery-demo6.kps
+txt L a0 "part 5" <tut/scenery-demo5.kps
+txt select off
+txt pop
+
+silent=f

@@ -1,0 +1,4 @@
+frame reset
+frame comm "refl grG %d;trans \rr+-2 \rr+-2 \rr+-2 %d"
+frame 0 to 6
+trans 0 \rr10 0

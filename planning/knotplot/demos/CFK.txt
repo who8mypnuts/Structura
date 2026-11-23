@@ -1,0 +1,4 @@
+par0
+10 button DemoB C <graphicsC.kps -1 -1 0 0
+10 button DemoB F <graphicsF.kps -1 -1 0 0
+10 button DemoB K <graphicsK.kps -1 -1 0 0

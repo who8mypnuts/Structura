@@ -1,0 +1,10 @@
+echo " "
+echo " "
+echo Demo `KnotPaint'
+<KnotPaint.kps
+echo " "
+echo " "
+echo " "
+echo All done!
+echo " "
+

@@ -1,0 +1,24 @@
+reset all
+mode cb
+cyl-rad = 0.122715
+bead-radius = 0.180000
+
+frame comm "proj random;trans \rr[11/44] 0 0 ;proj random;save |%d;sequ +"
+silent = t
+sequence open mscl/3.b
+
+frame 1 to 76
+
+delete all
+frame comm "load combine |%d"
+frame 1 to 76
+
+ccmode = 2
+
+sequence close
+silent = f
+
+echo
+echo
+echo 76 minimal step figure-8 knots
+echo

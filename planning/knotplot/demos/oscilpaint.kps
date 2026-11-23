@@ -1,0 +1,59 @@
+reset all
+require accbuff
+
+silent=t
+
+back=black
+disp t
+scale = 0.264866
+
+trackmouse rotate off
+
+accbuff decay \rr[0.98/1]
+accbuff accum \rr1
+accbuff return \rr1
+
+if \rr2 < 1 then "clrfun z" else "accbuff on;accbuff clear"
+
+
+cyl=.07
+cyl=\rr[.02/.1]
+line dir 1 0 0
+line numb 50
+line
+centre
+
+force 1
+coll allow
+jit .01
+
+func init
+func silent
+func 1 <oscilpaint.kps
+func 2 <oscilpaint_aux.kps
+
+<oscilpaint_aux.kps
+
+
+
+if \rr2 < 1 then "scale 1 1 0"
+if \rr2 < 1 then "rotate x 180"
+
+
+mass open
+
+par1=\rr[.1/.7]
+
+idle "ago 1;about z \ppar1"
+
+
+silent=f
+
+echo
+echo
+echo "  *** Click again or press F1 to rerun demo."
+echo "      Press F2 thru F? for different effects."
+echo
+
+%accbuff
+

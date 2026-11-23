@@ -1,0 +1,25 @@
+reset all
+
+
+disp t
+sbuff
+ortho
+%cyl=\rr[.1/.3]
+cyl=.3
+luxo
+Draw=f
+
+frame comm "<deco-bg%d.kps"
+frame \ri[0/0]
+delete all
+if \rr10 < 1 then "back=0"
+disp t
+
+ortho
+scale = 0.179
+ 
+silent=t
+
+
+idle <deco-aux.kps
+

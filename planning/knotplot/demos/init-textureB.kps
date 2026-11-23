@@ -1,0 +1,22 @@
+reset all
+
+texture reset
+back=0
+cyl=\rr[.1/.3]
+new = f
+hstart=\rr360
+
+unknot 222 11
+unknot 102 5
+unknot 55  1
+hincr = 120
+
+disp t
+
+gflush
+tex view
+
+cyl=.9
+par0=48475924
+
+texture appmode replace

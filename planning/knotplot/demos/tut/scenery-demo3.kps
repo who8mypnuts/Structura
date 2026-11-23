@@ -1,0 +1,139 @@
+require KPbuild 4158
+
+reset all
+scale=.372
+rotate x -90
+rotate z 180
+rotate x -20
+rotate z 45
+knot numb \ri[37/250]
+nbead 108
+cyl-rad=.2
+centre
+show axes labels
+
+func init
+func silent
+silent=t
+
+func 1 <tut/scenery-demo3.kps
+
+txt on
+txt font 4
+txt lineskip 22
+
+txt 10 -20 file doc/scenery-demo3.txt
+
+txt fcolour royalblue .5
+txt scolour #000
+txt sfcolour orange .9
+
+txt clobber on
+txt space @
+
+txt 10 a2 "load:"
+txt fill on
+
+txt clobber on
+
+txt 70 a0 cube "~load eobj/cube \ri108"
+txt r a0 octahedron "~load eobj/octahedron \ri108"
+txt r a0 dodecahedron "~load eobj/dodecahedron \ri108"
+txt r a0 icosahedron "~load eobj/icosahedron \ri108"
+txt r a0 arrow "~load orientation_arrow \ri108"
+txt r a0 cow "~load cow \ri108"
+txt r a0 rcow "~load rcow \ri108"
+
+txt lineskip 40
+txt 70 a tetrahedron "~load eobj/tetrahedron \ri108"
+txt r a0 "blue cube" "~load eobj/bluecube \ri108"
+txt r a0 aaaaH "~load eobj/aaaaH \ri108"
+txt r a0 Coney "~load coney \ri108"
+txt r a0 "snub d.p.d." "~load snub_disicosidodecahedron_plus_dual \ri108"
+txt r a0 "oct in dod" "~load oct-in-dod \ri108"
+txt R a0 cuboctahedron "~load eobj/cuboctahedron \ri108"
+
+verbose = f
+
+txt push
+txt right
+txt group 1111
+txt select on
+txt phantom orientation
+alias ~info "txt font 3;txt c a $0;txt pop"
+%txt -15 15 yorientation "~method yorientation;~info newly@added@scenery@follows@knot@orientation@with@y-up"
+txt lineskip -33
+txt -15 15 "orientation" "~method orientation;~info newly@added@scenery@follows@orientation@of@the@knot"
+txt -15 a "billboard" "~method billboard;~info newly@added@scenery@rotates@to@face@viewer"
+txt -15 a none "~method none;~info newly@added@scenery@only@attached@to@bead@(no@rotation)"
+txt -15 a walk "~method walk;~info newly@added@scenery@`walks'@along@knot@with@z-up"
+txt phantom
+txt select off
+txt font 3
+txt fill off
+txt -10 a "rotation method:"
+txt pop
+
+txt push
+txt group 999
+txt fill on
+txt centre
+txt font 4
+txt c 15 "relax knot" "jitter \rr4;go"
+txt group 999 off
+txt pop
+
+coll a
+velf=t
+force 1
+
+scenery on
+
+alias ~blurt "echo;echo;echo Now add some more scenery and rotate the view;echo"
+
+alias ~method "~blurt;~comm2 $0;scenery rotate $0;txt push;txt colour #f84;txt fill off;txt font 4;txt cent;txt c 108 {rotation method is `$0'};txt lineskip 33"
+alias qfix
+
+alias ~del "txt font 4;txt fill on;txt right;txt -20 c clear {txt group 999 off;go 0;scenery delete;txt delete clear}"
+alias qfix
+alias ~load "txt group 999 on;~del;scenery obj $0 bead $1;~comm $0 $1"
+alias ~comm "txt fill off;txt left;txt font 4;txt 10 10 {scenery obj $0 bead $1}"
+alias qfix
+alias ~comm2 "txt fill off;txt left;txt font 4;txt 10 10 {scenery rotate $0}"
+alias qfix
+
+txt exec orientation 1111
+
+txt push
+txt left
+txt font 3
+txt 10 50 "KnotPlot command that was used"
+txt 10 36 "to perform the last action:"
+txt pop
+
+txt push
+txt lineskip 24
+txt right
+txt fill off
+txt -10 -20 "scenery demos:"
+txt fill on
+txt font 3
+
+txt select on
+
+txt -10 a "part 4" <tut/scenery-demo4.kps
+txt L a0 "part 3" <tut/scenery-demo3.kps
+txt set selected
+txt L a0 "part 2" <tut/scenery-demo2.kps
+txt L a0 "part 1" <tut/scenery-demo1.kps
+txt -10 a "part 8" <tut/scenery-demo8.kps
+txt L a0 "part 7" <tut/scenery-demo7.kps
+txt L a0 "part 6" <tut/scenery-demo6.kps
+txt L a0 "part 5" <tut/scenery-demo5.kps
+
+txt select off
+
+txt pop
+
+
+silent=f

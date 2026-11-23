@@ -1,0 +1,17 @@
+txt delete group 108
+txt push
+txt font 3
+txt cent
+txt group 108
+oal alloff
+~att 0 120 buzz
+~att 1 105 buzz
+~att 2 90  buzz
+~att 3 75  buzz
+~att 4 60  buzz
+~att 5 45  buzz
+~att 6 30  buzz
+~att 7 15  buzz
+~att 8 0   buzz
+txt pop
+

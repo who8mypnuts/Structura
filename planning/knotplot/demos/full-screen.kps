@@ -1,0 +1,23 @@
+
+fullscreen toggle
+
+pop 2
+
+echo " "
+echo " "
+echo " "
+echo " "
+echo " ****     Press the `End' key to exit full screen mode. "
+echo
+
+tfunc 3 "pop 0"
+
+require KPfree
+echo
+echo
+echo
+echo
+echo
+echo " *** Full screen mode not available in evaluation (free) version of KnotPlot"
+
+echo

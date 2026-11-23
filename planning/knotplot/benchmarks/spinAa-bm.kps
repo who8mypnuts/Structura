@@ -1,0 +1,13 @@
+reset all
+
+torus 11 15 777
+twfix
+spec fra
+draw anorm
+cyl=.4
+
+idle "about y 10"
+
+
+<../benchmarks/blurb-bm.kps
+

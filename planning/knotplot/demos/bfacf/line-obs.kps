@@ -1,0 +1,38 @@
+reset all
+
+scale = 0.362343
+ccmode = 1
+hstart = 33.000000
+cyl-rad = 0.15
+bead-radius = 0.22
+mode cB
+untran
+viewmatrix 0.874620 0.484810 0.000000 -0.121387 0.218987 0.968148
+
+
+bfacf init
+bfacf showlat 20
+load bfacf/line-obs.k
+bfacf load
+
+bfacf box 20
+bfacf fill 0 0 -20 0 0 20
+
+scen vscale 20
+scen obj eobj/inv-cube
+
+scen vscale .5
+scen obj eobj/line-obs
+
+scen on
+3dop bead 45 45
+
+% try running at z = .1 and step size = 1,000,000!
+% and consider the "diffusion" time
+
+bfacf search on
+bfacf target 108
+
+energy model nbead
+energy format "number of steps is %.0f"
+show energy

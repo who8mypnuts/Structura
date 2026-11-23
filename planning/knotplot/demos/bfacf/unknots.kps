@@ -1,0 +1,72 @@
+require KPbuild 4691
+require KPbuild 4406
+
+reset all 
+
+energy model nbead
+energy format "N steps = %.0f"
+
+show energy
+cyl-rad = 0.1
+bead-radius = 0.18
+
+
+mode cB
+
+alias ~addbutton "txt 15 a $0 {silent=t;~name $0;~load $0-min.k;silent=f}"
+
+alias ~load "load $0;cent;~init"
+alias ~name "txt push;txt fill off;txt font 4;txt cent;txt c 20 $0;txt pop"
+
+bfacf init
+
+alias ~init "bfacf ldslab 1;~mode;show energy;txt group 108 on"
+
+
+alias ~smooth "mode s;draw spec;alias ~mode ~smooth"
+alias ~PL  "mode cB;draw norm;alias ~mode ~PL"
+~PL
+
+txt left
+txt font 3
+txt 10 -20 "load an unknot:"
+txt fill on
+txt fcolour royalblue .6
+~addbutton cube-monster
+~addbutton cube-monster2
+~addbutton cube-monster3
+~addbutton cube-monster4
+~addbutton cube-monster4b
+~addbutton cube-monster8
+~addbutton cube-monster16
+~addbutton 19xing-unknot
+~addbutton 31xing-unknot
+~addbutton MT
+
+txt fill off
+
+txt 10 a3 "display mode:"
+txt fill on
+txt 15 a smooth ~smooth
+txt 15 a PL ~PL
+
+
+alias ~note "txt push;txt font 3;txt cent;txt fill off;txt expire 8;txt c 80 {note: some knots may not fit properly};txt pop"
+
+
+txt push
+txt group 108
+txt 15 a3 "load in 2-slab" "bfacf ldslab 2;~mode;show energy;txt group 108 off"
+txt 15 a "load in thin box" "bfacf init;bfacf show 15;trans 0 0 13;bfacf load;bfacf clear 15;bfacf box 15;bfacf fill 12;bfacf fill;show bfacf;~note"
+txt pop
+
+txt fill off
+txt cent
+txt font 4
+txt c -20 "irreducible unknots in the 1-slab"
+
+txt clobber on
+
+txt on
+
+

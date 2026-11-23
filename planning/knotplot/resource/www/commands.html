@@ -1,0 +1,1194 @@
+
+<html><head>
+<title>KnotPlot  Commands</title>
+</head>
+<body  bgcolor="#c0c0c0">
+<a  name=topoffile></a>
+<h1>
+<img  src="inlines/Link2.gif"  align=middle  width=103  height=103>
+KnotPlot  Commands</h1>
+This  is  a  description  of  some  of  the  commands  available  in  KnotPlot.   Commands  may  be  abbreviated
+to  any  length.   However  it  is  safer  to  never  abbreviate  a  command  to  <em>less  than  four
+characters.</em>  Commands  are  guaranteed  to  be  unambiguous  if  this  general  rule  is  followed.
+Command  arguments  that  take  on  numerical  values  may  be  set  in  the  same  way  as  parameters  (except
+without  an  equal  sign).   See  the  explanation  at  the  beginning  of  that
+<a  href="parameters.html">page.</a>
+<p>  <font  size=-1>  Click  on  one  of  the  following  subsection  names  to  go  to  that  subsection.   To
+return  to  the  top  of  the  page,  click  on  one  of  the  arrows  pointing  upwards.   <p>
+<a  href="#General  purpose  commands">[General  purpose  commands]</a>
+<a  href="#Loading  and  saving  knots  and  links">[Loading  and  saving  knots  and  links]</a>
+<a  href="#Creating  new  knots  and  links">[Creating  new  knots  and  links]</a>
+<a  href="#Transformation  tools">[Transformation  tools]</a>
+<a  href="#Relaxing  knots  and  links">[Relaxing  knots  and  links]</a>
+<a  href="#Graphics  display">[Graphics  display]</a>
+<a  href="#Geometry  commands">[Geometry  commands]</a>
+<a  href="#Producing  pictures">[Producing  pictures]</a>
+<a  href="#Exporting  surface  models">[Exporting  surface  models]</a>
+<a  href="#Topology  commands">[Topology  commands]</a>
+<a  href="#4D  commands">[4D  commands]</a>
+<a  href="#Other  commands">[Other  commands]</a>
+</font>  <p>
+<a  name="General  purpose  commands"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+General  purpose  commands</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+<dl>
+<p>
+<dt>  <b><a  name="&lt;">&lt;</a></b>
+<em>filename</em><dd>
+Reads  the  file  <em>filename</em>  and  executes  the  commands  found  there.   Same  as  the
+<a  href="#read"><b>read</b></a>
+command.
+<p>
+<dt>  <b><a  name="!">!</a></b>
+<em>shell-command</em><dd>
+Sends  the  string  <em>shell-command</em>  to  the  shell  to  be  executed  there.
+<p>
+<dt>  <b><a  name="alert">alert</a></b>
+<em>message  text1  [text2]  </em><dd>
+Pops  up  an  alert  box  with  <em>message</em>  written  in  it,  and  two  buttons  <em>text1</em>  and
+<em>text2.</em>
+<p>
+<dt>  <b><a  name="animate">animate</a></b>
+<em>  parameter  start  stop  steps  [<b>linear  |  log</b>]</em><dd>
+Animates  <em>parameter</em>  from  <em>start</em>  to  <em>stop</em>  in  <em>steps</em>  increments.
+Defaults  to  <b>linear</b>.   The
+<a  href="DemosDir.html">demos  directory</a>
+has  several  examples  of  the  use  of
+<a  href="#animate"><b>animate</b></a>
+.   <br>  <font  size=-1>
+<a  href="../../demos/tref-relax">tref-relax,</a>
+a  trefoil  relaxing.
+<a  href="../../demos/fig8-relax">fig8-relax,</a>
+a  figure-8  knot  relaxing.
+<a  href="../../demos/6.3-relax">6.3-relax,</a>
+the  knot  6.3  relaxing.
+<a  href="../../demos/7.1-relax">7.1-relax,</a>
+the  knot  7.1  relaxing.
+<a  href="../../demos/8sep94a">8sep94a,</a>
+made  on  Sep  8,  1994.
+<a  href="../../demos/7oct94a">7oct94a,</a>
+made  on  Oct  7,  1994.
+<a  href="../../demos/7oct94d">7oct94d,</a>
+made  on  Oct  7,  1994.
+<a  href="../../demos/mangle-demo">mangle-demo,</a>
+something  mangling  (see
+<a  href="#mangle"><b>mangle</b></a>
+below).
+<a  href="../../demos/spun-trefoil">spun-trefoil</a>
+An  example  of  a  4D  knot.<br>  </font>
+<p>
+<dt>  <b><a  name="cursor">cursor</a></b>
+<em>what</em><dd>
+Sets  the  mouse  cursor  used  in  the  view  window.   The  argument  <em>what</em>  can  be  either  an  integer
+or  a  string.   The  following  values  are  permitted  for  integer  settings:
+<ul>
+<li><b>0</b>  Sets  the  cursor  to  the  default.
+<li><b>1</b>  Sets  the  cursor  to  a  small  plus  sign.
+</ul>
+If  <em>what</em>  is  a  non-integer,  a  2-bit  (four  colour)  cursor  is  read  from  the  file
+<em>what.cur</em>.   A  program,
+<a  href="../src/ppm2cur.c">ppm2cur</a>
+is  included  in  the  resource  directory  for  converting  raw  PPM  files  to  the  '.cur'  format.   Check
+<a  href="UnimportantInfo.html#cursor">here</a>
+to  find  out  more  details.
+<p>
+<dt>  <b><a  name="exit">exit</a></b>
+<em></em><dd>
+Same  as  the
+<a  href="#quit"><b>quit</b></a>
+command.
+<p>
+<dt>  <b><a  name="function">function</a></b>
+<em>  number  action</em><dd>
+With  no  arguments,  prints  the  current  binding  of  the  function  keys.   With  one  argument,  prints  the
+binding  for  that  key.   Otherwise  the  function  key  <em>number</em>  is  bound  to  <em>action</em>.   See
+the  demo  files  and  the
+<a  href="../knotplotrc">knotplotrc</a>
+file  for  examples  of  use.
+<p>
+<dt>  <b><a  name="information">information</a></b>
+<em></em><dd>
+Prints  out  some  useful  information  about  the  current  knot,  such  as  the  number  of  beads  and
+components,  and  the  extent  in  the  three  orthogonal  directions.
+<p>
+<dt>  <b><a  name="nap">nap</a></b>
+<em>number</em><dd>
+Same  as
+<a  href="#pause"><b>pause</b></a>
+except  on  SGIs,  where  there  is  a  difference  but  not  a  very  interesting  one.
+<p>
+<dt>  <b><a  name="nop">nop</a></b>
+<em></em><dd>
+This  command  does  <em>nothing  at  all.</em>
+<p>
+<dt>  <b><a  name="panel  psout">panel  psout</a></b>
+<em>[filename]</em><dd>
+Outputs  a  Postscript  representation  of  the  current  control  panel  to  the  file  <em>filename.eps</em>.
+If  <em>filename</em>  is  omitted,  the  output  is  written  to  the  file  <em>cpanel.eps</em>.
+<p>
+<dt>  <b><a  name="panel  set">panel  set</a></b>
+<em>which</em><dd>
+Sets  the  control  panel  to  <em>which</em>.   The  same  effect  can  be  achieved  using  the
+<a  href="PopupMenus.html#cpanel">pop-up  menus.</a>
+See  the
+<a  href="UnimportantInfo.html#cpanels">list</a>
+to  find  out  how  the  control  panels  are  numbered.
+<p>
+<dt>  <b><a  name="parameters">parameters</a></b>
+<em></em><dd>
+Prints  the  current  settings  of  all  parameters.
+<p>
+<dt>  <b><a  name="parameters">parameters</a></b>
+<em>  name</em><dd>
+Prints  the  value  of  any  parameters  starting  with  the  string  <em>name.</em>
+<p>
+<dt>  <b><a  name="path">path</a></b>
+<em>[directory]</em><dd>
+If  <em>directory</em>  is  omitted,  this  command  prints  the  current  read  and  write  paths.   See
+<a  href="ExampleCommands.html#path">the  example</a>
+for  more  information.
+<p>
+<dt>  <b><a  name="pause">pause</a></b>
+<em>  number</em><dd>
+Pauses  execution  for  <em>number</em>  seconds.   This  is  only  useful  for  sessions  run  from  a  script.
+<p>
+<dt>  <b><a  name="quit">quit</a></b>
+<em></em><dd>
+Same  as  the
+<a  href="#stop"><b>stop</b></a>
+command.
+<p>
+<dt>  <b><a  name="read">read</a></b>
+<em>  filename  </em><dd>
+Reads  the  file  <em>filename</em>  and  executes  the  commands  found  there.   Same  as  the  &lt;  command.
+It  is  useful  because  there  are  certain  contexts  where
+<a  href="#read"><b>read</b></a>
+will  work  but  &lt;  will  not.
+<p>
+<dt>  <b><a  name="rsfunction">rsfunction</a></b>
+<em></em><dd>
+Similar  to  the
+<a  href="#function"><b>function</b></a>
+command  except  uses  shifted  function  keys  (using  the  right  shift  key).
+<p>
+<dt>  <b><a  name="seed">seed</a></b>
+<em>  value</em><dd>
+Sets  the  random  number  seed  to  <em>value.</em>
+<p>
+<dt>  <b><a  name="sfunction">sfunction</a></b>
+<em></em><dd>
+Similar  to  the
+<a  href="#function"><b>function</b></a>
+command  except  uses  shifted  function  keys  (using  the  left  shift  key).
+<p>
+<dt>  <b><a  name="special">special</a></b>
+<em>what</em><dd>
+Without  an  argument,  turns  off  drawing  of  all  specials.   Otherwise,  <em>what</em>  may  be  one  of  the
+following:   <p>
+<ul>
+<li><b>axes</b>  ---  Turns  on  drawing  of  3D  coordinate  axes.
+<li><b>backdrop</b>  ---  Turns  on  backdrop.
+<li><b>command</b>  ---  To  be  explained  elsewhere.
+<li><b>intro</b>  ---  Draws  the  intro  screen.
+<li><b>labels</b>  ---  Turns  on  drawing  of  bead  labels.
+<li><b>monitor</b>  ---  Draws  the  text  normally  seen  in  the  monitor  window  in  the  view  window  as
+well  (doesn't  really  work  at  all).
+<li><b>sphere</b>  ---  Turns  on  drawing  of
+<a  href="UtilitySphere.html">utility  sphere.</a>
+<li><b>spin</b>  ---  Turns  on  drawing  of  spin  plane  (see  the
+<a  href="#spin"><b>spin</b></a>
+command).
+</ul>
+<p>If  you  want  to  draw  more  than  one  special  at  a  time,  append  the  keywords  with  a  '+'  sign.
+Appending  a  '-'  sign  will  turn  off  that  special  without  affecting  the  drawing  of  other  specials.
+Appending  a  '  '  sign  will  toggle  the  special  without  affecting  other  specials.   Look
+<a  href="ExampleCommands.html#special">here</a>
+for  examples  of  usage.   The  spin  plane,  labels,  and  axes  may  also  be  turned  on  and  off  with  the
+radio  button  in  the  main
+<a  href="ControlPanel.html#toppanel">control  panel</a>
+and  the  utility  sphere  via  the
+<a  href="PopupMenus.html#menu3">pop-up  menu.</a>
+<p>
+<dt>  <b><a  name="statistics">statistics</a></b>
+<em></em><dd>
+Prints  out  some  execution  info.
+<p>
+<dt>  <b><a  name="stop">stop</a></b>
+<em></em><dd>
+Same  as  the
+<a  href="#exit"><b>exit</b></a>
+command.
+<p>
+<dt>  <b><a  name="version">version</a></b>
+<em></em><dd>
+Prints  out  some  useful  information,  including  how  to  find  the  KnotPlot  home  directory  (the  root  of
+the
+<a  href="Distribution.html">KnotPlot  distribution</a>
+)  and  the
+<a  href="ResourceDir.html">resource  directory.</a>
+</dl>
+<a  name="Loading  and  saving  knots  and  links"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Loading  and  saving  knots  and  links</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+<dl>
+<p>
+<dt>  <b><a  name="allocate">allocate</a></b>
+<em>  nbeads</em><dd>
+Allocates  enough  memory  for  <em>nbeads</em>  number  of  beads.
+<p>
+<dt>  <b><a  name="coords">coords</a></b>
+<em>  </em><dd>
+Prints  out  the  coordinates  of  every  bead  in  the  current  knot.
+<p>
+<dt>  <b><a  name="coords">coords</a></b>
+<em>  filename  </em><dd>
+Same  as  the  above  command  except  this  outputs  to  the  file  <em>filename.</em>  These  files  are  made
+for  easy  reading  by  other  software.   A  knot  file  written  with  this  command  may  be  read  by  using  the
+<a  href="#load"><b>load</b></a>
+command.
+<p>
+<dt>  <b><a  name="knot">knot</a></b>
+<em></em><dd>
+Loads  a  knot  or  link  from  the  catalogue,  selected  at  random.   Very  useful  for  demos.
+<p>
+<dt>  <b><a  name="knot">knot</a></b>
+<em>  n</em><dd>
+Same  as  above,  but  loads  a  knot  with  <em>n</em>  components.
+<p>
+<dt>  <b><a  name="knot  number">knot  number</a></b>
+<em>  n</em><dd>
+Loads  the  <em>n</em><sup>th</sup>  knot  or  link  from  the  tables.   The  valid  range  for  <em>n</em>  is
+from  1   to  384.
+<p>
+<dt>  <b><a  name="knot  special">knot  special</a></b>
+<em>  </em><dd>
+Loads  a  knot  at  random  from  the
+<a  href="SpecialColl.html">``special  collection''</a>
+The  special  collection  contains  several  oddities  as  well  as  a  few  composite  knots.
+<p>
+<dt>  <b><a  name="load">load</a></b>
+<em>  filename</em><dd>
+Loads  a  knot  from  the  file  <em>filename.</em>
+<p>
+<dt>  <b><a  name="load  combine">load  combine</a></b>
+<em>  filename</em><dd>
+Same  as  above  except  a  new  link  is  created  by  combining  the  current  knot  and  the  knot  in  the  file
+<em>filename</em>  (i.e.   creates  the  union  of  the  two  knots  or  links).
+<p>
+<dt>  <b><a  name="load  sum">load  sum</a></b>
+<em>filename</em><dd>
+Same  as  above  except  a  new  knot  is  formed  by  creating  the  direct  sum  of  the  current  knot  and  the
+knot  in  file  <em>filename.</em>  This  command  uses  the
+<a  href="#shift"><b>shift</b></a>
+,
+<a  href="#revbeads"><b>revbeads</b></a>
+,  and
+<a  href="#translate  to"><b>translate  to</b></a>
+commands  to  move  everything  into  the  correct  position.   If  you  find  you  don't  like  the  results  it
+gives,  you  may  have  to  do  these  operations  as  well  as
+<a  href="#cut"><b>cut</b></a>
+and
+<a  href="#join"><b>join</b></a>
+yourself.   One  limitation  is  that  KnotPlot  expects  both  summands  to  be
+<a  href="glossary.html#proper  knot"><b>proper  knot</b></a>
+s.
+<p>
+<dt>  <b><a  name="save">save</a></b>
+<em>  filename  [format]</em><dd>
+Saves  the  current  knot  or  link  to  the  file  <em>filename.</em>  If  <em>format</em>  is  omitted,  the
+file  is  saved  in  the  format  given  by  the  current  value  of
+<a  href="parameters.html#sformat"><b>sformat</b></a>
+.   If  <em>format</em>  is  an  integer,  then  that  value  is  used  as  the  save  format  and  <b>sformat</b>
+is  ignored.   Otherwise,  if  <em>format</em>  is  <b>float</b>  (or  <b>LOCF</b>),  <b>short</b>  (or
+<b>LOCS</b>),  <b>char</b>  (or  <b>LOCC</b>),  <b>ascii</b>  (or  <b>raw</b>),  <b>ked</b>,  or
+<b>ming</b>  then  the  file  is  saved  with  that  format  instead  of  the  format  specified  by
+<b>sformat</b>  (see  the  description  of  <b>sformat</b>).   Including  the  second  parameter  is  useful
+for  temporarily  overriding  the  default  save  format.
+<p>
+<dt>  <b><a  name="zoo">zoo</a></b>
+<em>  start  size</em><dd>
+Generates  a  ``knot  zoo''  of  size  <em>size</em>X<em>size</em>  starting  with  the  knot  number
+<em>start</em>  in  the
+<a  href="KnotCatalogue.html">standard  catalogue.</a>
+If  <em>size</em>  is  omitted,  it  will  default  to  5.   If  <em>start</em>  is  0,  a  random  selection  of
+knots  is  loaded.   This  command  uses  singlebuffer  mode  so  that  the  knots  can  be  seen  while  they  are
+being  loaded.   Clicking  with  the  left  mouse  on  an  image  in  the  zoo  will  load  that  knot  or  link.
+</dl>
+<a  name="Creating  new  knots  and  links"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Creating  new  knots  and  links</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+These  commands  will  create  something  from  scratch.   In  addition  you  could  load  a  knot  or  link  from
+the  catalogues  with  the
+<a  href="#load"><b>load</b></a>
+command  or
+<a  href="SketchingKnots.html">sketch</a>
+one  yourself.   See  also  the
+<a  href="#construct"><b>construct</b></a>
+command  below,  which  can  be  used  to  construct  user-defined  things.   The  commands  <b>chain</b>,
+<b>lissajous</b>,  <b>2lissajous</b>,  <b>torus</b>,  and  <b>unknot</b>  are  affected  by  the
+<a  href="parameters.html#new"><b>new</b></a>
+parameter.
+<dl>
+<p>
+<dt>  <b><a  name="chain">chain</a></b>
+<em>  ncomp  [nbeads]</em><dd>
+Creates  a  linked  chain  with  <em>ncomp</em>  components  (this  number  should  be  even)  of
+<em>nbeads</em>  each.   If  <em>nbeads</em>  is  omitted,  it  defaults  to  9.   The  parameters
+<a  href="parameters.html#D-chain"><b>D-chain</b></a>
+and
+<a  href="parameters.html#d-chain"><b>d-chain</b></a>
+control  the  geometry  of  the  chain.
+<p>
+<dt>  <b><a  name="conway">conway</a></b>
+<em>  n</em><dd>
+Constructs  the  knot  with  Conway  number  <em>n.</em>  Currently,  only  rational  knots  as  defined  by
+Conway  [? ]  can  be  constructed.   Non-rational  knots  may  be  constructed  with  the
+<a  href="#tangle"><b>tangle</b></a>
+command.
+<p>
+<dt>  <b><a  name="lissajous">lissajous</a></b>
+<em>nx  ny  nz  [phix  phiy  nbeads]</em><dd>
+Constructs  a  Lissajous  knot  [? ]  of  type  <em>(nx,  ny,  nz)</em>  and  phase  <em>(phix,  phiy)</em>  with
+<em>nbeads</em>  number  of  beads.   If  <em>nbeads</em>  is  omitted,  the  number  of  beads  defaults  to
+<a  href="parameters.html#N-torus"><b>N-torus</b></a>
+.   <em>phix</em>  and  <em>phiy</em>  both  default  to  0  if  omitted,  and  that's  not  too  interesting.
+For  best  results  they  should  have  different  values.   The  parameterization  of  the  curve  is
+<p><center>
+<img  src="inlines/lissa-formulae.gif"  >
+</center><p>  except  that  <em>phiz</em>  is  zero.   Check  out
+<a  href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/lissajous.html">this  location</a>
+to  see  some  examples  and
+<a  href="LissajousParams.html">here</a>
+to  see  some  good  values  to  try.
+<p>
+<dt>  <b><a  name="2lissajous">2lissajous</a></b>
+<em>nx  ny  nz  nk  [phix  phiy  phiz  nbeads]</em><dd>
+Similar  to  the
+<a  href="#lissajous"><b>lissajous</b></a>
+command  except  constructs  a  2-mode  Lissajous  knot.
+<p>
+<dt>  <b><a  name="random  tangle">random  tangle</a></b>
+<em></em><dd>
+Creates  a  random  tangle  using  the  tangle  calculator.   This  is  one  of  several  methods  of  creating
+random  knots  and  links  that  will  be  implemented  in  KnotPlot  in  the  near  future.
+<p>
+<dt>  <b><a  name="tangle">tangle</a></b>
+<em>  tangle-string</em><dd>
+Uses  the
+<a  href="TangleCalculator.html">tangle  calculator</a>
+to  execute  the  commands  in  <em>tangle-string.</em>  Click
+<a  href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/tang-calc/tang-calc.html">here</a>
+for  some  examples.   An  interactive  version  of  the  tangle  calculator  can  be  accessed  using  the
+<a  href="PopupMenus.html#tangcalc">pop-up  menus.</a>
+<p>
+<dt>  <b><a  name="torus">torus</a></b>
+<em>  n  m  [beads]</em><dd>
+Produces  the
+<a  href="glossary.html#torus  knot"><b>torus  knot</b></a>
+K(n,  m).   If  <em>beads</em>  is  omitted,  the  number  of  beads  defaults  to
+<a  href="parameters.html#N-torus"><b>N-torus</b></a>
+.   Other  parameters  controlling  how  the  knot  is  constructed  are
+<a  href="parameters.html#R-torus"><b>R-torus</b></a>
+and
+<a  href="parameters.html#d-torus"><b>d-torus</b></a>
+.   If  two  few  beads  are  used,  the  results  can  be  bizarre.   If  <em>n</em>  and  <em>m</em>  are  not
+relatively  prime,  then  a  torus  link  with  gcd  (<em>n</em>,  <em>m</em>)  components  is  created.   You
+can  also  omit  <em>n</em>  and/or  <em>m</em>  to  have  values  chosen  randomly.   A
+<a  href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/torus.html">page  of  examples</a>
+is  at  the  KnotPlot  Site.
+<p>
+<dt>  <b><a  name="unknot">unknot</a></b>
+<em>[B  [R]]</em><dd>
+Creates  an  unknot  with  <em>B</em>  beads  of  radius  <em>R.</em>  in  the  xy-plane.   If  <em>B</em>  is
+omitted,  the  number  of  beads  defaults  to
+<a  href="parameters.html#N-torus"><b>N-torus</b></a>
+.   If  <em>R</em>  is  omitted,  the  radius  defaults  to
+<a  href="parameters.html#R-torus"><b>R-torus</b></a>
+.
+</dl>
+<a  name="Transformation  tools"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Transformation  tools</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+Knots  or  links  can  be  transformed  into  new  knots  or  links  using  the  commands  in  this  section.
+Other  commands  that  could  belong  in  this  section  are  the
+<a  href="#jitter"><b>jitter</b></a>
+,
+<a  href="#mangle"><b>mangle</b></a>
+,  and
+<a  href="#split"><b>split</b></a>
+commands  as  some  of  these  may  change  the  knot  type.
+<dl>
+<p>
+<dt>  <b><a  name="cable">cable</a></b>
+<em></em><dd>
+Takes  the  current  knot  and  cables  it.
+<p>
+<dt>  <b><a  name="close">close</a></b>
+<em>  compA  [<b>to</b>  compB]</em><dd>
+With  one  argument,  closes  component  <em>compA</em>  if  it  is  open,  otherwise  closes  all  components
+in  the  range  <em>compA</em>  to  <em>compB</em>.   Without  any  arguments,  prints  out  information  on
+all  components.   See  the
+<a  href="#open"><b>open</b></a>
+command.
+<p>
+<dt>  <b><a  name="close  all">close  all</a></b>
+<em></em><dd>
+Closes  all  components.
+<p>
+<dt>  <b><a  name="companion">companion</a></b>
+<em></em><dd>
+Transforms  the  current  knot  (one  component  only)  into  its  ``companion''  knot.
+<p>
+<dt>  <b><a  name="cut">cut</a></b>
+<em>bead</em><dd>
+Cuts  a  component  at  location  <em>bead</em>.   If  the  component  is  closed,  it  becomes  open.
+Otherwise  two  open  components  result.   Small  components  (less  than  four  beads)  are  automatically
+reaped.   See  the
+<a  href="#join"><b>join</b></a>
+command.
+<p>
+<dt>  <b><a  name="delete">delete</a></b>
+<em>  n</em><dd>
+Deletes  component  <em>n</em>  of  the  current  link.   Components  are  numbered  starting  at  0.   See  the
+<a  href="#keep"><b>keep</b></a>
+command.
+<p>
+<dt>  <b><a  name="delete  all">delete  all</a></b>
+<em></em><dd>
+Deletes  the  current  knot  or  link.
+<p>
+<dt>  <b><a  name="double">double</a></b>
+<em>  </em><dd>
+Takes  the  current  knot  and  doubles  it.
+<p>
+<dt>  <b><a  name="join">join</a></b>
+<em>a  b</em><dd>
+Joins  together  beads  <em>a</em>  and  <em>b</em>.   Both  <em>a</em>  and  <em>b</em>  must  be  the
+endpoints  of  an  open  component.   See  the
+<a  href="#cut"><b>cut</b></a>
+command.
+<p>
+<dt>  <b><a  name="identify">identify</a></b>
+<em>a  b</em><dd>
+Identifies  bead  <em>a</em>  and  bead  <em>b</em>.   This  is  how
+<a  href="Graphs.html">knotted  graphs</a>
+are  implemented.
+<p>
+<dt>  <b><a  name="identify  init">identify  init</a></b>
+<em></em><dd>
+Initializes  (unidentifies)  all  bead  identifications.   Use  this  whenever  specifying  new
+identifications.
+<p>
+<dt>  <b><a  name="keep">keep</a></b>
+<em>  component</em><dd>
+Deletes  all  knot  components  except  <em>component.</em>  Components  are  numbered  starting  at  0.   Only
+makes  sense  for  links.   See  the
+<a  href="#delete"><b>delete</b></a>
+command.
+<p>
+<dt>  <b><a  name="nbeads">nbeads</a></b>
+<em>  value</em><dd>
+If  <em>value</em>  begins  with  a  '+'  or  a  '-'  sign  then  the  number  of  beads  is  incremented  or
+decremented  by  <em>value</em>,  otherwise  the  number  of  beads  is  changed  to  <em>value</em>.   See
+<a  href="ExampleCommands.html#nbeads">here</a>
+for  examples.
+<p>
+<dt>  <b><a  name="nbeads  mult">nbeads  mult</a></b>
+<em>fraction</em><dd>
+The  number  of  beads  is  multiplied  by  <em>fraction</em>.
+<p>
+<dt>  <b><a  name="open">open</a></b>
+<em>  compA  [<b>to</b>  compB]</em><dd>
+With  one  argument,  opens  component  <em>compA</em>  if  it  is  closed,  otherwise  opens  all  components
+in  the  range  <em>compA</em>  to  <em>compB</em>.   Without  any  arguments,  prints  out  information  on
+all  components.   See  the
+<a  href="#close"><b>close</b></a>
+command.
+<p>
+<dt>  <b><a  name="open  all">open  all</a></b>
+<em></em><dd>
+Opens  all  components.
+<p>
+<dt>  <b><a  name="revbeads">revbeads</a></b>
+<em>[comp]</em><dd>
+Reverses  the  beads  in  component  <em>comp</em>.   If  <em>comp</em>  is  omitted  all  beads  in  each
+component  are  reversed.   Useful  in  combination  with  the
+<a  href="#shift"><b>shift</b></a>
+command.
+<p>
+<dt>  <b><a  name="shift">shift</a></b>
+<em>distance  [comp]</em><dd>
+Shifts  the  bead  numbering  in  component  <em>comp</em>  by  <em>distance</em>,  which  may  be  positive  or
+negative.   If  <em>comp</em>  is  omitted,  all  components  are  affected.   Use  the
+<a  href="#special"><b>special</b></a>
+command  to  turn  on  bead  labels.
+<p>
+<dt>  <b><a  name="swap">swap</a></b>
+<em>compa  compb</em><dd>
+Swaps  components  <em>compa</em>  and  <em>compb</em>.
+</dl>
+<a  name="Relaxing  knots  and  links"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Relaxing  knots  and  links</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+If  you're  running  in  an  interactive  mode,  you  should  almost  never  need  to  enter  any  of  these
+commands,  since  everything  can  be  controlled  using  the  main
+<a  href="ControlPanel.html#gobutton">control  panel.</a>
+<dl>
+<p>
+<dt>  <b><a  name="charge">charge</a></b>
+<em>  value</em><dd>
+Sets  the  charge  to  <em>value.</em>
+<p>
+<dt>  <b><a  name="collision">collision</a></b>
+<em>  [allow  |none  |fast]</em><dd>
+If  the  argument  is  omitted,  prints  the  current  collision  constraint.   If  set  to  <b>allow</b>
+collision  checking  is  disabled.   Mode  <b>none</b>  is  obsolete  and  should  not  be  used.   Defaults  to
+<b>fast.</b>
+<p>
+<dt>  <b><a  name="go">go</a></b>
+<em>  niter</em><dd>
+Performs  <em>niter</em>  iterations  of  the  knot  relaxation.
+<p>
+<dt>  <b><a  name="hooke">hooke</a></b>
+<em>  value</em><dd>
+Sets  the  spring  constant  to  <em>value.</em>
+<p>
+<dt>  <b><a  name="power">power</a></b>
+<em>  value</em><dd>
+Sets  the  exponent  in  the  dynamical  simulation  to  <em>value</em>.
+<p>
+<dt>  <b><a  name="timeincr">timeincr</a></b>
+<em>  value</em><dd>
+Sets  the  time  increment  to  <em>value.</em>
+</dl>
+<a  name="Graphics  display"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Graphics  display</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+These  commands  affect  the  display  of  the  knot  or  link.   It  is  possible  that  they  will  also  affect
+any  output  geometry  in  the  cases  where  the  type  of  surface  (broken,  smooth)  or  quality  is  changed.
+<dl>
+<p>
+<dt>  <b><a  name="alpha">alpha</a></b>
+<em>  value</em><dd>
+Sets  the  transparency  to  <em>value.</em>  Should  be  avoided  because  transparency  isn't  correct
+unless  things  are  drawn  back  to  front.   A  form  of  pseudo-transparency  can  be  obtained  by  using
+<b>blendfunction  one  one</b>  and  <b>zbuffer  false.</b>
+<p>
+<dt>  <b><a  name="backface">backface</a></b>
+<em>  <b>[true  |  false]</b></em><dd>
+Enables  or  disables  removal  of  backfacing  polygons  (see  the  GL  manual).
+<p>
+<dt>  <b><a  name="blendfunction">blendfunction</a></b>
+<em>  sfactr  dfactr  </em><dd>
+Sets  the  blendfunction  (see  the  GL  manual).   The  parameters  must  be  one  of  <b>zero</b>  <b>one</b>
+<b>dc</b>  <b>mdc</b>  <b>sa</b>  <b>msa</b>  <b>da</b>  <b>mda</b>  <b>min-sa-mda</b>  <b>sc</b>
+<b>msc.</b>  This  command  is  an  exception  to  most  commands  in  that  abbreviations  are  not  allowed  for
+the  parameters.   The  default  is  <b>blendfunction  sa  msa.</b>  This  command  may  not  work  on  all
+machines.   Look
+<a  href="ExampleCommands.html#blendfunction">here</a>
+for  some  examples  of  usage.
+<p>
+<dt>  <b><a  name="cheapo">cheapo</a></b>
+<em></em><dd>
+Sets
+<a  href="parameters.html#nsegments"><b>nsegments</b></a>
+to
+<a  href="parameters.html#chnseg"><b>chnseg</b></a>
+and
+<a  href="parameters.html#ncurve"><b>ncurve</b></a>
+to
+<a  href="parameters.html#chncurve"><b>chncurve</b></a>
+.   This  is  useful  if  a  cheaper  quality  rendering  is  desired  in  exchange  for  a  faster  drawing  time.
+See
+<a  href="#luxo"><b>luxo</b></a>
+command.
+<p>
+<dt>  <b><a  name="clrfun">clrfun</a></b>
+<em>  [what]  </em><dd>
+Sets  the  clear  functions  used  each  time  something  is  drawn.   The  value  supplied  for  <em>what</em>
+should  be  one  of  the  following:
+<ul>
+<li><b>fz</b>  |  <b>zf</b>  The  frame  buffer  and  z-buffer  will  be  cleared  (this  is  the  default).
+<li><b>z</b>  Only  the  z-buffer  will  be  cleared.
+<li><b>f</b>  Only  the  frame  buffer  will  be  cleared.
+<li><b>n</b>  Neither  the  frame  buffer  nor  the  z-buffer  will  be  cleared.
+</ul>
+This  function  is  useful  for  several  neat  tricks,  include
+<a  href="Painting.html">painting</a>
+and  getting  beads  to  leave  traces  during  relaxation.   Enter  the  command  without  an  argument  to  see
+the  buffers  which  are  currently  being  cleared.
+<p>
+<dt>  <b><a  name="display">display</a></b>
+<em></em><dd>
+Forces  display  to  be  updated,  even  if  nothing  has  changed.
+<p>
+<dt>  <b><a  name="display  true">display  true</a></b>
+<em></em><dd>
+Forces  the  display  to  be  updated,  even  if  the  parameter
+<a  href="parameters.html#Drawing"><b>Drawing</b></a>
+is  set  to  <b>off</b>.
+<p>
+<dt>  <b><a  name="dnurbs">dnurbs</a></b>
+<em></em><dd>
+Draws  the  knot  as  a  NURBS  (Non-Uniform  Rational  B-Spline.   The  surfaces  output  are  actually  uniform
+and  non-rational,  but  that  would  make  them  BS  surfaces.)  surface.   Pretty  slow,  but  shows  the  same
+surface  that  would  result  from  outputting  a  NURBS  description  to  a  ray-tracing  program.   Not
+recommended.
+<p>
+<dt>  <b><a  name="dbuffer">dbuffer</a></b>
+<em></em><dd>
+Switches  to  doublebuffer  mode.   In  this  mode,  all  drawing  takes  place  in  an  off-screen  buffer.
+<p>
+<dt>  <b><a  name="draw">draw</a></b>
+<em>  what</em><dd>
+Changes  the  way  the  knot  is  drawn.   Currently  only  five  settings  are  of  interest:
+<ul>
+<li><b>normal</b>  Sets  the  drawing  to  its  normal  setting.
+<li><b>spectrum</b>  Draws  the  knot  as  a  ``spectrum''.
+<li><b>flat</b>  Draws  the  knot  flat  shaded.
+<li><b>broken</b>  Draw  the  knot  as  a  broken  surface.   Controlled  by  the
+<a  href="parameters.html#broff"><b>broff</b></a>
+parameter.
+<li><b>sbroken</b>  Combines  the  <b>broken</b>  and  <b>spectrum</b>  options  above.
+</ul>
+<p>
+<dt>  <b><a  name="luxo">luxo</a></b>
+<em></em><dd>
+Similar  to
+<a  href="#cheapo"><b>cheapo</b></a>
+above  except  produces  high  quality  rendering.   Sets
+<a  href="parameters.html#nsegments"><b>nsegments</b></a>
+to
+<a  href="parameters.html#lxnseg"><b>lxnseg</b></a>
+and
+<a  href="parameters.html#ncurve"><b>ncurve</b></a>
+to
+<a  href="parameters.html#lxncurve"><b>lxncurve</b></a>
+.   May  be  very  slow  on  some  machines.
+<p>
+<dt>  <b><a  name="makeobj">makeobj</a></b>
+<em></em><dd>
+Makes  the  current  knot  loaded  into  a  graphical  object.   Can  greatly  speed  up  the  rendering  time  on
+some  machines.   Must  be  used  in  conjunction  with  <b>mode  o</b>  (see  below).   This  command  is  not
+needed  if  a  knot  is  loaded  when  <b>mode  o</b>  is  already  in  effect.
+<p>
+<dt>  <b><a  name="mathsv">mathsv</a></b>
+<em>  material  hue  saturation  value</em><dd>
+Sets  the  colour  of  the  indicated  material.   <em>material</em>  must  be  one  of  the  following:
+<dl>
+<dt><b>knot</b>  <dd>  The  knot  material.   <dt><b>bead</b>  <dd>  The  bead  material.   <dt><b>arrow</b>
+<dd>  The  arrow  material.   <dt><b>4D</b>  <dd>  The  4D  knot  material.
+</dl>
+<em>hue,  saturation,</em>  and  <em>value</em>  must  be  in  the  range  from  0  to  1.
+<p>
+<dt>  <b><a  name="matrgb">matrgb</a></b>
+<em>  material  red  green  blue</em><dd>
+Similar  to
+<a  href="#mat-hsv"><b>mat-hsv</b></a>
+but  uses  RGB  space  instead  of  HSV  space.
+<p>
+<dt>  <b><a  name="mode">mode</a></b>
+<em>  mode</em><dd>
+Sets  the  drawing  mode.   mode  may  be  one  of  the  following:
+<dl>
+<dt><b>s</b>  <dd>  Draws  the  knot  as  a  smooth  tube,  interpolating  between  beads  depending  on  the
+setting  of
+<a  href="parameters.html#ncurve"><b>ncurve</b></a>
+.   <dt><b>c</b>  <dd>  Draws  cylinders  between  beads.   <dt><b>b</b>  <dd>  Draws  the  beads.
+<dt><b>f</b>  <dd>  Draws  the  force  vectors.   <dt><b>a</b>  <dd>  Draws  the  anchors.   <dt><b>C</b>  <dd>
+Draws  identification  clusters  (for  knotted  graphs).   <dt><b>o</b>  <dd>  Draws  the  knot  as  a
+graphical  object.   This  setting  is  mutually  exclusive  of  the  others.
+</dl>
+These  settings  may  be  OR'd  together,  for  example  <b>mode  cfb</b>  will  draw  cylinders,  beads,  and
+force  vectors.   Use  <b>mode  sc</b>  in  conjunction  with  <b>draw  spectrum</b>  for  bizarre  effects.
+<p>
+<dt>  <b><a  name="nonprop">nonprop</a></b>
+<em>xs  ys  zs</em><dd>
+Modifies  the  current  view  matrix  by  a  non-proportional  scaling  factor.   Useful  for  special  effects.
+<p>
+<dt>  <b><a  name="ortho">ortho</a></b>
+<em>  xs  ys  zs</em><dd>
+Sets  the  view  to  an  orthographic  projection  with  clipping  volume  x  in  <em>(-xs,  xs),</em>  y  in
+<em>(-ys,  ys),</em>  and  z  in  <em>(-zs,  zs).</em>
+<p>
+<dt>  <b><a  name="rotate">rotate</a></b>
+<em>[x  |  y  |  z]  angle</em><dd>
+Rotates  the  current  view  about  the  indicated  axis  by  an  amount  of  <em>angle</em>  degrees.   Note
+this  is  not  the  same  as  the
+<a  href="#about"><b>about</b></a>
+command.
+<p>
+<dt>  <b><a  name="rotate  fix">rotate  fix</a></b>
+<em></em><dd>
+Uses  the  current  rotation  matrix  to  modify  the  embedding  of  the  knot  and  then  resets  the  view
+matrix  to  the  unit  matrix.
+<p>
+<dt>  <b><a  name="rotate  unit">rotate  unit</a></b>
+<em>  </em><dd>
+Resets  the  rotation  matrix  to  the  unit  matrix.   This  is  equivalent  to  the
+<a  href="ControlPanel.html#display">unrot</a>
+button  on  the  control  panel.
+<p>
+<dt>  <b><a  name="sbuffer">sbuffer</a></b>
+<em></em><dd>
+Switches  to  singlebuffer  mode.   In  this  mode,  all  drawing  takes  place  in  the  on-screen  buffer.
+This  way  the  knot  may  be  viewed  as  it  is  drawn.   The  command
+<a  href="#zoo"><b>zoo</b></a>
+uses  singlebuffer  mode.
+<p>
+<dt>  <b><a  name="twfix">twfix</a></b>
+<em></em><dd>
+A  command  that  will  automatically  adjust
+<a  href="parameters.html#twist"><b>twist</b></a>
+to  eliminate  the  deficit  angle  seen  when
+<a  href="parameters.html#nsegments"><b>nsegments</b></a>
+is  too  small.   A
+<a  href="../../demos/twfix-demo">demo  script</a>
+is  available  in  the  demos  directory  that  illustrates  the  use  of  this  command.
+<p>
+<dt>  <b><a  name="zbuffer">zbuffer</a></b>
+<em>  <b>[true  |false]</b></em><dd>
+Enables  or  disables  z-buffering.
+</dl>
+<a  name="Geometry  commands"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Geometry  commands</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+These  commands  affect  the  embedding  of  the  knot  or  link  in  space.   They  have  no  effect  on  the
+viewing  transform  but  will  affect  any  surface  models  exported  or  anything  saved  with  the
+<a  href="#save"><b>save</b></a>
+command.
+<dl>
+<p>
+<dt>  <b><a  name="about">about</a></b>
+<em>[x  |  y  |  z]  angle  [comp]</em><dd>
+Rotates  component  <em>comp</em>  of  the  current  link  about  the  indicated  axis  by  <em>angle</em>
+degrees.   This  may  appear  to  be  identical  to  the
+<a  href="#rotate"><b>rotate</b></a>
+command,  but  there  is  a  difference.   This  command  modifies  the  coordinate  values  of  the  link,  thus
+affecting  any  geometric  data  that  might  be  written  out  in  a  file.   The  <b>rotate</b>  command  simply
+modifies  the  viewing  transformation.   If  <em>comp</em>  is  omitted,  all  components  in  the  link  are
+modified.   If  <em>comp</em>  is  the  keyword  <b>last</b>  then  only  the  last  component  is  rotated.
+<p>
+<dt>  <b><a  name="breakup">breakup</a></b>
+<em>  </em><dd>
+<p>
+<dt>  <b><a  name="centre">centre</a></b>
+<em></em><dd>
+Translates  the  knot  or  link  so  its  bounding  is  centered  at  the  origin.
+<a  href="UnimportantInfo.html#spelling">(minor  note)</a>
+<p>
+<dt>  <b><a  name="centre  mass">centre  mass</a></b>
+<em></em><dd>
+Translates  the  knot  or  link  so  its  centre  of  mass  is  at  the  origin.
+<p>
+<dt>  <b><a  name="fitto">fitto</a></b>
+<em>  size</em><dd>
+Fits  the  knot  to  a  radius  of  <em>size.</em>
+<p>
+<dt>  <b><a  name="jitter">jitter</a></b>
+<em>  distance</em><dd>
+Displaces  each  bead  by  a  random  distance.
+<p>
+<dt>  <b><a  name="mangle">mangle</a></b>
+<em>  niters  alpha  redraw  centre</em><dd>
+Mangles  the  knot  (single  component)  <em>niters</em>  times.   Each  time  the  knot  is  mangled  two  beads
+are  chosen  at  random  and  one  of  the  two  arcs  connecting  the  beads  is  rotated  about  the  line  through
+the  beads  by  a  random  angle  (This  function  was  inspired  by  a  talk  given  by  K.  C.  Millett  at  the
+1993  meeting  of  the  American  Mathematical  Society  in  Vancouver.).   The  angle  rotated  is  chosen
+uniformly  between  -<em>alpha</em>  and  +<em>alpha</em>  If  <em>redraw</em>  or  <em>centre</em>  are
+omitted  then  all  mangling  is  done  and  then  the  mangled  knot  is  displayed.   Otherwise  if
+<em>redraw</em>  is  non-zero  the  knot  is  redrawn  every  <em>redraw</em>  manglings.   The
+<em>centre</em>  parameter  is  used  in  a  similar  fashion.   Look
+<a  href="../../demos/mangle-demo">here</a>
+for  a  demo  script  using  this  command.
+<p>
+<dt>  <b><a  name="reflect">reflect</a></b>
+<em>  axis  [comp]</em><dd>
+Reflects  component  <em>comp</em>  of  the  current  link  about  axis  <em>axis</em>  which  must  be  one  of
+<b>x,</b>  <b>y,</b>  or  <b>z.</b>  Reflections  can  be  concatenated,  for  example  <b>refl  xyz</b>  will
+perform  an  inversion  through  the  origin.   If  <em>comp</em>  is  omitted,  all  components  are
+reflected.   If  <em>comp</em>  is  the  keyword  <b>last</b>  then  only  the  last  component  is  reflected.
+<p>
+<dt>  <b><a  name="scale">scale</a></b>
+<em>  xs  ys  zs  [comp]</em><dd>
+Scales  component  <em>comp</em>  of  the  current  link  by  the  factors  <em>xs</em>,  <em>ys</em>,  and
+<em>zs</em>  in  the  obvious  directions.   Not  to  be  confused  with  the
+<a  href="parameters.html#scale"><b>scale</b></a>
+parameter.   If  <em>comp</em>  is  omitted,  all  components  are  scaled.   If  <em>comp</em>  is  the
+keyword  <b>last</b>  then  only  the  last  component  is  scaled.
+<p>
+<dt>  <b><a  name="split">split</a></b>
+<em></em><dd>
+Splits  every  cylinder  in  two.   Doubles  the  number  of  beads.
+<p>
+<dt>  <b><a  name="split  cylinder  ">split  cylinder  </a></b>
+<em>  n  </em><dd>
+Splits  the  <em>nth</em>  cylinder  in  two.
+<p>
+<dt>  <b><a  name="split">split</a></b>
+<em>value</em><dd>
+Splits  any  cylinder  with  a  length  greater  than  <em>value.</em>
+<p>
+<dt>  <b><a  name="swirl">swirl</a></b>
+<em>  angle  [x  |  y  |  z  |  r]</em><dd>
+``Swirls''  the  knot  by  the  <em>angle</em>  degrees  about  the  indictated  axis.   If  the  second
+parameter  is  omitted,  it  defaults  to  <b>y.</b>  Use  <b>r</b>  to  have  a  axis  chosen  at  random.   The
+best  way  to  see  how  this  command  works  is  to  try  it.   This  is  one  of  a  (eventually)  large  number  of
+homeomorphisms  on  three-space  that  will  be  available.
+<p>
+<dt>  <b><a  name="translate">translate</a></b>
+<em>  x  y  z  [comp]</em><dd>
+Translates  component  <em>comp</em>  of  the  current  link  by  the  vector  <em>(x,  y,  z)</em>.   This  is  a
+translation  relative  to  the  current  location.   If  <em>comp</em>  is  omitted,  all  components  are
+translated.   If  <em>comp</em>  is  the  keyword  <b>last</b>  then  only  the  last  component  is
+translated.
+<p>
+<dt>  <b><a  name="translate  to">translate  to</a></b>
+<em>  x  y  z  [comp]</em><dd>
+Translates  component  <em>comp</em>  of  the  current  link  so  that  its  initial  bead  is  located  at  the
+postion  <em>(x,  y,  z)</em>.   Unlike  the  above  command,  this  is  an  absolute  translation.   If
+<em>comp</em>  is  omitted,  all  components  are  translated  so  that  bead  0  is  at  the  indicated
+location.
+</dl>
+<a  name="Producing  pictures"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Producing  pictures</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+These  commands  produce  pictures  of  one  form  or  another.
+<dl>
+<p>
+<dt>  <b><a  name="ascii">ascii</a></b>
+<em>[xsize  [ysize]]</em><dd>
+Makes  a  cheapo  ascii  picture  of  the  knot  or  link.   Most  useful  when  running  without  the  command
+window  or  without  graphics  at  all  (for  example  over  a  modem  on  a  VT100  terminal).   Assumes  that  the
+knot  fits  into  a  bounding  box  of  (-10,  10).   You  can  use  the
+<a  href="#fitto"><b>fitto</b></a>
+command  to  ensure  this.   If  <em>ysize</em>  is  omitted,  it  defaults  to  11/25  of  <em>xsize.</em>  If
+<em>xsize</em>  is  omitted,  it  defaults  to  50.   Look
+<a  href="AsciiExamples">here</a>
+for  some  examples.
+<p>
+<dt>  <b><a  name="ppmout">ppmout</a></b>
+<em>  name  [squish]</em><dd>
+Outputs  what  is  currently  seen  in  the  view  window  as  a
+<a  href="glossary.html#PPM"><b>PPM</b></a>
+(  Portable  Pix  Map.)   file.   The  output  is  written  to  the  file  <em>name.ppm</em>.   Normally  the
+frame  buffer  is  squished  by  the  factor  <em>squish</em>  in  both  directions.   If  <em>squish</em>  is
+omitted,  it  defaults  to  the  current  value  of
+<a  href="parameters.html#ppm-reduce"><b>ppm-reduce</b></a>
+.   Use  a  <em>squish</em>  of  1  to  output  the  frame  buffer  at  full  resolution.   PPM  files  (the  raw
+version)  are  a  good,  simple,  and  useful  file  format  for  colour  images.   There  are  many  tools
+installed  on  most  platforms  that  can  manipulate  PPM  images.
+<p>
+<dt>  <b><a  name="psoption">psoption</a></b>
+<em>keyword  setting</em><dd>
+Sets  several  options  for  Postscript  output  via  the
+<a  href="#psout"><b>psout</b></a>
+command.   Currently,  <em>keyword</em>  can  be  one  of  the  following:
+<ul>
+<li><b>bbox</b>  Changes  the  kind  of  bounding  box  written  to  the  Postscript  file.   Here,
+<em>setting</em>  can  be  one  of
+<ul>
+<li><b>fullpage</b>  Bounding  box  will  be  the  full  page.
+<li><b>smallest</b>  Bounding  box  will  just  enclose  the  figure.
+<li><b>square</b>  Bounding  box  will  be  square  (this  is  the  default).
+</ul>
+<li><b>extension</b>  Sets  the  file  name  extension  (defaults  to  .eps)
+<li><b>font</b>  Sets  the  font  used  for  Postscript  output.   Default  is  <kbd>/Times-Roman</kbd>.
+<li><b>format</b>
+<li><b>texture</b>  Sets  the  file  used  for  Postscript  textures  (applies  to
+<a  href="parameters.html#psmode"><b>psmode</b></a>
+=  30)
+</ul>
+Enter  the  command  without  any  arguments  to  see  the  current  settings.
+<p>
+<dt>  <b><a  name="psout">psout</a></b>
+<em>  name</em><dd>
+Outputs  the  current  knot  as  a  Encapsulated  Postscript  file  (EPSF).  This  command  may  be  used  to
+produce  pictures  of  the  of  the  type  seen
+<a
+href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/postscript/ps-examples.html">here.</a>
+For  this  command  to  work  properly,  the  program  should  be  set  to  <b>mode  s</b>  and
+<a  href="parameters.html#cyl-rad"><b>cyl-rad</b></a>
+should  be  around  1.0.   Also,
+<a  href="parameters.html#nsegments"><b>nsegments</b></a>
+and
+<a  href="parameters.html#ncurve"><b>ncurve</b></a>
+should  not  be  too  high  or  enormous  output  files  will  be  produced.   Different  effects  may  be
+achieved  by  changing  the  value  of
+<a  href="parameters.html#psmode"><b>psmode</b></a>
+.   The  command
+<a  href="#twfix"><b>twfix</b></a>
+should  be  used  first  to  eliminate  any  deficit  angle.
+<p>
+<dt>  <b><a  name="rgbout">rgbout</a></b>
+<em>  name</em><dd>
+Outputs  the  contents  of  the  current  view  window  as  a  Silicon  Graphics  RGB  image  with  filename
+<em>name.rgb</em>.
+<p>
+<dt>  <b><a  name="rleout">rleout</a></b>
+<em>  name</em><dd>
+Outputs  the  contents  of  the  current  view  window  as  a  Imager  RLE  image  with  filename
+<em>name.rle</em>.
+</dl>
+<a  name="Exporting  surface  models"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Exporting  surface  models</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+KnotPlot  can  export  surface  descriptions  to  several  other  software  platforms.   <b>Note  that  all
+these  commands  assume  that  drawing  mode  's'  is  currently  in  effect  (see  the
+<a  href="#mode"><b>mode</b></a>
+command).   </b>Bizarre  effects  will  occur  if  this  is  not  the  case.   Also  they  work  only  for  one
+component  knots.   This  is  a  minor  limitation  because  separate  models  can  be  can  be  exported  for
+each  component  of  a  multi-component  link  (just  use  the
+<a  href="#save"><b>save</b></a>
+,
+<a  href="#load"><b>load</b></a>
+,  and
+<a  href="#keep"><b>keep</b></a>
+commands  in  the  right  order).
+<p>  If  you're  unsure  which  command  to  use,  check
+<a  href="ExportingModels.html">this  table.</a>
+<dl>
+<p>
+<dt>  <b><a  name="dragon">dragon</a></b>
+<em>  filename</em><dd>
+Outputs  a  NURBS  description  to  the  file  <em>filename.hs</em>  in  the  format  suitable  for  input  into
+David  Forsey's
+<a  href="http://www.cs.ubc.ca/nest/imager/contributions/forsey/dragon/top.html">Dragon</a>
+program.
+<p>
+<dt>  <b><a  name="dxf">dxf</a></b>
+<em>  filename</em><dd>
+Outputs  a  DXF  NURBS  description  to  the  file  <em>filename.dxf</em>  suitable  for  input  into  the  ALIAS
+modeller.
+<p>
+<dt>  <b><a  name="optik">optik</a></b>
+<em>filename</em><dd>
+Outputs  the  current  knot  as  a  collection  of  b&eacute;zier  patches  in  a  format  suitable  for  input
+into  the  raytracing  program  Optik.
+<p>
+<dt>  <b><a  name="pfdxf">pfdxf</a></b>
+<em>filename  [option]</em><dd>
+Outputs  a  DXF  polygonal  face  description  of  the  current  knot  to  the  file  <em>filename.dxf</em>.   If
+<em>option</em>  is  present  and  equal  to  <b>broken</b>  or  if  the  current  drawing  function  (see  the
+<a  href="#draw"><b>draw</b></a>
+command)  is  <b>broken</b>  the  knot  is  output  as  a  broken  surface.
+<p>
+<dt>  <b><a  name="poptik">poptik</a></b>
+<em>filename</em><dd>
+Outputs  the  current  knot  as  a  collection  of  polygons  in  a  format  suitable  for  input  into  the
+raytracing  program  Optik.
+<p>
+<dt>  <b><a  name="psdl">psdl</a></b>
+<em></em><dd>
+Outputs  a  SDL  polygonal  face  description  and  model  of  the  current  knot  to  the  files
+<em>knotD.sdl</em>  and  <em>knotM.sdl</em>.
+<p>
+<dt>  <b><a  name="rawout">rawout</a></b>
+<em>  name</em><dd>
+Outputs  the  current  knot  as  a  BPF  (  Basic  Polygon  Format.)   file.   BPF  files  may  be  passed  through
+a  number  of  filters  to  input  knots  into  other  software  packages,  such  as  animation  and  raytracing
+programs.
+<p>
+<dt>  <b><a  name="sdl">sdl</a></b>
+<em>  filename  patchname  shadername</em><dd>
+Outputs  a  NURBS  representation  of  the  knot  in  a  format  suitable  for  input  into  the  Alias  renderer
+or  raytracer.   The  NURBS  patch  is  given  the  name  <em>patchname</em>  and  is  assigned  to  the  shader
+<em>shadername</em>  (defaults  are  <b>Knot</b>  and  <b>KnotShader</b>  respectively).   The  output  is
+written  to  the  file  <em>filename.sdl</em>.   The  parameter
+<a  href="parameters.html#atw"><b>atw</b></a>
+should  be  set  to  <b>on</b>  before  this  command  is  used.
+<p>
+<dt>  <b><a  name="wavefront">wavefront</a></b>
+<em>  filename</em><dd>
+Outputs  a  Wavefront  polygon  description  of  the  current  knot  to  the  file  <em>filename.obj</em>.
+</dl>
+<a  name="Topology  commands"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Topology  commands</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+Most  of  the  commands  in  this  section  will  be  of  interest  to  mathematicians.   They  may  or  may  not  be
+interesting  to  other  people.
+<dl>
+<p>
+<dt>  <b><a  name="alexander">alexander</a></b>
+<em>  </em><dd>
+Computes  the  Alexander  polynomial  for  the  knot  (single  component  only).   Needs  Mathematica
+somewhere  on  the  system.   Sometimes  fails  to  give  any  answer,  but  if  it  does  give  one  it  is  correct
+(I  think!).
+<p>
+<dt>  <b><a  name="alexander  split  ">alexander  split  </a></b>
+<em>  ntries</em><dd>
+Same  as  above  except  attempts  up  to  <em>ntries</em>  times  to  split  problem  cylinders.   If
+<em>ntries</em>  is  omitted,  it  defaults  to  10.
+<p>
+<dt>  <b><a  name="dowker">dowker</a></b>
+<em></em><dd>
+Computes  the  Dowker  code  of  the  current  knot  (single  component  only).
+<p>
+<dt>  <b><a  name="energy">energy</a></b>
+<em></em><dd>
+Computes  Simon's  minimum  distance  energy  [? ]  of  the  current  knot  or  link.
+</dl>
+<a  name="4D  commands"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+4D  commands</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+These  commands  all  deal  with  four-dimensional  knots.
+<p>  If  you're  unsure  which  command  to  use  for  exporting  a  surface  model,  check
+<a  href="ExportingModels.html">this  table.</a>
+<dl>
+<p>
+<dt>  <b><a  name="smovie">smovie</a></b>
+<em>  frames  i1  i2  i3</em><dd>
+Spin  the  knot  in  4D.
+<p>
+<dt>  <b><a  name="spactivate">spactivate</a></b>
+<em>  Lb  Le  [on  |off]</em><dd>
+Enables  or  disables  the  drawing  of  a  spun  knot  in  the  latitude  range  Lb  to  Le.   The  default  is  to
+enable.   Look
+<a  href="ExampleCommands.html#spactivate">here</a>
+for  an  example  of  usage.
+<p>
+<dt>  <b><a  name="spdxf">spdxf</a></b>
+<em>  filename</em><dd>
+Outputs  a  DXF  NURBS  description  of  the  currently  spun  knot  to  the  file  <em>filename.dxf</em>.
+<p>
+<dt>  <b><a  name="spface">spface</a></b>
+<em>  filename</em><dd>
+Outputs  a  polygonal  DXF  description  of  the  currently  spun  knot  to  the  file  <em>filename.dxf</em>.
+<p>
+<dt>  <b><a  name="spsdl">spsdl</a></b>
+<em>  filename</em><dd>
+Outputs  a  Alias  SDL  description  of  the  currently  spun  knot  to  the  file  <em>filename.sdl</em>.
+<p>
+<dt>  <b><a  name="spin">spin</a></b>
+<em>  theta  phi  chi</em><dd>
+First  spins  the  knot  about  the  spin  plane.   Then  performs  three  rotations  in  4-space  by  the  given
+angles  about  the  planes  specified  by  the  saxes  command.   Final  result  is  a  knotted  2-sphere  in
+4-space  (see
+<a  href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/spun-knot.html">spun  knot</a>
+and
+<a  href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/twist-spun-knot.html">twist  spun
+knot</a>
+examples).
+<p>
+<dt>  <b><a  name="splane">splane</a></b>
+<em>[bead1  bead2  [angle]]</em><dd>
+Without  any  arguments,  prints  out  the  current  settings  for  the  spin  plane.   Otherwise  draws  the
+spin  plane  between  beads  <em>bead1</em>  and  <em>bead2</em>  and  sets  the  spin  plane  angle  to
+<em>angle</em>  degrees.   This  command  will  turn  on  the  drawing  of  the  spin  plane.   You  can  also
+turn  the  spin  plane  on  and  off  with  the
+<a  href="#special"><b>special</b></a>
+command  or  by  using  the  radio  button  in  the  main
+<a  href="ControlPanel.html#toppanel">control  panel.</a>
+<p>
+<dt>  <b><a  name="4dplane">4dplane</a></b>
+<em>plane  axis1  axis2</em><dd>
+Sets  a  plane  in  which  four  dimensional  rotations  are  performed.   With  no  arguments  prints  the
+current  settings  of  the  rotation  planes.   Check
+<a  href="ExampleCommands.html#4dplane">here</a>
+for  some  examples.
+<p>
+<dt>  <b><a  name="4dto3d">4dto3d</a></b>
+<em>  projection</em><dd>
+Sets  the  method  of  projection  from  4D  to  3D  for  the  higher  dimensional  surfaces.   Currently
+projection  must  be  one  of  the  following:
+<dl>
+<dt><b>ortho</b>  <dd>  uses  an  orthographic  projection.   <dt><b>persp</b>  <dd>  uses  a  perspective
+projection.   The  distance  of  the  4D-eye  from  the  origin  is  set  via  the  parameter
+<a  href="parameters.html#4deye"><b>4deye</b></a>
+.   <dt><b>hopf</b>  <dd>  this  uses  the  Hopf  mapping  from  4D  to  3D.  Can  be  expected  to  produce  weird
+results.
+</dl>
+</dl>
+<a  name="Other  commands"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Other  commands</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+<dl>
+<p>
+<dt>  <b><a  name="construct">construct</a></b>
+<em>name  [par1  [par2  [par2  ...   [parN]]]]</em><dd>
+Invokes  the  constructor  <b>KP-cons-name</b>  with  the  given  paramters.   Examples  of  constructors,
+<a  href="../../demos/KP-cons-cable">KP-cons-cable,</a>
+<a  href="../../demos/KP-cons-symm">KP-cons-symm,</a>
+and  others  are  in  the  demos  directory.
+<p>
+<dt>  <b><a  name="Fun">Fun</a></b>
+<em></em><dd>
+This  command  is  not  documented  and  never  will  be.
+<a  href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/test.html"><img
+src="inlines/Qmark.gif"  align=middle></a>
+<p>
+<dt>  <b><a  name="mf">mf</a></b>
+<em></em><dd>
+Knots  and  (soon?)   links  can  be  exported  as  Metafont  programs.   This  feature  is  under  development,
+but  is  available  for  test  purposes  and
+<a
+href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/metafont/metafont.html">examples</a>
+can  be  found.
+</dl>
+<hr>  <p>  <font  size=1>  <center>  This  HTML  file  was  produced  at  5:42  p.m.  on  February  7,  1997
+directly  from  the  LaTeX  source.   </center>  </font>  <p>
+<hr>
+[
+<a  href="KnotPlotManual.html">KnotPlot  Manual</a>
+],  [
+<a  href="ViewWindow.html">View  Window</a>
+],  [
+<a  href="ControlPanel.html">Control  Panel</a>
+],  [
+<a  href="CommandWindow.html">Command  Window</a>
+],  [
+<a  href="KPManOverView.html">Overview</a>
+]  <br>  [
+<a  href="http://www.cs.ubc.ca/spider/scharein">Rob  Scharein's</a>
+main  WWW  site  ],  [
+<a  href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/KnotPlot.html">KnotPlot  Site</a>
+]
+</body>  </html>

@@ -1,0 +1,16 @@
+echo 
+echo 
+echo "  *** Trying to make into two components by changing breakline pattern."
+echo "      (will abort after 20 seconds if unsuccessful)"
+echo -f
+
+silent=t
+tfunc reset
+until timelimit 20
+delete all
+until Ncomp 2 "func exec 5;func exec 9;disp t"
+silent=f
+
+if \pncomps == 2 then "echo Success!  Number of components is two!" else "echo Procedure failed!!  :-("
+if \pncomps != 2 then "echo Try pressing SHIFT-F9 and then SHIFT-F11 again."
+if \pncomps == 2 then "echo Try also SHIFT-F10 or SHIFT-F12."

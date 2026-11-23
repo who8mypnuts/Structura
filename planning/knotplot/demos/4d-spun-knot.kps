@@ -1,0 +1,113 @@
+reset all
+
+back=black
+if \rr3 < 1 then "back=#135"
+
+disp t
+
+silent=t
+verbose=f
+
+func init 
+func silent
+
+func 5 "idle {spin tincr 1 0 0}"
+func 6 "idle {spin tincr 0 1 0}"
+func 7 "idle {spin tincr 0 0 1}"
+func 8 "idle {spin tincr 1 2 3}"
+
+func 9  "idle {spin tincr 2 1 0}"
+func 10 "idle {spin tincr 0 2 1}"
+func 11 "idle {spin tincr 1 0 2}"
+func 12 "idle {spin tincr 1 1 1}"
+
+func c 1 "glop poly l;par4=2"
+func c 2 "glop poly f;par4=1"
+if \rr2 < 1 then "func exec c 1" else "func exec c 2"
+
+mode cb
+cyl = .06
+load 3.1ts
+splane 48 0 7
+tsba=6
+tsbb=42
+tsn=0
+
+disp t 
+
+%   (par_4d_w, "4dw", 10.0);
+%   (par_4d_eye, "4deye", 40.0);
+%   (par_4d_slice_direction, "4dsl", 0);
+%   (par_4d_spin_sections, "4dss", 30);
+%   (par_4d_spin_plane_angle, "4dspangle", 0.0);
+%   (par_4d_value_mode, "4dvalue", 0);
+%   (par_4d_value_depth, "4dvdepth", 0.0);
+%   (par_4d_value_par0, "4dv0", 0.5);
+%   (par_4d_value_par1, "4dv1", 0.2);
+%   (par_draw_mode_spun_knot_what, "4dsm", 1);
+%   (par_draw_mode_spun_knot_colour, "4dscm", 2);
+%   (par_4d_curve_hue, "4dhue", 0.0);
+%   (par_4d_curve_saturation, "4dsat", 0.8);
+%   (par_4d_curve_huemult, "4dhmult", 1.0);
+
+
+4dop disp s
+
+4dw = 10.000000
+4deye = 40.000000
+4dsl = 0
+4dss = 80
+4dspangle = 7.000000
+4dvalue = 0
+4dvdepth = -1.104711
+4dv0 = 0.500000
+4dv1 = 0.200000
+4dsm = 0
+4dscm = 1
+4dhue = 0.000000
+4dsat = 0.800000
+4dhmult = 3
+disp t
+spin 0 0 0
+disp t
+spin 0 0 0
+disp t
+spin r r r
+spin tincr \rr[4/11]
+spin tincr 0 0 0   % sets last time
+
+txt font 4
+txt centre
+txt c 20 "4D spun knot"
+txt on
+
+txt font 2
+txt fcolour hsv:102.2/.4/.4 .6
+txt fill on
+txt right
+txt lineskip -24
+txt -20 20 "knot" "4dop disp ~s"
+txt -20 a "wireframe" "func exec c \ppar4"
+txt -20 a "hypercube" "4dop disp ~c"
+txt -20 a "4D axes" "4dop disp ~a"
+txt fill off
+txt -20 a Toggle:
+
+if \rr10 < 7 then "4dop disp acs"
+
+
+
+idle "spin tincr 1 2 3"
+
+
+silent=f
+
+echo " "
+echo " "
+%echo "Press F1 to toggle 4d axes"
+%echo "Press F2 to toggle hypercube"
+%echo "Press F3 to toggle spun knot"
+echo "Press F1 to rerun"
+echo "Press F2 - F12 for various spin modes"
+
+

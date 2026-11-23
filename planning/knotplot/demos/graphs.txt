@@ -1,0 +1,8 @@
+par0
+20 read handcuff-graph.kps
+30 read thetacurves.kps
+70 read knot-cage.kps
+40 read random-graphs1.kps
+20 read complete-graph.kps
+40 read 10dec05a.kps
+50 read glueing-graphs.kps

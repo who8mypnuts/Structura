@@ -1,0 +1,21 @@
+require KPbuild 4990
+
+alias ~retrieveMin  nop
+play 66
+
+tfunc reset
+bfacf stop
+load |min
+centre
+show none
+scenery off
+PxQ-save
+notify state Finished
+
+alias ~presentNicely "scale=\rr[.4/.6];untran;rotate i \rr+-44;rotate j \rr+-44"
+
+
+
+
+
+

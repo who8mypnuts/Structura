@@ -1,0 +1,10 @@
+%% Generated Mon Jun 12 10:43:33 2006
+%% with command line: c:\usr\knotplot\resource\win32\multiif.exe graphs.txt
+par0 = \rr270
+if par0 < 20 then "read handcuff-graph.kps;par0=272"
+if par0 < 50 then "read thetacurves.kps;par0=272"
+if par0 < 120 then "read knot-cage.kps;par0=272"
+if par0 < 160 then "read random-graphs1.kps;par0=272"
+if par0 < 180 then "read complete-graph.kps;par0=272"
+if par0 < 220 then "read 10dec05a.kps;par0=272"
+if par0 < 271 then "read glueing-graphs.kps;par0=272"

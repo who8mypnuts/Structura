@@ -1,0 +1,32 @@
+% 2 January 2023
+% from 8sep03e.kps in ~/projects/NewMIC/knotplot/projects/pictures
+
+reset all
+
+background = white
+
+load c3/13.k
+fitto 13
+
+luxo
+sradius = 0.520974
+vscale = 0.268509
+
+vcn = 3
+vcphi = 5.490931
+vcA = 1
+
+saturation = 0
+
+<lights9.kps
+twfix
+
+#2 echo
+echo enter the command ortho to see
+echo actual image used for the icon
+echo
+
+
+
+
+

@@ -1,0 +1,28 @@
+require KPbuild 4998  % for view command (replacement for viewmatrix)
+
+reset all
+back=black
+
+func 2 <random-lights
+func 1 <ConeyMagic.kps
+load coneyweave.k
+
+trx = 3.193645
+try = -1.337632
+scale = 0.487033
+cyl-rad = 0.103873
+view matrix -0.042131 0.998636 0.030702 0.000279 -0.030717 0.999522
+
+scen on
+scen obj coney-rev
+%scen obj testC 0 0 -4
+scen scale 4
+scen obj snub_disicosidodecahedron_plus_dual 0 0 -4
+
+cmode 1 138.699592 124.041292 1.988674
+cmode 2 5.000000 2.000000 2.000000
+cmode 3 0.843475 0.284653 0.154694
+draw spe
+
+luxo
+

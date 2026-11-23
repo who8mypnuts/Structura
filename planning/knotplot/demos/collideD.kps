@@ -1,0 +1,89 @@
+require KPbuild 4691
+reset all
+alias ~ah "txt hide \rr[7/8]"
+
+verbose=f
+silent=t
+func init
+func silent
+func 1 <collideD.kps
+func 2 velocity rad \rr[-.1/-1]
+func 3 "dupl;trans 6 0 0 last"
+
+line dir 1 0  0
+line num 9
+line 10 0 0
+vcn=1
+vcphi=3.723
+vcA=1
+
+
+persp 60 .2 120
+
+
+Draw=f
+ago 22
+Draw=t
+
+scale=.21
+
+trans 30 0 0 
+#3 dup;about z 90 0;about z -90
+jitter .2
+
+ago 1
+
+force 1
+velmag=.001
+velf=t
+
+func exec 2
+go
+draw broke
+tfunc 3 "func exec 2" 0 rep 1 3
+par0=\rr360
+tfunc 3 "hstart=\ppar0;test paradj 0 1 \rr+-20" 0 rep .1 1
+
+mathsv b 0 0 1 d
+bead=1
+alias ~startsound <sound/thingtoss.kps
+
+txt on
+txt fcolour royalblue .6
+txt lineskip -25
+txt right
+~ah
+txt fill on
+txt -15 15 fullscreen "full togg"
+txt -15 a  sound "~zzap;alias ~zzap nop;~startsound;oal vmlimit 22"
+txt fill off
+txt -10 a toggle:
+
+txt cent
+txt fill on
+
+txt clobber on
+
+~ah
+
+
+
+alias ~bbb "~ah;txt fill on;txt font 3;txt cent"
+alias ~warn "txt fill off;txt font 4;txt hide 99999;txt c 60 {WARNING: zapping can be loud! Adjust your volume level.}"
+
+
+alias ~zzap ~zap
+alias ~free "~bbb;txt c 20 free {load |x;oal velmul \rr[11/111];oal gain all 1;zero;~zap}"
+
+alias ~zap "~bbb;txt c 20 zap! {save |x;scale \rr[.06/.3];oal gain all .5;oal veldiv \rr[11/111];~free;txt delete WARNING};~warn;alias ~warn nop"
+
+
+~ah
+txt autohide on   % should be the last txt command
+
+silent=f
+
+echo
+echo
+echo
+echo

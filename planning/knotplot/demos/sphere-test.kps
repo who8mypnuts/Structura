@@ -1,0 +1,41 @@
+reset all
+
+func init 
+func silent
+verbose=f
+
+silent=t
+func 1 <sphere-test.kps
+func 2 "idle;Draw=t;tfunc reset;test sphere;trans to 0 0 0;open all"
+
+mode cB
+scale = 0.270824
+cyl-rad = 0.060000
+bead-radius = 0.180000
+verbose=f
+Draw=f
+elecforce = off
+mechforce = off
+thermalforce = on
+thfstrength = 0.1
+
+func 12 "knot 1;jitter \rr4;trans to 0 0 0"   % don't want `open all' here
+func exec 12
+
+idle "save |x;test sphere;open 0;trans to 0 0 0;disp t;load |x;ago 1"
+
+tfunc \rr[1/4] "func exec 12" 0 rep 1 4
+
+func 10 "idle {test sphere}"
+
+func s 1 "echo Press F5 to load a new knot"
+func 3 "func exec 2;func exec 10;edit join f prohibit f;mode bc;panel set Edit;func exec s 1"
+
+func 5 "func exec 12;open all;test sphere;trans to 0 0 0"
+
+silent=f
+echo 
+echo 
+echo " *** Press F2 to stop animation"
+echo "     Press F3 to edit "
+echo

@@ -1,0 +1,16 @@
+frame 0 num 10
+glue f1 f0
+glue f2 f0
+glue f3 f0
+glue f4 l0
+glue l4 l1
+glue f5 l0
+glue l5 l2
+glue f6 l0
+glue l6 l3
+glue f7 l1
+glue l7 l2
+glue f8 l1
+glue l8 l3
+glue f9 l2
+glue l9 l3

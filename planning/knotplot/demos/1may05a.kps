@@ -1,0 +1,101 @@
+reset all
+
+echo
+echo
+echo
+
+silent=t
+trackmouse rotate off
+par0=\rr360
+par1=\rr360
+if \rr2 < 1 then "par1=\ppar0"
+hstart=\ppar0
+ortho
+back=0
+mathsv k \ppar1 1 1 e
+
+% also sbrok
+
+if \rr2 < 1 then "draw brok;brof=\rr[-4/4]"
+
+func init
+func silent
+func 1 <1may05a.kps
+
+par0 = 1
+func c 1 "echo blending on;silent=t;blend one one;par0=2;silent=f"
+func c 2 "echo blending off;silent=t;blend sa msa;par0=1;silent=f"
+func 2 "func exec c \ppar0"
+
+par2 = 3
+func c 3 "echo zbuffer off;zbuff f;par2=4"
+func c 4 "echo zbuffer on;zbuff t;par2=3"
+func 3 "func exec c \ppar2"
+
+par1 = 5
+func c 5 "tanf=on;par1=6"
+func c 6 "tanf=off;par1=5"
+func 4 "func exec c \ppar1"
+
+func 5 "draw brok;twfix \rr+-22222;echo *** Press again to get a different effect!"
+func 6 "cyl=\rr[.3/3]"
+func 7 "jit \rr[.4/3];scale 1 1 0"
+func 8 revb \ri1
+func s 4 "echo;echo *** Try pressing F5!"
+func s 5 "silent=t;unknot \ri[44/166] \ri[5/10] 0 0 \rr+-9;jit .1;scale 1 1 0;silent=f"
+func s 6 "silent=t;unknot \ri[44/166] \ri[1/5]  0 0 \rr+-9;jit .1;scale 1 1 0;silent=f"
+func 11 "tfunc reset;go 9999999"
+func 12 "tfunc reset;go 0"
+
+tfunc allowreset
+
+
+mode sE
+ncurve = 10
+nsegments = 3
+scale = \rr[.1/.2]
+
+
+func exec s \ri[5/6]
+<randorient.kps
+silent=t
+
+
+fixcofm=t
+coll a
+velf=t
+force 1
+go
+
+if \rr3 < 2 then "func exec 4"
+tanmag = \rr[.005/.1]
+func exec 6
+
+new=f
+
+tfunc \rr[2/6] "func exec s \ri[5/6];func exec s 4"
+%tfunc \rr[1/6] "func exec s \ri[5/6]"
+tfunc \rr[25/88] "func exec s \ri[5/6]"
+tfunc \rr[22/88] "silent=t;tfunc reset;silent=f"
+
+% seems blending off and zbuffer off not good
+% multiif < 1may05a.txt
+par4 = \rr300
+if par4 < 100 then "func exec 2;silent=t;par4=302"
+if par4 < 200 then "nop;par4=302"
+if par4 < 301 then "func exec 2;silent=t;func exec 3;par4=302"
+
+
+silent=f
+
+echo " *** I'm not sure what this demo is supposed to show, but click again or press F1 to rerun!  Always different..."
+echo -n "     "
+
+
+if \ppar0 == 1 then "echo -n blending off (F2 toggles on/off)" else "echo -n blending on (F2 toggles off/on)" 
+echo -n ", "
+if \ppar2 == 3 then "echo zbuffer on (F3 toggles off/on)" else "echo zbuffer off (F3 toggles on/off)" 
+
+echo -n "     "
+if \ppar1 == 6 then "echo swizzler on (F4 toggles off/on)" else "echo swizzler off (F4 toggles on/off)" 
+

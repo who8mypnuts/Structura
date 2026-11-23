@@ -1,0 +1,9 @@
+draw norm
+mathsv s 0 0 0 e
+mathsv s 0 0 0 a
+mathsv s 0 0 0 s
+parsave
+silent=t
+colour all black
+parrestore
+

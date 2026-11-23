@@ -1,0 +1,15 @@
+<collideA.kps
+
+func 1 <openal-demo2.kps
+
+leng
+
+oal source 0 attach bead 0 wav h on
+oal source 1 attach bead 11 wav h on
+oal source 2 attach bead 22 wav h on
+oal source 3 attach bead 33 wav h on
+oal source 4 attach bead 44 wav h on
+oal source 5 attach bead 55 wav h on
+
+oal doppler 1 .04
+

@@ -1,0 +1,99 @@
+
+
+txt lineskip 22
+txt font 3
+txt centre
+txt c -70 "new knot" <fwf.kps
+
+txt fill off
+txt left
+txt 10 -5 " "
+
+if \pgrav == 1 then "txt 10 a gravity_is_on" else "txt 10 a gravity_is_off"
+txt fill on
+txt 15 a "toggle on/off"  "func exec s 4"
+func s 4 "if \pgrav == 1 then {grav=f;grav=0} else {grav=t;grav=1};read fwf-aux.kps"
+txt fill off
+txt 10 a " "
+
+
+if \pelec == 1 then "txt 10 a electric_force_is_on" else "txt 10 a electric_force_is_off"
+txt fill on
+txt 15 a "toggle on/off"  "func exec s 6"
+func s 6 "if \pelec == 1 then {elec=f;elec=0} else {elec=t;elec=1};read fwf-aux.kps"
+txt fill off
+txt 10 a " "
+
+
+if \pmech == 1 then "txt 10 a mechanical_force_is_on" else "txt 10 a mechanical_force_is_off"
+txt fill on
+txt 15 a "toggle on/off"  "func exec s 1"
+func s 1 "if \pmech == 1 then {mech=f;mech=0} else {mech=t;mech=1};read fwf-aux.kps"
+txt fill off
+txt 10 a " "
+
+if \panch == 1 then "txt 10 a archors_are_on" else "txt 10 a anchors_are_off"
+txt fill on
+txt 15 a "toggle on/off"  "func exec s 5"
+func s 5 "if \panch == 1 then {anch=f;anch=0} else {anch=t;anch=1};read fwf-aux.kps"
+txt fill off
+txt 10 a " "
+
+
+if \pvelf == 1 then "txt 10 a velocity_force_is_on" else "txt 10 a velocity_force_is_off"
+txt fill on
+txt 15 a "toggle on/off"  "func exec s 2"
+func s 2 "if \pvelf == 1 then {velf=f;velf=0} else {velf=t;velf=1};read fwf-aux.kps"
+txt fill off
+txt 10 a " "
+
+if \ptherm == 1 then "txt 10 a thermal_force_is_on" else "txt 10 a thermal_force_is_off"
+txt fill on
+txt 15 a "toggle on/off"  "func exec s 3"
+func s 3 "if \ptherm == 1 then {ther=f;therm=0} else {ther=t;therm=1};read fwf-aux.kps"
+
+txt fill off
+txt 10 a " "
+txt 10 a " "
+
+txt fill on 
+txt 15 a "randomize on/off" <fwf-randomize.kps
+
+txt fill off
+txt 10 a " "
+txt 10 a " "
+
+txt 10 a "display force vectors:"
+txt fill on
+txt 15 a "toggle on/off" "mode ~f"
+
+
+
+test drag on
+
+txt centre
+txt fill on
+txt group 108
+txt lineskip -24
+txt font 3
+txt c 40 OK "txt delete group 108"
+txt fill off
+txt c a "Click down on any bead and try dragging it"
+txt lineskip -18
+txt c a "Direct manipulation is enabled"
+txt group 0
+
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+
+func c 1 "if \pgrav == 1 then {echo;echo;echo *** NOTE, If gravity is on and anchors off, your knot may disappear!;echo Turn anchors on to get it back;echo}"
+
+if \panch == 0 then "func exec c 1"
+
+txt hideall 6 8
+txt autohide on

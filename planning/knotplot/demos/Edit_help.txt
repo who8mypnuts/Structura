@@ -1,0 +1,43 @@
+Edit Help
+
+Use this control panel to interactively edit knots in three dimensions.  When 
+in the editor, use the mouse in the view window in the following ways:
+
+   --- clicking down on the knot itself will perform some sort of editing
+       operation on the knot.  Just before you click you should see visual 
+       feedback as to what operation will occur.  Also, if `help text' is 
+       selected, there will be helpful text in the view window as well. 
+
+   --- clicking down in a blank area away from the knot will perform the usual
+       view changing operations (left mouse to rotate, middle mouse to 
+       translate, right mouse to scale)
+
+Which edit operation is performed can be changed in the `Default operation' 
+section.  The radio buttons there change the operation that is done when no
+keys are pressed.  Any of the non-default operations can be performed without
+changing the default operation by pressing down the indicated key before you
+click the mouse.  Make sure the view window has keyboard focus before you press
+a key.  Example uses are:
+
+   --- suppose you mostly want to move things, but occasionally want to delete
+       stuff.  in this case leave the default operation at `move bead/cyl' and
+       just before you want to delete something press and hold the `d' key. 
+
+   --- perhaps you love adding loops, then check the `add loop' operation. 
+       add your loops as desired, press `m' when you want to move something.
+
+For all of the operations, visual feedback is given when you hover the mouse
+over the knot.
+
+Movement constraints:  use the radio buttons in this section to restrict 
+the direction that things can be moved in.  Note that `xy' means `don't allow
+movement in the x or y direction', i.e., move only in the z-direction.  You
+may have to rotate the scene to perform movement if you use these constraints. 
+It can be helpful to turn on `xyz axes' in the Display section to see what
+the directions are. 
+
+
+Display Section
+
+For convenience these controls are provided here.  They are copies of what is
+found on the Main panel and are described in the help page there. 

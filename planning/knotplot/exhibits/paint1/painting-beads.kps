@@ -1,0 +1,34 @@
+% reset all   % don't want to do this!
+
+if par1 != 325752 then "<painting-init.kps"
+
+if \rr15 < 1 then "delete all;untran"
+
+%%%% <thing3-aux
+
+silent=t
+Draw=f
+if \rr99 < 33 then "frame \ri[0/23];about z \rr360"
+if \rr99 < 80 then "torus \rr99 \rr99 \rr99;about z \rr360" else "unknot \ri[3/30] \rr[1/10];about z \rr360"
+
+<randorient.kps
+
+if \rr99 < 15 then "reflect r"
+if \rr99 < 1 then "read thing1-multi.kps"
+mode b
+scale=\rr[.5/1]
+broff=\rr[-8/2]
+ncur=\ri[22/35]
+nseg=\ri[11/22]
+d-to=\rr[2/12]
+twist=\rr+-555
+clrfun zf
+disp t
+clrfun z
+Draw=t
+silent=f
+
+par0=\rr[-2/2]
+
+idle "ago 1;about z \ppar0"
+

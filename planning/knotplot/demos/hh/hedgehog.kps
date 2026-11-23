@@ -1,0 +1,206 @@
+%`-
+
+require KPbuild 4154
+
+reset all
+
+silent=t
+
+
+func init
+func silent
+ccmode = 2
+hstart=22
+
+if stereo then "back=0"
+
+func 1 <hedgehog.kps
+
+verbose=f
+
+
+par4 = 30
+
+txt fcolour royalblue .5
+
+txt font 4
+txt push
+txt centre
+txt c -20 "Hedgehog Knots"
+txt font 3
+txt c -50 "(Klenin, Vologodskii, Anshelevich, Dykhne & Frank-Kamenetskii, click on `?' for more info)"
+txt pop
+txt fill on
+txt right
+txt -14 14 ? "help popup hedgehog.kps handoff"
+
+txt clobber on
+
+
+txt font 2
+txt left
+txt lineskip -24
+txt fill on
+txt select on
+txt scolour #000
+txt sfcolour orange .9
+
+alias ~new "delete all"
+
+
+alias ~showit "disp t"
+par1=0
+
+func s 2 "if idling then {mode l}"
+
+txt group 102
+txt 15 40 luxo "alias ~showit disp;par1=0;mode cB"
+txt set selected  % sets the last txt object to be selected
+txt 15 a cheapo "alias ~showit disp;par1=1;func exec s 2"
+txt 15 a off  "alias ~showit nop;par1=0"
+txt fill off
+txt 10 a "show process:"
+
+%alias ~alignafter "align axes legacy;echo aligning axes..."  ... intrepreted as a command on Linux!
+alias ~alignafter "align axes legacy"
+alias ~rotatebefore untran
+
+par0 = 108
+
+alias ~beads "txt unselect group 108;par0=$0"
+alias ~setbeads "echo;echo;echo equivalent to the command;echo ~beads $0;par0=$0;echo use the ~beads command in the command window to set a custom number of beads"
+
+
+txt fill on
+txt group 108
+txt 15 a1.3 1008 "~setbeads 1008"
+txt 15 a 432 "~setbeads 432"
+txt 15 a 378 "~setbeads 378"
+txt 15 a 324 "~setbeads 324"
+txt 15 a 270 "~setbeads 270"
+txt 15 a 216 "~setbeads 216"
+txt 15 a 162 "~setbeads 162"
+txt 15 a 108 "~setbeads 108"
+txt set selected
+txt 15 a 54 "~setbeads 54"
+txt fill off
+txt 10 a "N beads:"
+
+alias ~length "txt unselect group 7347980;par2=$0"
+alias ~setlength "echo;echo;echo equivalent to the command;echo ~length $0;par2=$0;echo use the ~length command in the command window to set a custom length"
+
+txt group 7347980
+txt fill on
+txt 15 a1.3 4.0 "~setlength 4"
+txt 15 a 2.8 "~setlength 2.8"
+txt 15 a 2.0 "~setlength 2"
+txt set selected
+par2=2
+txt 15 a 1.4 "~setlength 1.4"
+txt 15 a 1.0 "~setlength 1"
+txt 15 a 0.7 "~setlength 0.7"
+txt fill off
+txt 10 a "edge length:"
+
+txt group 0
+txt right
+txt fill on
+txt select off
+txt -15 60 fullscreen "full toggle"
+txt fill off
+txt -10 a toggle:
+
+alias det "alex -1"
+txt fill on
+txt -15 a1.3 det "echo;echo;echo;echo;echo Determinant is;det"
+txt -15 a ACN "echo;echo adding some jitter to avoid problems with antiparallel edges;save |tmp;jitter .01;acn;load |tmp"
+txt -15 a rog "echo;echo;echo Radius of gyration is;rog"
+txt fill off
+txt -10 a calc:
+
+txt on
+
+stus = 4
+
+alias ~hh "hedgehog \ppar0 \ppar2"
+alias ~cease <hedgehog-stop.kps
+
+
+<hedgehog-start.kps
+
+
+
+mode cB
+cyl-rad=.14
+bead=.23
+
+silent=f
+
+echo 
+echo 
+echo 
+echo 
+echo " *** Click on the `?' button in the view window for more info"
+echo "     Press F1 to rerun demo"
+echo
+
+
+
+
+exit
+
+%`+
+
+Random knots using the hedgehog algorithm
+
+The hedgehog algorithm is one method to create a self-avoiding equilateral
+closed random walk.  
+
+
+Things to try:
+
+  --- While simulation is stopped, set the edge length and number of beads
+      using the buttons provided (when you click on a button, instructions 
+      will be printed in the command window on how to set custom values).
+      
+      Then click on the `make knot' button to attempt to make the knot. 
+
+  --- You can change the edge length and/or number of beads while KnotPlot
+      is searching for a knot.  Short edges with many beads take a long 
+      time to find. 
+
+  --- Try changing the `show progress' to either `cheapo' or `off' to speed
+      up the seaching process.  Note that when off you won't see the display
+      updating (it may appear frozen, but isn't).  Just click and drag in the
+      view window and you will see things are still happening. 
+
+  --- Calculate the radius of gyration, average crossing number and knot
+      determinant using the buttons on the right side of the view window. 
+
+Important points:
+
+  --- KnotPlot searches for knots with have a certain amount of volume 
+      exclusion (non-adjacent edges aren't allowed to be too close). 
+      The acceptance criterion is that the knot must be a "safe position".
+      What this means is that no two non-adjacent edges are closer than
+      a certain small distance.  The distance is the value of the parameter
+      "close", which you can change using the slider on the Dyna panel. 
+      You can also type in a value explicitly, for example
+     
+            close = .2
+
+      or effectively turn off volume exclusion by entering
+
+            close = 0
+
+      Be warned that if "close" is less than "max-dr" (also on Dyna panel)
+      then KnotPlot's relaxation mechanism will not work properly. 
+
+
+References:
+
+Klenin, K.V., Vologodskii, A.V., Anshelevich, V.V., Dykhne, A. M. and 
+Frank-Kamenetskii, M.D.,
+Effect of excluded volume on topological properties of circular DNA
+J. Biomol. Struct. Dyn., v. 5  p. 1173-1185, 1988
+

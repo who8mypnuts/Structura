@@ -1,0 +1,18 @@
+% This constructs the knot 8.15 (Conway / Rolfsen)
+% as a Lissajous knot, and then relaxes it to 
+% presentation that has only 8 crossings.
+
+% It is especially interesting to see the collision 
+% avoidance working in this example.
+
+reset all
+mode cb
+cyl = .06
+
+lissajous 3 7 10 3.08 .72
+#18 about x 10
+
+alert "Now relax the knot." OK
+pop
+disp
+

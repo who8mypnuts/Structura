@@ -1,0 +1,24 @@
+<magnetic1.kps
+load |hopf
+delete 1
+refl r
+fixcofm=t
+if \rr2 < 1 then "revb"
+
+field gsize 3 ncell 7 npoi 216
+scale=.54
+align ax
+
+dupl
+revb rand
+
+
+if \rr3 < 1 then "about y 90 0;trans 0 0 \rr[2/3] 0"
+
+trans \rr+-1 \rr+-1 \rr[1/2] 0
+
+centre
+
+txt cent
+txt fill on
+txt c 33 collide "veloc rad -3"

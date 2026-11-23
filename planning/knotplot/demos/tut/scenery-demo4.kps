@@ -1,0 +1,67 @@
+require KPbuild 4739
+
+reset all
+scale=.15
+
+func init
+func silent
+silent=t
+
+func 1 <tut/scenery-demo4.kps
+
+txt on
+txt font 4
+txt lineskip 22
+
+txt 10 -20 file doc/scenery-demo4.txt
+
+txt fcolour royalblue .5
+txt scolour #000
+txt sfcolour orange .9
+
+txt 10 a.8 "create:"
+txt fill on
+
+txt clobber on
+
+
+txt space @
+
+txt fill on
+
+txt clobber on
+
+
+txt space @
+
+txt 80 a0 band <tut/band.kps
+txt R a0 quad <tut/annu1.kps
+txt R a0 quad <tut/annu2.kps
+txt R a0 quad <tut/annu3.kps
+txt lineskip 40
+txt 80 a "two sided A" <tut/two-sided.kps
+txt R a0 "two sided B" <tut/two-sided-knot.kps
+txt R a0 "two sided BB" <tut/two-sided-BB.kps
+
+
+txt push
+txt lineskip 24
+txt right
+txt fill off
+txt -10 -20 "scenery demos:"
+txt fill on
+txt font 3
+txt select on
+txt -10 a "part 4" <tut/scenery-demo4.kps
+txt set selected
+txt L a0 "part 3" <tut/scenery-demo3.kps
+txt L a0 "part 2" <tut/scenery-demo2.kps
+txt L a0 "part 1" <tut/scenery-demo1.kps
+txt -10 a "part 8" <tut/scenery-demo8.kps
+txt L a0 "part 7" <tut/scenery-demo7.kps
+txt L a0 "part 6" <tut/scenery-demo6.kps
+txt L a0 "part 5" <tut/scenery-demo5.kps
+txt select off
+txt pop
+
+silent=f

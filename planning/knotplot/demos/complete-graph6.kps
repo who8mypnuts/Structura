@@ -1,0 +1,25 @@
+frame 0 num 15
+glue f1 f0
+glue f2 f0
+glue f3 f0
+glue f4 f0
+glue f5 l0
+glue l5 l1
+glue f6 l0
+glue l6 l2
+glue f7 l0
+glue l7 l3
+glue f8 l0
+glue l8 l4
+glue f9 l1
+glue l9 l2
+glue f10 l1
+glue l10 l3
+glue f11 l1
+glue l11 l4
+glue f12 l2
+glue l12 l3
+glue f13 l2
+glue l13 l4
+glue f14 l3
+glue l14 l4

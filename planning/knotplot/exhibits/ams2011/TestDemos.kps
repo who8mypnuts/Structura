@@ -1,0 +1,33 @@
+
+button Nbuttons 3
+button pos 1
+button DemoA magnetic1 <magnetic1.kps -2 -1 0 10 0 10
+button DemoA weaveA <weaveA.kps -1 -1 0 10 0 10
+button DemoA random-chain <random-chain.kps -1 -1 0 10 0 10
+button DemoA gravity <gravity.kps -1 -1 0 10 0 10
+button DemoA newhopf <newhopf.kps -1 -1 0 10 0 10
+button DemoA splaits <splaits.kps -1 -1 0 10 0 10
+button DemoA plaits <plaits.kps -1 -1 0 10 0 10
+button DemoA simple-relax <simple-relax.kps -1 -1 0 10 0 10
+button DemoA 10sep05a <10sep05a.kps -1 -1 0 10 0 10
+button DemoA thingtoss <thingtoss.kps -1 -1 0 10 0 10
+button DemoA graphs <graphs.kps -1 -1 0 10 0 10
+button DemoA linkRings <linkRings.kps -1 -1 0 10 0 10
+button DemoA orbit <orbit.kps -1 -1 0 10 0 10
+button DemoA violently-happy <violently-happy.kps -1 -1 0 10 0 10
+button DemoA 20oct05a <20oct05a.kps -1 -1 0 10 0 10
+button DemoA KnotPaint2 <KnotPaint2.kps -1 -1 0 10 0 10
+button DemoA Mandala3b <Mandala3b.kps -1 -1 0 10 0 10
+button DemoA marcus <marcus.kps -1 -1 0 10 0 10
+button DemoA Dolphins <Dolphins.kps -1 -1 0 10 0 10
+button DemoA say/intro <say/intro.kps -1 -1 0 10 0 10
+button DemoA 4d-spun-knot <4d-spun-knot.kps -1 -1 0 10 0 10
+button DemoA StElmo <StElmo.kps -1 -1 0 10 0 10
+button DemoA ConeyMagic2 <ConeyMagic2.kps -1 -1 0 10 0 10
+button DemoA PA <PA.kps -1 -1 0 10 0 10
+button DemoA ringToss <ringToss.kps -1 -1 0 10 0 10
+button DemoA new_monster <new_monster.kps -1 -1 0 10 0 10
+button DemoA brunnian <brunnian.kps -1 -1 0 10 0 10
+button DemoA braids <braids.kps -1 -1 0 10 0 10
+button DemoA twist-knot <twist-knot.kps -1 -1 0 10 0 10
+button DemoA fly-thru <fly-thru.kps -1 -1 0 10 0 10

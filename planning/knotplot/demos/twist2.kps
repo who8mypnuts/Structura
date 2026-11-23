@@ -1,0 +1,41 @@
+reset all
+
+%ortho
+
+rotate z 90
+
+hstart=\rr55
+if \rr15 < 1 then "draw spec"
+
+until timelimit 6
+
+scale = 0.053244
+
+%braid 0^3 a 0^3   % trefoil
+%braid 0^3 a^2 0^3   % figure 8
+
+frame comm "braid 0^3 a^%d 0^3"
+frame \ri[1/10]
+%frame 10
+
+
+%scale 1.4 1 1
+
+#22 scale 1.01538 1 1;disp t
+
+
+join all
+ago 33
+#10 swirl end -4.5;disp t
+
+%animate cyl-rad .9 .24 .3 log
+%until ltdiam 24 "scale .99 .99 .99;disp t"
+%animate scale 0.053244 0.226162  0.5 log
+until ltdiam 24 "scale keep .99;disp t"
+
+warp rec2ann -1
+%#30 about z 3;disp t
+
+go
+
+

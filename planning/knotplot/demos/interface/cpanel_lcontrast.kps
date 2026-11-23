@@ -1,0 +1,21 @@
+panel colour svalue #333   % slider value field
+panel colour sbox  #333  % slider box
+panel colour sbutton #333 % slider button
+
+panel colour rbfill #333  % radio button fill
+panel colour rbbord #333 % radio button border
+
+panel colour button #333
+panel colour press #666 % button press 
+panel colour highlab #000
+panel colour lowlab #000
+
+panel colour background #000
+panel colour ghost #222
+
+panel colour label #333
+
+
+
+
+

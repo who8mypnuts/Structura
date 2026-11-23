@@ -1,0 +1,44 @@
+reset all
+ortho
+scale = .4
+func 12 <stick-symm.kps
+font 4
+mode cb
+cyl=.2
+bead = .28
+Draw=f
+spe +vwt
+
+
+frame comm "load ms-symm/%d"
+frame \ri[0/27]
+
+fitto mindi .9
+
+if \rr1 < .5 then "refl x"
+if \rr1 < .5 then "refl y"
+if \rr1 < .5 then "refl z"
+
+frame comm "about x 90"
+frame 0 to \ri[1/4]
+frame comm "about y 90"
+frame 0 to \ri[1/4]
+frame comm "about z 90"
+frame 0 to \ri[1/4]
+
+nstring cm 40 "Minimal stick knots (symmetries)"
+disp t
+
+nap 2
+
+if \rr1 < .5 then "#90 about x 1;disp t" else "#90 about x -1;disp t"
+nap 2
+if \rr1 < .5 then "#90 about y 1;disp t" else "#90 about y -1;disp t"
+nap 2
+if \rr1 < .5 then "#90 about x 1;disp t" else "#90 about x -1;disp t"
+nap 2
+
+if \rr1 < .2 then "<stick-symm-shadow.kps"
+
+nap 1
+

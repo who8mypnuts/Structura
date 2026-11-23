@@ -1,0 +1,113 @@
+Tangle Calculator Help - 28 March 2006
+
+The tangle calculator (TC) is a simple stack based calculator for tangles. 
+The KnotPlot main window (the view window) shows you this stack.
+Elements on the stack are numbered started from 0 on the bottom of the
+stack (the stack grows "up" instead of "down"). 
+
+The top three rows of buttons create new tangles, either integral tangles
+from 1 to 9.  Operators 0 and i create the zero and infinity tangle, resp.
+If you want to create a general N-integral tangle, adjust the roller to
+the desired value of N and click on `create'. 
+
+Two algebraic tangles, the clasp ($) and the chain (|) are also available.
+These are provided for convenience and aren't strictly needed (as they can
+be formed from other TC commands). 
+
+Unary operators perform some operation on the bottom (tangle 0) in the TC.
+These are:
+            r      Conway's reflect and rotate operator
+            + -    Positive and negative twists on bottom of tangle
+            x y z  Reflections in one direction or another
+            Z      Alternate version of z command
+            @      CCW rotation by 90 degrees
+
+Binary operators consume the bottom two tangles (tangles 1 and 0) and 
+create a new tangle in the following way:
+ 
+            #      Direct sum (tangle 1 is the left summand)
+            *      Conway's multiplication operator, equivalent to r#
+            &      Vertical sum, equivalent to @e@e#@@@
+
+There is only one N-ary operator (needs at least two tangles).  This is 
+the o operator used extensively by TopoICE.
+
+The ` operator in the Misc section doesn't create or consume any tangles, 
+but signals to the TC that missing tangles should be duplicated when 
+embedding into a tangle template that needs them (see below).
+
+The next section are operators that operate on the tangle stack:
+
+            !      Duplicate bottom tangle (tangle 0)
+            ~      Delete tangle 0
+            <      Shift up (or left)
+            >      Shift down (or right)
+            e      Exchange tangles 1 and 0
+
+You can create knots from tangles on the stack by embedding the tangles 
+into a `basic polyhedron' (Conway's term) or `tangle template' (my term).
+All of Conway's original polyhedra are available:
+
+            N      Numerator            D      Denominator
+            a      6*                   b      6**
+            f      8*                   g      9*
+            h      10*                  j      10**
+            k      10***                m      11*
+            S      3*  (3-string tangle supercoiling)
+
+If you try one of the commands without enough tangles on the stack, 
+KnotPlot will complain at you about not having enough tangles.  You can 
+either provide enough tangles, or just make sure you have at least one 
+tangle on the stack, then click on the ` operator before embedding the 
+tangle.  The tangle on the stack will be duplicated until there are enough
+tangles to satisfy KnotPlot.
+
+One other tangle template is provided, the c operator embeds tangles into
+the faces of a cube.  This is topologically equivalent to either the 6*
+or the 6** polyhedron. Arbitrary tangle templates may be defined by users,
+see the demo `tangles' on DemoA to see examples of these. 
+
+At any time, you may type in tangle commands to the command window, for
+example, you might want to try the following:
+
+            tangle 12345           (creates a bunch of tangles)
+            tangle 3r5r#6r#N       (creates the 3,5,6 pretzel knot)
+            tangle 3r4r#1111111f   (does something with the 8*)
+
+Note that the first of these commands creates a number of tangles on the
+tangle stack, but doesn't create any knots in the KnotPlot arena.  The
+latter two commands embed the tangles into one of the templates and copy
+the result to the arena.  The tangles disappear from view.  To see the 
+knot in the arena, you have to exit the TC, say by clicking the Main or
+Dyna tabs. 
+
+When not in the interactive TC, that is when another control panel is 
+being used, you can also create knots using the tangle command as above,
+with one exception.  This is that there is an implicit embedding into the
+a numerator template if no template is given.  In other words, everywhere
+except when using the interactive TC, the command
+
+            tangle <<whatever>>
+
+is equivalent to 
+
+            tangle <<whatever>>N
+
+If you don't want the numerator, but would prefer the tangle, put a 
+period at the end of the tangle command string. 
+
+If you want to create tangles on the stack, but don't want to have any
+knots created in the arena, use the comma operator, as in
+
+            tangle <<whatever>>,
+
+For example, you can create a nice square knot either with one command
+
+            tangle 3@!z#@
+
+or the sequence of commands
+
+            tangle 3@!,
+            tangle z,
+            tangle #@
+

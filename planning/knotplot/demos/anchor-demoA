@@ -1,0 +1,24 @@
+reset all
+panel off
+silent = t
+
+mode sa     % smooth tubes with anchors visible
+
+anchor = t  % turn anchors on
+ancauto = f % set anchors explicitly
+
+torus 2 3 32  % trefoil with 32 beads
+anchor        % set anchors to bead locations
+
+unknot 32     % unknot of 32 beads
+shift 16      % shift beads by 16 positions
+nap 1
+
+colli allow   % allow collisions
+go 225
+
+panel on
+silent = f
+
+
+

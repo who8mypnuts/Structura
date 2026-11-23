@@ -1,0 +1,49 @@
+Welcome to KnotPlot!
+
+New features in this version of KnotPlot
+
+--- Some of the demos now have on-screen buttons for easier use (less need
+for function keys).  Examples are the first three demos on the DemoA panel.
+
+--- All three main knot catalogues are now Perko corrected!  This means that
+10.161 and 10.162 are distinct knots.  You can still view the view the Perko
+pair by loading PerkoA.k and PerkoB.k or runing the `Perko pair' demo.
+
+--- The `go' command, when entered in the command window without 
+arguments, has changed meaning.  It used to mean "stop relaxing", now it means
+"relax forever".  If you want to stop relaxing, then ender `go 0' instead.  
+The text visible on the go button has been changed accordingly. 
+
+--- Of interest to those studying DNA topology is the Topological Interactive
+Construction Engine (TopoICE). It comes in two flavours, TopoICE-X and 
+TopoICE-R. To use it, click on the `Tangle' tab, then use one of the two 
+buttons on the bottom of the conrol panel.
+
+--- Online help is also available.  Use the GLUT menu by right clicking on the
+control panel.  Both the `WWW' and `Manuals' sub-menus have entries that will 
+start your default web browser on a useful or possibly interesting page. This
+feature now works in the MacOSX version (as well as the Windows and CygWin
+versions).  There might be some issues if your default browser is Internet
+Explorer. 
+
+--- Multiple colouring schemes are now available for the control panel, with 
+several new schemes available thru the menu option:
+Control panel-->Colour scheme (right-click on the control panel to see menu)
+Most of the new colour schemes are hideous, users are free to contribute their
+colour schemes using the KnotPot Google Group groups.google.com/group/KnotPlot
+
+--- If you don't wish to see this window again when you run KnotPlot the next 
+time, press the F1 key now. 
+
+              IMPORTANT NOTE: To close this window or any of the help
+              windows, click on the `close window' button below.  Don't
+              use the standard window close gadget (located at the top
+              left or top right of this window).  
+
+
+                                  click here
+                                      ||
+                                      ||
+                                      ||
+                                     \  /
+                                      \/

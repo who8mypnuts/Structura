@@ -1,0 +1,8 @@
+echo "     Note: Most of the demos on the `DemoA' and `DemoB' panels will work in anaglyph mode."
+
+mode p
+3dop point size 2
+Draw=t
+
+knot
+refine 4

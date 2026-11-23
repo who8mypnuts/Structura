@@ -1,0 +1,33 @@
+reset all
+
+cyl=.1
+
+new=f
+
+par0=\rr+-5
+par1=\rr+-5
+par2=\rr+-9
+
+par3=\rr+-1
+par4=\rr+-1
+par5=\rr+-1
+
+rot x \rr360
+rot y \rr360
+rot z \rr360
+
+tfunc .02 "silent=t;trans \ppar0 \ppar1 \ppar2;unknot 7 1 \ppar3 \ppar4 \ppar5;align ax;silent=f" 0 repeat .02
+
+echo " *** Press F5 to stop adding sticks"
+
+func init
+func silent
+func 5 tfunc reset
+func 1 <9may05b.kps
+
+tfunc \rr[4/15] <9may05b.kps
+
+par par
+
+
+

@@ -1,0 +1,211 @@
+require KPbuild 4965
+
+require KPbuild 4691
+%`-
+
+reset all
+
+func init
+func silent
+silent=t
+verbose =f
+func 1 <newhopf.kps
+
+alias ~ah "txt awake \rr[1/2];txt hide \rr[7/9]"
+alias ~save "shift rand;revb rand;about z \rr360;save |x"
+
+scale=1
+alias ~seed0 "load 3.1;refine nbead \ri[11/47];~save"
+alias ~seed1 "unknot \ri[6/22];~save"
+alias ~seed2 "line numb \ri[6/22];line dir \rr1 \rr1 \rr1;line;refl r;cent;tran \rr[2/9] 0 0;save |x"
+alias ~seed3 "unknot \ri[9/32] \rr[3/14];trans \rr5;~save"
+
+alias ~seed4 "unknot \ri[6/22];about x 90;~save"
+alias ~seed5 "knot num \ri[1/355] ms;save |x"
+alias ~seed6 "unknot \ri[14/32];translate \rr+-11 \rr+-11 \rr+-11;save |x"
+
+
+cyl-rad=.06
+
+coll a
+force 1
+
+alias ~idle0 "idle {load |x;about x \ppar2;save |x;hopf}"
+
+
+alias ~idle1 "idle {load |x;about y \ppar2;save |x;hopf}"
+
+
+alias ~idle2 "idle {load |x;swirl \ppar2;save |x;hopf}"
+
+
+
+par2=1
+
+alias ~setidle "~idle$0;echo method$0"
+
+if \rr3 < 2 then "rotate y 90"
+~setidle \ri1
+
+func 4 <hopf.kps
+
+%txt autohide on
+
+txt lineskip -24
+
+txt fcolour royalblue .5
+txt scolour #000
+txt sfcolour orange .9
+
+par4=0
+alias ~trace "if par4 == 0 then ~traceon else ~traceoff"
+alias ~traceon  "par4=1;clrfun nt;echo;echo;echo click mouse button in view window or rotate scene to clear trace"
+alias ~traceoff "par4=0;clrfun zf;echo;echo;echo tracing off"
+
+~ah
+
+txt font 3
+txt right
+txt fill on
+txt select off
+txt -15 60 trace "~trace"
+txt -15 a fullscreen "full toggle"
+txt fill off
+txt -10 a toggle:
+
+alias ~nt "N-torus=$0;echo;echo;echo equivalent to entering command;echo N-torus=$0;echo into this window"
+
+~ah
+
+txt fill on
+txt push
+txt group 108
+txt select on
+txt -15 a1.5 luxo   "~nt 157"
+txt -15 a    high   "~nt 112"
+txt -15 a    medium "~nt 80"
+txt set selected
+txt -15 a    low    "~nt 57"
+txt -15 a    cheapo "~nt 41"
+txt fill off
+txt -10 a "quality:"
+txt select off
+txt pop
+~ah
+
+txt fill on
+txt -15 a1.5 "random 2" "draw spec;cmode -1;cmode 3 1 1 1"
+txt -15 a "random 1" "draw norm;cmode -1;cmode 3 1 1 1"
+txt -15 a spectrum "cmode 0;draw spec"
+txt -15 a normal "cmode 0;draw norm"
+txt fill off
+txt -10 a "colours:"
+~ah
+
+txt left
+txt fill on
+txt 15 15 stop idle
+txt 15 a slower "test paradj 2 .7142857"
+txt 15 a faster "test paradj 2 1.4"
+txt 15 a reverse "test paradj 2 -1"
+txt 15 a "method 2" ~idle2
+txt 15 a "method 1" ~idle1
+txt 15 a "method 0"  ~idle0
+txt fill off
+txt 10 a "animate:"
+
+txt fill on
+txt push
+~ah
+txt group 102
+%txt select on
+txt silent true
+txt 15 a1.5 "seed 6" "~seed6;hopf"
+txt 15 a "seed 5" "~seed5;hopf"
+txt 15 a "seed 4" "~seed4;hopf"
+txt 15 a "seed 3" "~seed3;hopf"
+txt 15 a "seed 2" "~seed2;hopf"
+txt 15 a "seed 1" "~seed1;hopf"
+txt 15 a "seed 0" "~seed0;hopf"
+txt fill off
+txt select off
+txt 10 a "seed:"
+txt pop
+txt on
+
+alias ~setseed "txt exec {seed $0} 102"
+ 
+~setseed \ri5
+
+txt font 4
+txt fill on
+txt right
+~ah
+txt -14 14 ? "help popup newhopf.kps handoff"
+
+txt clobber on
+
+txt cent
+txt fill off
+txt font 4
+txt push
+~ah
+txt c -20 "Exploring the Hopf fibration"
+txt pop
+txt on
+
+
+func 2 www en.wikipedia.org/wiki/Hopf_bundle 
+func 3 www www.math.uni-bielefeld.de/birep/top/hopf/hopf-fib.htm 
+
+txt autohide on   % should be the last txt command
+
+
+silent=f
+
+exit
+%`+
+
+Exploring the Hopf Fibration
+
+The Hopf Fibration is a packing of all of three dimensional space with round 
+circles in such a way that no two circles intersect and any pair of circles 
+are linked (in what is called a "Hopf Link", the simplest non-trivial link). 
+This demo shows a tiny fraction of the fibration at any moment, using an 
+animated "seed" as a moving window thru the fibration. 
+
+Things to try:
+
+  --- rotate scene with left mouse, scale with right mouse
+
+  --- change the seed, each seed is slightly different each time you click
+
+  --- if tracing is turned on, you can clear the view by clicking a mouse 
+      button anywhere in the view window (or rotate or scale the scene)
+
+  --- because this is a discrete approximation to the real thing, some of 
+      the rings may appear non-circular.  you can improve the quality of
+      the rings by increasing the value of N-torus (at an expense of slower
+      drawing time).  you can use one of the "quality" buttons or explicity 
+      enter a value for N-torus into the KnotPlot Command Window, as in
+
+            N-torus = 42
+
+      to see the current value of N-torus, enter the command
+
+            par N-torus
+
+  --- if you liked the old Hopf demo, you can still run it by pressing F4
+
+  --- to toggle the text and buttons off or on, press the spacebar 
+      (the view window needs to have keyboard focus for this to work)
+
+The Hopf Fibration is a fascinating mathematical object, an example of what is
+known as a fibre bundle. It is related to 3D rotations and quaternions, and has
+applications in homotopy theory.  For more info, visit one of the following
+web sites:
+
+en.wikipedia.org/wiki/Hopf_bundle                       (press F2 now)
+www.math.uni-bielefeld.de/birep/top/hopf/hopf-fib.htm   (press F3 now)
+
+Note: click on the button below to close this window:

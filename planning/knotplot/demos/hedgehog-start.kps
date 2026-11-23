@@ -1,0 +1,26 @@
+
+go 0
+panel draw
+
+if par1 == 1 then "mode l"
+
+Draw=f
+~rotatebefore
+
+timer start
+
+~hh
+idle -noredraw
+idle "if safe then ~cease else ~hh;~showit"
+Draw = t
+
+%txt group 102 off
+
+txt delete go
+
+txt centre
+txt font 3
+txt fill on
+txt c 15 stop <hedgehog-stop.kps
+
+txt delete construction

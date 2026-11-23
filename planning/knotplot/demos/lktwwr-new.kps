@@ -1,0 +1,10 @@
+unknot \ri[40/120]
+jitter 999999
+coll a
+force 1
+velf=t
+fitto .2
+dstep=3
+until thick 1 "ago 3"
+ago 66
+~init

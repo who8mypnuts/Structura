@@ -1,0 +1,26 @@
+% arc with endpoints \rr[90/-90]/\rr[-180/180] \rr[90/-90]/\rr[-180/180] \rr[90/-90]/\rr[-180/180] \rr[90/-90]/\rr[-180/180]
+
+% Begin important stuff
+
+delete all
+
+arc lat \rr[90/-90] lon \rr[-180/180] in lat \rr[90/-90] lon \rr[-180/180] out 32
+arc lat \rr[90/-90] lon \rr[-180/180] in lat \rr[90/-90] lon \rr[-180/180] out 32
+
+% End important stuff
+
+
+
+% can ignore from here on
+
+txt delete group 108
+txt push
+txt group 108
+txt font 3
+txt cent
+txt fill off
+txt c 100 "orange: (\rr[90/-90], \rr[-180/180]) --> (\rr[90/-90], \rr[-180/180])"
+txt c 70 "  blue: (\rr[90/-90], \rr[-180/180]) --> (\rr[90/-90], \rr[-180/180])"
+txt fill on
+txt c 20 "show arc commands" "www demos: arcs-5b.txt"
+txt pop

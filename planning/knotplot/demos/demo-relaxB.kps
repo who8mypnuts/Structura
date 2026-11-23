@@ -1,0 +1,5 @@
+silent=t
+save |.before
+go 1000000000
+silent=f
+echo " *** Relaxing knot, press F5 to undo this operation"

@@ -1,0 +1,36 @@
+reset all
+
+back=black
+
+torus 5 4 200
+fitto npx 9
+fitto npy 9
+fitto npz 9
+txt init
+txt font 4
+txt centre
+
+frame comm "txt bead %d %03d"
+frame 0 to 199
+
+txt right
+txt -20 20 "Press F1 to toggle text"
+
+txt on
+cyl=.01
+
+
+spec fra
+idle "about x .1"
+
+func silent
+func init
+func s 1 "txt on;echo;echo;echo *** Press F1 to turn text off;echo;par4=2"
+func s 2 "txt off;echo;echo;echo *** Press F1 to turn text on;echo;par4=1"
+par4 = 1
+func 1 "func exec s \ppar4"
+
+
+func exec 1
+
+<../benchmarks/blurb-bm.kps

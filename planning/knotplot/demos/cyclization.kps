@@ -1,0 +1,37 @@
+require KPbuild 4656
+
+reset all
+
+
+cyl-rad=.2
+Draw=f
+knot 1
+<randorient.kps
+project r
+
+cut 0
+cut 44
+keep 0
+
+centre
+
+force 1
+coll a
+velf=t
+ago 200
+
+coll n
+%amech=t
+%mech=f
+%spring=1
+%charge=\rr10
+%power=\rr[3/5]
+velf = f
+Draw=t
+jthresh=1
+endf = t
+par= .0033
+
+idle "ago 1;join all"
+
+%tfunc .1 "endf=t;ago 1;endf=f" 0 rep 1

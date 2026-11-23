@@ -1,0 +1,127 @@
+require KPbuild 4041
+
+if \ppar3 != 30635884 then <fwf-init.kps
+
+untran
+
+back=#000
+silent=t
+func init
+func silent
+func 1 <fwf.kps
+dstep=1
+
+silent=t
+
+Draw=f
+tg1off=\rr3
+
+if \rr3 < 2 then "ccmode=2"
+
+%% Generated Sun Mar 04 15:50:56 2007
+%% with command line: c:\usr\KnotPlot\resource\win32\multiif.exe fwf.txt
+par0 = \rr27
+if par0 < 10 then "conway 3;par0=29"
+if par0 < 15 then "conway 2;par0=29"
+if par0 < 22 then "conway 4;par0=29"
+if par0 < 26 then "conway 32;par0=29"
+if par0 < 28 then "conway 2,3,2;par0=29"
+
+<randorient.kps
+
+go 0
+test drag off
+
+if \rr5 < 1 then "about y 90"
+if \rr2 < 1 then "about x 90"
+
+if \rr6 < 1 then "rotate x -90"
+if \rr6 < 1 then "rotate x 90"
+
+zero
+
+anchor
+ancauto=f
+
+velmag=.1
+grastr=.467
+
+coll a
+force 1
+silent=f
+Draw=t
+txt init
+txt font 4
+txt centre
+txt c -30 "Fun with Forces!"
+
+txt clobber on
+txt space _
+
+txt fill on
+
+txt c -70 Go "go forever limit \ppar2;read fwf-aux.kps"
+txt on
+
+txt right
+txt font 3
+txt lineskip 25
+txt fill off
+txt -10 -30 "limit frame rate:"
+txt fill on
+
+txt group 23846238
+txt select on
+
+func cs 7 "echo;echo *** Some graphics cards may not be able to deliver the advertised frame rate.;echo"
+
+
+
+txt -10 a "15 fps" "par2=15;func exec cs 7;go setlimit 15"
+if par2 == 15 then "txt set selected"
+
+txt -10 a "30 fps" "par2=30;func exec cs 7;go setlimit 30"
+if par2 == 30 then "txt set selected"
+
+txt -10 a "60 fps" "par2=60;func exec cs 7;go setlimit 60"
+if par2 == 60 then "txt set selected"
+
+txt -10 a "90 fps" "par2=90;func exec cs 7;go setlimit 90"
+if par2 == 90 then "txt set selected"
+
+txt -10 a "120 fps" "par2=120;func exec cs 7;go setlimit 120"
+if par2 == 120 then "txt set selected"
+
+txt -10 a "150 fps" "par2=150;func exec cs 7;go setlimit 150"
+if par2 == 150 then "txt set selected"
+
+txt -10 a "no limit" "par2=1022;func exec cs 7;go setlimit 99999"
+if par2 == 1022 then "txt set selected"
+
+txt select off
+txt group 0
+
+
+txt fill on
+txt right
+txt font 3
+txt -10 15 "toggle fullscreen" "full toggle"
+%txt -10 40 "hide buttons" <fwf-hide.kps
+
+func 2 "txt on"
+
+txt left
+txt 15 15 "reload demo" "par3=0;read fwf.kps"
+
+
+
+silent=f
+
+echo
+echo
+echo
+echo " **** Click on the `go' button in the view window"
+echo "      NOTE: Crossing changes are allowed in this demo"
+echo
+
+

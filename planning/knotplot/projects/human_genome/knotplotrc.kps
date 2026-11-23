@@ -1,0 +1,4 @@
+mode p
+alloc 44444
+tfunc .3 "panel set DemoA"
+

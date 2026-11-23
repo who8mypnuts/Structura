@@ -1,0 +1,6 @@
+silent=t
+celtic diagram
+celtic copy
+if \rr5 < 3 then "hincr = 0"
+jit .01
+silent=f

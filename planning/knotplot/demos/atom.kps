@@ -1,0 +1,48 @@
+reset all
+
+verbose = f
+func init
+func 1 <atom.kps
+silent = t
+
+% display settings
+hstart = \rr360
+back=black
+cyl-rad=.18
+scale = 1.1
+
+% make something
+tangle 111111c
+project r
+split
+revb
+
+% attach scenery and turn display of scenery on
+scen object eobj/csphere bcomp 0   % attach cyan sphere to beginning of component 0
+scen object eobj/msphere bcomp 1   % attach magenta sphere to beginning of component 1
+scen object eobj/ysphere bcomp 2   % attach yellow sphere to beginning of component 2
+scen dscale .5
+scen on
+
+% set up forces and start relaxing
+elec=f
+symm=t
+tanf=t
+coll a
+velf=t
+go
+
+% enable music (macOS only)
+play init
+
+
+alias ~note "par0=$0;test paradj 0 10 40;play \ppar0"
+alias ~rev "revb $0;~note $0"
+
+% timer function set to repeat between 1 and 9 seconds
+tfunc 1 "~rev \ri2" 0 rep 1  9
+% timer function set to repeat between 5 and 30 seconds
+tfunc 22 "play 88;jitter \rr2" 0 rep 5 20
+
+silent = f
+#5 echo

@@ -1,0 +1,32 @@
+% First resize window to full screen
+
+func 2 <moire2.kps
+pop
+reset all
+silent = t
+sbuff
+Draw = f
+background = 0
+blendfunction one one
+backface f
+zbuffer f
+draw broken
+load 9.7
+twist = 261.706970
+nseg = 35
+ncur = 129
+vcn = 8
+vcA = -0.638530
+broff = -1.213170
+hstart = 8.159142
+hincr = 120.000000
+value = 0.856939
+saturation = 1.000000
+scale = 0.700000
+cyl = 1.020000
+
+disp t
+gflush
+
+
+silent = f

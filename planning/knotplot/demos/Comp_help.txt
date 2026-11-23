@@ -1,0 +1,24 @@
+Computations Help
+
+A fairly sparse control panel.
+
+The main thing to mention is that for all the computations that require crossing 
+information (knot polynomials, linking number, writhe, dowker), a projection is
+of some kind is first made.  There are four options: x, y, z, and view.  The 
+default is z, which is an orthographic projection to the xy plane. 
+
+If you are currently using a perspective projection to view the knot, and have
+the z projection used to compute things, it is possible that, for example, the
+dowker code computed will not agree with what you think it should be from what
+you see.  If you want these to agree, then select `view'.
+
+This is of most importance to the view dependent computations, such as writhe
+and dowker.  Theoretically, the projection direction shouldn't affect the knot
+polynomials or the linking number.
+
+KnotPlot calls Maple or Mathematica to compute the Alexander polynomial, and
+an external program written by Bob Jenkins to compute the HOMFLY polynomial. 
+Jenkins code is in the public domain and has been included in the KnotPlot
+distribution in the resource/src/homfly directory.  See the README file there
+for more information.
+

@@ -1,0 +1,18 @@
+% initialization for TopoICE
+% read by add_TopoICE_R_panel_objects() upon first call
+
+% this file replaces init_tsolver2.kps
+
+if par0 == 1522062301 then "reset all"
+
+
+silent=t
+tg1off=6
+cyl=.4
+mode s
+tangle sense biology
+reset sliders
+load tsolver_sumNumer.k
+thold install s
+delete all
+silent=f

@@ -1,0 +1,31 @@
+func 1 <glo-knot.kps
+
+reset all
+mathsv k 0 .4 .07 s
+back = 0
+
+
+Draw=f
+
+cyl=.06
+ncur=5
+nseg=17
+
+load dream-j-graph
+
+drec=f
+fitto 10
+
+scale=.3
+glop backface t
+value=.01
+Draw=t
+sbuff
+disp
+disp
+clrfun n
+blend one one
+
+anim cyl .06 3 66 log
+
+

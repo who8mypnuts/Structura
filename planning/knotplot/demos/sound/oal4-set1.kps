@@ -1,0 +1,20 @@
+txt delete group 108
+txt push
+txt font 3
+txt cent
+txt group 108
+alias ~bjatt "~word $1 $2;oal start $3 fadein \rr[1/1.5] source $0 wav $2 attach bead $1 on"
+
+
+oal alloff
+~bjatt 0 120 hello 0
+~bjatt 1 105 it-is 1
+~bjatt 2 90  christmas 2
+~bjatt 3 75  time 3
+~bjatt 4 60  and-im 4
+~bjatt 5 45  sitting 5
+~bjatt 6 30  here 6
+~bjatt 7 15  by-my 7
+~bjatt 8 0   tv 8
+txt pop
+

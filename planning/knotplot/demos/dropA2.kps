@@ -1,0 +1,16 @@
+
+% the following two lines ensure the view is not reset if multiple 
+% knots are dropped in sequence.  this allows the user to rotate, 
+% scale, or translate the view using the mouse between trials.
+
+if par0 != 5243657 then "reset all;<set-view.kps"
+par0=5243657      
+
+verbose=f          % turn off unnecessary verbosity
+
+<prepare-knotA2.kps % prepare the specimen
+<drop.kps          % drop it onto grid
+
+go 444
+
+

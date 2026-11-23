@@ -1,0 +1,17 @@
+<bfacf/basicinit.kps
+ccmode=2
+
+alias ~cl "plugin clasp"
+~cl load
+
+alias ~kload "knot numb $0 mscl;bfacf load"
+
+txt left
+txt lineskip -25
+txt 15 15 "4-comp" "~kload \ri[380/383]"
+txt 15 a "3-comp"  "~kload \ri[344/378]"
+txt 15 a "2-comp"  "~kload \ri[252/342]"
+txt 15 a "1-comp"  "~kload \ri[2/250]"
+txt fill off
+txt 10 a "load:"
+

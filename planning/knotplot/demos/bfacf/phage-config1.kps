@@ -1,0 +1,13 @@
+load mscl/0.1
+silent=t
+bfacf load
+
+<bfacf/phage-cavity.kps
+
+
+txt clobber on
+txt font 2
+txt fill off
+txt cent
+txt c -44 "configuration 1"
+silent=f

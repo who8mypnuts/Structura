@@ -1,0 +1,11 @@
+% don't show all the lattice
+bfacf latshow 30
+
+bfacf clear 32
+
+bfacf box 30 30 2
+
+% don't forget to refill the location where the knot is!
+bfacf fill
+
+

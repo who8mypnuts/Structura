@@ -1,0 +1,12 @@
+draw brok
+max-dr = 1.08
+cyl-rad = 0.200000
+broff = -1.000000
+alias ~hstart "if \rr15 < 1 then {hstar = \rr360} else {hstar = \rr33}"
+alias qfix
+
+alias ~twistit "~hstart;broff=\rr[-1/1];cyl-rad=\rr.4;ncurve = \ri[8/15];nsegments = \ri[30/40];twist = \rr{4000/22000};twdefault = \rr{4000/22000}"
+~twistit
+
+
+

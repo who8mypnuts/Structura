@@ -1,0 +1,8 @@
+untran
+silent=t
+delete all
+dowker proj view
+
+until Nxings 11 "knot 1;refl r"
+silent=f
+<Nxing-aux.kps

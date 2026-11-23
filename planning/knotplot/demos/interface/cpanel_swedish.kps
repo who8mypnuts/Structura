@@ -1,0 +1,22 @@
+
+
+panel colour svalue #e80   % slider value field
+panel colour sbox  #c30  % slider box
+panel colour sbutton #07b % slider button
+
+panel colour rbfill #f90  % radio button fill
+panel colour rbbord #c30 % radio button border
+
+panel colour button SwedishYellow
+panel colour press #b0b0b0 % button press 
+panel colour highlab #000
+panel colour lowlab #000
+
+panel colour background SwedishBlue
+panel colour ghost #777
+
+panel colour label #f90
+
+
+
+

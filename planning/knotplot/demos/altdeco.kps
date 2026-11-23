@@ -1,0 +1,23 @@
+reset all
+
+all 3333
+cyl = .3
+ortho
+vscale = 0.237955
+
+load unsafeknot.k
+until timelimit 15
+until safe "hstar=\rr360;knot cd;fitto 16;cent mass;alternate;refine 3;disp t;nap .1"
+
+func init
+func silent
+
+func 1 "load *;fitto 16;cent mass;echo;echo;echo Press F2 to make alternating again;echo"
+func 2 "alternate;refine 3;echo;echo;echo Press F1 to load original knot;echo"
+func 4 dowker
+func 5 revb
+
+echo " "
+echo " *** Alternating version of a deco knot (doesn't always work)"
+echo "     (Press F1 to load original deco knot)"
+echo " "

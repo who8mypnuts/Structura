@@ -1,0 +1,6 @@
+drop ca 0x0000ff
+drop cb 0x00cccc
+drop cc 0xff0000
+drop cd 0x00cccc
+draw spec
+spec +back

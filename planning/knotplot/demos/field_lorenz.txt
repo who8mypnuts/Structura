@@ -1,0 +1,4 @@
+par2
+1 about x 90
+1 about y 90
+1 nop

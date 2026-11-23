@@ -1,0 +1,14 @@
+
+
+load |AntNeck_ring.k
+about z 18
+disp
+
+save |AntNeck_ring.k
+
+load |AntNeck_ring-accum.k
+disp
+load comb |AntNeck_ring.k
+disp
+save |AntNeck_ring-accum.k
+

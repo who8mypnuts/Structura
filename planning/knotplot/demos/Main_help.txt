@@ -1,0 +1,149 @@
+Main Help
+
+Welcome to KnotPlot!  Before I describe the Main control panel, let me say a
+few words about interacting with knots in the KnotPlot main window.  Use the
+following mouse buttons (click down and drag):
+
+   left --- rotate the scene with this button using a `virtual trackball'
+
+   middle --- translate the scene
+
+   right --- scale the scene (move mouse to left to reduce, move mouse to
+             right to enlarge)
+
+None of these operations change the knot itself, just how it is viewed.  You 
+can undo any of these operations using the `untran' button described below. 
+
+Macintosh users may want to purchase a three button mouse (which works nicely
+in MacOSX), or try SHIFT or CTRL.  
+
+Now for the Main control panel.  At the very top of the control panel are two
+rows of tabs that can be used to set KnotPlot to its other control panels. 
+Below the tabs is a set of buttons that are also found on most of the control 
+panels.
+
+   undo --- often can be used to undo an operation.  clicking in quick 
+           succession (less than about 1 second between clicks) restores to 
+           earlier and earlier states.
+
+   reset --- useful to get KnotPlot into its initial state.  if things ever 
+           seem messed up, this button is your friend.
+
+   help --- you've already used this button!  Each control panel has its own
+           customized help.
+
+   quit --- quit KnotPlot.  you can also use the ESC key at any point.   
+
+Next are various buttons that load knots from the standard catalogues included
+with KnotPlot.
+
+   All --- loads a knot chosen randomly from the entire `basic' knot and
+           link catalogue.  this is essentially Appendix C from Dale Rolfsen's
+           classic book `Knot and Links' (reference below)
+
+   1  2  3  4 --- loads a knot/link chosen randomly from the basic catalogue
+           with 1, 2, 3, or 4 components, resp.
+
+   spec coll --- loads a knot chosen randomly from the `Special Collection'.
+           these are knots that are `special' for some reason (they have a 
+           name, they are mathematically interesting, they look neat, etc.)
+
+The next row of buttons load knots from basic catalogue, but displays them in
+a `zoo' where you can choose them interactively.
+
+   Rand --- selections are random chosen
+
+   A  B  C  D  E  F --- the entire basic knot and link catelogue, in the same
+           order they appear in `Knots and Links'
+
+   Torus --- a zoo of torus knots and links, in order of increasing crossing
+           number.  if you click on the button repeatedly, you get more and
+           more complex torus knots and links.
+
+   RandT --- a selection of torus knots and links, chosen randomly
+
+
+Display Section
+
+Knots are display either as `smooth tubes' (the default), or as `beads & cyls',
+which are the vertices and edges representing the knot.  It is these beads and
+cylinders which are how the knots are internally represented, the smooth tubes
+are for display purposes only.  Use the radio buttons to choose how you want
+the knot displayed:
+
+   smooth  cylinders --- choose one or the other, but KnotPlot lets you display
+           both if you wish (it might look strange)
+
+   beads  Beads  points --- the beads (vertices) can be displayed either in a
+           `cheapo mode' (beads) or in `luxo mode' (Beads), or in `super cheapo
+           mode' (points).  
+
+   forces --- this control is really misplaced, since it's doesn't control how
+           the knot is displayed, but whether the forces acting on the beads is
+           displayed or not.
+
+Two convenience buttons `smooth tubes' and `beads & cyls' are provided which
+set several options simultaneously (including the value of `cyl-rad').
+
+Three buttons which are gathered together for no good reason are next:
+
+   twfix --- fixes the (possibly) ugly deficit angle.  more information about
+           this can be found in the KnotPlot manual.
+
+   untran --- resets the virtual trackball to the unrotated state and resets
+           and translations to zero (that is anything you may have done to 
+           the scene using the left or middle mouse buttons).
+
+   centre --- translates the knot (not the scene) so that its bounding box is
+           centered at the origin.  this button is actually misplaced, since
+           it changes the internal data and doesn't affect the viewing 
+           parameters
+
+Some radio buttons can be used to selectively display various things that are
+not the knot:
+
+   xyz axes --- the coordinate axes
+
+   Grid --- the xy plane
+
+   Backdrop --- a coloured background
+
+   Labels --- bead and component labels
+
+   Orientation --- KnotPlot implicitly orients all its knots, but doesn't 
+           display the orientation unless this is selected. 
+
+   Sphere --- the `utility sphere'
+
+A set of rollers is next:
+
+   scale --- alternate method for scaling the scene, can also use middle mouse
+      
+   cyl-rad --- radius of the smooth tube or cylinder
+
+   bead-rad --- radius of beads or Beads
+
+   ncur --- number of refinements along the path of the knot, only applicable
+            to smooth tubes
+
+   nseg --- number of refinements along the circumference of a tube or cylinder
+
+To see the effect of ncur and nseg, first load a knot, then click on `smooth
+tubes' and click `flat'.  Now try adjusting the rollers. 
+
+
+
+Dynamics Section
+
+This is a subset of what is displayed on the `Dyna' control panel.  Click on
+the `Dyna' tab and read the help provided there. 
+
+
+
+REFERENCES
+
+The basic catalogue is essentially the same as Appendix C in Dale Rolfsen's 
+classic book `Knot and Links', AMS Chelsea Publishing, 2003.  This is a reprint
+of the original 1976 Publish or Perish Press edition.  The data was graciously
+supplied by Professor Rolfsen in the very earliest days of KnotPlot and then
+(in most cases) relaxed slightly.  

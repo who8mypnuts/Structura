@@ -1,0 +1,14 @@
+require accbuff
+require KPbuild 4548   % introduced `accbuffon' option for `if' command (30 oct 2011)
+
+
+if accbuffon then "accbuff off" else "accbuff decay 0.980730;accbuff accum 0.217651;accbuff return 0.225359;back=#000;accbuff on;accbuff clear"
+
+echo
+echo
+echo
+
+if accbuffon then "echo *** click button again to turn motion blur off" else "echo *** motion blur off"
+
+echo
+

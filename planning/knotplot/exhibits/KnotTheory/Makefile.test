@@ -1,0 +1,32 @@
+CC = g++
+
+CFLAGS = $(VOLTA_CFLAGS) -Wno-write-strings
+
+.SUFFIXES: .cpp
+
+.cpp.o:
+	$(CC) $(CFLAGS) -c $*.cpp -o $*.o
+
+
+OBJS = demo.o
+
+demo: $(OBJS)
+	$(CC) -o demo $(CFLAGS) $(OBJS)
+	strip demo$(EXTEN)
+
+clean:
+	touch dum.o
+	/bin/rm *.o
+	dos2unix *csh
+	chmod ugo+rx *csh
+
+
+vclean:
+	touch dum~
+	/bin/rm *~
+	make clean
+
+install:
+	make
+	mv demo $(TOPOII_INSTALL_DIR)
+	chmod ugo+rx $(TOPOII_INSTALL_DIR)/demo

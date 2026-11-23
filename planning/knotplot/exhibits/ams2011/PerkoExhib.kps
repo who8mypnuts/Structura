@@ -1,0 +1,42 @@
+reset all
+
+silent=t
+
+cyl=.45
+scale=.18
+back=0
+disp t 
+ortho
+
+auto=f
+hstart=44
+sat=.8
+hincr=0
+
+sat=.7
+hstar=200
+hincr=0
+
+ncur=2
+nseg=9
+cyl-rad = 0.689584
+
+load PerkoAB.k
+
+spe vwt
+nstring cm 60 "The Perko Pair"
+disp t
+nap 2
+
+frame comm "deform to Perko%03d.k 16"
+frame 1 to 50 step 3
+%load PerkoMovie.k
+
+deform to PerkoFinal.k 44
+disp t
+nap 2
+
+deform to PerkoMerged.k 25
+disp t
+nap 2
+silent=f

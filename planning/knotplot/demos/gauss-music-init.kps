@@ -1,0 +1,16 @@
+delete all
+untran
+idle "silent=t;~togauss;silent=f;knot cd;revb rand;shift rand;~refz 50;disp t;play code 38"
+
+txt delete group 379426
+txt delete group 374261
+
+txt push
+txt group 379426
+txt font 4
+txt fill on
+txt centre
+txt c 33 "stop music" "txt delete group 379426;idle"
+txt pop
+
+

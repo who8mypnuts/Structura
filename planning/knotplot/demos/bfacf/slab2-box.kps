@@ -1,0 +1,33 @@
+% don't show all the lattice
+silent = t
+
+tfunc reset
+
+bfacf clear 31
+
+bfacf latshow 30 30 7
+
+bfacf fill -29 -29  \ppar5      0 29 1
+bfacf fill  22 -29 -3     29 29 3
+bfacf fill  17 -29 -2     29 29 3
+bfacf fill  12 -29 -2     29 29 2
+bfacf fill   7 -29 -1     29 29 2
+bfacf fill   0 -29 -1     29 29 1
+
+bfacf dilate
+
+bfacf clear -29 -29  \ppar5      0 29 1
+bfacf clear  22 -29 -3     29 29 3
+bfacf clear  17 -29 -2     29 29 3
+bfacf clear  12 -29 -2     29 29 2
+bfacf clear   7 -29 -1     29 29 2
+bfacf clear   0 -29 -1     29 29 1
+
+
+
+
+% don't forget to refill the location where the knot is!
+bfacf fill
+
+func 12 "ortho;untran;rota x 90"
+silent=f

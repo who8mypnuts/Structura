@@ -1,0 +1,83 @@
+% Default `basic-demos' file.
+% June 6, 1996
+
+% This is the file that defines the buttons seen on the demos
+% panel.  It is easy to make a custom demo panel by simply 
+% creating your own `basic-demos' file in a directory somewhere and
+% running KnotPlot from that directory.  KnotPlot will read in
+% the first `basic-demos' file it finds in its path.  
+% To see what the current path is, enter the KnotPlot command `path'.
+
+% See the file `more-demos' in this directory for more examples.
+% Also have a look at the definition of `basic-demos' in the 
+% ../projects/hopf directory to see how the demo panel can be
+% customized for a specific project.
+
+% First button location should always be absolute.
+
+% Arguments for the button command are:
+
+%  argu 1 - number of control panel you want the button on
+%  argu 2 - label for button, use quotation marks for more than one word
+%  argu 3 - action for button, ignored if a label
+%  argu 4 - x location of lower left corner of button, use -1 for auto-placement
+%  argu 5 - y location of lower left corner of button, use -1 for auto-placement
+%  argu 6 - x size of button
+%  argu 7 - y size of button
+%  argu 8 - (optional) button flags (4 means button is a label)
+
+
+% The demo panel is panel #8
+
+panel off  % comment this out to watch the panel being drawn
+
+button 8 "Relaxations (real time)" dum 5 270 85 20 4
+button 8 Trefoil <tref-relax 5 -1 33.75 15
+button 8 "Figure 8" <fig8-relax -1 -1 33.75 15
+button 8 "  6.3  " <6.3-relax -1 -1 33.75 15
+button 8 "  7.1  " <7.1-relax -1 -1 33.75 15
+button 8 "Trefoil B" <tref-relaxB -1 -1 33.75 15
+button 8 "Figure 8 B" <fig8-relaxB -1 -1 33.75 15
+button 8 "Anchors" <anchor-demoA -1 -1 33.75 15
+%button 8 "Pull knot" <pull-tight  -1 -1 33.75 15
+button 8 "Trefoil C" <tref-relaxC 5 -1 33.75 15
+%button 8 "Monster A" <small-monster-relaxationA   -1 -1 33.75 15
+%button 8 "Monster B" <small-monster-relaxationB   -1 -1 33.75 15
+%button 8 "Monster C" <small-monster-relaxationC   -1 -1 33.75 15
+
+button 8 "Relaxations (precomputed)" dum 5 -1 102 20 4
+
+% The following four input scripts are located in the unknots directory
+
+button 8 "load Monster" <monster-init.kps 5 -1 46.66 15
+button 8 "load Nasty" <ks-init.kps  -1 -1 46.66 15
+button 8 "load Brun" <brun-relax-init.kps  -1 -1 46.66 15
+button 8 " go Monster " <monster-movie.kps  -1 -1 46.66 15
+
+button 8 " go Nasty " <ks-movie.kps  -1 -1 46.66 15
+button 8 " go Brun " <brun-relax-movie.kps  -1 -1 46.66 15
+
+
+button 8 "4D Demos" dum 5 -1 50 20 4
+
+button 8 "Spun Trefoil" <spun-trefoil 5 -1 46.66  15
+button 8 "VanKampen Zeeman" <make-van-zee.kps -1 -1 46.66  15
+button 8 "Andrews Curtis" <make-and-cur.kps -1 -1 46.66  15
+button 8 "4D torus A" "reset all;<rotate-4dtorusA" 5 -1 46.66 15
+button 8 "4D torus B" "reset all;<rotate-4dtorusB" -1 -1 46.66 15
+button 8 "4D torus C" "reset all;<rotate-4dtorusC" -1 -1 46.66 15
+
+button 8 "4D torus A'" "reset all;<rotate-4dtorusAp" 5 -1 46.66 15
+button 8 "4D torus B'" "reset all;<rotate-4dtorusBp" -1 -1 46.66 15
+button 8 "4D torus B''" "reset all;<rotate-4dtorusBpp" -1 -1 46.66 15
+button 8 "Proj plane A" "reset all;<rotate-proj-planeA" -1 -1 46.66 15
+button 8 "Proj plane B" "reset all;<rotate-proj-planeB" -1 -1 46.66 15
+button 8 "Proj plane C" "reset all;<rotate-proj-planeC" -1 -1 46.66 15
+
+button 8 "This layout subject to change." nop 20 -1 102.2 30 4  
+
+button 8 Reset reset   65 288 30 10 
+button 8 "Full screen" <full-screen -1 -1 30 10
+
+button 8 "More demos" "<more-demos" 130 5 25 12 128
+panel on

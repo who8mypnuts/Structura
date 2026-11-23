@@ -1,0 +1,81 @@
+require KPbuild 4998  % for view command (replacement for viewmatrix)
+
+require KPbuild 4100
+reset all
+func init
+func silent
+silent=t
+verb=f
+back=black
+
+frame comm "unknot 15 \rr[1/5];scale \rr2 \rr2 1;refl r;trans 0 \rr[-8/-10] 4;rotor period \rr[500/1500] color blue add weaver%d"
+frame 0 num 4
+
+func 2 <random-lights
+func 1 <ConeyMagic3.kps
+load coneymagic.k
+spec rotor
+
+mass on
+mass all 1
+mass 0 0
+
+trx = 3.193645
+try = -1.337632
+scale = 0.487033
+cyl-rad = 0.103873
+view matrix -0.042131 0.998636 0.030702 0.000279 -0.030717 0.999522
+
+scen on
+
+
+
+scen obj coney-rev
+%scen obj testC 0 0 -4
+scen scale 4
+scen obj snub_disicosidodecahedron_plus_dual 0 0 -4
+
+scen scale .2
+scen rotate yorien
+scen obj coney ecomp 0
+
+cmode 1 138.699592 124.041292 1.988674
+cmode 2 5.000000 2.000000 2.000000
+cmode 3 0.843475 0.284653 0.154694
+draw spec
+
+%luxo
+ncur=7
+nseg=15
+
+frame comm "rotor let weaver%d pull lbead 0"
+frame 0 num 4
+
+force 1
+velf=t
+velmag=.4
+
+go
+stus=1
+
+%tfunc .1 "revb;split cyl 0;revb;mass all 1;mass 0 0" 0 rep 1
+
+
+txt font 3
+txt cent
+txt c -15 "Coney's Magic Show"
+
+txt left
+
+txt fcolour "Swedish Blue" .4
+txt lineskip -22
+txt fill on
+txt 12 10 walk <ConeyRavenna1.kps
+
+tfunc \rr[0/2] "txt on"
+
+silent=f
+echo
+echo
+echo
+echo

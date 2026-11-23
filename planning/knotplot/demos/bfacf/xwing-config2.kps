@@ -1,0 +1,33 @@
+
+delete all
+
+bfacf load bfacf/xwing2.k
+
+bfacf centre off
+spec bfacf
+
+% don't show all the lattice
+bfacf latshow 25
+
+% left slab
+bfacf box -20 -20 -20 -16 20 20
+
+% right slab
+bfacf box 16 -20 -20 20 20 20
+
+% connecting pipe
+bfacf fill -16 -3 -3 16 3 3
+
+% empty interior of pipe
+bfacf clear -17 -2 -2 17 2 2
+
+
+
+% don't forget to refill the location where the knot is!
+bfacf fill
+
+txt clobber on
+txt font 2
+txt fill off
+txt cent
+txt c -44 "configuration 2"

@@ -1,0 +1,43 @@
+reset all
+all 1022
+
+func 1 <Mandala2.kps
+sbuff
+cyl=.04
+hsta=\rr360
+back=black
+disp t
+Draw=f
+ 
+value=\rr.05
+
+mathsv s 0 0 0 s
+par3=\rr+-108
+par4=\rr+-108
+
+frame command "unknot 1022 %d;scale .1 .1 .1;swirl y \ppar3;swirl x \ppar4;fitto 10;disp t"
+
+ortho 
+scale=.35
+zbuff f
+blend one one
+glop backface t
+
+clrfun n
+
+verbose=f
+idle "frame \ri[30/150"
+
+%frame 30 to 150 step 3
+silent=f
+
+gflush
+
+<mandala-common.kps
+~title "Mandala 2"
+
+
+
+
+
+

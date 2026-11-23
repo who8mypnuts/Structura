@@ -1,0 +1,26 @@
+reset all
+reset all
+
+
+panel off
+silent = t
+
+mode s 
+cyl = .1
+
+scale = 0.393718
+
+% this knot is just conway 3 in a nice orientation
+
+hstar =0
+load demos-demo0.k
+
+collision allow  % turn off collision checking
+force 1          % Newtonian force 
+velforce = true  % but damped 
+
+go 204
+
+silent = f
+panel on
+

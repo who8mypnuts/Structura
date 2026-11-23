@@ -1,0 +1,18 @@
+reset all
+
+chain
+ncur=4
+nseg=15
+twfix
+cyl-rad=.2
+mode sF
+spec fra
+spec +orient
+
+field type magnetic tracer grid npoint 54 step .2 ncell 8 gsize 10
+
+idle "about y 10"
+
+
+<../benchmarks/blurb-bm.kps
+

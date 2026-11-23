@@ -1,0 +1,30 @@
+#!/bin/csh -f
+
+cat KPManOverView.head > KPManOverView.html
+
+echo "<b>" >> KPManOverView.html
+
+foreach f (*.html)
+
+  set s = `grep title $f | sed 's/title/a/g'`
+  set r = 'href="'$f'"'
+  set g = `echo $s | sed 's/>/ qwerty>/'`
+  echo $g > dum
+
+  set old = "qwerty"
+  set new = $r
+
+  set sed = "sed 's/"$old"/"$new"/g'  "dum
+
+  echo $sed | sh >> KPManOverView.html
+  echo "   " $f "  <p>" >> KPManOverView.html
+  echo $sed | sh
+end
+
+echo "</b>" >> KPManOverView.html
+cat otherinfo KPManOverView.tail >>  KPManOverView.html
+
+chmod ugo+r  KPManOverView.html
+
+/bin/rm dum
+

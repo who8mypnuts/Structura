@@ -1,0 +1,40 @@
+
+		BOB JENKINS' HOMFLY POLYNOMIAL PROGRAM
+
+						rjenkins@cs.berkeley.edu
+
+This is the code for the master's thesis of Bob Jenkins at CMU.
+
+The algorithm works by dynamic programming.  The normal approach creates a
+binary tree (each node an intermediate knot; all the leaves unlinks).  My
+approach collects nodes with the same intermediate knot, sums their polynomials
+thus far, and continues on.  In fact, it decides which crossings to operate on
+in an attempt to maximize the number of duplicates.  The resulting algorithm
+is factorial in time and space on the max-min cross-section of the knot, which
+is the square root of the number of crossings or less.  Given the max cross
+section, it is only linear on the number of crossings.  (You can have lots and
+lots of crossings, as long as the cross section is small.)  A Sun 3 tends to
+die on cross sections of more than 18 strings (9 in, 9 out).
+
+                                    - Bob Jenkins
+
+Most common algorithm repeatedly divides the knot, whereas his uses increasing 
+circles to cover crossings. He claims it is a lot faster.  The major drawback 
+of his implementation, until recently, had been the amount of space it used.  
+However, he now has a garbage collection algorithm that is able to reclaim most
+of the space.  (I hope we are talking about the same computation: Bob said that
+knots of ~95 crossings had been computed, which is much larger than I 
+remembered.)
+
+I've always put all the .c, .h, .txt, etc files in a single directory.
+Compile this program with the makefile; the executable will be named homfly.
+
+When the program prompts you for a knot file, borromean.txt (no quotes, no
+leading pathname, just borromean.txt) is a legal response.  The program prints
+out some diagnostics (how much work it did to handle each crossing), then
+prints the polynomial for the given link.
+
+The file knot.h describes the format of knot files.  There are no additional
+features to this program; there is no other documentation.  I have not yet
+published a paper describing how this works.  I expect to write such a paper
+over Christmas break.

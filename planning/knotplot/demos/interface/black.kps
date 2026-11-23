@@ -1,0 +1,15 @@
+panel colour svalue black
+panel colour svalue black
+panel colour sbox #000000
+panel colour sbutton #000000
+panel colour label #000000
+panel colour rbfill #000000
+panel colour rbborder #000000
+panel colour ghost #000000
+panel colour press #000000
+panel colour high #000000
+panel colour low #000000
+panel colour highlab #000000
+panel colour lowlab #000000
+panel colour bgcolour #000000
+

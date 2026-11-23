@@ -1,0 +1,3 @@
+save |.tmp
+close all
+if unsafe then "load |.tmp"

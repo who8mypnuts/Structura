@@ -1,0 +1,86 @@
+require KPbuild 4965
+
+% kpath example file `kpath-demo0.kps'
+% Rob Scharein, 1 May 2002
+
+% To use, read in this file with the `<' command, as in:
+
+%     KnotPlot> <kpath-demo0.kps
+
+reset all     
+
+func silent
+func init
+
+silent=t
+% Press the function key `F1' to run the demo again
+func  1 <kpath-demo0.kps
+
+if \rr3 < 1 then "hstart=\rr360"
+panel off        % Turn off the control panel during the demo
+
+allocate 2000    % Need a bit more space for beads
+cyl=1            % Radius of outer knot
+ncur=5           
+nseg=12          
+
+silent=f
+echo " " 
+echo " " 
+echo Base knot:
+
+%% Generated Mon Oct 17 15:23:11 2005
+%% with command line: c:\usr\KnotPlot\resource\win32\multiif.exe kpath.txt
+par4 = \rr25
+if par4 < 1 then "knot spec;par4=27"
+if par4 < 22 then "knot 1;par4=27"
+if par4 < 23 then "unknot \ri[22/333];par4=27"
+if par4 < 26 then "knot cd;par4=27"
+
+silent=t
+
+swap randomize
+keep 0
+align ax
+
+if \pnbeads > 375 then "knot 1"
+echo " " 
+<randorient.kps
+
+if \rr4 < 1 then "refl r"
+
+
+save |.tmp
+
+smart=f          % Don't want KnotPlot to be smart about twist-fixing (i.e. we
+                 % want to do it explicitly
+atw=t            % Set this parameter to true so curve matches up properly
+if \rr2 < 1 then "twfix 555" else "twfix -555"
+
+% Write out points to a temporary file
+kpath KP_path.tmp
+
+ncur = 3         % Reset ncur to something reasonable
+
+% Load back the temporary file
+load KP_path.tmp
+
+load comb |.tmp  % Combine this with the original knot
+
+mcyl 0 .1        % make cyl-rad of component 0 equal to .1
+mcyl 1 .8        % make cyl-rad of component 1 equal to .8
+
+if \rr2 < 1 then swap
+par0=\rr5
+if par0 < 1 then "back=xffffff"
+if par0 < 1 then "fog colour 1 1 1;fog on"
+if par0 < .5 then "rotate x \rr360"
+
+if \rr1 < .1 then "hstart=213"
+
+panel on         % Turn on the control panel  
+
+smart=t          % set smart back to true
+silent=f
+
+% end of  kpath example file `kpath-demo0.kps'

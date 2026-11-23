@@ -1,0 +1,537 @@
+
+<html><head>
+<title>KnotPlot  Parameters</title>
+</head>
+<body  bgcolor="#c0c0c0">
+<a  name=topoffile></a>
+<h1>
+<img  src="inlines/Link2.gif"  align=middle  width=103  height=103>
+KnotPlot  Parameters</h1>
+Parameters  may  be  set  by  typing  <b>parameter  =  value</b>.   Like  commands,  parameters  may  be
+abbreviated  to  any  length.   However  it  is  safer  to  never  abbreviate  a  parameter  to  <em>less  than
+four  characters.</em>  Parameters  are  guaranteed  to  be  unambiguous  if  this  general  rule  is  followed.
+<p>  <font  size=-1>  Click  on  one  of  the  following  subsection  names  to  go  to  that  subsection.   To
+return  to  the  top  of  the  page,  click  on  one  of  the  arrows  pointing  upwards.   <p>
+<a  href="#Setting  parameters">[Setting  parameters]</a>
+<a  href="#Changing  the  display">[Changing  the  display]</a>
+<a  href="#Surface  geometry">[Surface  geometry]</a>
+<a  href="#Creating  new  knots  and  links">[Creating  new  knots  and  links]</a>
+<a  href="#Relaxation  of  knots">[Relaxation  of  knots]</a>
+<a  href="#Four  dimensional  knots">[Four  dimensional  knots]</a>
+<a  href="#Postscript  pictures">[Postscript  pictures]</a>
+<a  href="#Miscellaneous  parameters">[Miscellaneous  parameters]</a>
+</font>  <p>
+<a  name="Setting  parameters"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Setting  parameters</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+Parameters  come  in  several  varieties,  real  numbers,  integers,  and  boolean  numbers.   Real  numbers
+will  be  rounded  off  if  an  integer  parameter  is  being  set.   Boolean  parameters  may  be  set  to  one  of
+<b>true</b>,  <b>on</b>,  <b>yes</b>,  or  <b>1</b>  to  indicate  true,  or  <b>false</b>,  <b>off</b>,
+<b>no</b>,  or  <b>0</b>  to  indicate  false.   Some  integer  parameters  are  naturally  expressed  as
+hexadecimal  values.   An  example  is
+<a  href="#background"><b>background</b></a>
+.   These  parameters  are  also  displayed  in  hexadecimal  when  using  the
+<a  href="commands.html#parameters"><b>parameters</b></a>
+command.   To  set  a  parameter  (or  command  argument)  to  a  hexidecimal  integer,  preface  the  value  with
+the  characters  <b>0x</b>  (for  example  <b>back  =  0xff7648</b>  will  set  the  background  to  a  nice
+royal  blue).
+<p><h3>
+<img  src="inlines/Link4.gif"  align=middle  width=41  height=41>
+Random  values</h3>
+Parameters  and  all  numerical  arguments  to  commands  may  be  set  to  values  which  are  chosen  randomly
+in  several  different  ways.   A  random  value  is  indicated  by  <b>\r</b>  as  in  the  following:
+<ul>
+<li><b>\rr[</b><em>a</em><b>/</b><em>b</em><b>]</b>  A  real  number  chosen  uniformly  in  the  range
+<em>a</em>  to  <em>b</em>  (inclusive).
+<li><b>\rr</b><em>a</em>  A  real  number  chosen  uniformly  in  the  range  0  to  <em>a</em>  (inclusive).
+For  example,  <b>\rr1</b>  will  choose  a  number  from  0  to  1.
+<li><b>\rr+-</b><em>a</em>  A  real  number  chosen  uniformly  in  the  range  <em>a</em>  to  <em>a</em>
+(inclusive).
+<li><b>\ri[</b><em>a</em><b>/</b><em>b</em><b>]</b>  An  integer  chosen  uniformly  in  the  range
+<em>a</em>  to  <em>b</em>  (inclusive).
+<a  href="../../demos/flower">(example)</a>
+<li><b>\ri</b><em>a</em>  An  integer  chosen  uniformly  in  the  range  0  to  <em>a</em>  (inclusive).
+<li><b>\ri+-</b><em>a</em>  An  integer  chosen  uniformly  in  the  range  <em>a</em>  to  <em>a</em>
+(inclusive).
+</ul>
+An
+<a  href="../../demos/random-values">example</a>
+using  all  of  the  above  is  in  the  demos  directory.
+<a  name="Changing  the  display"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Changing  the  display</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+All  the  parameters  in  this  section  affect  only  the  display  as  seen  on  the  screen.   They  have
+absolutely  no  effect  on  the  actual  surface  geometry.
+<dl>
+<p>
+<dt>  <b><a  name="auto-colour">auto-colour</a></b>
+<em></em><dd>
+If  <b>auto-colour</b>  is  <b>true</b>,  the  parameter  <b>hincr</b>  is  automatically  set  when  loading
+a  knot  or  creating  a  new  one,  the  value  of  <b>hincr</b>  depending  on  the  number  of  components.   Set
+<b>auto-colour</b>  to  <b>false</b>  to  turn  off  this  action  (default  is  true).
+<p>
+<dt>  <b><a  name="background">background</a></b>
+<em></em><dd>
+The  background  colour  of  the  view  window.   Normally  set  by  specifying  a  hex  value  (see  the  note
+above,  default  is  0x444444).
+<p>
+<dt>  <b><a  name="Drawing">Drawing</a></b>
+<em></em><dd>
+Turns  on  or  off  drawing  (default  is  on).
+<p>
+<dt>  <b><a  name="drecaps">drecaps</a></b>
+<em></em><dd>
+Controls  whether  or  not  end-caps  are  drawn  for  open  components.   End-caps  are  not  properly  drawn  in
+KnotPlot  currently,  set  this  parameter  to  <b>false</b>  to  turn  off  the  drawing.   This  problem
+should  be  fixed  in  upcoming  versions  of  the  software,  eliminating  the  need  for  this  parameter
+(default  is  true).
+<p>
+<dt>  <b><a  name="grmode">grmode</a></b>
+<em></em><dd>
+Grid  mode,  1  is  a  rectangular  grid,  2  is  a  pie  grid.   Use  the
+<a  href="commands.html#3doptions"><b>3doptions</b></a>
+command  to  change  the  colours  used  to  draw  the  grid.
+<p>
+<dt>  <b><a  name="grsize">grsize</a></b>
+<em></em><dd>
+Size  of  the  grid  (default  is  10).
+<p>
+<dt>  <b><a  name="grspace">grspace</a></b>
+<em></em><dd>
+Minor  spacing  between  lines  on  the  grid  (default  is  1).   Set  to  0  to  turn  off  minor  spacing.
+<p>
+<dt>  <b><a  name="grSpace">grSpace</a></b>
+<em></em><dd>
+Major  spacing  between  lines  on  the  grid  (default  is  5).   Set  to  0  to  turn  off  major  spacing.
+<p>
+<dt>  <b><a  name="hstart">hstart</a></b>
+<em></em><dd>
+'Hue  start',  the  hue  of  component  0  in  smooth  tubes  mode.   Valid  range  is  from  0  to  360  (default  is
+250).
+<p>
+<dt>  <b><a  name="hincr">hincr</a></b>
+<em></em><dd>
+'Hue  increment',  the  difference  in  hue  between  consecutive  components  in  smooth  tubes  mode  (default
+depends  on  number  of  components).
+<p>
+<dt>  <b><a  name="saturation">saturation</a></b>
+<em></em><dd>
+The  colour  saturation  of  the  surface  while  in  smooth  tubes  mode.   Valid  range  is  from  0  to  1
+(default  is  1).
+<p>
+<dt>  <b><a  name="scale">scale</a></b>
+<em></em><dd>
+The  drawing  scale  (default  is  0.35).   Not  to  be  confused  with  the
+<a  href="commands.html#scale"><b>scale</b></a>
+command.
+<p>
+<dt>  <b><a  name="trx  try  trz">trx  try  trz</a></b>
+<em></em><dd>
+The  offset  in  the  three  directions  of  the  displayed  knot.   Using  the  right  mouse  button  in  the  view
+window  is  the  same  as  changing  <b>trx</b>  and  <b>try</b>.
+<p>
+<dt>  <b><a  name="value">value</a></b>
+<em></em><dd>
+The  'value'  or  brightness  of  the  surface  while  in  smooth  tubes  mode.   Valid  range  is  from  0  to  1
+(default  is  1).
+</dl>
+<a  name="Surface  geometry"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Surface  geometry</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+All  of  the  parameters  in  this  section  affect  both  the  display  seen  on  the  screen  and  any  surface
+description  output  to  another  program  (DXF,  SDL,  etc.).
+<dl>
+<p>
+<dt>  <b><a  name="cyl-rad">cyl-rad</a></b>
+<em></em><dd>
+The  radius  of  the  cylinders  or  smooth  tubes  when  drawn  (0.35).   This  parameter  may  also  be  set
+using  the  'cyl-rad'  slider  on  the  main
+<a  href="ControlPanel.html#display">control  panel.</a>
+<p>
+<dt>  <b><a  name="nsegments">nsegments</a></b>
+<em></em><dd>
+The  number  of  sides  of  the  drawn  cylinders.   Increase  this  for  better  rendering,  decrease  for
+faster  rendering  (default  is  12).   This  parameter  is  changed  by  the
+<a  href="commands.html#luxo"><b>luxo</b></a>
+and
+<a  href="commands.html#cheapo"><b>cheapo</b></a>
+commands.   This  parameter  may  also  be  set  using  the  'nseg'  slider  on  the  main
+<a  href="ControlPanel.html#display">control  panel.</a>
+<p>
+<dt>  <b><a  name="ncurve">ncurve</a></b>
+<em></em><dd>
+The  number  of  interpolations  (segments)  drawn  between  each  bead  using  <b>mode  s</b>  (default  is  3).
+This  parameter  is  changed  by  the
+<a  href="commands.html#luxo"><b>luxo</b></a>
+and
+<a  href="commands.html#cheapo"><b>cheapo</b></a>
+commands.   This  parameter  may  also  be  set  using  the  'ncur'  slider  on  the  main
+<a  href="ControlPanel.html#display">control  panel.</a>
+<p>
+<dt>  <b><a  name="broff">broff</a></b>
+<em></em><dd>
+The  size  of  the  'broken  offset'  when  in  drawing  modes  'brok'  or  'sbro'  (default  is  0.1).
+</dl>
+<a  name="Creating  new  knots  and  links"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Creating  new  knots  and  links</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+These  parameters  control  various  settings  related  to  the  creation  of  new  knots  and  links.
+<dl>
+<p>
+<dt>  <b><a  name="D-chain">D-chain</a></b>
+<em></em><dd>
+The  radius  of  the  entire  link  created  with  the
+<a  href="commands.html#chain"><b>chain</b></a>
+command  (default  is  10).
+<p>
+<dt>  <b><a  name="d-chain">d-chain</a></b>
+<em></em><dd>
+The  radius  of  individual  components  in  a  link  created  with  the
+<a  href="commands.html#chain"><b>chain</b></a>
+command  (default  is  0.75).
+<p>
+<dt>  <b><a  name="d-torus">d-torus</a></b>
+<em></em><dd>
+The  smaller  radius  used  in  constructing  a  knot  with  the
+<a  href="commands.html#torus"><b>torus</b></a>
+command  (default  is  2.75).
+<p>
+<dt>  <b><a  name="new">new</a></b>
+<em></em><dd>
+If  <b>true</b>,  everything  is  deleted  when  new  knots  or  links  are  created  with  commands  such  as
+<b>chain</b>  or  others  (see  the  section  on
+<a  href="commands.html#Creating  new  knots  and  links">creating</a>
+new  knots  and  links  to  see  which  commands  are  affected  by  this  parameter).   Set  to  <b>false</b>  if
+you  want  to  keep  the  old  knot  or  link  while  adding  a  new  one  (default  is  <b>true</b>).
+<p>
+<dt>  <b><a  name="N-torus">N-torus</a></b>
+<em></em><dd>
+Number  of  beads  in  knots  constructed  with  the
+<a  href="commands.html#lissajous"><b>lissajous</b></a>
+,
+<a  href="commands.html#torus"><b>torus</b></a>
+or
+<a  href="commands.html#unknot"><b>unknot</b></a>
+commands.
+<p>
+<dt>  <b><a  name="R-torus">R-torus</a></b>
+<em></em><dd>
+The  larger  radius  used  in  constructing  a  knot  with  the
+<a  href="commands.html#torus"><b>torus</b></a>
+or
+<a  href="commands.html#unknot"><b>unknot</b></a>
+commands  (default  is  8.25).
+</dl>
+<a  name="Relaxation  of  knots"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Relaxation  of  knots</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+These  parameters  affect  the  dynamical  system  run  on  the  knot  or  link  during  the  relaxation
+simulation.
+<dl>
+<p>
+<dt>  <b><a  name="bencon">bencon</a></b>
+<em></em><dd>
+Parameter  controlling  the  magnitude  of  bending  forces  (default  is  1.0).
+<p>
+<dt>  <b><a  name="bendforce">bendforce</a></b>
+<em></em><dd>
+Sets  bending  forces  on  or  off  (default  is  off).
+<p>
+<dt>  <b><a  name="close">close</a></b>
+<em></em><dd>
+The  closest  distance  that  the  cylinders  are  allowed  to  approach  in  the  dynamical  simulation
+(default  is  0.12).
+<p>
+<dt>  <b><a  name="dstep">dstep</a></b>
+<em></em><dd>
+Normally  when  KnotPlot  is  relaxing  a  knot,  the  knot  is  displayed  at  each  iteration  step.   On  some
+machines,  especially  those  with  slow  graphics  but  fast  CPUs,  it  is  often  preferable  to  draw  after
+several  iterations.   Setting  this  parameter  to  a  value  greater  than  one  will  cause  KnotPlot  to  draw
+every  <b>dstep</b>  iterations  during  knot  relaxation.
+<p>
+<dt>  <b><a  name="elecforce">elecforce</a></b>
+<em></em><dd>
+Sets  the  'electrical'  force  on  or  off  (default  is  on).
+<p>
+<dt>  <b><a  name="iteration">iteration</a></b>
+<em></em><dd>
+Current  iteration  count  (the  number  of  relaxation  steps).
+<p>
+<dt>  <b><a  name="max-dr">max-dr</a></b>
+<em></em><dd>
+The  maximum  distance  beads  are  allowed  to  move  each  relaxation  step.   In  order  for  the  relaxation
+to  preserve  knot  type,  this  parameter  should  be  less  than  <b>close</b>  above  (default  is  0.1).
+<p>
+<dt>  <b><a  name="mechforce">mechforce</a></b>
+<em></em><dd>
+Sets  the  'mechanical  force'  on  or  off  (default  is  on).
+</dl>
+<a  name="Four  dimensional  knots"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Four  dimensional  knots</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+These  are  the  relevant  parameters  for  four  dimensional  knot  construction  and  display.
+<p><h3>
+<img  src="inlines/Link4.gif"  align=middle  width=41  height=41>
+Constructing  the  knot</h3>
+These  parameters  are  used  to  define  the  surface  constructed  in  the  spinning  or  suspension  process.
+<dl>
+<p>
+<dt>  <b><a  name="4dss">4dss</a></b>
+<em></em><dd>
+the  number  of  spin  sections  created  (the  number  of  vertices  along  a  line  of  latitude)  (default  is
+30).
+<p>
+<dt>  <b><a  name="4dspangle">4dspangle</a></b>
+<em></em><dd>
+the  angle  of  the  spin  plane  (can  also  be  set  with  the
+<a  href="commands.html#splane"><b>splane</b></a>
+command).
+<p>
+<dt>  <b><a  name="4dw">4dw</a></b>
+<em></em><dd>
+suspended  knots  are  constructed  ``hanging''  from  the  points  (0,  0,  0,  w)  and  (0,  0,  0,  -w)  where  w
+is  the  value  of  this  parameter.
+</dl>
+<p><h3>
+<img  src="inlines/Link4.gif"  align=middle  width=41  height=41>
+Displaying  the  knot</h3>
+These  parameters  control  the  display  of  the  knot  (or  related  objects).
+<dl>
+<p>
+<dt>  <b><a  name="4deye">4deye</a></b>
+<em></em><dd>
+this  sets  the  distance  of  the  4D  eye  point.   Only  relevant  to  the  perspective  projection.
+<p>
+<dt>  <b><a  name="4dw">4dw</a></b>
+<em></em><dd>
+this  controls  the  length  of  the  coordinate  axes  and  the  size  of  the  bounding  hyper-cube.
+<p>
+<dt>  <b><a  name="4dda">4dda</a></b>
+<em></em><dd>
+(<b>true</b>  or  <b>false</b>)  display  the  four  coordinate  axes  (false).
+<p>
+<dt>  <b><a  name="4ddc">4ddc</a></b>
+<em></em><dd>
+(<b>true</b>  or  <b>false</b>)  display  a  bounding  hyper-cube  (<b>false</b>).
+<p>
+<dt>  <b><a  name="4ddk">4ddk</a></b>
+<em></em><dd>
+(<b>true</b>  or  <b>false</b>)  display  the  knot  itself  (<b>true</b>).
+<p>
+<dt>  <b><a  name="4dsm">4dsm</a></b>
+<em></em><dd>
+the  way  the  knot  surface  is  displayed.   The  possible  values  are
+<dl>
+<dt><b>0</b>  <dd>  ---  draw  as  a  shaded  surface.   <dt><b>1</b>  <dd>  ---  draw  as  a  wire  frame
+coloured  according  to  latitude  on  the  sphere.   <dt><b>2</b>  <dd>  ---  same  as  1  except  draw  latitude
+lines  only.   <dt><b>3</b>  <dd>  ---  same  as  1  except  draw  longitude  lines  only.   <dt><b>11</b>  <dd>
+---  draw  as  a  wire  frame  but  colour  according  to  the  value  of  the  dimension  lost  in  the  projection
+from  4D  to  3D.
+</dl>
+Portions  of  the  knot's  surface  can  be  selectively  enabled  or  disabled  using  the
+<a  href="commands.html#spactivate"><b>spactivate</b></a>
+command  (for  example,  to  view  the  northern  hemisphere  only).
+</dl>
+<a  name="Postscript  pictures"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Postscript  pictures</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+There  are  several  parameters  controlling  how  Postscript  pictures  are  generated.   Also,  provision  is
+made  in  the  Postscript  file  for  easy  editing  if  something  unusual  is  required.   The  KnotPlot  Site
+has  a
+<a  href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/postscript/ps-examples.html">page
+of  examples</a>
+(clicking  on  'example'  in  the  list  below  will  download  a  GZIPPED  example  for  that  mode).
+<dl>
+<p>
+<dt>  <b><a  name="psbackface">psbackface</a></b>
+<em></em><dd>
+If  <b>true</b>,  backfacing  polygons  are  removed  when  outputting  a  Postscript  file.   In  certain
+situations,  such  as  when  using  a  'broken'  drawing  function,  you  might  want  to  see  backfacing
+polygons.   If  so,  set  this  parameter  to  <b>false</b>  (default  is  <b>true</b>).
+<p>
+<dt>  <b><a  name="psmode">psmode</a></b>
+<em></em><dd>
+Will  affect  the  type  of  Postscript  output  generated.   Defaults  to  1.   Modes  1  and  2  generally
+produce  smaller  files  and  print  faster  than  mode  0.   Modes  in  the  ``forties''  produce  the  smallest
+files  of  all,  and  print  much  faster  too.   Possible  values  for  <b>psmode</b>  are:
+<dl>
+<dt><b>0</b>  <dd>  ---  smoothly  shaded  surface
+<a
+href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/postscript/borr.ps.gz">(example)</a>
+<dt><b>1</b>  <dd>  ---  white  polygons  with  black  outline  <dt><b>2</b>  <dd>  ---  black  polygons  with
+white  outline
+<a
+href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/postscript/22jun92.ps.gz">(example)</a>
+<dt><b>3</b>  <dd>  ---  same  as  mode  1  except  the  polygons  are  slightly  rounded
+<a
+href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/postscript/monster.ps.gz">(example)</a>
+<dt><b>4</b>  <dd>  ---  flat  shaded
+<a
+href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/postscript/open-square.ps.gz">(example)</a>
+<dt><b>5</b>  <dd>  ---  similar  to  mode  0  except  a  pattern  can  be  specified.   <dt><b>10</b>  <dd>  ---
+output  colour  Postscript  with  colours  similar  to  those  seen  with  the  drawing  mode  set  to  <b>draw
+norm</b>.
+<a
+href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/postscript/8.2.11.ps.gz">(example)</a>
+<dt><b>11</b>  <dd>  ---  same  as  mode  10  except  use  colours  as  in  drawing  mode  <b>draw  spec</b>.
+<a
+href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/postscript/true-lovers-knot.ps.gz">(example)</a>
+<dt><b>30</b>  <dd>  ---  Allows  a  texture  map  in  the  form  of  a
+<a  href="glossary.html#PGM"><b>PGM</b></a>
+(  Portable  Grey  Map)  file  to  be  specified.   <dt><b>40</b>  <dd>  ---  Simple  rendering  with  a  black
+curve
+<a
+href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/postscript/spe28.ps.gz">(example)</a>
+<dt><b>41</b>  <dd>  ---  Same  as  mode  40  except  black  and  white  are  swapped.   This  gives  a  similar
+rendering  to  the  knots  and  links  found  in  Appendix  C  of  <em>Knots  and  Links</em>
+<a
+href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/postscript/sect-knot-left.ps.gz">(example)</a>
+<dt><b>42</b>  <dd>  ---  Intended  to  be  an  improvement  over  mode  40  but  I'm  not  quite  sure.   All
+these  modes  need  some  minor  improvements.   Note  that  you'll  have  to  make
+<a  href="#cyl-rad"><b>cyl-rad</b></a>
+smaller  with  this  mode  to  get  similar  results  to  using  mode  40.   <dt><b>43</b>  <dd>  ---  The  mode
+corresponding  to  mode  42  with  black  and  white  swapped.   <dt><b>104</b>  <dd>  ---  Maps  a  random
+<a  href="http://www.scottlan.edu/academic/math/riddle/courses/m150/150proj5.htm">Truchet
+pattern</a>
+on  the  surface.
+<a
+href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/postscript/10.75.ps.gz">(example)</a>
+</dl>
+<p>
+<dt>  <b><a  name="psN">psN</a></b>
+<em></em><dd>
+<p>
+<dt>  <b><a  name="psM">psM</a></b>
+<em></em><dd>
+<p>
+<dt>  <b><a  name="pssort">pssort</a></b>
+<em></em><dd>
+Hidden  surfaces  are  handled  in  the  Postscript  rendering  by  using  the  'Painter's  algorithm',  that  is
+by  drawing  the  polygons  back  to  front.   In  order  to  do  this,  the  set  of  polygons  is  normally
+sorted.   Set  this  parameter  to  <b>false</b>  to  override  this  default  behaviour.
+</dl>
+<a  name="Miscellaneous  parameters"></a>
+<p><hr><h2>
+<img  src="inlines/Link1.gif"  align=middle  width=45  height=45>
+Miscellaneous  parameters</h2>
+<a  href="#topoffile">
+<img  src="inlines/gototop.gif"  align=right  border=0  width=21  height=114>
+</a>
+<p><h3>
+<img  src="inlines/Link4.gif"  align=middle  width=41  height=41>
+That  twisting  stuff</h3>
+A
+<a  href="../../demos/twfix-demo">demo  script</a>
+is  available  in  the  demos  directory  that  illustrates  the  use  of  the  following.
+<dl>
+<p>
+<dt>  <b><a  name="aftwist">aftwist</a></b>
+<em></em><dd>
+Usually  <b>off</b>,  set  to  <b>on</b>  if  you  want  knots  to  be  automatically
+<a  href="commands.html#twfix"><b>twfix</b></a>
+ed  when  they  are  loaded.   Note  that  <b>twfix</b>ing  is  done  when  using  the  buttons  on  the
+<a  href="ControlPanel.html#toppanel">control  panel</a>
+are  used  to  load  something  at  random.
+<p>
+<dt>  <b><a  name="atw">atw</a></b>
+<em></em><dd>
+A  flag  normally  set  to  <b>off</b>,  but  some  commands  such  as
+<a  href="commands.html#dxf"><b>dxf</b></a>
+and
+<a  href="commands.html#sdl"><b>sdl</b></a>
+will  set  it  to  <b>on</b>  because  they  require  that  the  coordinate  frame  of  the  smooth  tube  match  up
+exactly.
+<p>
+<dt>  <b><a  name="twdefault">twdefault</a></b>
+<em></em><dd>
+The  twisting  value  used  upon  loading  if  <b>aftwist</b>  is  <b>on</b>.
+<p>
+<dt>  <b><a  name="twist">twist</a></b>
+<em></em><dd>
+The  amount  of  twist  in  milli-radians  per  segment  (best  see  me  for  an  explanation).   Default  is  0.
+Basically,  this  is  a  way  to  eliminate  the  deficit  angle  seen  at  the  tie-point  in  the  knot.   To
+eliminate  the  deficit  angle,  first  set  <b>twist</b>  and  then  enter  the  command
+<a  href="commands.html#twfix"><b>twfix</b></a>
+(or  just  give  the  value  as  an  argument  to  <b>twfix</b>).   Interesting  effects  can  be  produced  by
+setting  <b>nseg  =  3</b>  and  using  a  <b>twist</b>  of  around  100.
+</dl>
+<p><h3>
+<img  src="inlines/Link4.gif"  align=middle  width=41  height=41>
+Other  parameters</h3>
+<dl>
+<p>
+<dt>  <b><a  name="silent">silent</a></b>
+<em></em><dd>
+KnotPlot  will  not  print  anything  if  this  parameter  is  <b>true</b>  (default  is  <b>false</b>).
+<p>
+<dt>  <b><a  name="sformat">sformat</a></b>
+<em></em><dd>
+Format  used  to  save  knots  or  links  with  the
+<a  href="commands.html#save"><b>save</b></a>
+command.   See  the
+<a  href="FileFormats.html#knotplot">documentation</a>
+on  file  formats.
+<dl>
+<dt><b>0</b>  <dd>  ---  KnotPlot  LOCF  <b>float</b>  format.   <dt><b>1</b>  <dd>  ---  KnotPlot  LOCS
+<b>short</b>  format.   Files  saved  with  this  format  are  about  half  the  size  of  those  saved  with  the
+LOCF  format.   However,  a  small  amount  of  noise  is  introduced  to  to  the  limited  precision  of  short
+integers.   Users  should  beware  of  accumulated  errors  if  files  are  repeatedly  loaded  and  saved  with
+this  save  format  in  effect.   <dt><b>2</b>  <dd>  ---  KnotPlot  LOCC  <b>char</b>  format.   Files  saved
+with  the  LOCC  are  only  half  the  size  the  equivalent  LOCS  file  and  a  quarter  the  size  of  an
+equivalent  LOCF  file.   However,  the  same  warning  applies  to  the  use  of  this  file  format  as  was
+given  for  the  LOCS  format,  only  more  so.   This  format  is  very  useful,  however,  for  large  animation
+databases.   <dt><b>3</b>  <dd>  ---  Raw  ascii  (same  format  as  used  by  the
+<a  href="commands.html#coords"><b>coords</b></a>
+command).   <dt><b>4</b>  <dd>  ---  Ascii  format  suitable  for  input  into
+<a  href="http://www.cs.uiowa.edu/hunt/">Kenny  Hunt's</a>
+KED  program.   Cannot  be  used  for  multi-component  links.   <dt><b>5</b>  <dd>  ---  Similar  to  KED
+format  except  suitable  for  input  into  Ming.   Cannot  be  used  for  multi-component  links.
+</dl>
+</dl>
+<hr>  <p>  <font  size=1>  <center>  This  HTML  file  was  produced  at  5:03  p.m.  on  February  7,  1997
+directly  from  the  LaTeX  source.   </center>  </font>  <p>
+<hr>
+[
+<a  href="KnotPlotManual.html">KnotPlot  Manual</a>
+],  [
+<a  href="ViewWindow.html">View  Window</a>
+],  [
+<a  href="ControlPanel.html">Control  Panel</a>
+],  [
+<a  href="CommandWindow.html">Command  Window</a>
+],  [
+<a  href="KPManOverView.html">Overview</a>
+]  <br>  [
+<a  href="http://www.cs.ubc.ca/spider/scharein">Rob  Scharein's</a>
+main  WWW  site  ],  [
+<a  href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/KnotPlot.html">KnotPlot  Site</a>
+]
+</body>  </html>

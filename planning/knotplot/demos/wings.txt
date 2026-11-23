@@ -1,0 +1,9 @@
+par0
+10 knot 2
+15 knot 3
+5 torus
+2 knot spe
+2 knot cd
+8 knot 1
+1 knot 4
+7 knot

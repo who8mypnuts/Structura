@@ -1,0 +1,11 @@
+reset all
+scale = 0.149211
+
+chain 12
+
+load sum 3.1 0
+load sum 3.1 2
+load sum 3.1 4
+load sum 3.1 6
+load sum 3.1 8
+load sum 3.1 10

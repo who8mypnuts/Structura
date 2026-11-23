@@ -1,0 +1,5 @@
+par2
+30 sphere cheapo \ri[3/22] \ri[3/22] \rr70
+100 sphere luxo \ri[2/4]
+65 sphere icos \ri[2/4]
+2 sphere teapot

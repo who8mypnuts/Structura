@@ -1,0 +1,95 @@
+
+% Control Panel Postscript Header
+
+% March 19, 2002  -- added drawtab
+
+% April 26, 2000  -- fixed for OpenGL version
+
+% August 31, 1994 and September 1, 1994
+
+/lw .35 def
+
+/drawtab {
+	/height exch def
+	/width exch def
+	/lly exch def
+	/llx exch def
+
+	/urx {width llx add} def
+	/ury {lly height .9 mul add} def
+	
+	newpath
+	0 setlinewidth
+	urx lly moveto
+	.1 width mul dup urx exch sub ury lineto
+	llx add ury lineto
+	llx lly lineto
+	0 eq {closepath} if
+	stroke
+} def
+
+/drawbox {
+	/height exch def
+	/width exch def
+	/lly exch def
+	/llx exch def
+
+	/urx {width llx add} def
+	/ury {height lly add} def
+	
+	newpath
+	0 setlinewidth
+	llx lly moveto
+	llx ury lineto
+	urx ury lineto
+	urx lly lineto
+	closepath
+	fill
+} def
+
+/drawopenbox {
+	/height exch def
+	/width exch def
+	/lly exch def
+	/llx exch def
+
+	/urx {width llx add} def
+	/ury {height lly add} def
+	
+	newpath
+	0 setgray
+	lw setlinewidth
+	llx lly moveto
+	llx ury lineto
+	urx ury lineto
+	urx lly lineto
+	closepath
+	stroke
+} def
+
+/setfontsize {
+        pop    % ignore argument
+        1.8
+	/fontsize exch def
+	/Helvetica findfont 
+	fontsize sqrt 3.5 mul scalefont setfont 
+} def
+
+/drawcircle {
+	newpath
+	0 setlinewidth
+	0 360 arc
+	fill
+} def
+
+/drawopencircle {
+	newpath
+	lw setlinewidth
+	0 360 arc
+	stroke
+} def
+
+
+% End of Control Panel Postscript Header
+
+

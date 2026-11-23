@@ -1,0 +1,72 @@
+% twfix-demo
+
+% This script illustrates the use of the twfix
+% command and the parameters related to twist.
+
+reset all
+dbpos = 1 % Changes the positioning policy of alert boxes
+atw = f   % set to false
+draw flat
+
+
+<twfix-demo-aux
+
+
+alert "        Now we'll try a different twist.        "  "Why not?"   Ok.
+disp
+alert "About to try `twfix 70'."  OK OK
+
+disp
+nap 1
+
+twfix 70
+disp
+
+nap 1
+
+alert "Now try the same thing, with frame arrows on." Ok Ok 
+
+reset all
+dbpos = 1 % Changes the positioning policy of alert boxes
+
+atw=f
+draw anorm
+
+<twfix-demo-aux
+
+nap 1
+
+draw flat
+disp
+nap .3
+draw anorm
+disp
+nap .3
+draw flat
+disp
+nap .3
+draw anorm
+disp
+nap .3
+draw flat
+disp
+nap .3
+draw anorm
+disp
+nap .3
+draw flat
+disp
+nap .3
+draw anorm
+disp
+nap .3
+
+
+alert "The polygons match up, but the frame arrows don't."  True  Ok
+disp
+alert "So, set `atw = t' and twfix" Ok Ok 
+
+atw = t
+twfix
+
+

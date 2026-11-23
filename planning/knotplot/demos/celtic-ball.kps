@@ -1,0 +1,52 @@
+require KPbuild 5008
+
+% rewritten in Lua 13 August 2022
+
+lua run celtic-ball
+
+exit
+
+%% original script
+
+require KPbuild 4147
+
+reset all
+
+function init
+function silent
+function 1 <celtic-ball.kps
+
+verbose = false
+
+silent = true
+load weird_celtic2.k
+tfunction reset
+
+
+vscale= 0.39
+sradius = 0.12
+hstart=\rr360
+
+rotate x \rr360
+rotate y \rr360
+rotate z \rr360
+
+celtic copy
+
+until once true
+until time 15
+
+function 2 "until Ncomp 1 {celtic random secondary \rr.4;celtic copy;display true}"
+function 3 "until Ncomp 2 {celtic random secondary \rr.4;celtic copy;display true}"
+function 4 "until Ncomp 3 {celtic random secondary \rr.4;celtic copy;display true}"
+function 5 "until Ncomp 4 {celtic random secondary \rr.4;celtic copy;display true}"
+function 6 "until Ncomp 5 {celtic random secondary \rr.4;celtic copy;display true}"
+function 7 "until Ncomp 6 {celtic random secondary \rr.4;celtic copy;display true}"
+function 8 "until Ncomp 7 {celtic random secondary \rr.4;celtic copy;display true}"
+function 9 "until Ncomp 8 {celtic random secondary \rr.4;celtic copy;display true}"
+
+silent = false
+
+function exec \ri[2/9]
+par ncomps
+

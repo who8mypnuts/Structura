@@ -1,0 +1,3 @@
+accbuff decay 0.999000
+accbuff accum 0.969169
+accbuff return 0.487427

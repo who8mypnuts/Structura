@@ -1,0 +1,2 @@
+if \rr1 < .4 then "draw flat" else "draw hflat"
+twfix \rr[-66/66]

@@ -1,0 +1,9 @@
+scale=.4
+
+mode cb
+cyl = .06
+
+#10 shift \ri100; split cyl 0
+info
+
+

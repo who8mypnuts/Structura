@@ -1,0 +1,9 @@
+<magnetic1.kps
+load |hopf
+delete 1
+refl r
+fixcofm=t
+if \rr2 < 1 then "revb"
+delete 1
+field gsize 3 ncell 7 npoi 216
+scale=.54

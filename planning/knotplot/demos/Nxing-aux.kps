@@ -1,0 +1,9 @@
+echo -n "Dowker code: "
+dowker
+txt init
+txt left
+txt font 4
+txt colour auto
+txt 10 -20 temp
+txt set lastloaded
+txt on

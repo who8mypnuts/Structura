@@ -1,0 +1,100 @@
+require KPbuild 4233
+
+reset all
+txt subwindows off
+silent=t
+back=#000
+allocate 2222
+
+func init
+func silent
+
+
+
+persp 90 .1 33
+
+draw brok
+broff=-.47
+
+if par0 > 1 then "par1=\rr100"
+if par1 > 80 then "broff=\rr[-.17/-.15]"
+
+cyl=.68
+vscale=1
+glop backface f
+<random-lights
+
+sat=0
+
+
+func 1 <PA.kps
+func 2 mode b:draw norm
+func 3 mode cb
+func 4 mode sb
+func 5 mode s:draw brok
+func 6 clrf z:zbuff t:blend sa msa:echo press F7 to undo this effect
+func 7 clrf zf
+func 8 mode s:twfix \rr+-222
+func 9 mode s:draw brok
+func 10 "cyl=\rr[.2/2];nseg=\ri[3/9]"
+func 11 "persp 160 .02 33;value=.6;zbuff f;blend one one;clrf zf"
+func 12 "cyl=.1;nseg=3;mode s;draw anorm;atw=t;twfix"
+
+mech=f
+elec=f
+go
+
+silent=f
+
+echo " "
+echo " "
+echo " "
+echo " press some of the function keys!"
+echo " (different combinations can be interesting)"
+echo " "
+
+
+%func 2 "knot 1;scale \rr[1/2];texture rep -1 -1"
+func 2 "knot 1;texture rep -1 -1"
+
+func 10 "brof=\rr+-4"
+func 9 "twfix \rr+-222"
+func 11 <random-lights
+mech = t
+elec = t
+velf=t
+force 1
+coll a
+knot 1
+if par0 > 1 then "fitto 15;split;split;refine 2"
+
+%if par0 > 1 then "twfix \rr+-2.2" else twfix
+twfix
+
+if \rr3 < 1 then "twfix \rr+-55"
+if \rr33 < 1 then "twfix \rr+-222"
+
+%fly \rr[102.2/222]
+%fly \rr[222/666]
+
+if \rr2 < 1 then "brof=\rr[-4/-2]" else "brof=\rr[1/3]"
+
+cyl-rad = 0.680000
+
+silent=t
+texture norm aum.pix
+draw tbro
+texture on
+texture rep -1 -1
+blend one one
+zbuff f
+
+if \rr2 < 1 then "tanf=t"
+tanmag=.001
+go inf limit 66
+
+scale=.56
+
+
+func
+silent=f

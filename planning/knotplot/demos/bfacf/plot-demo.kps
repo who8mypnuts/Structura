@@ -1,0 +1,14 @@
+
+require KPbuild 4217
+
+reset all
+mode cB
+cyl-rad=.1
+
+knot numb \ri[2/36] mscl
+bfacf load
+bfacf plot length
+bfacf run
+
+
+

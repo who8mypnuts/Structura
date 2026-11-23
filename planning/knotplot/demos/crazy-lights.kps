@@ -1,0 +1,1 @@
+idle "silent=t;read random-lights;sat=\rr.4;nap \rr.4;silent=f"

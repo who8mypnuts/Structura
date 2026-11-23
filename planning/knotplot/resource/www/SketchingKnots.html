@@ -1,0 +1,181 @@
+<html>
+<head>
+<title>Sketching Knots</title>
+</head>
+
+<body bgcolor="#c0c0c0">
+
+<h2>
+<img src="inlines/Sketching102.gif" align=middle width=352 height=344>
+Sketching Knots
+</h2>
+
+Sketching knots is easy, but it might take a little practice.
+Be sure you read the important items at the bottom of this page.
+While sketching in the view window, the mouse buttons
+are used in the following ways:
+<dl>
+<dt><b>Left Button</b>
+<dd> 
+To place beads and cylinders <em> under </em> other beads
+and cylinders.
+<dt><b>Middle Button</b>
+<dd>
+To place beads and cylinders <em> over </em> other beads
+and cylinders.
+<dt><b>Right Button</b>
+<dd>
+To translate the sketching space.
+</dl>
+<p>
+To start sketching something, click on the 'Draw' button near
+the top of the main 
+<a href="ControlPanel.html#toppanel">control panel.</a>
+This will bring up the sketching control panel,
+which is explained on this page.
+
+<hr>
+
+<img src="inlines/TopPanel2.gif" align=left vspace=0 hspace=20 width=427 height=195>
+
+When you first enter sketching mode, any knot or link that
+was loaded in KnotPlot still remains, thus allowing you to 
+add to it.
+If you would prefer to start a new knot, then click
+on 'Delete All' near the top of the panel.
+<p>
+'Delete Bead' will delete the last bead drawn.
+<p>
+'Finish' will return you  to the main control panel.
+and 'Help' will bring up this HTML page.
+
+<p>
+Normally, what you've drawn is automatically centered after
+sketching is finished. 
+If you don't want this to happen make sure 
+the 'clas' box is not selected.
+
+<br clear=all>
+<p>
+
+<hr>
+
+<img src="inlines/OCPanel2.gif" align=left vspace=0 hspace=20 width=239 height=151>
+You don't  need to use these two buttons unless you
+plan to draw links.  
+Link components can either be open or closed. 
+When you have finished drawing one component, 
+click on one of these two buttons to indicate
+which type you want.  
+After that you can click on 'Finish' if you don't
+want to sketch any more components or you can
+keep sketching. 
+<p>
+Please note that at the moment open components
+are not fully supported by all KnotPlot commands.
+If something unexpected happens,  use the 
+<a href="commands.html#open">open</a> and
+<a href="commands.html#close">close</a> commands.
+
+
+
+<br clear=all>
+<p>
+
+<hr>
+
+<img src="inlines/BottomPanel2.gif" align=left vspace=0 hspace=20 width=426 height=274>
+Clicking on the 'Flatten' button is exactly the same thing as
+using the 
+<a href="commands.html#scale">scale</a> command with the first two
+arguments equal to 1 and the last argument (the z-scaling) set to 
+the value of the 'Flatten' parameter. 
+Set the slider to 0 and click on 'Flatten' to project the knot
+to the xy-plane.
+
+<p>
+
+KnotPlot usually does sketching in the 'Normal' mode,
+where beads are automatically placed so the cylinders
+they are connected to do not intersect other cylinders.
+This sometimes fails, however, be sure to read the
+important information below to get the best results.
+
+<p>
+Selecting 'Raise/lower' sketching will cause KnotPlot
+to not autoplace the beads.  Instead, beads will
+be positioned high or low depending on whether the
+middle or left mouse buttons are pressed. 
+
+<p>
+'Trace' sketching mode is currently not implemented.
+Selecting this option may have unexpected results.
+
+<p>
+Sometimes it's nice to have a background image 
+displayed while sketching.  
+To get one, first prepare a suitable image file
+in the raw <a href="glossary.html#PGM">PGM</a> format
+with the name <b>kp-backdrop.pgm</b> (soon you'll be able
+to use an arbitrary file).
+The image should be about the same size as the
+view window, or perhaps slightly smaller.
+Then click on 'Load Backdrop' to load your image
+in the background. 
+The 'Load Backdrop' button will change into 
+a 'Kill Backdrop' button which you can use to get
+rid of the background. 
+
+<p>
+Backdrop images are not properly implemented in KnotPlot.
+If you delete beads you may have to kill and then reload
+your backdrop to see the sketching area properly updated.
+
+
+<br clear=all>
+<p>
+
+<hr>
+
+<center>
+<img src="inlines/Link2.gif" align=middle width=103 height=103>
+<b> <font size=+2>Important Information</font> </b>
+<img src="inlines/Link3.gif" align=middle width=103 height=103>
+</center>
+
+<br>
+
+During normal sketching, KnotPlot
+tries to be smart about where it places 
+beads, for example it attempts to place beads so that 
+cylinders are not closer than a certain distance.
+This behaviour may seem a little annoying, but things should
+be fine if you remember the following:
+<ul>
+<li>If you're coming up to a crossing and you want to go
+under it's a good idea to click with the left mouse
+<em>before and after</em> the place where the crossing
+will be.
+<li>Similarly if you want to go over, click with the middle
+mouse <em>before and after</em> the place where the crossing
+will be.
+</ul>
+
+
+
+<hr>
+
+[<a href="KnotPlotManual.html">KnotPlot Manual</a>], 
+[<a href="ViewWindow.html">View Window</a>], 
+[<a href="ControlPanel.html">Control Panel</a>], 
+[<a href="CommandWindow.html">Command Window</a>],
+[<a href="KPManOverView.html">Overview</a>]
+<br>
+[<a href="http://www.cs.ubc.ca/spider/scharein">Rob Scharein's</a>
+ main WWW site], 
+[<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/KnotPlot.html">KnotPlot Site</a>]
+
+
+</body>
+</html>
+

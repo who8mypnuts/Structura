@@ -1,0 +1,55 @@
+require KPbuild 4524
+
+silent = t
+
+oal persistent off
+
+alias ~att "oal source $0 wav $2 attach bead $1 on"
+
+
+oal init
+oal listener screen
+
+oal doppler 1 \rr[.01/.02]
+oal alloff
+
+%frame comm "oal start \rr[.1/5] fadein \rr[.5/4.5];~att %d %d buzz"
+frame comm "oal start \rr[.1/50] fadein \rr[.5/58];~att %d %d sine"
+frame 0 number 64
+%frame comm "oal start \rr[30/50] fadein \rr[10/58];~att %d %d buzz"
+%frame 32 number 32
+oal random
+
+
+oal pitch 0 c 0
+oal pitch 1 c 204
+oal pitch 2 c 386
+oal pitch 3 c 498
+oal pitch 4 c 702
+oal pitch 5 c 884
+oal pitch 6 c 1088
+oal pitch 7 c 1200
+
+oal pitch dup 8
+oal gain all 1
+oal pitch cr \rr[-2000/-600]
+
+
+oal gain all 1
+oal veldiv 10000
+
+tfunc reset
+frame comm "oal pitch %d cr \rr+-8"
+
+tfunc .1 "silent=t;frame 0 numb 64;silent=f" 0 rep .6 1.4
+
+silent = f
+
+echo
+echo
+echo
+txt delete enable
+~ah
+txt c 20 "stop sound" "oal close;txt delete stop"
+%echo *** click button again for slightly different sounds  % doesn't seem to work!
+echo

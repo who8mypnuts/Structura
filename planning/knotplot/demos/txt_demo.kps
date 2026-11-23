@@ -1,0 +1,167 @@
+reset all
+silent=t
+verbose=f
+
+% rotate the view randomly
+
+rot z \rr360
+rot y \rr360
+rot x \rr360
+
+% bind some function keys
+
+func init       % reset function key defns.
+func silent     
+func 1 <txt_demo.kps
+func 2 "txt enable fill"
+
+
+mode cbf
+cyl=.08
+bead=.12
+ascale=.003
+scale=.8
+unknot \rr[15/25]
+jitter 9999999
+fitto 10
+coll a    % allow knot to pass thru itself
+
+
+% here come all the `txt' command
+
+txt init               % initialize text 
+txt font \ri[0/6]      % choose font randomly
+
+% default is left aligned, colour white
+
+% text can be attached to a given bead
+txt bead 1 "  left aligned on bead 1"
+%txt fill on
+%txt bead 6 "  moving button (click me)  "  "help popup txt_demo.kps"
+%txt fill off
+
+% colours can be named colours from the database
+% located in resource/rgb.txt
+
+txt colour PeachPuff
+txt bead 9 "  left aligned on bead 9"
+
+txt colour orange
+
+% change the text alignment to `centre'
+txt centre
+txt bead 3 "centred on bead 3"
+txt colour DarkOrange
+txt bead 14 "centered on bead 14"
+
+
+txt colour purple
+
+% change the text alignment to `right'
+txt right
+txt bead 7 "right aligned on bead 7  "
+
+% colours can also be specified according to the convention for CSS.
+% either a three-hex value
+txt colour #80f
+txt bead 11 "right aligned on bead 11  "
+
+% or a six hex value
+txt colour #9321da
+txt bead 12 "right aligned on bead 12  "
+
+txt font \ri[0/6]
+
+txt centre
+% colours as r/g/b triplet
+txt colour 1 1 1
+
+% text attached to a point in KnotPlot space
+txt 0 0 0 "centred at origin"
+txt -3 -4 2 "centered at (-3, -4, 2)"
+
+
+% text fixed to a viewport location
+
+txt left
+txt font \ri[0/6]
+txt colour green
+txt 20 45 "Text attached to Viewport"
+
+txt depth .1
+txt 20 20 "bottom left"
+
+% follow the X-Windows convention that negative numbers
+% are offsets from edge of window
+
+txt 20 -20 "top left"
+txt 20 -45 "(try resizing window)"
+txt right
+txt -20 20 "bottom right"
+txt -20 45 "(try resizing window)"
+txt -20 -20 "top right"
+txt -20 -45 "(try resizing window)"
+
+txt centre
+txt c -20 "top centre"
+txt c 20  "bottom centre"
+txt left
+txt 20 c "centre left"
+txt right
+txt -20 c "centre right"
+
+txt font 4
+txt colour white
+txt centre
+txt c -50 "Demo of various text rendering modes"
+txt font 3
+
+% if an extra parameter is given, the text acts as
+% a clickable button
+
+% it's customary but not required to enable 
+% background filling for buttons
+txt fill on
+
+txt c -80 "click here to see source file" "help popup txt_demo.kps"
+txt c 80  "click here to rerun demo"  "<txt_demo.kps"
+
+txt left
+txt 20 130 "click to delete stuff" "delete all;func exec 5"
+txt 20 -130 "click to toggle bead labels" "spec ~lab"
+
+txt right
+txt -20 -130 "click to stop creating stuff" "tfunc reset"
+txt -20 130 "click to toggle fullscreen" "fullscreen tog"
+
+% if txt drawing is off (as above), display refresh
+% requests are not generated 
+
+txt on     % turn all text on
+
+% end of `txt' commands
+
+% begin fun stuff
+
+until timelimit 10
+until thick 2 "ago 5"
+
+tfunc \rr[1/15] "force 1;coll a;go inf limit 44"
+
+
+% for extra fun, make a bunch of crazy unknots appear
+func 5 "unknot \rr[5/22] \rr[1/8] \rr+-1 \rr+-1 \rr+-1;open all"
+func 6 "velf=t;go inf limit 33;anch=t;anchor"
+
+new=f
+tfunc \rr[1/10] "func exec 5;func exec 6" 0 rep 1 11
+
+
+
+silent=f
+echo
+echo 
+echo " *** Demo of various possible texts using the `txt' command."
+echo "     Rotate, translate, or scale the view using the mouse."
+echo "     (Note: text does not render properly in anaglyph stereo)"
+echo

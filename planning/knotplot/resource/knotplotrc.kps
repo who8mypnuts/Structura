@@ -1,0 +1,67 @@
+
+% knotplotrc.kps file
+
+% Rob Scharein
+% August 18, 2006
+% February 18, 2004
+
+% This is the knotplotrc.kps file. 
+% When KnotPlot starts it performs the following sequence of steps:
+
+%   1) Reads the commands in file `knotplotrc.kps' in the resource directory (this file).
+%      This file is always read.  Note that this behaviour is different from 
+%      previous versions of KnotPlot.  
+%      This file should be reserved for system wide settings 
+%      and will be overwritten whenever KnotPlot is updated. 
+
+%   2) Reads the commands in file `knotplotrc.kps' in your personal settings
+%      KnotPlot directory.  On UNIX, Linux, and MacOSX machines, this is
+%      the ~/.KnotPlot directory (underneath your home directory). 
+%      This file is always read.  Note that this behaviour is different from 
+%      previous versions of KnotPlot.  
+%      Use this file for modifications you want to apply to all KnotPlot
+%      sessions
+
+%   3) Reads the commands in file `knotplotrc.kps' in your current working
+%      directory.  Use for project specific settings. 
+
+% If KnotPlot can't find any of the above files, it quietly ignores this fact. 
+
+% If you're working on a specific project, it is often useful to have a special
+% purpose knotplotrc in the directory you're working in.  That way KnotPlot is
+% customized for that project in that directory only, and it'll behave normally
+% when run from other directories. 
+
+% Any KnotPlot command may be put in these files.  The following example is 
+% simply the default.  This example does nothing other than bind function keys.
+% But it is possible to load knots, set parameters, or whatever you want.
+
+% set the location of the Maple executable
+% (Maple is used by the `alex' command).
+% The last argument should be one of
+% win32 linux irix macosx
+% depending on which operating system you are running. 
+% If this argument is omitted, then the location must be valid
+% for all architectues.  This can be useful if Maple is located
+% in a standard location on all non-Win32 system, for example /usr/local/maple/bin
+% Then we could use the following:
+
+%    alex maple /usr/local/maple/bin
+%    alex maple "C:/Program Files/Maple 9/bin.win/cmaple9.exe" win32
+
+silent = t   % don't want blurting upon KnotPlot startup
+
+% uncomment one of the following
+alex use maple  % Use Maple be default to compute Alexander polynomial
+%alex use mathematica
+
+
+% The following are given as examples of how you might specify the executables
+% for different platforms (uncomment the line by removing the `%')
+
+%alex maple "C:/Program Files/Maple 9.5/bin.win/cmaple9.5.exe" win32
+%alex mathematica "C:\Program Files\Wolfram Research\Mathematica\5.0\math.exe" win32
+%alex maple /usr/local/generic/bin/maple linux
+
+
+silent = f

@@ -1,0 +1,12 @@
+reset all
+
+back = black
+
+orbit set 0.723332 224.701 1 365.256
+orbit scale 8 4
+
+cyl-rad = 0.1
+mode b
+
+idle "orbit update"
+

@@ -1,0 +1,54 @@
+%% Generated  Sun Jun 17 11:45:54 PDT 2007
+
+% modified 28 July 2018
+% when Celtic panel made top-level
+require KPbuild 4891
+
+button Nbuttons 5
+button hspace 4
+button pos 0
+ 
+button Celtic "Example grids" nop 4 147 40 10 4 0
+alias -e uuu "button Celtic $0 {echo;echo;load $0.k;delete all;echo (click on diagram button to see knot);echo} -1 -1 0 8 0"
+
+alias ~ld "load $0;delete all;echo (click on diagram button to see knot);echo"
+
+button Celtic josephine "echo;echo;~ld josephine.k" 4 137 0 8 0 0
+button Celtic gbain46a "echo;echo;~ld gbain-p46a.k" -1 -1 0 8 0
+button Celtic gbain46b "echo;echo;~ld gbain-p46b.k" -1 -1 0 8 0
+button Celtic ibain49 "echo;echo;~ld ibain-p49.k" -1 -1 0 8 0
+button Celtic ibain57a "echo;echo;~ld ibain-p57a.k" -1 -1 0 8 0
+button Celtic ibain64 "echo;echo;~ld ibain-p64.k" -1 -1 0 8 0
+button Celtic ibain73 "echo;echo;~ld ibain-p73.k" -1 -1 0 8 0
+button Celtic ibain74 "echo;echo;~ld ibain-p74.k" -1 -1 0 8 0
+button Celtic ibain75d "echo;echo;~ld ibain-p75d.k" -1 -1 0 8 0
+button Celtic am130 "echo;echo;~ld am-p130.k" -1 -1 0 8 0
+button Celtic am87 "echo;echo;~ld am-p87.k" -1 -1 0 8 0
+button Celtic amck "echo;echo;~ld amck104a.k" -1 -1 0 8 0
+button Celtic asck "echo;echo;~ld asckp60.k" -1 -1 0 8 0
+button Celtic rsck "echo;echo;~ld rsck1.k" -1 -1 0 8 0
+button Celtic celtic1 "echo;echo;~ld celtic1.k" -1 -1 0 8 0
+
+uuu kite3
+uuu dart3
+uuu sun3
+uuu star3
+uuu sq3
+uuu hsq3
+uuu amm3
+uuu kolam
+
+% updated 10 October 2023
+%button Celtic weird1 "echo;echo;load weird_celtic1.k" -1 -1 0 8 0
+button Celtic sphere "echo;echo;load weird_celtic2.k" -1 -1 0 8 0
+%button Celtic misc1 "echo;echo;load weird_celtic3.k" -1 -1 0 8 0
+%button Celtic weird4 "echo;echo;load weird_celtic4.k" -1 -1 0 8 0
+%button Celtic weird5 "echo;echo;load weird_celtic5.k" -1 -1 0 8 0
+
+
+% updated 10 October 2023
+%button Celtic weird1 "echo;echo;load weird_celtic1.k" -1 -1 0 8 0
+%button Celtic sphere "echo;echo;load weird_celtic2.k" -1 -1 0 8 0
+%button Celtic misc1 "echo;echo;load weird_celtic3.k" -1 -1 0 8 0
+%button Celtic weird4 "echo;echo;load weird_celtic4.k" -1 -1 0 8 0
+%button Celtic weird5 "echo;echo;load weird_celtic5.k" -1 -1 0 8 0

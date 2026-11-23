@@ -1,0 +1,30 @@
+
+% Negative Cylinder Space
+
+% Rob Scharein, 28 March 2002
+% modified from 7oct94e
+
+reset all
+
+func init
+func silent
+func 1 <negcylspace.kps
+func 2 dfunc symm 1 1
+func 3 "dfunc symm \ri[1/7] \ri2"
+func 4 "value=\rr.2;mathsv s 0 0 \rr.2 s"
+func 5 "if \rr1 < .2 then {knot spe} else knot"
+
+disp t   % needed?
+<negcylspace-aux.kps
+
+
+silent = f
+if \rr1 < .2 then "knot spe" else knot
+silent = t
+twfix 102.2
+
+
+silent = f
+
+<demo-relaxA.kps
+

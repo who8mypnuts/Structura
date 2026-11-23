@@ -1,0 +1,72 @@
+KnotPlot exhibit started at Thu Mar 17 09:17:56 2011 with 38 sequences.
+KnotPlot exhibit exited at  Thu Mar 17 09:18:07 2011 after 11.57 seconds.
+
+2 demo sequences called.
+Sequence #11 (simple-relax) called most with 1 times.
+Sequence #0 (magnetic1) called least with 0 times.
+
+Sequence #0 (magnetic1) called 0 times (1.000, 0.000).
+Sequence #1 (weaveA) called 0 times (1.000, 0.000).
+Sequence #2 (ring-pack) called 0 times (1.000, 0.000).
+Sequence #3 (hedgehog) called 0 times (1.000, 0.000).
+Sequence #4 (random-chain) called 0 times (1.000, 0.000).
+Sequence #5 (gravity) called 0 times (1.000, 0.000).
+Sequence #6 (CubicSAW) called 0 times (1.000, 0.000).
+Sequence #7 (newhopf) called 0 times (1.000, 0.000).
+Sequence #8 (splaits) called 0 times (1.000, 0.000).
+Sequence #9 (plaits) called 0 times (1.000, 0.000).
+Sequence #10 (starbox) called 0 times (1.000, 0.000).
+Sequence #11 (simple-relax) called 1 times (1.000, 19.000).
+Sequence #12 (10sep05a) called 0 times (1.000, 0.000).
+Sequence #13 (thingtoss) called 0 times (1.000, 0.000).
+Sequence #14 (graphs) called 0 times (1.000, 0.000).
+Sequence #15 (linkRings) called 0 times (1.000, 0.000).
+Sequence #16 (orbit) called 0 times (1.000, 0.000).
+Sequence #17 (violently-happy) called 0 times (1.000, 0.000).
+Sequence #18 (SeaThings) called 0 times (1.000, 0.000).
+Sequence #19 (20oct05a) called 0 times (1.000, 0.000).
+Sequence #20 (KnotPaint2) called 0 times (1.000, 0.000).
+Sequence #21 (Mandala3b) called 0 times (1.000, 0.000).
+Sequence #22 (marcus) called 0 times (1.000, 0.000).
+Sequence #23 (Dolphins) called 0 times (1.000, 0.000).
+Sequence #24 (say/intro) called 0 times (1.000, 0.000).
+Sequence #25 (4d-spun-knot) called 0 times (1.000, 0.000).
+Sequence #26 (knottype) called 0 times (1.000, 0.000).
+Sequence #27 (StElmo) called 0 times (1.000, 0.000).
+Sequence #28 (ConeyMagic2) called 0 times (1.000, 0.000).
+Sequence #29 (PA) called 0 times (1.000, 0.000).
+Sequence #30 (freedman) called 0 times (1.000, 0.000).
+Sequence #31 (ringToss) called 0 times (1.000, 0.000).
+Sequence #32 (new_monster) called 0 times (1.000, 0.000).
+Sequence #33 (cubicSAW) called 1 times (1.000, 19.000).
+Sequence #34 (brunnian) called 0 times (0.050, 0.000).
+Sequence #35 (braids) called 0 times (1.000, 0.000).
+Sequence #36 (twist-knot) called 0 times (0.200, 0.000).
+Sequence #37 (fly-thru) called 0 times (1.000, 0.000).
+
+
+KnotPlot 1.000 (build 4486Xi).
+Compiled at 17:20:48, Mar 15 2011 on `volta'.
+KnotPlot Home Directory: /Applications/KnotPlot/KnotPlot.app/Contents/Resources
+KnotPlot Resource Directory: /Applications/KnotPlot/KnotPlot.app/Contents/Resources/resource  (Distribution version #16).
+This copy of KnotPlot, running at Level 3, is 1.58 days old and never expires.
+
+HOSTNAME = volta
+HOST = dhcpw80ff6624.dynamic.uiowa.edu
+HOSTTYPE = intel-mac
+USER = rob
+USERNAME is not set
+HOME = /Users/rob
+KNOTPLOT_PATH is not set
+APPDATA is not set
+
+OpenGL version: 2.1 NVIDIA-1.6.26
+Vendor: NVIDIA Corporation
+Renderer: NVIDIA GeForce 9600M GT OpenGL Engine
+Point sizes from 1.000000 to 63.375000 with granularity 0.125000.
+Line widths from 0.500000 to 10.000000 with granularity 0.125000.
+draw buffer: 8 8 8 8 (bits in red, green, blue, alpha channels)
+depth buffer: 16 bits,  stencil buffer: 0 bits
+accumulation buffer: 0 0 0 0 (bits in red, green, blue, alpha channels)
+max texture size: 8192,  max hardware lights: 8,  number aux buffers: 0
+use the command `GLinfo ext' to see supported extensions

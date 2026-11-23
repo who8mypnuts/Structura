@@ -1,0 +1,40 @@
+% 29may96a
+
+% Illustration of using a combination of animation with frame buffer
+% tricks to produce interesting effects.
+
+% This relies on interference effects caused by aliasing artifacts.
+
+reset all
+
+mode cb
+cyl=.001
+bead-rad=.02
+
+line num 15
+line dir 0 0 1
+line
+
+centre
+about y 30
+scale=.62
+rot x 40
+rot y 40
+trx=-.5
+try=.5
+
+back=0
+sbuff
+disp
+disp
+clrfun n
+
+#1200 about z .3; disp
+
+
+
+
+
+
+
+

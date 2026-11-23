@@ -1,0 +1,16 @@
+#!/bin/csh -f
+
+set n = 2
+
+foreach f ([3-7].? 8.? 8.??)
+#  set name = `knot-table -tex $n`
+  set sticks = `kpfsnoop -b $f`
+
+  echo -n '$'
+  knot-table -n -tex $n
+  echo '$  &  $'$sticks'$  \\\\'
+  @ n++
+end
+
+
+    

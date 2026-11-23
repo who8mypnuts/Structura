@@ -1,0 +1,31 @@
+reset all
+silent=t
+draw SE 0 1 0
+cyl=.3
+scale=.63
+nseg=8
+ncur=2
+
+
+par0=\rr99
+
+hsta=\rr[20/30]
+
+if par0 < 30 then "random tangle;par0=102"
+if par0 < 70 then "tangle ??????c;par0=102"
+if par0 < 90 then "tangle ??#??#??#??#??#??#c;par0=102"
+if par0 < 95 then "conw 3;par0=102"
+if par0 < 100 then "conw 2;par0=102"
+
+#22 swap
+if \rr12 < 1 then "open 0"
+#22 swap
+if \rr17 < 1 then "open 0"
+
+if \rr12 < 1 then "open all"
+refl r
+<randorient.kps
+
+go 9999999
+silent=f
+

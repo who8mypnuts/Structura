@@ -1,0 +1,7 @@
+par0
+10 read wave_demo1.kps
+10 read wave_demo2.kps
+10 read wave_demo3.kps
+10 read wave_demo4.kps
+10 read wave_demo5.kps
+10 read wave_demo6.kps

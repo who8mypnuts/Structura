@@ -1,0 +1,12 @@
+%% Generated Fri Jun 16 17:25:07 2006
+%% with command line: c:\usr\knotplot\resource\win32\multiif.exe txt_colours.txt
+par4 = \rr70
+if par4 < 10 then "txt colour white;par4=72"
+if par4 < 20 then "txt colour blue;par4=72"
+if par4 < 30 then "txt colour green;par4=72"
+if par4 < 40 then "txt colour red;par4=72"
+if par4 < 50 then "txt colour yellow;par4=72"
+if par4 < 60 then "txt colour orange;par4=72"
+if par4 < 70 then "txt colour purple;par4=72"
+if par4 < 70 then "txt colour purple;par4=72"
+if par4 < 71 then "txt colour purple;par4=72"

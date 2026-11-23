@@ -1,0 +1,52 @@
+require KPbuild 4524
+
+oal persistent off
+
+silent = t
+alias ~att "oal start \rr[.01/3] fadein \rr[.1/5] source $0 wav $2 attach bead $1 on"
+
+
+oal init
+oal doppler 1 \rr[.01/.02]
+oal alloff
+~att 0 0 ping2
+~att 1 4 ping2
+~att 2 8 ping2
+~att 3 12 ping2
+~att 4 16 ping2
+~att 5 20 ping2
+~att 6 24 ping2
+~att 7 28 ping2
+~att 8 32 ping2
+~att 9 36 ping2
+~att 10 40 ping2
+~att 11 44 ping2
+~att 12 48 ping2
+~att 13 52 ping2
+~att 14 56 ping2
+~att 15 60 ping2
+~att 16 64 ping2
+~att 17 68 ping2
+~att 18 72 ping2
+~att 19 76 ping2
+~att 20 80 ping2
+~att 21 84 ping2
+~att 22 88 ping2
+~att 23 92 ping2
+~att 24 96 ping2
+~att 25 100 ping2
+~att 26 104 ping2
+~att 27 108 ping2
+~att 28 112 ping2
+~att 29 116 ping2
+~att 30 120 ping2
+~att 31 124 ping2
+
+oal random
+
+oal pitch all \rr[.3/.5]
+<sound/5th2.kps
+oal gain all 1
+oal veldiv \rr[10/20]
+oal pitch all cr -333
+

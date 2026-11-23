@@ -1,0 +1,76 @@
+silent=t
+
+txt font 4
+txt fill off
+txt left
+txt 10 -22 "Warping braid..."
+txt on
+
+if stereo then "back=0"
+
+Draw=f
+refl x
+save |wbr
+warp rec2ann 125
+refl y
+cent
+save |wbr2
+load |wbr
+refl x
+
+Draw=t
+disp t
+deform to \wbr2
+silent=t
+Draw=f
+
+frame comm "load |wbr;warp rec2ann %d;cent mass;refl y;disp t"
+frame 125 to 1 step -4
+nap .5
+join all
+%txt init
+txt font 4
+
+txt left
+txt 10 -22 "Closed braid"
+txt fill on
+txt font 3
+txt right
+
+txt -15 -200 "rerun demo" <randbraid2.kps
+txt -15 -240 "start relaxing" <randbraid2_aux1.kps
+
+<randbraid2_thick.kps
+
+
+
+txt on
+disp t
+
+dbmin = 5
+
+func 3 "del down 5"
+
+func sc 1 "go;echo;echo Press F1 again to stop relaxing;echo;par3=2"
+func sc 2 "go 0;echo;echo Press F1 again to start relaxing;echo;par3=1"
+par3 = 1
+
+func 3 "func exec sc \ppar3"
+func 4 "func exec sc \ppar3"
+
+stu=11
+fixcofm=t
+
+Draw=t
+silent=f
+
+save |.closed
+
+echo " "
+echo " "
+echo "*** Resulting link may not be valid if original braid is too wide."
+echo "*** Try relaxing the knot!  Click on `start relaxing' button."
+%echo "*** Hit F3 key to remove vertices (auto-splitting is enabled)."
+
+
+

@@ -1,0 +1,11 @@
+reset all
+scenery on
+show grid
+vscale = \rr[.7/1.4]
+rotate x \rr[-33/-77]
+rotate z \rr360
+
+lua run axes
+lua . Title ('Fancy Coordinate Axes')
+txt on
+

@@ -1,0 +1,10 @@
+par4
+10 txt colour white
+10 txt colour blue
+10 txt colour green
+10 txt colour red
+10 txt colour yellow
+10 txt colour orange
+10 txt colour purple
+
+

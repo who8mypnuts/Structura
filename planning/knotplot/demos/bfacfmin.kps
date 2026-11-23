@@ -1,0 +1,32 @@
+bfacf init
+trans to lattice
+bfacf load
+bfacf search on
+bfacf target 1008
+
+tfunc reset
+
+bfacf z .21
+bfacf centre on
+
+#5 bfacf step 1123123
+
+tfunc \rr11 "bfacf z \rr.2" 0 rep 1 11
+tfunc \rr33 "bfacf z .21" 0 rep 22 44
+
+idle "bfacf step 1123123"
+
+txt init
+txt font 3
+txt cent
+txt fill on
+txt clobber on
+txt c 20 stop ~stop
+txt on
+
+alias ~stop "tfunc reset;txt c 20 start ~start;idle;load |min;centre;trans to lattice"
+alias ~start <bfacfmin.kps
+
+energy model nbead
+energy format "Nedges is %.0f"
+spec ener

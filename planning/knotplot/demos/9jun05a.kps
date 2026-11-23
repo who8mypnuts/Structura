@@ -1,0 +1,48 @@
+require KPbuild 4604
+
+reset all
+echo 
+echo 
+echo "  *** Press F1 to rerun with different random parameters."
+echo "      Press F2 or click reset button to stop animation"
+echo
+silent=t
+Draw=f
+
+sphere on
+mode s
+if \rr2 < 1 then "ldna draw 1" else "ldna draw 3"
+back=0
+if \rr2 < 1 then "hstart = \rr360"
+
+func init
+func silent
+func 1 <9jun05a.kps
+func 2 "tfunc reset;idle;clrfun zf;disp t;Draw=t;silent=f"
+
+cyl-rad = \rr[.01/.05]
+scale = \rr[.3/.4]
+rot x \rr360
+rot y \rr360
+rot z \rr360
+if \rr1 < 1 then "value=.05;zbuff f;blend one one;ldna draw 1;sphere off"
+%if \rr1 < 1 then "value=.05;clrfun n;blend one one;ldna draw 0;sphere off"
+clrfun zf
+disp t
+
+if \rr4 < 3 then "clrfun n" else "clrfun z"
+
+if \rr111 < 1 then "draw SE"
+ldna cone \rr[6/12] \rr[1/2]
+ldna leng \rr[7/11] \rr[7/11]
+ldna close \rr[10/30]
+ldna fang \rr[40/70]] \rr[1/2]
+ldna acni 3
+ldna acnd 3
+ldna intang 102.2
+reset sliders
+idle "ldna 1022;disp t"
+
+tfunc \rr[10/20] <9jun05a.kps
+
+

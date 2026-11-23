@@ -1,0 +1,14 @@
+panel colmenu "black and white" <interface/cpanel_BW.kps
+panel colmenu "sea green" <interface/cpanel_seagreen.kps
+panel colmenu "high contrast, black bg" <interface/cpanel_hcontrast1.kps
+panel colmenu "high contrast, white bg" <interface/cpanel_hcontrast2.kps
+panel colmenu "low contrast" <interface/cpanel_lcontrast.kps
+panel colmenu "Swedish flag" <interface/cpanel_swedish.kps
+panel colmenu "random" <interface/cpanel_random.kps
+panel colmenu "KnotPlot Classic" <interface/cpanel_classic.kps
+panel colmenu "hideous 1" <interface/cpan1.kps
+panel colmenu "hideous 2" <interface/cpan2.kps
+panel colmenu "hideous 3" <interface/cpan3.kps
+panel colmenu "hideous 4" <interface/cpan4.kps
+panel colmenu black <interface/black.kps
+

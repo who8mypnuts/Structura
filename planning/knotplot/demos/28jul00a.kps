@@ -1,0 +1,26 @@
+reset all
+silent=t
+disp t
+scale = 0.47
+cyl-rad = 0.2
+hstart=\rr360
+if \rr1 < .67 then "rotate x \rr[-70/0]"
+anch=t
+if \rr1 < .1 then "draw spec"
+if \rr1 < .5 then "mode sa"
+if \rr1 < .1 then "draw n;mode abc;cyl=.1"
+if \rr1 < .5 then "unknot \ri[22/155]" else "torus \ri[2/4] \ri[5/17] \ri[44/177]"
+anchor
+if \rr1 < .5 then "jit .1"
+
+if \rr1 < .12 then "untran;rot x \rr[88/92];scale=.7"
+if \rr1 < .07 then "clrfun n"
+force 1
+silent=f
+coll a
+echo " "
+echo "  *** Randomized demo, try it many times!"
+echo " "
+echo "      Wait until oscillation becomes unstable (it may not)."
+go 999999
+

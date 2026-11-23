@@ -1,0 +1,4 @@
+scenery rotate billboard
+scenery set rotate autorotate 0 0 180 180 axis 0 1 0
+oal listener screen
+oal listener

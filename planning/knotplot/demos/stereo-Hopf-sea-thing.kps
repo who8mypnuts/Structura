@@ -1,0 +1,32 @@
+require KPbuild 4998  % for view command (replacement for viewmatrix)
+
+reset all
+
+scale=.184
+view matrix 0.621468 -0.770848 -0.139895 -0.772462 -0.573123 -0.273557
+
+back = 0                  % Looks best on a black background.
+zbuff f                   % Turn off z-buffering.
+glop backface t                % Turn off backfacing polygon drawing.
+blend one one             % Set blending for additive blending.
+draw broke                % Draw broken surface.
+ncur = 10 
+
+cyl = 2
+nseg = 3
+broff = -1.28
+
+conway 2
+split
+twfix 23232               % The twisting value is arbitrary, try other values.
+coll a
+zero
+
+go 200
+
+force 1
+
+go
+
+
+

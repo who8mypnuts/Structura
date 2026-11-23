@@ -1,0 +1,13 @@
+
+tfunc \rr11 "say -v Zarvox;say i am zarvox the cron demon" 0 rep \rr[4/10] \rr[33/66]
+tfunc \rr11 "say -v Trinoids;say we are the trinoids" 0 rep \rr[4/10] \rr[33/66]
+tfunc \rr11 "say -v Whisper;say hello" 0 rep \rr[4/10] \rr[33/66]
+
+say -on
+say -bg
+
+
+
+
+
+

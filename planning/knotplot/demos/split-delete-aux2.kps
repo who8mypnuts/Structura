@@ -1,0 +1,23 @@
+
+txt delete group 111
+
+go 0
+par0=\rr[1/22]
+nop \t0
+%idle "about z \T1"
+idle
+
+txt delete hint
+drag=f
+
+txt font 3
+txt centre
+txt fill on
+txt lineskip 30
+txt push
+txt group 111
+txt c 50 "begin simplification" "txt delete Evalu;<split-delete-aux.kps"
+%txt c a  "stop rotation" idle
+txt pop
+txt on
+

@@ -1,0 +1,234 @@
+<html>
+<head>
+<title>KnotPlot Basic Demos</title>
+</head>
+
+<body bgcolor="#000000"  link="#0099ff" vlink="#7799bb" text="#ff9900">
+
+
+<center>
+
+<table>
+<tr>
+
+<td>
+<img src="inlines/demoL.gif" align=middle>
+</td>
+
+<td>
+<center>
+<b><font size=+3>
+KnotPlot<br>Basic<br>Demos
+</font></b>
+</center>
+</td>
+
+<td>
+<img src="inlines/demoR.gif" align=middle>
+</td>
+
+</tr>
+
+</table>
+</center>
+
+<p><center><img src="inlines/BRline0.gif"><p></center>
+
+
+This page describes the basic demos that are included with KnotPlot.
+The files that define these demos are located in the 
+<a href="DemosDir.html">Demos directory</a> which contains
+a number of other demos not directly accessible from the Demos panel.
+
+<p>
+
+The buttons on the Demos panel are defined in the file
+<a href="../../demos/basic-demos"><kbd>basic-demos</kbd></a>.
+It is easy to customize your own Demos panel by simply 
+having a different 
+<kbd>basic-demos</kbd>
+file in a directory ahead of the demos directory in the 
+KnotPlot path.
+
+<p>
+
+A brief description of each demo is given below, click on the
+demo name to see the file that defines it.
+One caveat is in order: when running the demos it is best to 
+allow a demo to finish before clicking on another demo button.
+If you don't follow this advice, unpredictable (but harmless) behaviour
+may result.
+
+<h3>Relaxations (real time)</h3>
+
+These are real time relaxations starting from initial
+configurations defined by the 
+<a href="commands.html#conway">Conway notation.</a>
+The <a href="../../demos/tref-relax">Trefoil</a> and
+<a href="../../demos/fig8-relax">Figure 8</a> 
+relax first, then switch drawing modes, inflate
+and then explode.
+The <a href="../../demos/6.3-relax">6.3</a> and
+<a href="../../demos/7.1-relax">7.1</a> knots first turn red
+hot before exploding.
+During the last two relaxations, if you watch carefully,
+you can see collision avoidance at work.
+At several points, cylinders appear to bounce off each
+other.
+One new features is that the knot energy (MD energy) is
+displayed during the 6.3 relaxation.
+
+<h3>Relaxations (precomputed)</h3>
+
+The demos in this section are in pairs, one button to
+initialize the demo and a second button to set it going. 
+<p>
+The Monster is a famous unknot, called a monster by
+<a href="http://zariski.math.uic.edu:80/~kauffman/">Louis Kauffman</a>
+(<a href="../../unknots/monster-init">load Monster</a> and 
+<a href="../../unknots/monster-movie">go Monster</a>).
+This relaxation is also available as an 
+<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/knot-theory/monster-movie.mpg">MPEG movie</a>
+at the
+<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/knot-theory/knot-theory.html">knots</a>
+page in the KnotPlot Site.
+<p>
+Fig4 is another nasty unknot about which I will soon
+have more to say.
+(<a href="../../unknots/ks-init">load Fig4</a> and 
+<a href="../../unknots/ks-movie">go Fig4</a>).
+<p>
+The last precomputed relaxation is that of a 
+six-component 
+<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/brunnian/brunnian.html">Brunnian link</a>.
+The final state of this link can be seen in all its 
+<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/cal/front.html">raytraced glory</a>, 
+floating deep beneath the sea
+(<a href="../../special/brun-relax-init">load Brun</a> and 
+<a href="../../special/brun-relax-movie">go Brun</a>).
+
+<h3>4D Demos</h3>
+
+<a href="../../demos/spun-trefoil">Spun Trefoil</a> is a simple 
+animation showing the positioning of the spin plane on 
+a trefoil knot to create a knotted 2-sphere in 4D. 
+The knot is then spun in 4D and the resulting knotted sphere
+is rotated in random directions.
+Just click anywhere in the View Window to stop the rotation.
+
+<p>
+
+<a href="../../demos/make-van-zee.kps">VanKampen Zeeman</a> and 
+<a href="../../demos/make-and-cur.kps">Andrews Curtis</a> create
+linked (but individually unknottted) spheres in 4D.
+You need to go to the 
+<a href="4DPanel.html">4D Control Panel</a> to do anything 
+with them.
+The first of these links is featured on its
+<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/links/VanKampenZeeman.html">own page</a>
+at the KnotPlot Site.
+
+<p>
+
+The 4D torus demos are all variations on displaying a 4D torus.
+You can read about this torus 
+<a href="http://www.geom.umn.edu/~banchoff/script/b3d/hypertorus.html">on a 
+page</a> by <a href="http://www.geom.umn.edu/~banchoff/">Thomas Banchoff.</a>
+
+<p><center><img src="inlines/BRline0.gif"><p></center>
+
+<h3>More demos</h3>
+
+Click on this button near the botttom of the panel to bring up
+another panel of demos.
+
+<h4>Bizarre Things</h4> 
+
+<a href="../../demos/sea-things">Sea Things</a> uses 
+blending on the SGIs in an interesting way.
+You get a different sea thing each time you click on the button.
+But it doesn't seem to 
+work properly on all machines.
+Take a look at how they
+<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/sea-things.html">should look</a>.
+
+<p>
+
+<a href="../../demos/9oct94f">Trefoil 1</a> is a trefoil knot,
+created with the 
+<a href="commands.html#conway">conway</a> command, relaxing
+with collision checking turned off, undamped dynamics, and
+leaving a trace. 
+This can be fairly wild in stereoscopic 3D.
+
+<p>
+
+<a href="../../demos/7oct94b">Paint 1</a> and 
+<a href="../../demos/7oct94c">Paint 2</a> set things up
+to use a trefoil as a 3D paint brush.  
+After clicking on these buttons, try clicking and dragging 
+all three mouse buttons in the
+<a href="ViewWindow.html">View Window</a>.
+<a href="../../demos/setup-paint">Paint 3</a> will 
+setup painting mode with whatever you currently have loaded. 
+<a href="Painting.html">A page</a> explaining the use of
+KnotPlot as a paint program is under construction.
+<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/paintings/paintings.html">Some
+paintings</a>
+can be seen at the KnotPlot Site.
+
+<p>
+<a href="../../demos/wings">Wings</a> and 
+<a href="../../demos/7oct94e">Negative Cylinder Space</a>
+are more examples of interesting effects
+that can be achieved by setting paramters out of range.
+After clicking on Wings, you might want to go to the
+Main control panel and try changing 'broff', 'nseg', or 'ncur'
+with the sliders.  
+Click on the 'twfix' button on that panel to make things nice.
+The Negative Cylinder Space will give you something 
+slightly different each time you click on it. 
+
+<p>
+The <a href="../../demos/flower">Flower</a> button gives you something
+different each time (some of them are not so nice).
+These flowers can be somewhat 
+<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/work/unknot-flowers.html">decorative</a>.
+As a blast you can also startup KnotPlot with the <kbd>-flowers</kbd>
+<a href="CommandLineOptions.html">command line option</a>.
+
+<h4>Moir&eacute; patterns</h4>
+These may not be of interest to many people, but I like them.
+There is a 
+<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/moire/moire.html">page of them</a>
+at the KnotPlot Site.
+It's fun to see what can be done when parameters are set way outside
+a reasonable range.
+To see the underlying knot or link, click on the 
+Reset button at the top of the panel. 
+
+
+<p>
+I'll leave the rest of the extra demos  for you to figure out.
+If you get KnotPlot into a weird state, you can (probably) recover
+by entering a `reset all' command (or clicking on the Reset button
+on the main demos panel).
+
+
+<p><center><img src="inlines/BRline0.gif"><p></center>
+
+
+
+[<a href="KnotPlotManual.html">KnotPlot Manual</a>], 
+[<a href="ViewWindow.html">View Window</a>], 
+[<a href="ControlPanel.html">Control Panel</a>], 
+[<a href="CommandWindow.html">Command Window</a>],
+[<a href="KPManOverView.html">Overview</a>]
+<br>
+[<a href="http://www.cs.ubc.ca/spider/scharein">Rob Scharein's</a>
+ main WWW site], 
+[<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/KnotPlot.html">KnotPlot Site</a>]
+
+</body>
+</html>
+

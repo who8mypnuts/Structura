@@ -1,0 +1,4 @@
+load Numer.k
+par0=9
+echo "  *** Numerator tangle template"
+txt c -30 "Numerator tangle template"

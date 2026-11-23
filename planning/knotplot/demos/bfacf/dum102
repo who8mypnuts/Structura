@@ -1,0 +1,35 @@
+
+require KPbuild 4404
+
+button Nbuttons 5
+button hspace 4 
+button pos 1
+button height 8
+
+button blank @
+button Nbuttons 4
+
+button 18 "Initial conformations" nop 4 265 102 10 4 
+
+button bfacf "load..." "panel set bfacf 3" -2 -1 0 0
+
+button Nbuttons 4
+button 18 link <bfacf/link.kps  -1 -1 0 0
+button 18 open <bfacf/open.kps  -1 -1 0 0
+button 18 obstacles <bfacf/obstacles.kps  -1 -1 0 0
+button 18 "centre on" "bfacf centre on"  -1 -1 0 0
+button 18 "centre off" "bfacf centre off"  -1 -1 0 0
+button 18 "tclasp" "<bfacf/tclasp.kps"  -1 -1 0 0
+button 18 "tclasp box" "<bfacf/tclasp-box.kps"  -1 -1 0 0
+button 18 "parsites" "<bfacf/bclasp.kps"  -1 -1 0 0
+button 18 "recombo" "<bfacf/recombo.kps"  -1 -1 0 0
+button 18 "clasp" "<bfacf/acclasp.kps"  -1 -1 0 0
+button 18 "UofS clasp" "<bfacf/UofS-clasp.kps"  -1 -1 0 0
+button 18 "freeze 0" "bfacf freeze 0"  -2 -1 0 0
+button 18 "thaw 0" "bfacf thaw 0"  -1 -1 0 0
+button 18 "freeze 1" "bfacf freeze 1"  -1 -1 0 0
+button 18 "thaw 1" "bfacf thaw 1"  -1 -1 0 0
+button 18 "embed" "<bfacf/embed.kps"  -1 -1 0 0
+button 18 "bfacf load" "<bfacf/load.kps"  -1 -1 0 0
+button 18 "standard" "<bfacf/standard.kps"  -1 -1 0 0
+button 18 "min step" "bfacf init;bfacf load;bfacf target 999;bfacf search on" -1 -1 0 0

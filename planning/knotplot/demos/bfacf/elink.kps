@@ -1,0 +1,21 @@
+scale 3
+refine 3
+save \x
+keep 0
+cons clkembed
+save 0 int
+load \x
+keep 1
+cons clkembed
+save 1 int
+bfacf init
+bfacf load 0
+bfacf combine 1
+bfacf search on
+safe
+leng
+bfacf step 1
+
+tfunc 1 "bfacf z \rr.23" 0 rep 1 5
+func 8 "bfacf stop;load \min;centre;trans to lattice"
+

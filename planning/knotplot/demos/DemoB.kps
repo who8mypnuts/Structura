@@ -1,0 +1,233 @@
+require KPbuild 5084
+
+% Default DemoB.kps file.
+% This file defines the DemoB control panel.
+% If you want to make your a custom DemoB panel, create a DemoB.kps
+% file and put it in the KnotPlot read path ahead of the demos folder.
+
+% This is the file that defines the buttons seen on the demos
+% panel.  It is easy to make a custom demo panel by simply
+% creating your own DemoB.kps file in a directory somewhere and
+% running KnotPlot from that directory. KnotPlot will read in
+% the first DemoB.kps file it finds in its path.
+% To see what the current path is, enter the KnotPlot command `path'.
+
+% See the file DemoA.kps in this directory for more examples.
+
+button Nbuttons 5
+button hspace 4
+button pos 1
+button height 8
+button blank _
+
+button panel DemoB
+
+button section "Decorative & Fun"
+
+button waves <waves.lua
+
+% this button will have the label "EO-fill" chosen with 22x the frequency of "CropCircle"
+lua do chooseone "button EO-fill <EOfill.lua,button CropCircle <EOfill.lua" "22,1"
+
+% Coney gets chosen only 1 in 102 times
+lua do chooseone "button Coney <ConeyMagic2.lua,button Orbita <orbita.lua" "1,102"
+
+%button "snakes 1" <20oct05a.kps
+%button "snakes 2" <31jan14.kps
+
+button "snakes 1"  "lua run snakes 1"
+button "snakes 2"  "lua run snakes 2"
+
+
+%button 6/49 <l649_init.kps   removed 30 June 2021   :-(
+%button "Frame buffer tricks" <4jun96a
+%button "Mangle a knot" <mangle-demo
+%button v._happy <violently-happy.kps   removed 30 June 2021
+
+
+button "Paint 0" "lua run KnotPaint 0"
+button "Paint 1" "lua run KnotPaint 1"
+button "Paint 2" "lua run KnotPaint 2"
+
+
+button "swim" "lua run swim"
+button "swim2D" "lua run swim2D"
+
+% these paint demos need to be improved and then made public again
+%button "Paint 1" <paint1.kps  
+%button "Paint 2" <7oct94c  
+%button "Paint 2" <paint2.kps  
+%button "Paint 3" <setup-paint
+%button "Paint 3" <paint3.kps
+
+
+button Sea_Things <SeaThings.lua
+button Panes <panes.lua
+%button Flower <UnknotFlowers.lua
+button NC_space <negcylspace.lua
+button UFOs <ufos.lua
+button surf <surf.lua
+
+% multiif < demob.txt
+parsave 
+par2 = \rr26
+%if par2 < 1 then "button do_not_click <do-not-click.kps;par2=28"
+%if par2 < 6 then "button Weird_Cone <WeirdCone.kps;par2=28"
+%if par2 < 27 then "button Freaky <FreakyA.kps;par2=28"
+parrestore
+
+
+
+%button "Mandalas" <Mandalas.kps
+
+
+%button quote <marcus.kps
+button doc <docview/init.kps
+
+button dolphins <Dolphins.lua
+
+if macos then "button sound <sound.lua"
+%if macos then "button speak <say/init.kps"
+button 2001 <monolith.lua
+button L_field <field_lorenz.lua
+button bug <toothpaste.lua
+button truchet <truchet.lua
+
+
+button section "4D"
+button polytopes <4dpolytopes.lua
+button "spun knot" <4d-spun-knot.lua
+button "illusion" <4d-illusion.lua
+
+if isme then <4D-surfaces.kps
+
+ 
+button section "Graphics" 
+%button "Benchmarks" "panel set Bench" 
+button tests <graphics-tests.lua
+%button "random light" <random-lights.kps
+button "bezier" <bezier-drag.lua
+button "PT frame" <PTframe.lua
+%button knottype <knottype.kps
+button xsect <xsect.lua
+
+
+
+button "fly thru" <fly-thru.lua
+button "stan map" <stan.lua
+button collide <collide.lua
+if isme then "button GLSL <glsl-demo.lua"
+button cycle <cyclization.lua
+button axes <axes.lua
+button "motion blur" <fun-with-accbuff.lua
+
+button section "Odd things"
+button Nbuttons 12
+%button A <graphicsA.kps  
+
+% D is no longer interesting, why?
+%button D <graphicsD.kps
+button N <graphicsN.kps
+
+
+button C <graphicsC.kps 
+%button F <graphicsF.kps
+button G <graphicsG.kps
+%button K <graphicsK.kps
+
+if isme then "button SE <StElmo.kps"
+
+if isme then "button H <graphicsH.kps"
+if isme then "button Ha <graphicsHa.kps"
+if isme then "button I <graphicsI.kps"
+if isme then "button J <graphicsJ.kps"
+
+button L <graphicsL.kps
+
+button M <graphicsM.kps
+%button O <oscilpaint.kps
+%if KPbuild > 3419 then <procomp_DemoB_aux.kps
+button Q <27mar05a.kps
+button R <1may05a.kps
+button "W" <wings.kps
+button "X" <28may05a.kps 
+button "Xa" <18feb07a.kps
+%button "Y" <1jun05a.kps
+
+%button AA <9jun05a.kps
+button AB <22jun05a.kps
+button AC <23jun05b.kps 
+button AE <rotate-stick-things.kps
+button AF <30oct05a.kps 
+button AG <21feb07a.kps
+button AH <21feb07b.kps
+button MG <23jun05a.kps
+button MH <MH.kps
+%button St <sphere-test.kps
+button PA <PA.kps
+button SH <5mar07a.kps
+button SH <7mar07a.kps
+%button 17 <17aug07a.kps
+button gb <globeat.kps
+button Ls <lsystems1.kps
+
+%button push
+%if composed then "button trough <trough.kps;<trough-buttons.kps"
+%button pop
+
+
+button cA "lua run collide-old A"
+button cB "lua run collide-old B"
+button cC "lua run collide-old C"
+button cD "lua run collide-old D"
+button cE "lua run collide-old E"
+
+
+
+button Nbuttons 12
+
+
+%button A <textureABC.kps
+%button B <textureB.kps
+%button C <textureC.kps
+button D <textureD.kps
+button Db <textureDb.kps
+button DL <textureDL.kps
+%button E <27oct02a.kps
+
+%button pos 8
+%button 1 <bug1.kps
+
+if stereo then nop else <anaglyphButtons.kps
+
+%button DemoB "Never Ending Exhibitions" nop -2 -1 102 10 4 0
+%button DemoB "View List" "panel set DemoB 1" -2 -1 0 0
+
+%button pos 2
+%button A <anaglyphrcA.kps 
+%button B <anaglyphrcB.kps 
+%button C <anaglyphrcC.kps 
+%button D <anaglyphrcD.kps 
+%button E <anaglyphrcE.kps 
+%if KPbuild > 3668 then "button F <anaglyphrcF.kps"
+%if KPbuild > 3668 then "button G <anaglyphrcG.kps"
+
+%button pos 2
+%button A <anaglyphrbA.kps 
+%button B <anaglyphrbB.kps 
+%button C <anaglyphrbC.kps 
+%button D <anaglyphrbD.kps 
+%button E <anaglyphrbE.kps 
+%if KPbuild > 3668 then "button F <anaglyphrbF.kps"
+%if KPbuild > 3668 then "button G <anaglyphrbG.kps"
+
+silent=t
+%<../exhibits/ExhibitList.kps
+silent=f
+
+
+panel on
+
+button height 10
+<demo_panel_upgrade.kps
+

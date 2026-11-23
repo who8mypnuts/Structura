@@ -1,0 +1,22 @@
+<StElmo_aux.kps
+if \rr2 < 1 then "persp \rr[50/62]"
+
+silent=t
+scale=\rr[.3/.8]
+R-torus = \rr[3/10]
+d-torus = \rr[1/5]
+N-torus = \ri[50/110]
+%if \rr2 < 1 then "knot s" else "torus"
+torus
+<randorient.kps
+if \rr22 < 1 then "refl r"
+if \rr22 < 1 then "open all"
+
+silent=f
+
+
+echo " "
+echo " "
+echo " *** Random parameters, try again... "
+echo "     Variation on `St. Elmo'."
+echo " "

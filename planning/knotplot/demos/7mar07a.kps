@@ -1,0 +1,10 @@
+<20oct05a.kps
+<fun-with-accbuff.kps
+mode sw
+wave nwave 2222
+func 10 accbuff clear
+func 9 "fullscreen toggle;tfunc .4 {func exec 10}"
+func 1 <7mar07a.kps
+func 11 wave c \rr54
+if \rr2 < 1 then "wave colour hsv:22/1/1"
+

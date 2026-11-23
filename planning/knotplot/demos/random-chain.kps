@@ -1,0 +1,121 @@
+if par5 != 150285363 then "reset all;scale=\rr[.7/1.2]"
+
+par5 = 150285363
+
+satu=1
+untran
+func init
+func silent
+func 1 <random-chain.kps
+
+allo 3000
+allo comp 333
+echo " "
+echo " "
+echo -f
+silent=t
+verbose=f
+back=black
+disp t
+
+
+if \rr3 < 1 then "sat=\rr[.4/1]"
+if \rr9 < 1 then "mathsv k \rr44 1 \rr.6 e"
+
+txt font 4
+txt clobber on
+txt centre
+txt c 60 "Creating a random knot"
+txt c 30 "(allowing self-intersection)" 
+txt on
+
+silent=f
+echo "Creating a random knot (allowing self-intersections) ..."
+echo -f
+silent=t
+cyl=.2
+hstart=\rr360
+
+dstep = 6
+unknot \ri[100/180]
+
+jit 99999
+fitto .1
+coll a
+until timelimit 44
+until thick .4 "ago 5"
+
+txt c 60 "Refining ..."
+txt c 30 " "
+
+silent=f
+echo -n "Refining ... "
+echo -f
+silent=t
+refine 5
+disp t
+nap .2
+
+txt c 60 "Doubling ..."
+silent=f
+echo -n "Doubling ... "
+echo -f
+silent=t
+cyl=.05
+disp t
+double
+disp t
+nap .2
+
+txt c 60 "Installing warp path ..."
+silent=f
+echo "Installing warp path ... "
+echo -f
+silent=t
+warp install
+disp t
+nap .2
+
+delete all
+parsave   % save current scale (and other parameters)
+scale=.41
+txt c 60 "Creating circular chain ..."
+silent=f
+echo -n "Creating circular chain ... "
+echo -f
+silent=t
+cyl=.06
+
+% make a chain with between 222 and 333 beads (inclusive),
+% 9 beads per component,
+% and between -20 and 20 half-twists (inclusive).
+
+chain \ri[222/333] 9 \ri[-20/20]
+
+disp t
+nap .2
+
+parrestore   % restore scale to the value saved 
+txt c 60 "Warping chain along warp path ..."
+silent=f
+echo "Warping chain along warp path ..."
+echo -f
+silent=t
+cyl=.1
+warp along
+disp t
+nap .2
+
+if \rr7 < 1 then <mix-up.kps
+
+silent=f
+Draw=t
+
+
+echo "Done!  Hurray!  Try it again!  Different every time!"
+echo -f
+txt off
+
+% for extra craziness, do the following (with low probability)
+if \rr102 < 1 then "<crazy-lights.kps"
+

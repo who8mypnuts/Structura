@@ -1,0 +1,5 @@
+reset all
+knot
+disp t
+
+nap .4

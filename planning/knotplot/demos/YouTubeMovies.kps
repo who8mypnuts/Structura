@@ -1,0 +1,8 @@
+txt delete all
+txt fill on
+txt font 3
+txt centre
+
+txt lineskip -25
+txt c 20 "nasty 2" "www www.youtube.com/watch?v=UmF0-Tz1oWc&feature=channel_page"
+txt c a "tricky" "www www.youtube.com/watch?v=V9b9diPnoYg&feature=channel"

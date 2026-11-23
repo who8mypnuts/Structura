@@ -1,0 +1,46 @@
+reset all
+timer start
+accbuff tallow
+back=black
+disp t
+scale=.4
+Draw = f
+
+accbuff decay 0.980730
+accbuff accum 0.217651
+accbuff return 0.225359
+
+accbuff on
+accbuff clear
+
+mode cBf
+txt font 4
+txt centre
+txt colour hsv:102.2/.6/.5
+txt c -40 "Accumulation buffer test"
+txt font 4
+txt colour black
+
+txt fill on
+txt c 40 "check web for reference rendering" "www knotplot.com/benchmarks/abuff.html"
+txt on
+
+cyl=.1
+bead=.18
+torus 4 5 102
+about z 90
+#102 ago 1;disp t
+
+Draw=t
+
+echo 
+echo 
+echo " *** Click on the button in the view window to compare to the reference rendering   "
+echo -n "     or press the F1 button now.    Rendering time on your computer was "
+timer check
+echo "     and should be less than a few seconds."
+echo
+
+func init
+func 1 "www knotplot.com/benchmarks/abuff.html"
+

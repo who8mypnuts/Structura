@@ -1,0 +1,7 @@
+
+button Nbuttons 4
+button DemoB "Anaglyph mode:" nop -2 -1 0 10 4
+button DemoB "red/cyan" "anag init;anag r.gb;anag eye;<anagblurb.kps" -1 -1 0 10
+button DemoB "red/blue" "anag init;anag r.b;anag eye;<anagblurb.kps" -1 -1 0 10
+button DemoB "anag off" "anag off" -1 -1 0 10
+

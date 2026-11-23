@@ -1,0 +1,9 @@
+Warning: On some Windows systems, requesting a web page seems to take
+a fair bit of time (20 seconds or more).  This seems to happen only on
+systems where Internet Explorer is the default browser.
+
+You will only see this warning popup at most once per KnotPlot session.
+
+To avoid seeing this warning popup on your next KnotPlot session,
+press F1 right now and then (optionally)
+press F2 to visit the web page you requested.

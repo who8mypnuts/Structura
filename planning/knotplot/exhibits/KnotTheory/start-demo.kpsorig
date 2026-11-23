@@ -1,0 +1,4 @@
+wlay compact
+<Ndemos.kps
+<Pdemos.kps
+if KPbuild < 3030 then <kp-nogo.kps else <dispatch.kps

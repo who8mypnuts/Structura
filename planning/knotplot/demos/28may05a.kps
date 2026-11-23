@@ -1,0 +1,51 @@
+reset all
+
+silent=t
+verbose=f
+
+glop backface t
+
+alloc comp 408
+
+sphere on
+
+mode cB
+
+field K \rr[.9/1.1]
+field poff 3.14159265
+field npoi 108
+field type standardmap
+if \rr9 < 1 then "mode cBF"
+3dop colF \rr360 1 1
+back=black
+
+cyl=.05
+bead=.09
+
+force 1
+coll a
+
+velfo=t
+new=f
+
+%% c:\usr\KnotPlot\resource\win32\multiif.exe 28may05a.txt
+par1 = \rr210
+if par1 < 100 then "nop;par1=212"
+if par1 < 177 then "rotate x \rr+-90;par1=212"
+if par1 < 211 then "rotate y \rr+-9;par1=212"
+
+tfunc \rr[44/66] <28may05a.kps 0 repeat 44 66
+tfunc .3 "test cone 180" 0 repeat 0
+tfunc 6 "del all" 0 repeat 5 7
+
+tfunc \rr20 "sphere \rr[1/5]" 0 repeat 5 20
+tfunc .1 <28may05a_aux.kps 0 repeat 5 20
+
+tfunc 1 "elec=\ri1" 0 repeat 1 2
+
+% try turning off/on elec force and also with clrfun z
+
+go 
+
+silent=f
+

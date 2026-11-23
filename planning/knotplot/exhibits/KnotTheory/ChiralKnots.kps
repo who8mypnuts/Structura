@@ -1,0 +1,5 @@
+par0 = \rr100
+
+if par0 > 0 then <ChiralKnotsA.kps
+
+

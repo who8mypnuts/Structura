@@ -1,0 +1,52 @@
+bfacf init
+bfacf load
+bfacf centre on
+
+silent = t
+energy model nbead
+energy format "Nedges = %.0f"
+show energy
+
+txt init
+txt font 4
+txt lineskip 33
+txt fcolour "royal blue" .7
+txt centre
+txt push
+txt group 8324672
+txt expire 12
+txt c -33 "1) let the knot run until it gets small enough, then click on `start recording'"
+txt c a "2) when you are happy with the minimal step finding, click `retrieve minstep'"
+txt font 3
+txt fill on
+txt c a ok "txt delete group 8324672"
+txt pop
+txt font 3
+txt fill on
+
+txt push
+txt group 11112
+txt c 20 "start recording" "bfacf target 9999;bfacf search on;txt group 11112 off;txt group 11113 on"
+txt group 11113
+txt c 20 "retrieve minstep" "bfacf stop;load |min;centre;jitter 0"
+txt group 11113 off
+txt pop
+
+
+txt right
+txt fill off
+txt push
+txt group 874321 
+txt -20 -177 "slider values:"
+txt fill on
+txt -20 -199 "stop auto-set" "tfunc reset;txt delete group 874321"
+txt pop
+
+<bfacf/autoz.kps
+
+bfacf run 1000000
+
+txt on
+
+silent = f
+

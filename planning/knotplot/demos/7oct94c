@@ -1,0 +1,28 @@
+reset all
+silent = t
+back = 0
+blend one one
+mat-hsv k 0 0 0 s
+mat-hsv k 0 0 0 d
+mat-hsv k 0 0 0 a
+
+mat-hsv b 0 0 0 s
+mat-hsv b 22 .9 .5 d
+mat-hsv b 0 0 0 e
+
+bead-rad = .05 
+alert "Paint with mouse in main window"  OK 
+mode b
+singlebuffer
+clrfun zf
+disp
+disp
+backf t
+
+clrfun 1
+value=.02
+load 3.1
+
+silent = f
+
+

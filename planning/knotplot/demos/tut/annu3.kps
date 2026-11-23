@@ -1,0 +1,25 @@
+reset all
+
+alloc 9000
+
+% bind F1 key to reload script
+function 1 <annu3.kps
+
+chain 11 200
+twfix 44
+cyl-rad = .6   % spacing between strand depends on current value
+
+double
+save |x
+revb 
+load comb |x
+
+% use the current two component link to create
+% some scenery. note that this is an undocumented
+% option and may change for reasons unknown (but time will tell)
+scenery object .link   
+
+scenery on     % actually show the scenery
+
+delete all     % get rid of the knots
+

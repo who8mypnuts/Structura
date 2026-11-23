@@ -1,0 +1,37 @@
+require KPbuild 4990
+
+require KPbuild 4691
+scenery on
+
+show bfacf
+
+bfacf wall action "play 88;read bfacf/PxQ-search.kps"
+
+txt on
+txt fcolour RoyalBlue .7
+txt centre
+txt font 4
+%txt hide 99999
+
+alias ~title "txt c -20 {trying to put $0 into a $1 tube}"
+
+PxQ-title
+
+txt fill on
+txt font 3
+alias ~startWall  "txt delete start;<bfacf/PxQ-wall.kps"
+
+txt c 20 "start wall" ~startWall
+txt clobber on
+txt on
+
+
+silent=f
+
+clk run 1000000
+
+notify state Running
+
+
+
+

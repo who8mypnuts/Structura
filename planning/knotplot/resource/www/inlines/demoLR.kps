@@ -1,0 +1,60 @@
+reset all
+
+resize 1100 680 15 213
+resize 1100 680 15 213
+resize 1100 680 15 213
+resize 1100 680 15 213
+
+<monster-init
+scale = .34
+pop
+sbuff
+luxo
+nap 1
+disp
+ppm duma 8
+
+<ks-init
+scale = .29
+pop
+sbuff
+luxo
+nap 1
+disp
+ppm dumb 8
+
+<brun-relax-init
+pop
+try=1.02
+scale = .32
+sbuff
+luxo
+nap 1
+disp
+ppm dumc 8
+
+cheapo
+
+!pnmcat -tb duma.ppm dumb.ppm dumc.ppm > demoL.ppm
+
+<wisp
+about z 90
+go 600
+nap 1
+ppm dumc 8
+
+<wings 
+sbuff
+disp
+nap 1
+ppm dumb 8
+
+<9oct94d
+scale = .4
+disp
+nap 1
+ppm duma 8
+
+!pnmcat -tb duma.ppm dumb.ppm dumc.ppm > demoR.ppm
+
+!/bin/rm dum*.ppm

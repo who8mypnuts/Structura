@@ -1,0 +1,20 @@
+reset all
+tex reset
+tex appmode modulate
+%viewmatrix -0.233368 0.088746 -0.968330 0.126931 0.990086 0.060149
+scale = 0.627000
+load spe30.k
+if \rr1 < .5 then swap
+%texture varo.ppm
+if \rr1 < .5 then "texture varo.ppm" else "texture lupin.ppm"
+back=0
+
+spec fra
+about y \rr360
+idle "about y 1"
+%clrfun zt
+texture on
+
+<../benchmarks/blurb-bm.kps
+
+

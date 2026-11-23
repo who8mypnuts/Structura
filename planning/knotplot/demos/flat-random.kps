@@ -1,0 +1,31 @@
+reset all
+func 1 <flat-random.kps
+alloc 9999
+go beadlimit 9999
+alias ~cg "celtic grid $0 $0;celtic rand sec \rr[.13/.3];celtic copy;scale 2"
+scale = .1
+
+cyl-rad=.45
+silent=t
+until once yes
+until ncomp 1 "~cg \ri[12/22]"
+
+jitter \rr[1/2]
+silent=f
+dstep = 4
+coll a
+force 1
+velf=t
+until safe "ago 11"
+safe
+force 2
+coll f
+stus=1
+tfunc 1 "dele downto 0" 0 rep 5 10
+go
+
+
+
+
+
+

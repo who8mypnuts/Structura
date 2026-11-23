@@ -1,0 +1,26 @@
+require KPbuild 4986
+require KPbuild 5010   % re-implementation in Lua
+
+button Nbuttons 5
+button hspace 4 
+button pos 1
+button height 8
+
+button blank @
+button Nbuttons 5
+
+button 18 "Equivalence classes" nop 4 262 102 10 4 2
+
+button clk 9_42 <bfacf/9_46-eqclass.kps  -2 -1 0 0 0 2
+
+button clk blink <bfacf/blink.kps -1 -1 0 0 0 2
+button clk unknots <bfacf/unknots.kps -1 -1 0 0 0 2
+button clk birman <bfacf/birman.kps -1 -1 0 0 0 2
+
+button clk test1 <bfacf/test1.kps -2 -1 0 0 0 2
+button clk test2 <bfacf/test2.kps -1 -1 0 0 0 2
+button clk test3 <bfacf/test3.kps -1 -1 0 0 0 2
+
+button 18 "Ergodicity classes" nop 4 -2 102 10 4 2
+<bfacf/ergod/buttons.kps
+

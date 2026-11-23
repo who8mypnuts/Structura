@@ -1,0 +1,23 @@
+reset all
+
+cyl=.1
+
+new=f
+
+
+line dir \rr2 \rr2 \rr2
+line num \ri[4/10]
+
+tfunc .02 "line \ppar0 \ppar1 \ppar2;align ax" 0 repeat .05
+
+echo " *** Press F5 to stop adding sticks"
+
+func init
+func silent
+func 5 tfunc reset
+func 1 <9may05a.kps
+
+
+
+
+

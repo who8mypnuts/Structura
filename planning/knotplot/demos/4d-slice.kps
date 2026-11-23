@@ -1,0 +1,33 @@
+reset all
+silent=t
+mode cb
+cyl = .06
+load 3.1ts
+split
+splane 96 0 7
+tsba=12
+tsbb=84
+4dss=80
+tsn=0
+reset sliders
+disp t
+4dscm=1
+4dval=1
+rotate y 90
+
+spin 0 0 0
+spin 0 0 0
+
+silent=f
+
+echo " "
+echo " "
+echo " "
+echo " *** 3D hypersection of knot in 4D."
+echo "     Adjust the `w depth' slider to change"
+echo "     the level of the cutting volume."
+echo " "
+
+
+
+

@@ -1,0 +1,61 @@
+reset all
+
+verbose=f
+silent=t
+func init
+func silent
+func 2 velocity rad \rr[-.1/-1]
+func 3 "dupl;trans 6 0 0 last"
+
+unknot 5 4
+
+persp 60 .2 120
+refl r
+
+Draw=f
+ago 22
+Draw=t
+
+scale=.21
+
+trans 30 0 0 
+#3 dup;about z 90 0;about z -90
+
+ago 1
+
+force 1
+velmag=.001
+velf=t
+
+func exec 2
+go
+
+tfunc 3 "func exec 2" 0 rep 1 3
+
+mathsv b 0 0 1 d
+bead=1
+
+
+
+
+silent=f
+
+echo
+echo
+echo
+echo
+
+
+func 1 <openal-demo1.kps
+
+leng
+
+oal source 0 attach ecomp 0 wav h on
+oal source 1 attach ecomp 1 wav h on
+oal source 2 attach ecomp 2 wav h on
+oal source 3 attach ecomp 3 wav h on
+
+oal doppler 1 .04
+
+untran
+rota y 180

@@ -1,0 +1,14 @@
+go 0
+echo 
+echo
+echo "  *** Knot not safe, fixing by allowing crossing changes..."
+txt font 4
+txt centre
+txt fill off
+txt c 40 "Knot not safe, fixing by allowing crossing changes..."
+coll a
+until safe "ago 5"
+coll n
+echo "      Done!  Prohibiting crossing changes..."
+echo
+txt delete Knot

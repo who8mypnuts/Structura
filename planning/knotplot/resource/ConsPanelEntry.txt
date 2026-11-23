@@ -1,0 +1,6 @@
+
+Check the `auto create' box to have the knots created as you change slider values.
+Check the `auto set' box if you want KnotPlot to guess how many beads to use.
+It may be easier to see what's going on in `Beads & Sticks' mode.
+Lissajous knots: if nk is zero --> create 1-mode knot (phiz is ignored). if nk is non-zero --> create 2-mode knot.
+Braids: Click on "init".

@@ -1,0 +1,27 @@
+
+% Draw a rotating torus knot as a shadow.
+
+reset all
+cyl-rad = \rr[.08/.2]
+scale = 0.348386
+value = 0.000000
+mathsv k 0 0 0 s
+ncur=7
+nseg=3
+ortho
+torus
+back=xffffff
+
+if \rr5 < 1 then "mathsv k 0 0 1 e;back=0"
+if \rr1 < .9 then "rotate z 90"
+if \rr1 < .01 then "refl rr"
+
+% if value is 0 below, then the thing is white.  why?
+if \rr21 < 1 then "mathsv k \rr360 1 1 e;back=0;value=.001"
+
+idle "about x 1"
+
+echo " "
+echo " "
+echo "  ***** Randomized demo, click it again!"
+echo " "

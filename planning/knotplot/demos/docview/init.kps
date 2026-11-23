@@ -1,0 +1,171 @@
+require KPbuild 4178
+reset all
+spec back
+
+silent=t
+velf=t
+coll a
+force 1
+
+alias ~pathon "mode s;par4=1"
+alias ~pathoff "mode 0;par4=0"
+alias ~openquote ~qcolour
+alias ~closequote ~ncolour
+alias ~qcolour "txt colour #f93"
+alias ~ncolour "txt colour white"
+alias ~setfont "txt font $0;~tload"
+alias ~nogo "<docview/nogo.kps"
+alias ~clearaccbuff "tfunc .3 {silent=t;accbuff clear;silent=f}"
+alias qfix
+alias ~setdoc "alias ~tload <docview/doc$0.kps"
+
+~setdoc \ri[1/4]
+
+persp 65 .1 222
+~ncolour
+
+verbose=f
+
+txt space _
+txt fill on
+txt font 3
+txt lineskip -22
+
+torus 3 4 200
+
+txt left
+
+txt fill off
+txt 5 8 text:
+txt fill on
+txt push
+txt font 2
+txt 37 10 A "~setfont 2"
+txt font 3
+txt 60 11 A "~setfont 3"
+txt font 4
+txt 88 13 A "~setfont 4"
+txt pop
+
+cradius = 0.2
+sradius = 0.2
+
+%scen vscale .4
+scen rotate orientation
+scen obj docview/start.eobj bead 1
+
+tanmag=-.003
+txt fill on
+txt 10 a2 round "deform to docview/un.k \ri[100/200]"
+txt 10 a cut "open all" 
+
+txt 10 a scroll "tanf=t;go;txt group 94345 on;txt group 43451 off"
+txt push
+txt group 94345
+
+txt 60 a0 "slower" "test tanmag .7142857"
+txt 115 a0 "faster" "test tanmag 1.4"
+txt group 94345 off
+txt pop
+
+par3=.1
+txt 10 a swirl <docview/swirl.kps
+txt push
+txt group 43451
+txt fcolour red .5
+txt 60 a0 "slower" "test par3 .7142857"
+txt 114 a0 "faster" "test par3 1.4"
+txt 165 a0 "reverse" "test par3 -1"
+txt group 43451 off
+txt pop
+
+
+txt 10 a jitter "jitter 1"
+txt 10 a jumble <docview/jumble.kps
+txt fill off
+txt 5 a action:
+
+
+
+txt fill on
+%txt 10 a2 lab2 "~nogo;vscale=.171;load chartres.k;nbead 200;open all;untran"
+txt 10 a2 lab "~nogo;vscale=.1795;load ravenna.k;nbead 200;open all;untran"
+txt 10 a knot "<docview/cd.kps"
+%txt 10 a helix <docview/helix.kps
+txt 10 a helix "~nogo;rotate x 90;load docview/helix.k;read randorient3.kps"
+txt 10 a torus <docview/torus.kps
+txt 10 a circle "~nogo;unknot 200;read randorient3.kps"
+txt fill off
+txt 5 a create:
+
+
+txt right
+
+
+txt push
+txt font 4
+txt fill on
+txt right
+txt -14 14 ? "help popup docview/help.txt handoff"
+txt pop
+
+txt fill on
+
+
+txt fill on
+txt -10 a2 fullscreen "full toggle;~clearaccbuff"
+txt -10 a "path" "if par4 == 0 then ~pathon else ~pathoff"
+txt -10 a start "scenery toggle"
+txt fill off
+txt -5 a toggle:
+
+
+txt fill on
+
+
+txt -10 a10 !  "~nogo;func exec 7;go"
+txt lineskip 22
+txt -10 a   !! "~nogo;read fun-with-accbuff.kps;go"
+%txt -10 a !!! "accbuff off;<negcylspace-aux.kps"
+
+
+txt -10 -19 "doc 1" "~setdoc 1;~tload"
+txt -10 a "doc 2" "~setdoc 2;~tload"
+txt -10 a "doc 3" "~setdoc 3;~tload"
+txt -10 a "doc 4" "~setdoc 4;~tload"
+%txt -10 a "doc 5" "~setdoc 5"
+
+
+
+
+txt centre
+txt c 10 reload <docview/init.kps
+
+<docview/torus.kps
+
+txt push
+txt font 4
+txt fill off
+txt left
+%txt 10 -20 "KnotPlot Document Viewer"
+%txt 10 -40 knotplot.com
+txt pop
+
+txt on
+func init
+func silent
+func 1 essay
+
+func 4 <docview/picture.kps
+
+func 7 "mode s;zbuff f;spec -back;back=0;blend one one;cyl=\rr[.02/.05];draw brok;broff=\rr+-10;hsta=\rr360;tanf=t;twfix \rr+-2222"
+
+drag=t
+silent=f
+
+echo 
+echo 
+echo "Click on the `reload' button or press F1 to reload this demo"
+echo 
+
+txt autohide on   % should be the last txt command

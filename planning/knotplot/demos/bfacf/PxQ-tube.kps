@@ -1,0 +1,54 @@
+require KPbuild 4990   % for notify, screen
+
+require KPbuild 4790
+reset all
+
+alias 2x2 "alias PxQ-title {~title $0 2x2};alias PxQ-load {load mscl/$0};alias PxQ-save {save -a 2x2-$0-!.news news};read bfacf/2x2-tube.kps"
+
+alias 2x2r  "2x2 $0_$1"
+alias 2x2r8  "2x2r 8 \ri[1/21]"
+alias 2x2r7  "2x2r 7 \ri[1/7]"
+
+
+alias 1x3 "alias PxQ-title {~title $0 1x3};alias PxQ-load {load mscl/$0};alias PxQ-save {save -a 1x3-$0-!.news news};read bfacf/1x3-tube.kps"
+alias 1x3r  "1x3 $0_$1"
+alias 1x3r8  "1x3r 8 \ri[1/21]"
+alias 1x3r7  "1x3r 7 \ri[1/7]"
+
+
+alias 2x3 "alias PxQ-title {~title $0 2x3};alias PxQ-load {load mscl/$0};alias PxQ-save {save -a  2x3-$0-!.news news};read bfacf/2x3-tube.kps"
+alias 2x4 "alias PxQ-title {~title $0 2x4};alias PxQ-load {load mscl/$0};alias PxQ-save {save -a  2x4-$0-!.news news};read bfacf/2x4-tube.kps"
+alias 2x99 "alias PxQ-title {~title $0 2x99};alias PxQ-load {load mscl/$0};alias PxQ-save {save -a 2x99-$0-!.news news};read bfacf/2x99-tube.kps"
+
+
+alias 3x3 "alias PxQ-title {~title $0 3x3};alias PxQ-load {load mscl/$0};alias PxQ-save {save -a 3x3-$0-!.news news};read bfacf/3x3-tube.kps"
+
+
+alias 1x4 "alias PxQ-title {~title $0 1x4};alias PxQ-load {load mscl/$0};alias PxQ-save {save -a 1x4-$0-!.news news};read bfacf/1x4-tube.kps"
+alias 1x4r  "1x4 $0_$1"
+alias 1x4r8  "1x4r 8 \ri[1/21]"
+alias 1x4r7  "1x4r 7 \ri[1/7]"
+
+
+alias 1x2 "alias PxQ-title {~title $0 1x2};alias PxQ-load {load mscl/$0};alias PxQ-save {save -a 1x2-$0-!.news news};read bfacf/1x2-tube.kps"
+alias 1x2r  "1x2 $0_$1"
+alias 1x2r8  "1x2r 8 \ri[1/21]"
+alias 1x2r7  "1x2r 7 \ri[1/7]"
+
+alias 2x1 "alias PxQ-title {~title $0 2x1};alias PxQ-load {load mscl/$0};alias PxQ-save {save -a 2x1-$0-!.news news};read bfacf/2x1-tube.kps"
+
+alias 1x5 "alias PxQ-title {~title $0 1x5};alias PxQ-load {load mscl/$0};alias PxQ-save {save -a 1x5-$0-!.news news};read bfacf/1x5-tube.kps"
+alias 1x6 "alias PxQ-title {~title $0 1x6};alias PxQ-load {load mscl/$0};alias PxQ-save {save -a 1x6-$0-!.news news};read bfacf/1x6-tube.kps"
+
+
+txt font 4
+
+txt 20 -20 file bfacf/PxQ-info.txt
+
+txt on
+
+
+play init
+
+scale = .14
+ccmode = 2

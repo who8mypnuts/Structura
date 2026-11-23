@@ -1,0 +1,6 @@
+
+button klein <klein.lua
+button klein "lua run 4D-surfaces klein"
+button "proj p" <proj-plane.lua
+button "proj p" "lua run 4D-surfaces pplane"
+

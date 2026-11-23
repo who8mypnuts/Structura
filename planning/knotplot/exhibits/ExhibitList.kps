@@ -1,0 +1,13 @@
+%% Auto-generated on Sat  3 Oct 2015 10:31:23 PDT
+% put on DemoB 17 July 2022
+
+button DemoB "NeverEnding exhibitions (ESC to exit)" dum -2 -1 102 10 4
+button DemoB "Knots!" "read ExhibitSplash.kps;func c 12 panel off:path KPHOME exhibits/KnotTheory:<start-demo.kps" -2 -1 0 0
+%button DemoB "PsychFest" "read ExhibitSplash.kps;func c 12 panel off:path KPHOME exhibits/PsychFest:<start-demo.kps" -1 -1 0 0
+button DemoB "AMS" "read ExhibitSplash.kps;func c 12 panel off:path KPHOME exhibits/ams2011:<start-demo.kps" -1 -1 0 0
+button DemoB "Fly_thru" "read ExhibitSplash.kps;func c 12 panel off:path KPHOME exhibits/FlyThru:<start-demo.kps" -1 -1 0 0
+button DemoB "Frenetic" "read ExhibitSplash.kps;func c 12 panel off:path KPHOME exhibits/Frenetic:<start-demo.kps" -1 -1 0 0
+button DemoB "Poly_dance" "read ExhibitSplash.kps;func c 12 panel off:path KPHOME exhibits/PolyDance:<start-demo.kps" -1 -1 0 0
+button DemoB "Paint_2" "read ExhibitSplash.kps;func c 12 panel off:path KPHOME exhibits/paint2:<start-demo.kps" -1 -1 0 0
+button DemoB "Aum_Fly" "read ExhibitSplash.kps;func c 12 panel off:path KPHOME exhibits/AumFly:<start-demo.kps" -1 -1 0 0
+button DemoB "glue_graphs" "read ExhibitSplash.kps;func c 12 panel off:path KPHOME exhibits/glueing:<start-demo.kps" -1 -1 0 0

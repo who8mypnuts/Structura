@@ -1,0 +1,220 @@
+require KPbuild 5003   % for Lua (added 21 March - 24 April 2022)
+require KPbuild 5005   % for ARM vs x86_64
+require KPbuild 5008   % for sradius, cradius, bradius, vscale
+require KPbuild 5017
+require KPbuild 5018
+
+% See documentation in the file DemoA.kps in this directory
+
+
+%echo " "
+%echo "DemoB panel initialized from definition in" \f "(demos folder)."
+%echo " "
+
+button Nbuttons 5
+button hspace 4
+button pos 1
+%button DemoB "Full screen" <full-screen.kps -1 275 0 10
+button height 8
+
+% button LABEL ACTION XPOS YPOS WIDTH HEIGHT
+% if XPOS == -2 then XPOS = hspace
+% if XPOS < 0.0 then XPOS += (hspace + prev_button_width)
+% if WIDTH <= 0.0 then WIDTH = 
+
+panel off
+
+button blank _
+
+button DemoB "Decorative & Fun" dum     -2 275  55 10 4
+
+button DemoB waves <wave_demos.kps -2 -1 0 0
+%button DemoB Coney <ConeyMagic2.kps -1 -1 0 0
+button DemoB Orbita <orbita.kps -1 -1 0 0 
+
+if \rr30 > 1 then "button DemoB EO-fill <EOfill.kps -1 -1 0 0" else "button DemoB Crop_circles <EOfill.kps -1 -1 0 0"
+
+button DemoB "snakes 1" <20oct05a.kps -1 -1 0 0
+%button DemoB "snakes 2" <31jan14.kps -1 -1 0 0
+%button DemoB surf2 <surf2.kps -1 -1 0 0
+%button DemoB 6/49 <l649_init.kps -1 -1 0 0   removed 30 June 2021   :-(
+%button DemoB "Frame buffer tricks" <4jun96a -1 -1 70 0
+%button DemoB "Mangle a knot" <mangle-demo  -1 -1 70 0
+%button DemoB v._happy <violently-happy.kps -1 -1 0 0   removed 30 June 2021
+
+button DemoB "Paint 0" <KnotPaint0.kps -1 -1 0 0
+button DemoB "Paint 1" <KnotPaint1.kps -1 -1 0 0
+button DemoB "Paint 2" <KnotPaint2.kps -1 -1 0 0
+
+button DemoB "swim" "lua run swim" -1 -1 0 0
+button DemoB "Dance 2" <dance2.kps -1 -1 0 0
+button DemoB "knot drop" <dropA.kps -1 -1 0 0
+
+% these paint demos need to be improved and then made public again
+%button DemoB "Paint 1" <paint1.kps   -1 -1 0 0
+%button DemoB "Paint 2" <7oct94c   -1 -1 0 0
+%button DemoB "Paint 2" <paint2.kps   -1 -1 0 0
+%button DemoB "Paint 3" <setup-paint -1 -1 0 0
+%button DemoB "Paint 3" <paint3.kps -1 -1 0 0
+
+
+button DemoB Sea_Things <SeaThings.kps -1 -1  0 0
+button DemoB Panes <panes.kps       -1 -1 0 0
+%button DemoB Flower <UnknotFlowers.kps -1 -1 0 0
+button DemoB NC_space <negcylspace.kps   -1 -1 0 0
+
+% multiif < demob.txt
+parsave 
+par2 = \rr26
+%if par2 < 1 then "button DemoB do_not_click <do-not-click.kps -1 -1 0 0;par2=28"
+%if par2 < 6 then "button DemoB Weird_Cone <WeirdCone.kps -1 -1 0 0;par2=28"
+%if par2 < 27 then "button DemoB Freaky <FreakyA.kps -1 -1 0 0;par2=28"
+parrestore
+
+
+
+%button DemoB "Mandalas" <Mandalas.kps -1 -1 0 0
+
+
+%button DemoB quote <marcus.kps -1 -1 0 0
+button DemoB doc <docview/init.kps -1 -1 0 0
+
+button DemoB dolphins <Dolphins.kps -1 -1 0 0
+
+if macos then "button DemoB sound <sound/init.kps -1 -1 0 0"
+%if macos then "button DemoB speak <say/init.kps -1 -1 0 0"
+button DemoB 2001 <monolith.kps -1 -1 0 0
+
+button DemoB "4D" dum -2 -1 44 10 4
+button DemoB polytopes <4dpolytopes.kps -2 -1 0 0
+button DemoB "spun knot" <4d-spun-knot.kps -1 -1 0 0
+button DemoB "illusion" <4d-illusion.kps -1 -1 0 0
+button DemoB klein <klein.kps -1 -1 0 0 
+button DemoB "proj p" <proj-plane.kps -1 -1 0 0 
+
+ 
+button DemoB "Graphics" dum -2 -1 55 10 4
+%button DemoB "Benchmarks" "panel set Bench" -2 -1 0 0 
+button DemoB tests <graphics-tests.kps -2 -1 0 0 
+%button DemoB "random light" <random-lights.kps -1 -1 0 0
+button DemoB "bezier" <bezier-drag.kps -1 -1 0 0
+button DemoB "PT frame" <PTframe.kps -1 -1 0 0
+%button DemoB knottype <knottype.kps -1 -1  0 0
+button DemoB xsect <xsect.kps -1 -1 0 0
+%button DemoB "St. Elmo" <StElmo.kps -1 -1 0 0
+button DemoB "fly thru" <fly-thru.kps -1 -1 0 0
+button DemoB "stan" <stan.kps -1 -1 0 0
+if isme then "button DemoB GLSL <glsl-demo.kps -1 -1 0 0"
+button DemoB cycle <cyclization.kps -1 -1 0 0
+button DemoB axes <axes.kps -1 -1 0 0
+button Nbuttons 12
+%button DemoB A <graphicsA.kps -2 -1 0 0
+
+% D is no longer interesting, why?
+%button DemoB D <graphicsD.kps -1 -1 0 0
+%button DemoB N <graphicsN.kps -1 -1 0 0
+
+
+button DemoB C <graphicsC.kps -2 -1 0 0
+button DemoB F <graphicsF.kps -1 -1 0 0
+button DemoB G <graphicsG.kps -1 -1 0 0
+button DemoB K <graphicsK.kps -1 -1 0 0
+
+%% Generated Sat Feb 24 16:23:07 2007
+%% with command line: c:\usr\KnotPlot\resource\win32\multiif.exe glodemos.txt
+parsave
+par0 = \rr40
+if par0 < 10 then "button DemoB H <graphicsH.kps -1 -1 0 0;par0=42"
+if par0 < 20 then "button DemoB Ha <graphicsHa.kps -1 -1 0 0;par0=42"
+if par0 < 30 then "button DemoB I <graphicsI.kps -1 -1 0 0;par0=42"
+%if par0 < 41 then "button DemoB J <graphicsJ.kps -1 -1 0 0;par0=42"
+parrestore
+
+button DemoB L <graphicsL.kps -1 -1 0 0
+if KPbuild > 3381 then "button DemoB M <graphicsM.kps -1 -1 0 0"
+button DemoB O <oscilpaint.kps -1 -1 0 0
+%if KPbuild > 3419 then <procomp_DemoB_aux.kps
+button DemoB Q <27mar05a.kps -1 -1 0 0
+if KPbuild > 3677 then "button DemoB R <1may05a.kps -1 -1 0 0"
+button DemoB "W" <wings.kps -1 -1 0 0
+button DemoB "X" <28may05a.kps -1 -1 0 0 
+%button DemoB "Xa" <18feb07a.kps -1 -1 0 0 
+%button DemoB "Y" <1jun05a.kps -1 -1 0 0 
+
+%button DemoB AA <9jun05a.kps -1 -1 0 0 
+%button DemoB AB <22jun05a.kps -1 -1 0 0 
+button DemoB AC <23jun05b.kps -1 -1 0 0 
+button DemoB AE <rotate-stick-things.kps -1 -1 0 0
+button DemoB AF <30oct05a.kps -1 -1 0 0 
+button DemoB AG <21feb07a.kps -1 -1 0 0
+button DemoB AH <21feb07b.kps -1 -1 0 0
+button DemoB MG <23jun05a.kps -1 -1 0 0
+button DemoB MH <MH.kps -1 -1 0 0
+button DemoB St <sphere-test.kps -1 -1 0 0 
+button DemoB PA <PA.kps -1 -1 0 0
+button DemoB SH <5mar07a.kps -1 -1 0 0
+button DemoB SH <7mar07a.kps -1 -1 0 0
+button DemoB 17 <17aug07a.kps -1 -1 0 0 
+button DemoB gb <globeat.kps -1 -1 0 0 
+button DemoB Ls <lsystems1.kps -1 -1 0 0
+
+button push
+if composed then "button DemoB trough <trough.kps -1 -1 -2 0;<trough-buttons.kps"
+button pop
+button DemoB cA <collideA.kps -2 -1 0 0
+button DemoB cB <collideB.kps -1 -1 0 0
+button DemoB cC <collideC.kps -1 -1 0 0
+button DemoB cD <collideD.kps -1 -1 0 0
+button DemoB cE <collideE.kps -1 -1 0 0
+
+button DemoB L_field <field_lorenz.kps -1 -1 -2 0
+button DemoB "motion blur" <fun-with-accbuff.kps -1 -1 -4 0
+
+button Nbuttons 12
+button DemoB "Texture" dum -2 -1 55 10 4
+button pos 8
+button DemoB Bugs dum  -1 -1 5 10 4
+
+button DemoB A <textureABC.kps 4 -1 0 0
+%button DemoB B <textureB.kps -1 -1 0 0
+%button DemoB C <textureC.kps -1 -1 0 0
+button DemoB D <textureD.kps -1 -1 0 0
+button DemoB Db <textureDb.kps -1 -1 0 0
+button DemoB DL <textureDL.kps -1 -1 0 0
+button DemoB E <27oct02a.kps -1 -1 0 0
+
+button pos 8
+button DemoB 1 <bug1.kps -1 -1 0 0 
+
+if stereo then nop else <anaglyphButtons.kps
+
+%button pos 2
+%button DemoB A <anaglyphrcA.kps -1 -1 0 0 
+%button DemoB B <anaglyphrcB.kps -1 -1 0 0 
+%button DemoB C <anaglyphrcC.kps -1 -1 0 0 
+%button DemoB D <anaglyphrcD.kps -1 -1 0 0 
+%button DemoB E <anaglyphrcE.kps -1 -1 0 0 
+%if KPbuild > 3668 then "button DemoB F <anaglyphrcF.kps -1 -1 0 0"
+%if KPbuild > 3668 then "button DemoB G <anaglyphrcG.kps -1 -1 0 0"
+
+%button pos 2
+%button DemoB A <anaglyphrbA.kps -1 -1 0 0 
+%button DemoB B <anaglyphrbB.kps -1 -1 0 0 
+%button DemoB C <anaglyphrbC.kps -1 -1 0 0 
+%button DemoB D <anaglyphrbD.kps -1 -1 0 0 
+%button DemoB E <anaglyphrbE.kps -1 -1 0 0 
+%if KPbuild > 3668 then "button DemoB F <anaglyphrbF.kps -1 -1 0 0"
+%if KPbuild > 3668 then "button DemoB G <anaglyphrbG.kps -1 -1 0 0"
+
+silent=t
+%<../exhibits/ExhibitList.kps
+silent=f
+
+
+panel on
+
+if KPbuild < 3516 then "<warn_KPbuild.kps"
+
+button height 10
+<demo_panel_upgrade.kps
+

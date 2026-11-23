@@ -1,0 +1,7 @@
+unknot 5 \rr[1/2]
+
+#4 dupl;refl r last;trans \rr+-10 \rr+-10 \rr+-10 last
+fitto 6
+cent mass
+
+txt exec 0 108

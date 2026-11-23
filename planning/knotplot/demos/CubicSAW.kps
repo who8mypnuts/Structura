@@ -1,0 +1,40 @@
+reset all
+
+func init
+func silent
+
+mode cb
+cyl=.06
+
+cubic init
+echo " "
+echo " "
+echo "  *** Constructing a self avoiding random walk on the cubic lattice."
+
+%verbose=f   % to prevent frame and align commands from blurting
+%frame comm "read Cubic_SAW%d.kps"
+%frame \ri[5/8]
+
+%% Generated Wed Dec 14 22:55:18 2005
+%% with command line: c:\usr\KnotPlot\resource\win32\multiif.exe CubicSAW.txt
+par2 = \rr56
+if par2 < 1 then "read CubicSAW_axes.kps;par2=58"
+if par2 < 4 then "read CubicSAW_noncent.kps;par2=58"
+if par2 < 12 then "read CubicSAW_bbox.kps;par2=58"
+if par2 < 57 then "read CubicSAW_cofm.kps;par2=58"
+
+if \rr3 < 1 then "rot x \rr360"
+if \rr3 < 1 then "rot y \rr360"
+
+func 1 <CubicSAW.kps
+func 4 cubic init
+func 5 echo:echo:read CubicSAW_noncent.kps:echo
+func 7 echo:echo:read CubicSAW_bbox.kps:echo
+func 6 echo:echo:read CubicSAW_cofm.kps:echo
+func 8 echo:echo:read CubicSAW_axes.kps:echo
+func 9 echo:echo:read Cubic_SAW9.kps:echo
+
+echo "      Press F4 to start new self avoiding walk, F1 to rerun demo."
+echo " "
+
+

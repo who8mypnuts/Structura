@@ -1,0 +1,45 @@
+
+<open-end-aux3.kps
+
+% multiif < open-end.txt > open-end-if.kps
+<open-end-if.kps
+
+%if \rr5 < 2 then "mode sA"
+
+
+arrow N \ri[1/102]
+if \rr2 < 1 then "arrow cap t" else "arrow cap f"
+if \rr2 < 1 then "arrow slices \ri[3/11]"
+
+if \rr66 < 1 then "sbuff;clrfun n;ncur=3;nseg=3;cyl=.02;read specommalignaxes.kps"
+
+if \rr10 < 7 then "knot num \ri[1/36]" else "knot num \ri[252/272]"
+
+if \rr2 < 1 then <open-end-aux.kps
+tanf=on
+
+
+<open-end-aux2.kps
+
+func init
+func silent
+
+silent=f
+
+echo " " 
+echo " " 
+echo " Randomized demo, try again!" 
+echo " F1 reloads the demo."
+echo " F2 thru F6 do various things."
+echo " " 
+
+func 1 <open-end.kps
+func 2 "read open-end-aux3.kps;tangle ???##???##???####;read open-end-aux2.kps"
+func 3 "read open-end-aux3.kps;tangle ??#??#??#??#??#??#c;read open-end-aux2.kps"
+func 4 "read open-end-aux3.kps;tangle ???##???##*???##*;read open-end-aux2.kps"
+
+func 5 "fitto \rr[1/6];refl r;swirl \rr+-777;refl r"
+func 6 revbeads
+
+
+

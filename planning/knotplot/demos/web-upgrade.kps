@@ -1,0 +1,33 @@
+txt init
+
+accbuff off
+txt font 4
+txt centre
+txt colour auto
+txt c -108 "Starting your default web browser"
+txt c a "and going to the web site"
+txt c a "knotplot.com/download"
+txt c a " "
+txt c a "On some systems, this might take a few moments"
+txt c a "(up to 30 seconds on some Windows machines)."
+txt c a "Thank you for your patience."
+txt c a " "
+txt c a "When you get to the KnotPlot download page"
+txt c a "click on the `Buy now' button to purchase a key."
+txt c a "Soon after a key will be emailed to you with"
+txt c a "instructions on how to install it."
+txt c a "You'll then be up and running with all of"
+txt c a "KnotPlot's many features!"
+
+txt on
+disp t
+
+www knotplot.com/download
+
+silent=t
+go 0
+tfunc reset
+idle
+silent=f
+
+

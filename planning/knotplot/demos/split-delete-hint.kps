@@ -1,0 +1,29 @@
+func exec c 1
+drag=on
+
+echo
+echo "  *** Direct manipulation turned on, try hovering mouse over the string"
+echo "      until you see a small icosahedron appear.  Then click and drag the string."
+echo
+
+~relaxnorm
+
+txt delete hint
+
+txt group 102
+txt fill off 
+txt font 4
+txt lineskip 21
+txt expire 12
+txt c -40 "Direct manipulation turned on, try hovering mouse over"
+txt c a "the string until you see a small icosahedron appear."
+txt c a "Then click and drag the string."
+txt c a "You might want to see how much you can simplify first"
+txt c a "by clicking on the `delete many beads' button."
+
+txt fill on
+txt lineskip 26
+txt font 3
+txt c a "OK" "txt delete group 102"
+
+txt group 0

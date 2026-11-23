@@ -1,0 +1,597 @@
+ 
+10dec05a.kps ../10dec05a.kps
+10sep05a.kps ../10sep05a.kps
+10xing.kps ../10xing.kps
+11xing.kps ../11xing.kps
+120-cell.kps ../120-cell.kps
+120cell-rotate.kps ../120cell-rotate.kps
+120cell.kps ../120cell.kps
+12aug03a.kps ../12aug03a.kps
+13feb08a.kps ../13feb08a.kps
+13jun05a.kps ../13jun05a.kps
+14dec02a.kps ../14dec02a.kps
+14dec02b.kps ../14dec02b.kps
+14dec02c.kps ../14dec02c.kps
+14sep02a.kps ../14sep02a.kps
+14sep02b.kps ../14sep02b.kps
+14sep02c.kps ../14sep02c.kps
+16cell.kps ../16cell.kps
+17aug07a.kps ../17aug07a.kps
+18feb07a.kps ../18feb07a.kps
+1jun05a.kps ../1jun05a.kps
+1may05a.kps ../1may05a.kps
+20oct05a.kps ../20oct05a.kps
+20sep00.kps ../20sep00.kps
+21feb07a.kps ../21feb07a.kps
+21feb07b.kps ../21feb07b.kps
+22jun05a.kps ../22jun05a.kps
+23jun05a.kps ../23jun05a.kps
+23jun05b.kps ../23jun05b.kps
+23jun05c.kps ../23jun05c.kps
+23jun05c_aux.kps ../23jun05c_aux.kps
+24cell.kps ../24cell.kps
+25jun05a.kps ../25jun05a.kps
+26oct03a.kps ../26oct03a.kps
+26oct03b.kps ../26oct03b.kps
+26oct03c.kps ../26oct03c.kps
+27mar05a.kps ../27mar05a.kps
+27oct02a.kps ../27oct02a.kps
+28jul00a.kps ../28jul00a.kps
+28may05a.kps ../28may05a.kps
+28may05a_aux.kps ../28may05a_aux.kps
+2jan06a.kps ../2jan06a.kps
+30oct05a.kps ../30oct05a.kps
+31oct05a.kps ../31oct05a.kps
+4d-illusion-aux.kps ../4d-illusion-aux.kps
+4d-illusion.kps ../4d-illusion.kps
+4d-slice.kps ../4d-slice.kps
+4d-spun-knot.kps ../4d-spun-knot.kps
+4dpolytopes.kps ../4dpolytopes.kps
+4jul05a.kps ../4jul05a.kps
+5cell.kps ../5cell.kps
+5jul05a.kps ../5jul05a.kps
+5mar07a.kps ../5mar07a.kps
+6.3-relax.kps ../6.3-relax.kps
+600cell.kps ../600cell.kps
+7.1-relax.kps ../7.1-relax.kps
+7jun00a.kps ../7jun00a.kps
+7jun05a.kps ../7jun05a.kps
+7jun05b.kps ../7jun05b.kps
+7mar07a.kps ../7mar07a.kps
+7xing.kps ../7xing.kps
+8cell.kps ../8cell.kps
+8jul00a.kps ../8jul00a.kps
+8jun00a.kps ../8jun00a.kps
+8xing.kps ../8xing.kps
+9jun05a.kps ../9jun05a.kps
+9may05a.kps ../9may05a.kps
+9may05b.kps ../9may05b.kps
+9xing.kps ../9xing.kps
+ACN_illustrate.kps ../ACN_illustrate.kps
+ACN_illustrate2.kps ../ACN_illustrate2.kps
+ACN_illustrate3.kps ../ACN_illustrate3.kps
+31c31
+< load comb |x
+---
+> load comb \x
+ACN_new_knot.kps ../ACN_new_knot.kps
+AntoinesNecklace.kps ../AntoinesNecklace.kps
+82c82
+< load comb |KP-antoines-necklace.dumm  % combine with dumm, now we have
+---
+> load comb \KP-antoines-necklace.dumm  % combine with dumm, now we have
+AntoinesNecklace_ring-dup.kps ../AntoinesNecklace_ring-dup.kps
+8c8
+< load comb |AntNeck_ring-L.k
+---
+> load comb \AntNeck_ring-L.k
+10c10
+< load comb |AntNeck_ring-accum.k
+---
+> load comb \AntNeck_ring-accum.k
+AntoinesNecklace_ring1.kps ../AntoinesNecklace_ring1.kps
+10c10
+< load comb |AntNeck_ring.k
+---
+> load comb \AntNeck_ring.k
+BBframe.kps ../BBframe.kps
+Backdrops.kps ../Backdrops.kps
+CAVEinit.kps ../CAVEinit.kps
+CelticGridExamples.kps ../CelticGridExamples.kps
+ChiralKnotsB.kps ../ChiralKnotsB.kps
+ChiralKnotsB_aux1.kps ../ChiralKnotsB_aux1.kps
+ChiralKnotsB_aux2.kps ../ChiralKnotsB_aux2.kps
+ChiralKnotsBc.kps ../ChiralKnotsBc.kps
+ConeyMagic.kps ../ConeyMagic.kps
+ConeyMagic2.kps ../ConeyMagic2.kps
+ConeyMagic3.kps ../ConeyMagic3.kps
+ConeyRavenna1.kps ../ConeyRavenna1.kps
+CubicSAW.kps ../CubicSAW.kps
+CubicSAW_axes.kps ../CubicSAW_axes.kps
+CubicSAW_bbox.kps ../CubicSAW_bbox.kps
+CubicSAW_cofm.kps ../CubicSAW_cofm.kps
+CubicSAW_noncent.kps ../CubicSAW_noncent.kps
+Cubic_SAW9.kps ../Cubic_SAW9.kps
+DemoA.kps ../DemoA.kps
+DemoB.kps ../DemoB.kps
+DemoC.kps ../DemoC.kps
+ExhibitSplash.kps ../ExhibitSplash.kps
+Fig8symm.kps ../Fig8symm.kps
+Fig8symm_180.kps ../Fig8symm_180.kps
+Fig8symm_90.kps ../Fig8symm_90.kps
+Fig8symm_aboutz.kps ../Fig8symm_aboutz.kps
+Fig8symm_aboutz180.kps ../Fig8symm_aboutz180.kps
+Fig8symm_aboutz90.kps ../Fig8symm_aboutz90.kps
+Fig8symm_load.kps ../Fig8symm_load.kps
+FreakyA.kps ../FreakyA.kps
+FreeDrag.kps ../FreeDrag.kps
+FreeDrag_addunk.kps ../FreeDrag_addunk.kps
+Freedman.kps ../Freedman.kps
+FreedmanMovie.kps ../FreedmanMovie.kps
+KPupgrade.kps ../KPupgrade.kps
+KnotPaint0.kps ../KnotPaint0.kps
+KnotPaint0_aux1.kps ../KnotPaint0_aux1.kps
+KnotPaint0_aux2.kps ../KnotPaint0_aux2.kps
+KnotPaint1.kps ../KnotPaint1.kps
+KnotPaint2.kps ../KnotPaint2.kps
+Lissajous.kps ../Lissajous.kps
+MH-prep.kps ../MH-prep.kps
+15c15
+< if \ppar2 == 1 then "load comb |.tmp"
+---
+> if \ppar2 == 1 then "load comb \.tmp"
+MH.kps ../MH.kps
+Mandala1.kps ../Mandala1.kps
+Mandala2.kps ../Mandala2.kps
+Mandala3.kps ../Mandala3.kps
+Mandala3a.kps ../Mandala3a.kps
+Mandala3b.kps ../Mandala3b.kps
+Mandala4.kps ../Mandala4.kps
+Mandala4b.kps ../Mandala4b.kps
+MonsterMovie.kps ../MonsterMovie.kps
+NotMonsterMovie.kps ../NotMonsterMovie.kps
+Nxing-aux.kps ../Nxing-aux.kps
+PA.kps ../PA.kps
+PTframe.kps ../PTframe.kps
+Perko.kps ../Perko.kps
+PerkoMovie.kps ../PerkoMovie.kps
+SeaSlugs.kps ../SeaSlugs.kps
+SeaThings.kps ../SeaThings.kps
+StElmo.kps ../StElmo.kps
+StElmo_aux.kps ../StElmo_aux.kps
+TangledMess.kps ../TangledMess.kps
+TopoICE-init.kps ../TopoICE-init.kps
+UnknotFlowers.kps ../UnknotFlowers.kps
+WeirdCone.kps ../WeirdCone.kps
+allow_accbuff.kps ../allow_accbuff.kps
+altdeco-moeb.kps ../altdeco-moeb.kps
+altdeco.kps ../altdeco.kps
+anagblurb.kps ../anagblurb.kps
+anaglyph.kps ../anaglyph.kps
+anaglyphB.kps ../anaglyphB.kps
+anaglyphButtons.kps ../anaglyphButtons.kps
+anaglyphC.kps ../anaglyphC.kps
+anaglyphD.kps ../anaglyphD.kps
+anaglyphE.kps ../anaglyphE.kps
+anaglyphF.kps ../anaglyphF.kps
+anaglyphG.kps ../anaglyphG.kps
+anaglyphrbA.kps ../anaglyphrbA.kps
+anaglyphrbB.kps ../anaglyphrbB.kps
+anaglyphrbC.kps ../anaglyphrbC.kps
+anaglyphrbD.kps ../anaglyphrbD.kps
+anaglyphrbE.kps ../anaglyphrbE.kps
+anaglyphrbF.kps ../anaglyphrbF.kps
+anaglyphrbG.kps ../anaglyphrbG.kps
+anaglyphrc.kps ../anaglyphrc.kps
+anaglyphrcA.kps ../anaglyphrcA.kps
+anaglyphrcB.kps ../anaglyphrcB.kps
+anaglyphrcC.kps ../anaglyphrcC.kps
+anaglyphrcD.kps ../anaglyphrcD.kps
+anaglyphrcE.kps ../anaglyphrcE.kps
+anaglyphrcF.kps ../anaglyphrcF.kps
+anaglyphrcG.kps ../anaglyphrcG.kps
+aum-fly.kps ../aum-fly.kps
+auto-terminate.kps ../auto-terminate.kps
+basic-demos.kps ../basic-demos.kps
+blank.kps ../blank.kps
+braidwarp.kps ../braidwarp.kps
+brun-relax-init.kps ../brun-relax-init.kps
+brun-relax-movie.kps ../brun-relax-movie.kps
+brun-relax-relax.kps ../brun-relax-relax.kps
+bug1.kps ../bug1.kps
+cable.kps ../cable.kps
+celtic-ball.kps ../celtic-ball.kps
+chains.kps ../chains.kps
+clip_test.kps ../clip_test.kps
+close-all-safely.kps ../close-all-safely.kps
+coDemo.kps ../coDemo.kps
+collideA.kps ../collideA.kps
+collideB.kps ../collideB.kps
+45c45
+< func c 2 "dele 1;velmag=.001;save |x;unknot 6 1.2;refl r;trans 20 20 0;about z \rr360;load comb |x;swap;velo 0 0 0;velo rad \rr[-.999/-1] comp 1;mcyl 1 .5;trans \rr+-3 \rr+-3 \rr+-3 1"
+---
+> func c 2 "dele 1;velmag=.001;save |x;unknot 6 1.2;refl r;trans 20 20 0;about z \rr360;load comb \x;swap;velo 0 0 0;velo rad \rr[-.999/-1] comp 1;mcyl 1 .5;trans \rr+-3 \rr+-3 \rr+-3 1"
+collideC.kps ../collideC.kps
+25c25
+< #3 about z 90;load comb |.tmp
+---
+> #3 about z 90;load comb \.tmp
+collideE.kps ../collideE.kps
+complete-graph.kps ../complete-graph.kps
+complete-graph5.kps ../complete-graph5.kps
+complete-graph6.kps ../complete-graph6.kps
+complete-graph7.kps ../complete-graph7.kps
+complete-graph8.kps ../complete-graph8.kps
+coney_ravenna.kps ../coney_ravenna.kps
+coney_ravenna_aux.kps ../coney_ravenna_aux.kps
+conical_helix.kps ../conical_helix.kps
+cpanel_help.kps ../cpanel_help.kps
+cpanel_in_view.kps ../cpanel_in_view.kps
+crazy-lights.kps ../crazy-lights.kps
+cube_cage.kps ../cube_cage.kps
+delay-power.kps ../delay-power.kps
+demo-relaxA.kps ../demo-relaxA.kps
+demo-relaxB.kps ../demo-relaxB.kps
+demo_panel_upgrade.kps ../demo_panel_upgrade.kps
+dna-ipar.kps ../dna-ipar.kps
+dna-spar.kps ../dna-spar.kps
+do-not-click.kps ../do-not-click.kps
+dodec_cage.kps ../dodec_cage.kps
+dowker.kps ../dowker.kps
+dowker_aux1.kps ../dowker_aux1.kps
+dup.kps ../dup.kps
+electric.kps ../electric.kps
+ent-buttons.kps ../ent-buttons.kps
+ent-cd.kps ../ent-cd.kps
+ent-randomize.kps ../ent-randomize.kps
+ent-torus.kps ../ent-torus.kps
+eofill-colour.kps ../eofill-colour.kps
+fancy-lights.kps ../fancy-lights.kps
+field_lorenz.kps ../field_lorenz.kps
+fig8-relax.kps ../fig8-relax.kps
+fig8-relaxB.kps ../fig8-relaxB.kps
+flicker_test.kps ../flicker_test.kps
+flicker_test2.kps ../flicker_test2.kps
+fly-thru-quote.kps ../fly-thru-quote.kps
+full-screen.kps ../full-screen.kps
+fun-with-accbuff.kps ../fun-with-accbuff.kps
+fwf-aux.kps ../fwf-aux.kps
+fwf-hide.kps ../fwf-hide.kps
+fwf-init.kps ../fwf-init.kps
+fwf-randomize.kps ../fwf-randomize.kps
+fwf.kps ../fwf.kps
+glo-knot.kps ../glo-knot.kps
+globeat.kps ../globeat.kps
+glueing-graphs.kps ../glueing-graphs.kps
+graphicsA.kps ../graphicsA.kps
+graphicsB.kps ../graphicsB.kps
+graphicsC.kps ../graphicsC.kps
+graphicsD.kps ../graphicsD.kps
+graphicsE.kps ../graphicsE.kps
+graphicsEa.kps ../graphicsEa.kps
+graphicsEb.kps ../graphicsEb.kps
+graphicsEc.kps ../graphicsEc.kps
+graphicsF.kps ../graphicsF.kps
+graphicsG.kps ../graphicsG.kps
+graphicsH.kps ../graphicsH.kps
+graphicsHa.kps ../graphicsHa.kps
+graphicsI.kps ../graphicsI.kps
+graphicsJ.kps ../graphicsJ.kps
+graphicsK.kps ../graphicsK.kps
+graphicsL.kps ../graphicsL.kps
+graphicsM.kps ../graphicsM.kps
+graphicsN.kps ../graphicsN.kps
+graphs.kps ../graphs.kps
+gravity.kps ../gravity.kps
+guess_knot.kps ../guess_knot.kps
+guess_knot_annote.kps ../guess_knot_annote.kps
+guess_knot_unknown1.kps ../guess_knot_unknown1.kps
+guess_knot_unknown1_relax.kps ../guess_knot_unknown1_relax.kps
+guess_knot_unknown2.kps ../guess_knot_unknown2.kps
+guess_knot_unknown2_relax.kps ../guess_knot_unknown2_relax.kps
+handcuff-graph.kps ../handcuff-graph.kps
+hedgehog-start.kps ../hedgehog-start.kps
+hedgehog-stop.kps ../hedgehog-stop.kps
+hedgehog.kps ../hedgehog.kps
+helix.kps ../helix.kps
+helix_bounce.kps ../helix_bounce.kps
+hopf.kps ../hopf.kps
+icos_cage.kps ../icos_cage.kps
+icos_subd_timout.kps ../icos_subd_timout.kps
+idle-relax-rot-z.kps ../idle-relax-rot-z.kps
+inflate-n-explode.kps ../inflate-n-explode.kps
+init-diagram-test.kps ../init-diagram-test.kps
+init-solver-panel.kps ../init-solver-panel.kps
+init-textureA.kps ../init-textureA.kps
+init-textureB.kps ../init-textureB.kps
+init-textureC.kps ../init-textureC.kps
+init-textureD.kps ../init-textureD.kps
+init-unknown.kps ../init-unknown.kps
+init_procomp.kps ../init_procomp.kps
+init_tsolver.kps ../init_tsolver.kps
+init_tsolver2.kps ../init_tsolver2.kps
+initialize-Lorenz.kps ../initialize-Lorenz.kps
+initialize-benchmarks.kps ../initialize-benchmarks.kps
+initialize-paint-panel.kps ../initialize-paint-panel.kps
+irmacs_sstereo.kps ../irmacs_sstereo.kps
+irmacs_sstereo_aux.kps ../irmacs_sstereo_aux.kps
+knot-cage.kps ../knot-cage.kps
+knottype.kps ../knottype.kps
+kpath-demo0.kps ../kpath-demo0.kps
+67c67
+< load comb |.tmp  % Combine this with the original knot
+---
+> load comb \.tmp  % Combine this with the original knot
+kpath-demo1.kps ../kpath-demo1.kps
+57c57
+< load comb |.tmp  % Combine this with the original knot
+---
+> load comb \.tmp  % Combine this with the original knot
+lights0.kps ../lights0.kps
+lights1.kps ../lights1.kps
+lights2.kps ../lights2.kps
+lights3.kps ../lights3.kps
+lights4.kps ../lights4.kps
+lights5.kps ../lights5.kps
+lights6.kps ../lights6.kps
+linkRings.kps ../linkRings.kps
+lissa_simp.kps ../lissa_simp.kps
+logo2.kps ../logo2.kps
+lorenz-idle.kps ../lorenz-idle.kps
+lorenz-idle2.kps ../lorenz-idle2.kps
+lorenz-reset.kps ../lorenz-reset.kps
+lorenz.kps ../lorenz.kps
+lsystems.kps ../lsystems.kps
+magnetic1-aux1.kps ../magnetic1-aux1.kps
+magnetic1-aux2.kps ../magnetic1-aux2.kps
+magnetic1-aux3.kps ../magnetic1-aux3.kps
+magnetic1-aux4.kps ../magnetic1-aux4.kps
+10c10
+< load comb |line
+---
+> load comb \line
+magnetic1-aux5.kps ../magnetic1-aux5.kps
+magnetic1-init.kps ../magnetic1-init.kps
+magnetic1.kps ../magnetic1.kps
+make-and-cur.kps ../make-and-cur.kps
+make-sunny.kps ../make-sunny.kps
+make-van-zee.kps ../make-van-zee.kps
+mangle-demo.kps ../mangle-demo.kps
+marcus.kps ../marcus.kps
+marcus1.kps ../marcus1.kps
+mix-up.kps ../mix-up.kps
+moebius-inversion.kps ../moebius-inversion.kps
+more-demos.kps ../more-demos.kps
+more-sea-things.kps ../more-sea-things.kps
+negcylspace.kps ../negcylspace.kps
+new.kps ../new.kps
+new_twist.kps ../new_twist.kps
+octa_cage.kps ../octa_cage.kps
+open-end-aux.kps ../open-end-aux.kps
+open-end-aux2.kps ../open-end-aux2.kps
+open-end-aux3.kps ../open-end-aux3.kps
+open-end-if.kps ../open-end-if.kps
+open-end.kps ../open-end.kps
+orbit.kps ../orbit.kps
+oscilpaint.kps ../oscilpaint.kps
+oscilpaint_aux.kps ../oscilpaint_aux.kps
+paint1.kps ../paint1.kps
+paint2.kps ../paint2.kps
+paint3.kps ../paint3.kps
+panes.kps ../panes.kps
+pe.kps ../pe.kps
+peterson_graph.kps ../peterson_graph.kps
+plaits.kps ../plaits.kps
+plaits_aux1.kps ../plaits_aux1.kps
+plaits_aux2.kps ../plaits_aux2.kps
+plaits_aux3.kps ../plaits_aux3.kps
+plaits_aux4.kps ../plaits_aux4.kps
+procomp_DemoA.kps ../procomp_DemoA.kps
+procomp_DemoB.kps ../procomp_DemoB.kps
+procomp_DemoB_aux.kps ../procomp_DemoB_aux.kps
+proj-plane.kps ../proj-plane.kps
+proximity_map_demo.kps ../proximity_map_demo.kps
+pse-header.kps ../pse-header.kps
+randBeStCol.kps ../randBeStCol.kps
+randBeStCol_aux.kps ../randBeStCol_aux.kps
+rand_anchors.kps ../rand_anchors.kps
+rand_anchors_step.kps ../rand_anchors_step.kps
+randbraid.kps ../randbraid.kps
+randbraid2.kps ../randbraid2.kps
+randbraid2_aux1.kps ../randbraid2_aux1.kps
+randbraid2_aux2.kps ../randbraid2_aux2.kps
+randbraid2_thick.kps ../randbraid2_thick.kps
+randbraid2_thin.kps ../randbraid2_thin.kps
+random-chain.kps ../random-chain.kps
+random-graphs1.kps ../random-graphs1.kps
+random-lights.kps ../random-lights.kps
+randorient.kps ../randorient.kps
+randorient2.kps ../randorient2.kps
+rat_tangle.kps ../rat_tangle.kps
+37c37
+< load comb |x
+---
+> load comb \x
+rat_tangle_old.kps ../rat_tangle_old.kps
+31c31
+< load comb |x
+---
+> load comb \x
+rat_tangle_old2.kps ../rat_tangle_old2.kps
+37c37
+< load comb |x
+---
+> load comb \x
+red1.kps ../red1.kps
+red2.kps ../red2.kps
+red3.kps ../red3.kps
+redm_moves.kps ../redm_moves.kps
+relax1-extra.kps ../relax1-extra.kps
+relax2.kps ../relax2.kps
+relaxA-bm.kps ../relaxA-bm.kps
+relaxA.kps ../relaxA.kps
+relaxA1.kps ../relaxA1.kps
+relaxA2.kps ../relaxA2.kps
+relaxB.kps ../relaxB.kps
+ring-pack-init.kps ../ring-pack-init.kps
+ring-pack-start.kps ../ring-pack-start.kps
+ring-pack-steps.kps ../ring-pack-steps.kps
+ring-pack-stop.kps ../ring-pack-stop.kps
+ring-pack.kps ../ring-pack.kps
+ringToss.kps ../ringToss.kps
+rotate-stick-things.kps ../rotate-stick-things.kps
+rotate_comp.kps ../rotate_comp.kps
+rotate_comp_y.kps ../rotate_comp_y.kps
+scenery-demo-coney.kps ../scenery-demo-coney.kps
+scenery-demo1.kps ../scenery-demo1.kps
+scenery-demo2.kps ../scenery-demo2.kps
+sea-things.kps ../sea-things.kps
+shadows.kps ../shadows.kps
+simple-relax.kps ../simple-relax.kps
+skelions.kps ../skelions.kps
+13c13
+< if \rr22 < 1 then "knot cd \ri[3/7] c;save |skl;refl x;load comb |skl"
+---
+> if \rr22 < 1 then "knot cd \ri[3/7] c;save |skl;refl x;load comb \skl"
+slide-knot-aux.kps ../slide-knot-aux.kps
+slide-knot.kps ../slide-knot.kps
+specommalignaxes.kps ../specommalignaxes.kps
+sphere-test.kps ../sphere-test.kps
+splaits.kps ../splaits.kps
+splaits_1comp.kps ../splaits_1comp.kps
+splaits_2comp.kps ../splaits_2comp.kps
+splaits_3comp.kps ../splaits_3comp.kps
+splaits_rotate.kps ../splaits_rotate.kps
+split-delete-aux.kps ../split-delete-aux.kps
+split-delete-aux2.kps ../split-delete-aux2.kps
+split-delete-hint.kps ../split-delete-hint.kps
+split-delete.kps ../split-delete.kps
+sstereo_winfo.kps ../sstereo_winfo.kps
+starbox.kps ../starbox.kps
+start-Lorenz.kps ../start-Lorenz.kps
+startup_upgrade.kps ../startup_upgrade.kps
+stereo-Hopf-sea-thing.kps ../stereo-Hopf-sea-thing.kps
+stereo-brun-relax-init.kps ../stereo-brun-relax-init.kps
+stereo-brun-relax-movie.kps ../stereo-brun-relax-movie.kps
+stereo-monster-init.kps ../stereo-monster-init.kps
+stereo-monster-movie.kps ../stereo-monster-movie.kps
+stick-knots-aux.kps ../stick-knots-aux.kps
+stick-knots.kps ../stick-knots.kps
+stick-things.kps ../stick-things.kps
+swLupin.kps ../swLupin.kps
+swirlA.kps ../swirlA.kps
+tangle_holder_demo.kps ../tangle_holder_demo.kps
+test-sum-3comp.kps ../test-sum-3comp.kps
+50c50
+< load comb |b
+---
+> load comb \b
+127c127
+< frame comm "load comb |%d"
+---
+> frame comm "load comb \%d"
+135c135
+< load comb |ab
+---
+> load comb \ab
+test.kps ../test.kps
+testm.kps ../testm.kps
+tetra_cage.kps ../tetra_cage.kps
+textureA.kps ../textureA.kps
+textureABC.kps ../textureABC.kps
+textureB.kps ../textureB.kps
+textureC.kps ../textureC.kps
+textureD.kps ../textureD.kps
+textureDL.kps ../textureDL.kps
+textureDb.kps ../textureDb.kps
+texturePaint1.kps ../texturePaint1.kps
+thetacurves.kps ../thetacurves.kps
+thingtoss.kps ../thingtoss.kps
+thingtoss_butt1.kps ../thingtoss_butt1.kps
+thold.kps ../thold.kps
+thold_10ssst.kps ../thold_10ssst.kps
+thold_10sst.kps ../thold_10sst.kps
+thold_10st.kps ../thold_10st.kps
+thold_10stvar.kps ../thold_10stvar.kps
+thold_11st.kps ../thold_11st.kps
+thold_1st.kps ../thold_1st.kps
+thold_3st.kps ../thold_3st.kps
+thold_6sst.kps ../thold_6sst.kps
+thold_6st.kps ../thold_6st.kps
+thold_8st.kps ../thold_8st.kps
+thold_8stvar.kps ../thold_8stvar.kps
+thold_9st.kps ../thold_9st.kps
+thold_a.kps ../thold_a.kps
+thold_b.kps ../thold_b.kps
+thold_c.kps ../thold_c.kps
+thold_cube.kps ../thold_cube.kps
+thold_denom.kps ../thold_denom.kps
+thold_f.kps ../thold_f.kps
+thold_g.kps ../thold_g.kps
+thold_go.kps ../thold_go.kps
+thold_h.kps ../thold_h.kps
+thold_if.kps ../thold_if.kps
+thold_nm.kps ../thold_nm.kps
+thold_numer.kps ../thold_numer.kps
+thold_random.kps ../thold_random.kps
+thold_random1.kps ../thold_random1.kps
+thold_relax.kps ../thold_relax.kps
+thold_tog.kps ../thold_tog.kps
+tmess-aux.kps ../tmess-aux.kps
+topoice_examples.kps ../topoice_examples.kps
+torus-benchmark.kps ../torus-benchmark.kps
+torus-show.kps ../torus-show.kps
+tref-relax.kps ../tref-relax.kps
+tref-relaxB.kps ../tref-relaxB.kps
+trefpaint0.kps ../trefpaint0.kps
+tsinit.kps ../tsinit.kps
+tsinit2.kps ../tsinit2.kps
+tsinit4.kps ../tsinit4.kps
+tsinit_blurb.kps ../tsinit_blurb.kps
+ttest.kps ../ttest.kps
+turkshead2.kps ../turkshead2.kps
+twist-fig8.kps ../twist-fig8.kps
+twist-n-writhe.kps ../twist-n-writhe.kps
+twist.kps ../twist.kps
+twist2.kps ../twist2.kps
+txt_colours.kps ../txt_colours.kps
+txt_demo.kps ../txt_demo.kps
+ufos.kps ../ufos.kps
+ufos_aux.kps ../ufos_aux.kps
+unkflo-aux.kps ../unkflo-aux.kps
+vhappy-aux0.kps ../vhappy-aux0.kps
+vhappy-aux1.kps ../vhappy-aux1.kps
+violently-happy.kps ../violently-happy.kps
+wand_demo1.kps ../wand_demo1.kps
+wand_demo2.kps ../wand_demo2.kps
+wand_demo3.kps ../wand_demo3.kps
+wand_demo4.kps ../wand_demo4.kps
+13c13
+< load comb |x
+---
+> load comb \x
+wand_demo5.kps ../wand_demo5.kps
+wand_demo6.kps ../wand_demo6.kps
+wand_panel_objects.kps ../wand_panel_objects.kps
+warn_KPbuild.kps ../warn_KPbuild.kps
+warpbraid.kps ../warpbraid.kps
+warpbraid2.kps ../warpbraid2.kps
+wave_demo1.kps ../wave_demo1.kps
+wave_demo2.kps ../wave_demo2.kps
+wave_demo3.kps ../wave_demo3.kps
+wave_demo4.kps ../wave_demo4.kps
+wave_demo5.kps ../wave_demo5.kps
+wave_demo6.kps ../wave_demo6.kps
+wave_demo6_aux.kps ../wave_demo6_aux.kps
+wave_demo_aux.kps ../wave_demo_aux.kps
+wave_demo_farout.kps ../wave_demo_farout.kps
+wave_demos.kps ../wave_demos.kps
+weaveA.kps ../weaveA.kps
+weaveA_fix.kps ../weaveA_fix.kps
+weaveA_join.kps ../weaveA_join.kps
+weaveA_new.kps ../weaveA_new.kps
+weaveB.kps ../weaveB.kps
+web-upgrade.kps ../web-upgrade.kps
+whitehead-anim.kps ../whitehead-anim.kps
+wings.kps ../wings.kps
+wings_aux1.kps ../wings_aux1.kps

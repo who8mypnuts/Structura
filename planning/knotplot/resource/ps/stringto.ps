@@ -1,0 +1,63 @@
+%% File: KNOTPLOT_HOME/resource/ps/stringto.ps
+
+%%%%%%%%%%%%% stringto definitions
+
+/thickC {1 setgray } def   % Provided here for default; may get overwritten below.
+/thinC  {0 setgray } def   % Provided here for default; may get overwritten below.
+
+/dupTop8 { 
+  	dup
+  	9 1 roll
+  	8 1 roll
+  	dup
+  	10 1 roll
+  	8 1 roll
+  	dup
+  	11 1 roll
+  	8 1 roll
+  	dup
+  	12 1 roll
+  	8 1 roll
+  	dup
+  	13 1 roll
+  	8 1 roll
+  	dup
+  	14 1 roll
+  	8 1 roll
+  	dup
+  	15 1 roll
+  	8 1 roll
+  	dup
+  	16 1 roll
+  	8 1 roll
+  	} def
+  /stringto {
+  	dupTop8
+	thickC
+  	thick setlinewidth
+  	8 -2 roll
+  	moveto
+  	curveto
+        0 setlinecap 
+  	stroke
+	thinC
+  	thin setlinewidth
+  	8 -2 roll
+  	moveto
+  	curveto 
+        1 setlinecap  % rounded endcap (needed for some printers and for Ghostview)
+  	stroke } def
+  
+
+% To change the string widths, try altering the values of /thin and /thick
+% in the definitions below.  Note that /thick is normally defined to be 
+% some multiple of /thin.
+
+% To get different effects for colours, try editing the definitions of
+% /thinC0, /thinC1, /thinC2, ...  and /thickC below.  
+
+% The /thinC definitions specify the colours of the filled centres of 
+% each component, and the /thickC is the colour of the border outline.
+
+%% End of file: KNOTPLOT_HOME/resource/ps/stringto.ps
+

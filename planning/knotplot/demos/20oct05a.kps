@@ -1,0 +1,63 @@
+% replaced by snakes1.lua, 25 september 2023
+
+if par1 != 395015120 then "reset all;scale=.2"
+
+silent=t
+func init
+func silent
+func 1 <20oct05a.kps
+func 2 "par0=\rr+-1;echo;echo Changes swirling rate"
+func 3 "translate \rr+-10 0 0;echo;echo Translates snakes"
+func 4 "jitter 99999:fitto .01;echo;echo Smushes everything together"
+func 5 dup
+
+func 11 accbuff clear
+func 12 full
+
+if \rr2 < 1 then "hstart=\rr360"
+
+tfunc reset
+vcn = 1
+vcphi = 3.14159
+vcA = 1.000000
+
+cyl-rad = \rr[.2/.4]
+
+tg1off = 2
+back=0
+par1 = 395015120
+
+frame comm "tangle +,"
+
+tangle 1,
+frame 1 numb \ri[3/10]
+tangle !,
+if \rr1 < 8 then "tangle x,"
+tangle y&,
+
+%if \rr2 < 1 then "tangle ." else "tangle N"
+tangle .
+
+dbmin=5
+coll a
+force 1
+velf=t
+func exec 2
+
+idle "ago 1;swirl \ppar0"
+
+if \rr2 < 1 then <fun-with-accbuff.kps
+
+silent=f
+
+echo 
+echo
+echo " *** Press F1 to rerun demo."
+%echo "     Press F2 to change dynamical behaviour."
+echo "     Press F2, F3, F4 to change dynamical behaviour, F5 to add a snake."
+
+
+tfunc 6 "echo Note: strings are allowed to pass thru each other in this demo."
+
+
+

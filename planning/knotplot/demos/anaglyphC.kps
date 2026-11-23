@@ -1,0 +1,23 @@
+
+silent=t
+if \rr1 < .1 then "torus" else "chain \ri[11/33]"
+
+cyl=.2
+mode cb
+mode s
+
+frame reset
+stu=1
+%fixcofm=t
+Draw=t
+%frame comm "knot num \ri[2/384] ms;fitto 9;disp t;ago 166"
+ncur=6
+
+% fix this so it can be in mode cb and still have sat=.5
+
+%if \rr1 < .3 then "sat=.5"
+
+idle "silent=t;knot num \ri[2/384] ms;fitto 9;disp t;if \rr1 < .33 then sat=.5 else sat=0;ago 166;silent=f"
+
+silent=f
+echo "     Note: Most of the demos on the `DemoA' and `DemoB' panels will work in anaglyph mode."

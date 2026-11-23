@@ -1,0 +1,45 @@
+%reset all
+if par9 != 8263493 then "reset all;back=#000" else <wave-init.kps
+
+silent=t
+scale=\rr[.23/.45]
+%mode wbc
+%mode cb
+cyl=.06
+N-torus = \ri[10/20] 
+line num \pN-torus
+line
+jit 9999
+fitto 5
+tran to 0 0 0
+coll a
+force 1
+revbeads
+mass open
+mass 0 1
+
+%go 999999999 limit 30
+%silent=f
+%exit
+
+wavefront skip \pN-torus
+wavefront nwaves 222
+wavefront c \rr[2/7]
+wavefront init
+
+verbose = f
+
+%tfunc 2 "coll a;force 1"
+coll a
+force 1
+
+go inf limit 30
+
+func init
+func silent
+
+alias ~sel4 "txt set selected"
+<wave_demo_aux.kps
+alias ~sel4 nop
+txt exec wbc 109
+silent=f

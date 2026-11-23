@@ -1,0 +1,29 @@
+reset all
+silent=t
+if KPbuild < 2753 then "ortho 4 4 44" else ortho
+hstar=\rr360
+knot 1
+fitto 10
+cyl=.01
+double
+refine 3
+warp install
+delete all
+cyl=.1
+new=f
+Draw=f
+unknot 111 111
+unknot 111 115
+warp bbconf 
+warp along
+silent=f
+Draw=t
+
+echo " "
+echo " "
+echo " *** May not be a proper blackboard framing (see manual)."
+echo " "
+
+
+
+

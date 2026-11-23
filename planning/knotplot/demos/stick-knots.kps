@@ -1,0 +1,2 @@
+if KPbuild < 2923 then "echo You need a newer KnotPlot to run this demo (build 2923)." else <stick-knots-aux.kps
+

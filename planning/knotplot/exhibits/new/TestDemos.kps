@@ -1,0 +1,16 @@
+
+button Nbuttons 3
+button pos 1
+button DemoA painting <painting.kps -2 -1 0 10 0 10
+button DemoA painting <painting.kps -1 -1 0 10 0 10
+button DemoA StElmo <StElmo.kps -1 -1 0 10 0 10
+button DemoA StElmo <StElmo.kps -1 -1 0 10 0 10
+button DemoA graphicsH <graphicsH.kps -1 -1 0 10 0 10
+button DemoA graphicsHa <graphicsHa.kps -1 -1 0 10 0 10
+button DemoA graphicsEa <graphicsEa.kps -1 -1 0 10 0 10
+button DemoA graphicsEb <graphicsEb.kps -1 -1 0 10 0 10
+button DemoA graphicsEc <graphicsEc.kps -1 -1 0 10 0 10
+button DemoA graphicsI <graphicsI.kps -1 -1 0 10 0 10
+button DemoA graphicsJ <graphicsJ.kps -1 -1 0 10 0 10
+button DemoA BjorkA <BjorkA.kps -1 -1 0 10 0 10
+button DemoA violently-happy <violently-happy.kps -1 -1 0 10 0 10

@@ -1,0 +1,23 @@
+% creates a new weaver
+
+Draw=f
+echo
+echo
+echo
+echo "  *** Changing orientation, size, and speed of weaver..."
+echo
+silent=t
+save |.tmp    % save whatever we were weaving
+torus 3 2
+%delete all
+%until Ncomp 1 "torus"
+refl r
+if \rr2 < 1 then "refl r"
+if \rr2 < 1 then "revb"
+fitto \rr[4/8]
+rotor init
+rotor phase \rr1 period \rr[999/1999] add gumby
+rotor let gumby pull bead 0
+load |.tmp
+silent=f
+Draw=t

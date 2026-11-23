@@ -1,0 +1,26 @@
+~sinit
+~bload
+
+#10 echo
+
+verbose = f
+scenery on
+scenery dscale 2.5
+
+~delspb
+
+% note, the following line will set the idle function while the previous is being executed, this is bad
+%bfacf tclasp whenfound "idle;scen dscale .4;~but"
+% so do it like this instead:
+bfacf tclasp whenfound "tfunc .1 idle;scen dscale .4;scen on;~but;~stpbut"
+
+idle "bfacf step 0;bfacf tclasp mark \ppar0;cent;bfacf nap now"   % use this one to stop after a tight clasp is found
+
+txt push
+txt centre
+txt font 3
+txt fill on
+txt group 108
+txt c 20 "stop searching" "idle;scen dscale .4;verbose=t;~but"
+txt pop
+

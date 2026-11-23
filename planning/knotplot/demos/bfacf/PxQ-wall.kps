@@ -1,0 +1,42 @@
+require KPbuild 4990
+
+require KPbuild 4691
+alias ~mw "bfacf wall 1"
+tfunc 1 ~mw 0 rep .2 1
+%tfunc 1 ~mw 0 rep .2 1
+
+alias ~startWall  nop
+alias ~moveWallAnnounce "echo moved wall to x = $0"
+
+timer start
+
+txt cent
+txt font 3
+
+txt hide 10000
+alias ~thetime "txt fill off;txt cent;txt font 3;txt c -40 {for $0}"
+
+
+tfunc 1 "~thetime \E" 0 rep 5 10
+
+%txt hide \rr[8/9]
+txt fill on
+txt c 20 "move wall" ~mw
+
+txt push
+%txt hide \rr[8/9]
+txt left
+txt group 2784628
+txt lineskip -25
+
+txt 15 15 "method 1" ~method1
+alias ~method1 <bfacf/PxQ-method1.kps
+
+txt fill off
+txt 10 a encouragement:
+txt pop
+
+%txt autohide on 
+notify state MovingWall
+
+

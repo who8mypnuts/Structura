@@ -1,0 +1,3 @@
+echo " *** Augmenting with secondary breaklines."
+celtic random secondary \rr[.05/.3]
+<plaits_aux4.kps

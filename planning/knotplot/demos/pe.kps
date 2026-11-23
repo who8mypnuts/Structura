@@ -1,0 +1,19 @@
+
+txt delete group 270112097
+
+txt push
+txt group 270112097
+txt centre
+txt fill on
+txt fcolour hsv:0/0/1
+txt colour rgbi:0/0/0
+txt font 2
+txt c k "upgrade now!" <web-upgrade.kps
+txt colour auto
+txt font 4
+txt fill off
+txt c k "Evaluation Version"
+txt on
+txt pop
+
+

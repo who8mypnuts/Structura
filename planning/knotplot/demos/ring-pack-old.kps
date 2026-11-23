@@ -1,0 +1,33 @@
+reset all
+
+if \rr1 < .3 then "back=0"
+if \rr1 < .3 then "spe back"
+
+if \rr1 < .333 then "read fancy-lights.kps;back=0"
+scale=.11
+cyl=.9
+new=f
+func 12 idle
+stu=11
+
+echo " " 
+echo " " 
+echo "    **** Press F12 key to stop" 
+echo "         (KnotPlot may take up to 30 seconds to stop)
+echo " " 
+
+auto=f
+hstart=\rr360
+hincr=\rr+-30
+%sat=\rr[.6/1]
+
+par0=\rr1
+if par0 < .8 then "nop" else "echo Using trefoils instead of rings."
+
+if KPbuild > 2998 then "idle <ring-pack-aux-old.kps" 
+
+if KPbuild < 2999 then "echo  "
+if KPbuild < 2999 then "echo  "
+if KPbuild < 2999 then "echo  **** To run this demo, obtain a more recent version of KnotPlot."
+if KPbuild < 2999 then "echo  "
+

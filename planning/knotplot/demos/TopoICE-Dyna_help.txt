@@ -1,0 +1,6 @@
+No specific help information is availabe for this control panel at current time.
+
+Some explanation is contained in the TopoICE manuals and example files (click
+on the `help' button on the TopoICE-X and TopoICE-R panels).
+
+

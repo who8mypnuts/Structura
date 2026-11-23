@@ -1,0 +1,25 @@
+animal=f
+dstep = 44
+dbfail=102
+
+sform = 1
+
+savlow=6      
+savhigh=1022
+savimp = 1
+
+mode cb
+cyl=.1
+
+thermal=t
+
+load dum
+max = .05
+close = .07
+
+del down 0
+scale=.7
+verb=1
+
+#10000 go 200;split max 5;go 200;del down 6;cent;len;save \#st;nap .5;thfs=\rr1;reset sliders
+

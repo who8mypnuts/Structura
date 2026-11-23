@@ -1,0 +1,17 @@
+% 4jun96b
+% creating a tangled mess
+
+% par0 stuff added 28 mar 2002
+
+if par0 == 386517 then nop else "reset all"
+scale = 1
+
+sbuff
+disp t
+clrf n
+
+#20 cyl=\rr[.01/.1]; hsta=\rr360; knot; disp
+
+par0 = 386517
+
+

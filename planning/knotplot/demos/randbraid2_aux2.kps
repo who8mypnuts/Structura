@@ -1,0 +1,4 @@
+txt -15 -240 "start relaxing" <randbraid2_aux1.kps
+%txt delete simplify
+txt -15 -280 "reload closed braid" "load |.closed"
+go 0

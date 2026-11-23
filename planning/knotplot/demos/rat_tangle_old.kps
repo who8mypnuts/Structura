@@ -1,0 +1,110 @@
+reset all
+
+par0=14
+delete all
+ortho
+func init
+func silent
+
+func 1 <rat_tangle.kps
+
+%verbose=f
+%silent=t
+
+unknot 108 8
+about z 90
+about y 90
+dupl
+trans -16 0 0 0
+centre
+fitto rad \ppar0
+Draw=f
+cyl-rad=.4
+glop back f
+
+sphere on
+sphere icos 2
+sphere \ppar0
+
+save |x
+about z 90
+load comb |x
+hincr=90
+save |x
+% component 0 is -y, 1 is +y, 2 is -x, 3 is +x
+keep 3
+%open all
+%draw spec
+%spec +grid
+%exit
+rotor period 1000
+rotor add gumby phase 0 colour green
+rotor add pokey phase .5 colour orange
+rotor let gumby move lbead 1
+rotor let pokey move lbead 0
+revb
+rotor add INVgumby phase 0 colour green
+rotor add INVpokey phase .5 colour orange
+rotor let INVgumby move lbead 1
+rotor let INVpokey move lbead 0
+rotor disable INVgumby
+rotor disable INVpokey
+load |x
+keep 2
+rotor add gumby2 phase 0 colour green
+rotor add pokey2 phase .5 colour orange
+rotor let gumby2 move fbead 1
+rotor let pokey2 move fbead 0
+
+rotor off all
+rotor list
+
+delete all
+line numb 22
+line dir 1 0 0
+new=f
+line 0 0 0
+line 0 5 0
+centre
+fitto rad \ppar0
+scale=.2
+stus=11
+mass open
+
+dstep=4
+ago 200
+spec 
+Draw=t
+
+%spec +rotor
+
+func s 1 "rotor on gumby;rotor on pokey;rotor enable gumby;rotor enable pokey;rotor disable INVgumby;rotor disable INVpokey"
+func s 2 "rotor on INVgumby;rotor on INVpokey;rotor enable INVgumby;rotor enable INVpokey;rotor disable gumby;rotor disable pokey"
+
+func 2 "func exec s 1;ago 500;rotor off all;go"
+func 3 "func exec s 2;ago 500;rotor off all;go"
+
+
+%spec +fra
+
+txt init
+txt font 2
+txt fcolour hsv:102.2/.4/.4 .6
+txt fill on
+txt right
+txt lineskip -24
+txt -20 20 "rerun demo" "<rat_tangle.kps"
+txt -20 a "toggle sphere" "spec ~sphere"
+
+txt font 4
+txt -90 c "+" "func exec 2"
+txt -50 c "-" "func exec 3"
+txt on
+
+silent=f
+
+echo
+echo
+echo
+echo
+go

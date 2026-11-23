@@ -1,0 +1,101 @@
+reset all
+require accbuff
+txt subwindows off
+
+light model onesided
+silent = t
+verbose=f
+tgvas = 6.000000
+tgas = true
+tgspace = 0.600000
+tgfuzz = -0.001000
+tg1offset = 0.000000
+tgzlow = -0.600000
+tgzhigh = 0.600000
+blend one one
+back = black
+cradius = .01
+sradius = .01
+bradius = .01
+
+coll a
+force 1
+display true
+
+par0=\rr10
+
+if par0 < 7 then "mode cb" else "mode b"
+
+
+hooke=30
+mathsv k 22 .96 0 s
+mathsv k  0 0 0 a
+mathsv k 222 .9 .1 d
+
+mathsv b 0 0 0 e
+mathsv b 0 0 0 s
+mathsv b 22 .94 .9 d
+mathsv b 0 0 0 a
+
+if \rr9 < 3 then "mathsv k 22 .9 .1 d;mathsv b 222 .94 .9 d;bead=\rr[.01/.02]"
+
+if \rr1022 < 1 then "mathsv k \rr360 .9 .1 d"
+
+tinc=.13
+
+func init
+func silent
+
+func 1 <KnotPaint2.kps
+
+
+if \rr6 < 1 then "ccmode = 2;value = .1;mode +c"
+
+scale = 0.783388
+
+accbuff on
+accbuff decay .99
+
+par1 = 2
+func s 1 "go 9999999 limit 102;echo;echo;echo Press F2 again to stop painting, F3 to clear;echo;par1=2"
+func s 2 "go 0;echo;echo;echo Press F2 again to start painting, F3 to clear.;echo;par1=1"
+func 2 "func exec s \ppar1"
+
+func 3 "accbuff clear"
+
+func 4 "hstar=\rr360;torus \ri99 \ri99 \ri99 \rr+-10 \rr+-7;about z 90;untran;oal random"
+func 5 "fullscreen toggle;tfunc .4 {func exec 3}"
+
+
+Draw=f
+%until Ncomp 1 "func exec 4"
+func exec 4
+Draw=t
+
+tfunc 5 "func exec 4" 0 rep 4 10
+
+
+txt font 4
+txt centre
+txt c 80 "Press F1 to rerun"
+txt c 50 "Press F3 to clear screen"
+txt c 20 "Press F5 to toggle fullscreen"
+txt on
+disp t
+txt off
+
+%func exec 3
+
+go 999999999 limit 102
+
+func 11 "3dop bgimage lupin;spec +bgimage"
+
+silent = f
+
+echo " "
+echo " "
+echo " *** Press F1 to rerun, F2 to stop painting."
+echo "     Press F3 to clear."
+echo "     Also, try rotating, scaling, or translating the knot with the mouse."
+
+

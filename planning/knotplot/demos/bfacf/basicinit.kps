@@ -1,0 +1,11 @@
+txt init
+scenery init
+go 0
+spec -bfacf
+bfacf init
+bfacf init knotmode
+bfacf centre on
+energy model nbead
+energy format "Nedges = %.0f"
+
+tfunc reset

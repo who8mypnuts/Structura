@@ -1,0 +1,15 @@
+par0 = 3573777
+par1 = 0
+
+scale = 0.155987
+ccmode = 2
+cyl-rad = 0.100000
+bead-radius = 0.180000
+mode cB
+untran
+viewmatrix 1.000000 0.000000 0.000000 0.000000 0.216440 0.976296
+
+spec -bfacf
+echo
+echo
+

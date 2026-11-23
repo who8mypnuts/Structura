@@ -1,0 +1,84 @@
+require KPbuild 4158
+
+reset all
+scale=.26
+rotate x -90
+rotate z 180
+rotate x -20
+rotate z 45
+show axes 
+
+func init
+func silent
+silent=t
+
+func 1 <tut/scenery-demo2.kps
+
+txt on
+txt font 4
+txt lineskip 22
+
+txt fcolour royalblue .5
+txt scolour #000
+txt sfcolour orange .9
+
+
+txt 10 -20 file doc/scenery-demo2.txt
+
+
+txt clobber on
+txt space @
+
+txt 10 a.8 "load:"
+txt fill on
+
+txt clobber on
+
+txt 70 a0 cube "~load eobj/cube \ri+-11 \ri+-11 \ri+-11"
+txt r a0 octahedron "~load eobj/octahedron \ri+-11 \ri+-11 \ri+-11"
+txt r a0 dodecahedron "~load eobj/dodecahedron \ri+-11 \ri+-11 \ri+-11"
+txt r a0 icosahedron "~load eobj/icosahedron \ri+-11 \ri+-11 \ri+-11"
+txt lineskip 40
+txt 70 a tetrahedron "~load eobj/tetrahedron \ri+-11 \ri+-11 \ri+-11"
+txt r a0 "blue cube" "~load eobj/bluecube \ri+-11 \ri+-11 \ri+-11"
+txt r a0 aaaaH "~load eobj/aaaaH \ri+-11 \ri+-11 \ri+-11"
+txt r a0 Coney "~load coney \ri+-11 \ri+-11 \ri+-11"
+txt r a0 "snub d.p.d." "~load snub_disicosidodecahedron_plus_dual \ri+-11 \ri+-11 \ri+-11"
+txt r a0 "oct in dod" "~load oct-in-dod \ri+-11 \ri+-11 \ri+-11"
+txt R a0 cuboctahedron "~load eobj/cuboctahedron  \ri+-11 \ri+-11 \ri+-11"
+
+
+scenery on
+
+alias ~del "txt font 4;txt fill on;txt right;txt -20 c clear {scenery delete;txt delete clear}"
+alias qfix
+alias ~load "~del;scenery obj $0 $1 $2 $3;~comm $0 $1 $2 $3"
+alias ~comm "txt fill off;txt left;txt font 4;txt 10 10 {scenery obj $0 $1 $2 $3}"
+alias qfix
+
+
+txt push
+txt lineskip 24
+txt right
+txt fill off
+txt -10 -20 "scenery demos:"
+txt fill on
+txt font 3
+
+txt select on
+
+txt -10 a "part 4" <tut/scenery-demo4.kps
+txt L a0 "part 3" <tut/scenery-demo3.kps
+txt L a0 "part 2" <tut/scenery-demo2.kps
+txt set selected
+txt L a0 "part 1" <tut/scenery-demo1.kps
+txt -10 a "part 8" <tut/scenery-demo8.kps
+txt L a0 "part 7" <tut/scenery-demo7.kps
+txt L a0 "part 6" <tut/scenery-demo6.kps
+txt L a0 "part 5" <tut/scenery-demo5.kps
+
+txt select off
+
+txt pop
+
+silent=f

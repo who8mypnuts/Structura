@@ -1,0 +1,13 @@
+
+4dop disp +p 1
+4deye=5
+txt exec persp 7755
+
+spin 0 0 0
+echo
+echo
+~label "Hypercube (8-cell, Tesseract)"
+echo
+
+
+

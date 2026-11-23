@@ -1,0 +1,46 @@
+%`-
+
+txt group 108 on
+par4=1
+
+func 3 "www www.math.utk.edu/~morwen/knotscape.html"
+exit
+
+%`+
+
+The KnotPlot `diagram' command uses an auxilary program written by
+Morwen Thistlethwaite and Kenneth Stephenson and part of the Knotscape
+software package. KnotPlot's author would like to thank Morwen and Ken
+for their kind permission to use their software within KnotPlot.
+
+Clicking on the `diagram' button is equivalent to the KnotPlot command
+
+diagram .
+
+What this does is to compute the DT code and then send off this code to the
+diagram engine for a new embedding.  If things work properly the new 
+embedding should have the same DT code as the knot you started with (but 
+see the note below).
+
+A few things to note:
+
+  --- the diagram engine works only for prime proper (one string) knots
+      without any nugatory crossings (click on the ZWT button to see a
+      knot with three nugatory crossings)
+
+  --- in this demo, the DT codes are computed according to the current view
+      projection.  this is usually a perspective projection and is different
+      than the orthographic projection to the xy-plane.  however, the diagram
+      is generated in such a way that the new embedding has the requested DT
+      with respect to the orthographic projection.  since the displayed DT 
+      code of the new embedding is still based on the perspective projection,
+      the code may appear to change.  since the new embeddings are rather 
+      flat, this generally doesn't happen. 
+
+
+References:
+
+Knotscape - http://www.math.utk.edu/~morwen/knotscape.html
+            Morwen Thistlethwaite's Knotscape page, press F3 now to go there
+
+NOTE: Close this window using the button below!  

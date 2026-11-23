@@ -1,0 +1,11 @@
+par2 = \rr100
+
+if par2 < 25 then "drop ca xaa0000;drop cb xaa0000;drop cc 0;drop cd 0;par2=102"
+if par2 < 50 then "drop cc xaa0000;drop cd xaa0000;drop ca 0;drop cb 0;par2=102"
+if par2 < 75 then "drop cc xaa0000;drop cd xaa0000;drop ca x66ff;drop cb x66ff;par2=102"
+if par2 < 100 then "drop ca xaa0000;drop cb xaa0000;drop cc x66ff;drop cd x66ff;par2=102"
+
+if \rr102 < 1 then "drop ca \ri16777215;drop cb \ri16777215;drop cc \ri16777215;drop cd \ri16777215"
+
+show back
+

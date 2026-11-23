@@ -1,0 +1,22 @@
+reset all
+silent=t
+back=x990000
+
+load d5/19.k
+vcn=5
+vcphi=5.498000
+vcA=0.964000
+ncur=2
+nseg=8
+cyl=0.35
+fitto 10
+cent mass
+try = 0.454820
+scale = 0.528055
+
+about x -77
+
+ncur = 6
+nseg = 22
+silent=f
+

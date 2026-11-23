@@ -1,0 +1,14 @@
+reset all
+Draw=f
+silent=t
+braid -open a
+delete all
+scale=.075
+hstart=\rr360
+Draw=t
+silent=f
+random braid \ri[3/7] \ri[6/13]
+par0 = 2934793    % Magic number used in warpbraid.kps
+echo " "
+echo "*** Now try the `close braid' button to the right."
+echo " "

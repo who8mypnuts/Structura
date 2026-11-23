@@ -1,0 +1,30 @@
+reset all
+disp t
+disp t
+verb=f
+luxo
+
+func init
+
+func 1 <flicker_test2.kps
+func 2 <flicker_test.kps
+
+func 3 dbuff
+func 4 sbuff
+
+txt cent
+
+txt c 200 "Flicker Test"
+txt c 170 "Upper half of screen should be continuously filling in with unknots." 
+txt c 150 "Unknots already drawn should not be flickering or flashing."
+txt c 130 "If you see flickering or flashing, you may have to adjust your graphics settings"
+txt c 110 "since many of the demos here will look better without flickering."
+txt c 90 "See the README.html file in the KnotPlot home for more information."
+txt c 70 "Press F2 to try another flicker test." 6
+
+txt on
+
+clrfun z
+idle "cyl=\rr[.1/.25];hsta=\rr360;unknot 12 \rr[1/2];tran \rr+-12 \rr12 \rr+-5"
+
+if anaglyph then "reset all;echo;echo;echo This demo does not work in anaglyph mode.;echo"

@@ -1,0 +1,15 @@
+tfunc reset
+energy model thickness
+itsave = t
+savimp = 2
+savenergy = 999999
+meta setinfo
+save *
+stus = 1
+tfunc 1 "meta setinfo;par iter;par nbead;align axes;timer saved;save *" 0 rep 22 66
+go beadlimit 99999
+go
+play init
+echo 
+echo enter command @f to see forces
+alias @f "fscale = 3728.532085;ascale = 0.003783;mode f;back=black"

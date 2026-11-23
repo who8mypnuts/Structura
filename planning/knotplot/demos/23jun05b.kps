@@ -1,0 +1,35 @@
+reset all
+silent=t
+scale = 0.449199
+cyl-rad = 0.020000
+background = #000
+mechforce = off
+amechforce = on
+spring-length = 1.391485
+hooke = 5.395182
+elecforce = off
+ncur = 3
+nseg = 5
+mode cp
+
+alloc 20000
+
+func init
+func silent
+func 1 <23jun05b.kps
+coll a
+anchor = t
+dstep = \ri[1/4]
+
+knot 
+refine \ri[10/30]
+go beadlimit 99999
+ago 1   % prevents "Setting anchors ..." from being blurted
+
+go
+silent=f
+
+echo
+echo
+echo
+echo

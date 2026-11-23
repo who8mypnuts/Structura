@@ -1,0 +1,22 @@
+delete all
+scenery init
+untran
+scale = .4
+
+% bind F1 key to reload script
+function 1 <tut/annu1.kps
+
+until once t
+until Ncomp 1 "torus \ri[1/6] \ri[1/6] \ri[300/400]"
+
+cyl-rad = .7   % spacing between strand depends on current value
+double         
+
+% use the current two component link to create
+% some scenery. note that this is an undocumented
+% option and may change for reasons unknown (but time will tell)
+scenery object .link   
+
+scenery on     % actually show the scenery
+
+delete all     % get rid of the torus knots

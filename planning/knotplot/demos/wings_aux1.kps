@@ -1,0 +1,10 @@
+if par2 != 1765 then "show none"
+
+clrf zf
+value=.05
+disp t
+clrf z
+mathsv k 0 0 .05 s
+echo "Press again to clear."
+
+

@@ -1,0 +1,15 @@
+silent=t
+stus=3
+force 1
+
+tfunc 2 "go 999999999 limit 222"
+
+if \rr1 < .8 then "velf=t"
+velmag=\rr[.03/.1]
+silent=f
+
+echo " "
+echo " "
+echo "  ***** Randomized demo, try it again!"
+echo " "
+

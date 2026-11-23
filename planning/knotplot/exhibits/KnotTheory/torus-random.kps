@@ -1,0 +1,45 @@
+reset all
+tfunc -1.0
+func 1 <torus-ordered.kps
+
+reset all
+
+silent=t
+hstart=\rr[0/55]
+sbuff
+
+Draw=f
+
+spe +vwt
+font 4
+nstrin cm cm "A Collection of Torus Knots"
+disp t
+nap 1
+%spe back
+
+if \rr2 < 1 then "spe bac"
+if \rr1 < 0.5 then "back=0"
+
+delete all
+clrfun zf
+spe -vwt
+disp t
+clrfun z
+if \rr2 < 1 then "vport map 1 \ri999" else "vport map -1 \ri[300/999]"
+
+frame comm "read torus-random-aux%d.kps"
+frame \ri[6/10]
+
+
+nap \rr[4/7]
+
+if \rr1 < .333 then <torus-replace.kps
+silent=f
+%tfunc 0.01 "read kzoo6.kps"
+dbuff
+
+%if T < Tmax then "read kzoo6-aux.kps"  else "read dispatch.kps"
+
+%if T < Tmax then "tfunc 0.01 <kzoo6.kps"  else "read dispatch.kps"
+
+

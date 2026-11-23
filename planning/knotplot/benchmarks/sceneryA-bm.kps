@@ -1,0 +1,82 @@
+reset all
+
+back=black
+
+frame comm "txt c -40 %d;delete all;disp t;hstart=%d;knot number %d;fitto 10;scenery snapshot bead %d"
+verbose = f
+
+echo "making scenery.... please wait while I count to 384..."
+
+scenery scale 3
+
+txt init
+txt clobber on
+txt font 3
+txt on
+txt centre
+txt c -20 "counting up to 384"
+
+timer start
+frame 1 to 384
+%frame 1 to 102
+timer stop
+txt delete all
+delete all
+
+texture appmode modu
+texture mode norm
+
+%new=f
+%line numb 24
+%line dir 0 1.5 .1
+
+%scale = .2
+%frame comm "line %d -11 0"
+%frame -15 to 15 step 2
+
+ortho 
+
+%mode 0
+%scenery shift -1
+
+untran
+delete all
+line numb 384
+line dir 0 1 -.4
+line 10 0 0 
+swirl 8
+about x 90
+fitto 20
+scale=.243
+scenery shift -1
+
+mode 0
+scenery on
+centre
+about z 45
+
+back=#444
+
+txt font 4
+txt left
+txt fcolour hsv:102.2/.5/.4
+txt fill on
+txt 20 20 "start" "func exec c 1"
+txt right
+txt -20 20 "check web" "www knotplot.com/benchmarks/sceneryA.html"
+func c 1 "spec fra;txt off;read ../benchmarks/blurb-bm.kps;idle {about z .1;untran}"
+txt on
+
+%<../benchmarks/blurb-bm.kps
+
+echo 
+echo
+echo -n " *** Generated the scenery in "
+timer print
+echo " "
+echo
+echo "     Click on the `start' button to start measuring"
+echo "     or click the `check web' button to see if your computer renders this correctly"
+echo
+
+

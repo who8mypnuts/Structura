@@ -1,0 +1,63 @@
+reset all
+Draw = f
+mode b
+silent = t
+back = 0
+blend one one
+mat-hsv k 0 0 0 s
+mat-hsv k 0 0 0 d
+mat-hsv k 0 0 0 a
+
+mat-hsv b 0 0 0 s
+mat-hsv b 22 .9 .5 d
+mat-hsv b 0 0 0 e
+
+bead-rad = .05 
+backf t
+
+value=.02
+
+
+
+Draw = t
+
+singlebuffer
+clrfun 0
+disp
+disp
+clrfun 1
+
+del all
+trx = 3
+try =-.7
+scale = .06
+knot 1
+anim scale .06 4 102 log
+
+del all
+trx = -1.8
+try = 2.45
+scale = .06
+mat-hsv b -44 9 .5 d
+knot 1
+anim scale .06 4 102 log
+
+del all
+trx = -.25
+try = -2
+scale = .06
+mat-hsv b -22 .9 .5 d
+knot 1
+anim scale .06 4 102 log
+
+del all
+trx = -3
+try =.7
+scale = .06
+mat-hsv b 0 .9 .5 d
+knot 1
+anim scale .06 4 102 log
+
+silent = f
+
+

@@ -1,0 +1,16 @@
+require KPbuild 4989   % zoo command
+
+
+zoo new "75 trefoils"
+
+silent = t
+Draw=f
+sequence open mscl/2.b
+until seqend "centre;zoo add;sequence +"
+delete all
+Draw=t
+silent = f
+zoo list
+
+
+

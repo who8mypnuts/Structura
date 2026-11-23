@@ -1,0 +1,90 @@
+echo " "
+echo " "
+echo Demo `freedman'
+<freedman.kps
+echo " "
+echo " "
+echo Demo `ringToss'
+<ringToss.kps
+echo " "
+echo " "
+echo Demo `new_monster'
+<new_monster.kps
+echo " "
+echo " "
+echo Demo `cubicSAW'
+<cubicSAW.kps
+echo " "
+echo " "
+echo Demo `brunnian'
+<brunnian.kps
+echo " "
+echo " "
+echo Demo `random-lights2'
+<random-lights2.kps
+echo " "
+echo " "
+echo Demo `random1'
+<random1.kps
+echo " "
+echo " "
+echo Demo `twist-knot'
+<twist-knot.kps
+echo " "
+echo " "
+echo Demo `braids'
+<braids.kps
+echo " "
+echo " "
+echo Demo `combo-monster'
+<combo-monster.kps
+echo " "
+echo " "
+echo Demo `tref-drop'
+<tref-drop.kps
+echo " "
+echo " "
+echo Demo `simp'
+<simp.kps
+echo " "
+echo " "
+echo Demo `stick-symm'
+<stick-symm.kps
+echo " "
+echo " "
+echo Demo `SE'
+<SE.kps
+echo " "
+echo " "
+echo Demo `orbit'
+<orbit.kps
+echo " "
+echo " "
+echo Demo `PerkoExhib'
+<PerkoExhib.kps
+echo " "
+echo " "
+echo Demo `ring-pack'
+<ring-pack.kps
+echo " "
+echo " "
+echo Demo `ChiralKnots'
+<ChiralKnots.kps
+echo " "
+echo " "
+echo Demo `fly-thru'
+<fly-thru.kps
+echo " "
+echo " "
+echo Demo `KnotPaint'
+<KnotPaint.kps
+echo " "
+echo " "
+echo Demo `simple-relax'
+<simple-relax.kps
+echo " "
+echo " "
+echo " "
+echo All done!
+echo " "
+

@@ -1,0 +1,77 @@
+require KPbuild 4453
+
+reset all
+
+func 1 <say/intro.kps
+silent=t
+velf=t
+tfunc .1 "knot numb \ri[9/250];nbead 108;proj r" 0 rep 108 216
+
+mode s
+draw brok
+zbuff f
+blend one one
+glop back t
+
+coll a
+force 1
+go
+txt font 4
+txt cent
+txt on
+txt expire 3
+
+scale=.4
+back=black
+
+alias ~voice "~extra;say -v $0;say i am $0 $1;~label \ri108 $0 $1"
+alias ~label "txt expire \rr[2/5];~tcolour \rr360 \rr[.5/1];txt bead $0 {I am $1 $2};jitter $0 \rr[7/17]"
+alias qfix
+
+alias ~tcolour "hstar=$0;value=$0;txt colour hsv:$0/1/$1"
+
+alias ~extra "brof=\rr[-4/6];ncur=\ri[3/7];nseg=\ri[10/22];twfix \rr+-5555;cyl-rad=\rr+-1;vcn=\ri6"
+verbose = f
+fixcofm = t
+
+bindkey " " <say/demo1.kps
+
+bindkey s ~toggknot
+alias ~toggknot "if \ppar0 == 0 then {mode s;par0=1} else {mode 0;par0=0}"
+alias qfix
+
+bindkey b ~toggbead
+alias ~toggbead "if \ppar1 == 0 then {mode B;par1=1} else {mode 0;par1=0}"
+alias qfix
+
+cyl-rad=.3
+
+
+tfunc \rr11 "~voice Alex " 0 rep 16 60
+tfunc \rr11 "~voice Bruce " 0 rep 16 60
+tfunc \rr11 "~voice Fred " 0 rep 16 60
+tfunc \rr11 "~voice Junior " 0 rep 16 60
+tfunc \rr11 "~voice Ralph " 0 rep 16 60
+tfunc \rr11 "~voice Agnes " 0 rep 16 60
+tfunc \rr11 "~voice Kathy " 0 rep 16 60
+tfunc \rr11 "~voice Princess " 0 rep 16 60
+tfunc \rr11 "~voice Vicki " 0 rep 16 60
+tfunc \rr11 "~voice Victoria " 0 rep 16 60
+tfunc \rr11 "~voice Albert " 0 rep 16 60
+tfunc \rr11 "~voice Bahh " 0 rep 16 60
+tfunc \rr11 "~voice Bad News" 0 rep 16 60
+tfunc \rr11 "~voice Bells " 0 rep 16 60
+tfunc \rr11 "~voice Boing " 0 rep 16 60
+tfunc \rr11 "~voice Bubbles " 0 rep 16 60
+tfunc \rr11 "~voice Cellos " 0 rep 16 60
+tfunc \rr11 "~voice Deranged " 0 rep 16 60
+tfunc \rr11 "~voice Good News" 0 rep 16 60
+tfunc \rr11 "~voice Pipe Organ" 0 rep 16 60
+tfunc \rr11 "~voice Hysterical " 0 rep 16 60
+tfunc \rr11 "~voice Trinoids " 0 rep 16 60
+tfunc \rr11 "~voice Whisper " 0 rep 16 60
+tfunc \rr11 "~voice Zarvox " 0 rep 16 60
+say -on
+say -bg
+silent=f
+#5 echo

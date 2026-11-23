@@ -1,0 +1,9 @@
+cyl-rad = \rr[.1/.4]
+hsta=\rr360
+torus 0 0 0
+if par2 < .02 then "draw brok;twfix 23232"
+
+if \rr1 < par0 then "mode b" else "mode s"
+Draw=t
+if \rr1 < 0.001 then "draw spec"
+if \rr1 < 0.5 then "anim scale .8 .005 33 log" else "anim scale .005 .8 33 log" 

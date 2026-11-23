@@ -1,0 +1,41 @@
+
+% Older KnotPlot will always evaluate 
+% the following comparison to `false',
+% never reading in the init file.
+% Hence the order of comparison. 
+% See note in freedman-init.kps.
+
+if 2357623 != par1 then "<freedman-init.kps"
+
+Draw = f
+silent = t
+drop all 45 35 -20
+spe back
+hstart = 33
+ncur = 2
+nseg = 8
+load ks0
+disp t
+load ks.movie
+Draw=t
+
+nbead mult .3
+dstep = 8
+ago 102
+
+ncur=3
+nseg=12
+
+dstep=2
+nbead mult .5
+ago 102
+
+dstep=9
+
+nbead mult .5
+ago 444
+silent = f
+
+
+
+

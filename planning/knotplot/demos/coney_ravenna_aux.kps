@@ -1,0 +1,6 @@
+trx=0
+try=0
+scale=.468
+idle "rot z .1"
+tfunc 1 <random-lights 0 rep .1 2
+

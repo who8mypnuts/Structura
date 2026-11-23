@@ -1,0 +1,35 @@
+% this is the DemoA.kps file, it defines the buttons seen on the DemoA Control Panel.
+% you can customize this file for whatever your project requires.
+
+button Nbuttons 4        % number of buttons per row
+button hspace 4          % horizontal space between buttons
+button pos 1
+button height 8
+
+button panel DemoB       % set the control panel you want to add buttons to
+
+% add a button with:
+% button LABEL ACTION
+
+% LABEL is the label for the button,
+
+% ACTION is a command to execute when the button is clicked, use "nop" (no operation) for labels
+% ACTION can be a KnotPlot command, for example "delete all" or an alias "~someAlias",
+% or it can run a script, for example "<myScript.kps"
+
+
+button section "Section Name"
+
+button "my demo" <firstdemo.kps
+button second <secondDemo.kps
+button "A Third Demo" ~couldBeAnAlias 2x     % button uses two slots
+button "cd knot" "knot cd"
+
+
+button section "Another Section"
+button first <firstdemo.kps
+button "another great demo" <GreatDemo.kps 3x    % button uses three slots
+
+
+panel on
+

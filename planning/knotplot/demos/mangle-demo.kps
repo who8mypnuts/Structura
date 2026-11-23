@@ -1,0 +1,74 @@
+% Demo of `mangle' command.
+
+% To remake this script, run 
+% php mangle-demo.php > mangle-demo.kps
+
+require KPbuild 4350
+
+reset all
+
+
+func init
+func silent
+func 1 <mangle-demo.kps
+
+echo 
+echo 
+echo "  *** Demo of crankshaft rotations (KnotPlot `mangle' command)"
+echo "      Use view window buttons to try different options for `mangle'"
+echo 
+
+verbose=f
+
+vscale = .35
+stusplit = 1
+
+cradius = .14
+bradius = .18
+mode cB
+
+txt init
+
+txt centre
+txt font 4
+txt c -20 "Crankshaft Rotations";
+txt font 3 
+txt c a "using the KnotPlot `mangle' command";
+txt left
+
+txt font 3
+txt fill on
+
+txt 20 15 "mangle 555 180 1 1 1" "mangle 555 180 1 1 1;centre"
+txt 20 43 "mangle 102 180 1 1 1" "mangle 102 180 1 1 1;centre"
+txt 20 71 "mangle 20 180 1 1 1" "mangle 20 180 1 1 1;centre"
+txt 20 99 "mangle 1 180 1 1 1" "mangle 1 180 1 1 1;centre"
+txt 20 127 "mangle 555 5 1 1 1" "mangle 555 5 1 1 1;centre"
+txt 20 155 "mangle 102 5 1 1 1" "mangle 102 5 1 1 1;centre"
+txt 20 183 "mangle 20 5 1 1 1" "mangle 20 5 1 1 1;centre"
+txt 20 211 "mangle 1 5 1 1 1" "mangle 1 5 1 1 1;centre"
+txt 20 239 "mangle 20 90" "mangle 20 90;centre"
+txt 20 267 "mangle 1 90" "mangle 1 90;centre"
+txt fill off
+txt font 4
+txt 14 300 "Then mangle it:"
+txt fill on
+txt font 3
+txt 20 338 "torus 2 3 \ri[10/40]" "torus 2 3 \ri[10/40]"
+txt 20 366 "torus 2 3 22" "torus 2 3 22"
+txt 20 394 "unknot \ri[4/20] 6" "unknot \ri[4/20] 6"
+txt 20 422 "unknot 10 6" "unknot 10 6"
+txt fill off
+txt font 4
+txt 14 455 "First create something:"
+
+txt space _
+if \rr22 < 1 then "txt fill off;txt font 2;txt c 10 mangling_stuff_is_fun"
+
+txt right
+txt fill on
+txt font 3
+txt -15 40 "rerun this demo" <mangle-demo.kps
+txt -15 15 "run another mangle demo" <mangle-demo2.kps
+txt on
+verbose=true

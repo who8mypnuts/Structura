@@ -1,0 +1,2 @@
+if \pnbead == 0 then "echo;echo;echo You need to install this data file separately.;echo See instuctions in Data.html;echo;echo"
+

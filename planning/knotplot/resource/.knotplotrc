@@ -1,0 +1,51 @@
+
+% This file is no longer used by KnotPlot.
+
+sfunction 1 back = 0; backface t; zbuff f; blend one one
+sfunction 2 4dsm=0; spin r r r 
+sfunction 3 4dsm=1; spin r r r 
+sfunction 4 4dsm=2; spin r r r
+sfunction 5 4dsm=3; spin r r r
+sfunction 6 smovie -40  r3 r3 r3
+sfunction 7 back=0;backf f;zbuff f; cyl =-5;blend one one
+sfunction 8 backf t;zbuff t; cyl = .9; blend sa msa
+sfunction 9 aftwist = t; doublebuffer; mode o
+sfunction 10 aftwist = f; mode s
+sfunction 11 back f; zbuff t; blend sa msa
+sfunction 12 load gumby
+
+
+function 1 delifstereo; knot 1
+function 2 delifstereo; knot 2
+function 3 delifstereo; knot 3
+function 4 delifstereo; knot 4
+function 5 doublebuffer
+function 6 singlebuffer
+function 7 mode o; cheapo; cyl = .9; aftwist = on
+function 8 mode s; aftwist = off; nseg = 12; ncur=2; cyl = .9
+
+function 9 clear; disp; disp
+function 10 clear 1
+function  12 load gumby
+
+rsfunction 5 !wrl /grads/scharein/pix/leopard.spun0
+rsfunction 4 !wrl /grads/scharein/pix/hod-spun0
+rsfunction 3 !wrl /grads/scharein/pix/hod2-spun0
+rsfunction 2 !wrl /grads/scharein/pix/spun0
+rsfunction 1 !wrl /grads/scharein/pix/knot.pix
+rsfunction 9 !rleload /grads/scharein/pix/lindisfarne.rle
+rsfunction 10 !rleload /grads/scharein/pix/cyan/knotf.rle
+rsfunction 6 smovie -40  r10 r10 r10
+rsfunction 11 backg=0x444444; spe; cyl=.9; mode s
+rsfunction 12 delifstereo; rot unit; load gumby
+
+rsfun 7  hcmono t
+rsfun 8  hcmono f
+
+
+
+
+
+
+
+

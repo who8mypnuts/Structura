@@ -1,0 +1,20 @@
+reset all
+cyl=.1
+hooke = \rr[.4/1]
+velforce = on
+velmag = 0.100000
+anchor = true
+ancauto = true
+tanforce = on
+tanmag = 0.096272
+elecforce = on
+mechforce = on
+coll a
+force 1
+ascale = 0.016407
+fscale = 24.919858
+bead-radius = 0.461815
+mode Bf
+go 999999999 limit 45
+knot
+<randorient.kps

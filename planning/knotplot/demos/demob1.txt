@@ -1,0 +1,5 @@
+par3
+11 button DemoB Sea_Things <SeaThings.kps -1 -1  0 0
+11 button DemoB Panes <panes.kps -1 -1 0 0
+11 button DemoB Flower <UnknotFlowers.kps -1 -1 0 0
+11 button DemoB NC_space <negcylspace.kps   -1 -1 0 0

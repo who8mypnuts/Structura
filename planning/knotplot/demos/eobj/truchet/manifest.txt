@@ -1,0 +1,24 @@
+Expanded truncated icosahedron (dual)-1.eobj
+Expanded truncated icosahedron (dual).eobj
+Rectified truncated icosahedron (dual)-1.eobj
+Rectified truncated icosahedron (dual).eobj
+agD-d.eobj
+elongated square gyrobicupola (J37) (dual)-1.eobj
+elongated square gyrobicupola (J37) (dual).eobj
+elongated triangular gyrobicupola (J36) (dual).eobj
+elongated triangular orthobicupola (J35) (dual).eobj
+endless.eobj
+hexagonal nut-1.eobj
+hexagonal nut.eobj
+hopf00.eobj
+hopf01.eobj
+jP3-1.eobj
+jP3.eobj
+rhombic dodecahedron-1.eobj
+rhombic dodecahedron.eobj
+trefoil-1.eobj
+trefoil-2.eobj
+trefoil-3.eobj
+trefoil-4.eobj
+trefoil.eobj
+unknot-11.eobj

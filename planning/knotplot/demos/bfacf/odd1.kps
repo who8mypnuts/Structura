@@ -1,0 +1,20 @@
+mode cB
+cyl=.1
+draw norm
+
+
+<bfacf/kload.kps
+
+bfacf lats 30
+bfacf box 30
+bfacf fill 28
+bfacf clear 6
+bfacf clear -29 -1 -1 29 1 1
+bfacf fill
+
+spec 
+bfacf z 1
+bfacf run \ri[1008/43000]
+if \rr5 < 1 then "cyl=.2;mode s;draw spec"
+
+

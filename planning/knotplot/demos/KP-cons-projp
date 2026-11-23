@@ -1,0 +1,38 @@
+#!/bin/csh -f
+
+# Very basic constructor routine: KP-cons-projp
+# April 8, 1996
+# Rob Scharein
+
+
+# Constructor arguments:
+#    $0 Constructor executable file (this file).
+#    $1 First file read by KnotPlot (the prefile).
+#    $2 Second file read by KnotPlot (the postfile).
+#    $3 The type of machine we're running on (sgi, ibm, etc...)
+#    $4 A flag either 0 or 1.
+#    $5 Name of constructor.
+#       Anymore more arguments are the arguments to the contructor
+#       from the KnotPlot command line.
+
+switch ($4)
+case 0:
+  
+  echo "" > $1
+
+# Find the proj-plane program itself.  Note, the following may not work
+# correctly if KnotPlot is run from the demos directory and . is in
+# the path before the demos directory.
+
+  set thisfile = $0
+  set demos = $thisfile:h
+  set kphome = $demos:h
+
+  set prog = $kphome/resource/$3/proj-plane
+  echo Executing: $prog $6 $7 \> $1".4d"
+  $prog $6 $7 > $1".4d"
+  echo sload $1".4d" > $2
+
+  breaksw
+endsw
+

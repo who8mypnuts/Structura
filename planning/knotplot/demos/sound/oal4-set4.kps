@@ -1,0 +1,17 @@
+txt delete group 108
+txt push
+txt font 3
+txt cent
+txt group 108
+oal alloff
+~att 0 120 hello
+~att 1 105 hello
+~att 2 90  hello
+~att 3 75  hello
+~att 4 60  hello
+~att 5 45  hello
+~att 6 30  hello
+~att 7 15  hello
+~att 8 0   hello
+txt pop
+

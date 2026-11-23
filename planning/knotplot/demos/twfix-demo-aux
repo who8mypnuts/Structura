@@ -1,0 +1,33 @@
+% twfix-demo-aux
+% this script is used by the script twfix-demo
+
+
+sat=.6
+ncur = 2
+nseg = 4
+
+load 8.2
+nap 1
+
+alert "Notice how things don't quite match at the left." OK OK
+
+disp     % to refresh the screen
+
+nap 1
+
+alert "     About to use the twfix command.     "  "Go for it!" "Do it, please."
+
+disp
+nap 1
+twfix
+
+nap 1 
+
+alert "              That's better!              " "It sure is!"  Yup.
+
+disp
+
+nap 1
+
+
+

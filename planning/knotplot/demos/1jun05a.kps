@@ -1,0 +1,13 @@
+reset all
+
+silent = t
+cyl-rad = 0.020000
+scale = 0.902559
+
+clrfun z
+
+idle "test bez 6.6 3 1.1"
+
+tfunc \rr11 "sat=1;cmode -1;cmode 3 1 1 1" 0 repeat 5 20
+tfunc \rr11 "sat=0;cmode 0;read random-lights" 0 repeat 5 20
+tfunc \rr11 "hincr=\rr360" 0 repeat 5 35

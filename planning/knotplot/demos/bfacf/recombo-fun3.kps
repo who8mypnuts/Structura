@@ -1,0 +1,16 @@
+<bfacf/recombo-fun1.kps
+bfacf nap .01
+play toggle
+Draw=f
+#500 bfacf step 1000;bfacf recomb
+Draw=t
+
+play toggle
+tfunc \rr[3/22] "bfacf recomb direct on" 0 rep 22 66
+tfunc \rr[3/22] "bfacf recomb direct off" 0 rep 44 88
+tfunc \rr[3/22] "bfacf ned \ri44 \ri[88/222]" 0 rep 44 88
+tfunc \rr[3/22] "bfacf recomb dist \ri22" 0 rep 22 44
+tfunc .3 "bfacf nap \rr[.1/.16];reset sliders" 0 rep 22 44
+
+
+

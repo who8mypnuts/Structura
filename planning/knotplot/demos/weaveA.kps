@@ -1,0 +1,87 @@
+%`-
+
+reset all
+
+silent=t
+verbose=f
+Draw=f
+
+func init
+func silent
+func 1 <weaveA.kps 
+
+line numb 15
+line
+centre
+refl r
+cyl=.1
+stus=11
+
+
+func 2 "cut \ri[44/108];keep 0"
+func 4 "<weaveA_new.kps"
+
+func s 12 "txt delete be"   % deletes the txt object "be sure you see..."
+
+func exec 4
+idle "ago 44;split cyl 0"
+%go
+
+txt init
+txt centre
+txt font 4
+txt c -20 "Weaving"
+txt font 2
+txt c -55 "be sure you see all four buttons at the bottom of this window!"
+
+txt right
+
+txt fcolour royalblue .5
+txt font 4
+txt fill on
+txt right
+txt -14 14 ? "help popup weaveA.kps handoff"
+
+txt clobber on
+txt font 2
+txt lineskip -24
+
+txt -15 60 fullscreen "full toggle"
+if oal then "txt -15 a sound <sound/weave.kps"
+txt fill off
+txt -10 a toggle:
+
+txt left
+txt fill on
+txt 15 20 "rerun demo" "func exec s 12;read weaveA.kps"
+txt 15 a "join ends" "func exec s 12;read weaveA_join.kps"
+txt 15 a "trim string" "silent=t;func exec s 12;func exec 2;silent=f"
+txt 15 a "change weaver" "func exec s 12;func exec 4"
+txt 15 a "show / hide weaver" "spec ~rotor"
+
+txt on
+
+echo
+echo
+echo " *** Click on `change weaver' button to change orientation, size, and speed of weaver (some weave better than others)."
+echo "     Click on `join ends' button to make open string into a knot."
+echo "     Be sure you see all four buttons at bottom of view window."
+echo
+
+dstep=3
+%dstep=\ri[1/5]
+%par dstep
+
+exit
+
+%`+
+Weaving using rotors
+
+Click on `change weaver' button to change orientation, size, and speed 
+of weaver (some weave better than others).
+
+Click on `join ends' button to make open string into a knot.
+
+Be sure you see all four buttons at bottom of view window.
+
+Press F1 or click on one of the buttons to rerun demo.

@@ -1,0 +1,33 @@
+reset all
+
+silent = t
+
+back=0
+disp t
+
+hstar=\rr360
+
+mathsv k 0 0 0 s
+value = 0.02
+cyl-rad = \rr[.02/.06]
+scale = 0.650112
+blend one one
+zbuff f
+glop backface t
+sbuff
+clrfun n
+rot x \rr360
+rot y \rr360
+rot z \rr360
+idle "about x 1;ago 2"
+
+if \rr3 < 1 then knot else "unknot \ri[33/88]"
+
+force 1
+coll a
+silent=f
+
+echo " "
+echo " "
+echo " *** Randomized demo (please be patient and watch)."
+echo " "

@@ -1,0 +1,47 @@
+require KPbuild 4990
+
+require KPbuild 4691
+
+alias ~method1 nop
+
+tfunc reset
+bfacf target 999
+bfacf search on
+<bfacf/autoz.kps
+txt cent
+txt font 3
+txt fill on
+%txt hide 9999
+
+alias ~retrieveMin  "read bfacf/PxQ-loadmin.kps"
+
+txt c 20 "retrieve minimum"  ~retrieveMin
+
+
+txt fill off
+txt font 4
+alias ~title "txt c -20 {$0 in a $1 tube}"
+
+PxQ-title
+
+echo 
+timer check
+
+txt delete for
+alias ~thetime "txt c -40 {took $0}"
+
+
+txt delete group 2784628
+
+
+txt push
+%txt expire 6
+txt font 3
+~thetime \E
+txt pop
+
+
+notify state InTube
+
+
+

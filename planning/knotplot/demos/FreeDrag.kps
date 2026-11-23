@@ -1,0 +1,86 @@
+require KPbuild 4048
+
+reset all
+
+silent=t
+
+% warning: following is for testing, this may change in the future
+bindkey freedragtest
+
+charge = .13
+power = 6
+mech = off
+amech = on
+spring = 1.4
+drag = on
+dragmag = 15
+
+%% if \rr2 < 1 then "mode sb" else "mode cb"
+mode sb
+
+hstart = 214.137469
+saturation = 0.677801
+cyl-rad = 0.110697
+
+% multiif < FreeDrag.txt 
+par0 = \rr27
+if par0 < 3 then "line number \ri[20/33];line;align ax;about z 45;par0=29"
+if par0 < 8 then "unknot 60;open 0;cut \ri[20/33];keep 0;about z \;par0=29"
+if par0 < 13 then "torus 2 3 60;cut \ri59;cut \ri[20/33];keep 0;about;par0=29"
+if par0 < 18 then "torus 3 2 60;cut \ri59;cut \ri[20/33];keep 0;about;par0=29"
+if par0 < 23 then "torus 2 5 60;cut \ri59;cut \ri[20/33];keep 0;about;par0=29"
+if par0 < 25 then "torus 2 7 60;cut \ri59;cut \ri[20/33];keep 0;about;par0=29"
+if par0 < 28 then "torus 5 2 60;cut \ri59;cut \ri[20/33];keep 0;about z \rr360;par0=29"
+
+jit .01
+
+<randorient.kps
+
+stusplit = 8
+new=f
+
+func silent
+func init
+
+func 2 "centre;trx=0;try=0"
+func 1 mode ~cs
+
+func 12 "silent=t;tfunc reset;txt toggle;silent=f"
+
+par3 = 8
+func c 8 "silent=t;panel set Dyna;par3=9;silent=f"
+func c 9 "panel set DemoA;par3=8"
+func 11 "func exec c \ppar3"
+
+func 5 <close-all-safely.kps
+func 6 open all
+func 7 <FreeDrag_addunk.kps
+
+go
+
+txt centre
+txt c +150 "Click down on a bead and drag it, press `d' to delete it" 
+txt c +135 "Drag free ends together and release mouse button when you see the connecting line to join ends" 
+txt c +120 "Hover the mouse over a cylinder, press `s' to split it, `c' to cut at that point" 
+txt c +105 "Left / middle / right mouse to rotate / translate / scale (when not dragging a bead)" 
+txt c +90 "When dragging, press and hold `q' or `w' key to push or pull the bead" 
+
+txt c +70 "F1 -- toggles between two display modes  F2 -- centre the knot" 
+txt c +55 "F5 -- close all components  F6 -- open all components  F7 -- add an unknot" 
+txt c +40 "F11 -- toggle between Dynamics and DemoA panels  F12 -- toggle help info off/on" 
+
+txt c +20  "NOTE: for spliting and cutting, make sure view window has keyboard focus (click in the window first)" 
+
+tfunc 10 "txt off;echo;echo;echo ***** Press F12 to turn help text on or off;echo"
+
+txt on
+
+silent=f
+
+echo 
+echo 
+echo "  *** Try to tie a knot (click down on a bead and drag)."
+echo "      Press F11 to toggle between Dynamics panel and DemoA panel."
+echo "      Press F12 to toggle off and on help text."
+echo
+

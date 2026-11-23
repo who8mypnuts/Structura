@@ -1,0 +1,5 @@
+%echo
+%echo " *** Reaping small components."
+auto=f
+reap \ri[10/17]
+auto=t

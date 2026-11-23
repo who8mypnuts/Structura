@@ -1,0 +1,35 @@
+require KPbuild 4053
+
+reset all
+
+silent=t
+verbose=f
+
+func init
+func silent
+
+back=#000
+func 1 <proj-plane.kps
+
+4dscm=1
+if \rr2 < 1 then 4dsm=0 else 4dsm=4
+4dhmult=\rr[3/5]
+
+construct proj-plane 66 66 
+spin
+
+txt centre
+txt font 4
+txt c -30 "4D Projective Plane"
+
+
+txt on
+
+
+silent=f
+
+echo 
+echo
+echo " *** 4D Projective Plane"
+echo "     Press F1 to rerun demo"
+echo

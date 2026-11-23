@@ -1,0 +1,72 @@
+require KPbuild 4691
+require KPbuild 4438
+
+reset all
+
+verbose=f
+silent=t
+back=black
+ortho
+scale=.4
+
+accbuff decay 0.980730
+accbuff accum 0.217651
+accbuff return 0.271498
+accbuff on
+accbuff clear
+trackmouse rotate off
+mode F
+field type stan
+field npoint 2000
+field K \rr[.6/2]
+
+alias ~newt "if \rr2 < 1 then {field toff 3.14159265} else {field toff 0}"
+
+alias ~newp "if \rr2 < 1 then {field poff 3.14159265} else {field poff 0}"
+
+
+alias ~rot <stan2-aux.kps
+
+alias ~newfield "field K \rr[.6/1.5];~newt;~newp;~rot"
+
+unknot 
+coll a
+force 1
+tfunc .1 knot 0 rep 10 22
+tfunc .1 "~newfield" 0 rep 54 108
+tfunc .1 "3dop colF \rr360 1 1" 0 rep 10 30
+go
+
+<stan2-help.kps
+
+bindkey " " "full tog;scale=.711111"
+bindkey c "accb clear"
+bindkey n "accb clear;~newfield"
+bindkey ? <stan2-help.kps
+bindkey / <stan2-help.kps
+bindkey k "3dop colF \rr360 1 1"
+bindkey e "accbuff clear;unknot \ri[10/30];jitter 9999;fitto .1"
+bindkey W "www en.wikipedia.org/wiki/Standard_map"
+bindkey R <stan2.kps
+bindkey d <stan2.kps
+bindkey 2 "accb clear;field poff 3.14159265;field toff 3.14159265"
+bindkey 3 "accb clear;field poff 0;field toff 3.14159265"
+bindkey 1 "accb clear;field poff 3.14159265;field toff 0"
+bindkey 4 "accb clear;field poff 0;field toff 0"
+bindkey r "accb clear;rotate z 90"
+bindkey m "cmode -1;cmode 3 1 1 1;3dop colF \rr360 1 1"
+bindkey , "cmode 0;3dop colF \rr360 1 1"
+bindkey s "3dop colF \rr360 \rr1 1"
+bindkey g "accb clear;rand unif \ri[11/44];scale 1 1 0"
+
+
+cursor 1
+
+
+silent=f
+
+#6 echo
+echo "press the ? or / key to see the help text"
+echo "press the space bar to toggle fullscreen"
+echo "but make sure the KnotPlot Arena has keyboard focus (it should have now)"
+echo "click in the KnotPlot Arena to give it keyboard focus (only if you need to)"

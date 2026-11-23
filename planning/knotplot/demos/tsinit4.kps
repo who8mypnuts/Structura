@@ -1,0 +1,16 @@
+reset all
+mode cb
+cyl = .06
+load 3.1ts
+close=.06
+max-dr=.05
+split
+split
+splane 192 0 7
+tsba=24
+tsbb=168
+4dss=160
+tsn=1
+reset sliders
+
+<tsinit_blurb.kps

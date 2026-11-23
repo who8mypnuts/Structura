@@ -1,0 +1,160 @@
+<html>
+<head>
+<title>Unimportant Information about KnotPlot</title>
+</head>
+
+<body>
+
+<h2>
+Unimportant Information about KnotPlot
+</h2>
+
+Most of the information on this page can be safely ignored.
+But it is included here for people who may want to try something different.
+
+<a name="fonts"></a>
+<h3>Changing the control panel font</h3>
+You do this with the <b>-font</b>
+<a href="CommandLineOptions.html">command line option.</a>
+Here is a list of the (currently) supported fonts, they should
+work on most systems:
+<p>
+<pre>
+Courier  Courier-Bold  Courier-BoldOblique  Courier-Oblique
+Helvetica  Helvetica-Bold  Helvetica-BoldOblique  Helvetica-Oblique  
+International  Iris  
+NewCenturySchlbk-BoldItalic  NewCenturySchlbk-Bold
+NewCenturySchlbk-Italic  NewCenturySchlbk-Roman
+Screen  Screen-Bold  Symbol  Space
+Times-Bold  Times-BoldItalic  Times-Italic  Times-Roman
+AvantGarde-BookOblique  AvantGarde-DemiOblique  
+AvantGarde-Book  AvantGarde-Demi
+Bookman-DemiItalic  Bookman-LightItalic  Bookman-Demi  Bookman-Light
+Helvetica-Narrow-BoldOblique  Helvetica-Narrow-Bold  
+Helvetica-Narrow-Oblique  Helvetica-Narrow
+Palatino-Bold  Palatino-Italic  Palatino-Roman  Palatino-BoldItalic
+ZapfChancery-MediumItalic  ZapfDingbats
+</pre>
+<p>
+The default font is Times-Roman.
+
+<a name="cursor"></a>
+<h3>Setting the mouse cursor</h3>
+
+Several cursors are defined in files in the 
+<a href="DemosDir.html">demos directory</a> with file name extensions '.cur'.
+These are 
+<kbd>tref.cur</kbd> (a small trefoil),
+<kbd>fox.cur</kbd> (the fox in socks),
+<kbd>elvis.cur</kbd> (the King himself).
+To set the mouse cursor, use the 
+<a href="commands.html#cursor">cursor</a> command, for example
+<b>cursor tref</b> will give you the trefoil cursor.
+Enter <b>cursor 0</b> to get back to the default.
+A program,
+<a href="../src/ppm2cur.c">ppm2cur</a> 
+is available to convert any 
+<a href="glossary.html#PPM">PPM file</a>
+to the format needed for cursors.
+
+<p>
+
+No more information is available on this subject at the moment.
+
+<a name="screensaver"></a>
+
+<h3>Using KnotPlot as a screensaver</h3>
+
+You have to give the full path name to haven, the command I use is:
+<p>
+<kbd>
+haven /imager/local/bin/knotplot -screen -supersilent
+<br></kbd>
+<p>
+The <kbd>-supersilent</kbd> disables all output from KnotPlot.
+
+For some reason, when I run <b>haven</b> as part of the startup sequence 
+on the SGIs, KnotPlot starts executing at full blast (with no graphics)
+in the background, sucking up a lot of CPU time.
+Therefore I usually run  <b>haven</b> from the command line of 
+a terminal window explictly.
+With this method, I have no problems.
+To check to make sure that things are working correctly on your system,
+use the <b>top</b> command to see if KnotPlot is consuming any
+CPU time when it shouldn't.
+Neither it nor <b>haven</b> should be amongst the
+list of processes reported by <b>top</b> when 
+the screensaver is inactive.
+
+<a name="cpanels"></a>
+
+<h3>Which control panels are which?</h3>
+
+KnotPlot has up to 31 control panels, only a few of which are
+actually defined in the current version. 
+
+<ul>
+
+<li><b>0</b> Main.
+
+<li><b>1</b> 4D.
+
+<li><b>2</b> Sketch.
+
+<li><b>3</b> Miscellaneous things.
+
+<li><b>4</b> Reserved (spin).
+
+<li><b>5</b> View.
+
+<li><b>6</b> Reserved (coming soon).
+
+<li><b>7</b> Reserved.
+
+<li><b>8</b> Demos.
+
+<li><b>9</b> Tangle calculator.
+
+<li><b>10</b> Paint.
+
+<li><b>11</b> More demos.
+
+<li><b>12</b> Dynamics.
+
+<li><b>13 to 19</b> Reserved for future use.
+
+<li><b>20 to 30</b> Available for user-defined control panels.
+
+</ul>
+
+Actually you are free to place buttons on any control panel, even
+panel 0.  However it might happen that future versions of KnotPlot
+will have control panel object placements that conflict with yours.
+If you use panels 20 to 30 instead this won't happen.
+Check out the script file 
+<a href="../../demos/basic-demos">basic-demos</a> to see how the
+(default) demos control panel is constructed.
+
+<a name="spelling"></a>
+
+<h3>Alternate spellings</h3>
+
+You can use <b>center</b> for the command 
+<a href="commands.html#centre">centre</a> and
+<b>color</b> for <a href="commands.html#colour">colour</a>.
+
+<hr>
+
+[<a href="KnotPlotManual.html">KnotPlot Manual</a>], 
+[<a href="ViewWindow.html">View Window</a>], 
+[<a href="ControlPanel.html">Control Panel</a>], 
+[<a href="CommandWindow.html">Command Window</a>],
+[<a href="KPManOverView.html">Overview</a>]
+<br>
+[<a href="http://www.cs.ubc.ca/spider/scharein">Rob Scharein's</a>
+ main WWW site], 
+[<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/KnotPlot.html">KnotPlot Site</a>]
+
+</body>
+</html>
+

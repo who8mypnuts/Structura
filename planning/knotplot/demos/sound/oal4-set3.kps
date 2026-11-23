@@ -1,0 +1,17 @@
+txt delete group 108
+txt push
+txt font 3
+txt cent
+txt group 108
+oal alloff
+~att 0 \ri120  tv
+~att 1 \ri120 pluck2
+~att 2 \ri120  pluck3
+~att 3 \ri120  pluck1
+~att 4 \ri120  sitting
+~att 5 \ri120  pluck3
+~att 6 \ri120  pluck1
+~att 7 \ri120  pluck2
+~att 8 \ri120   hello
+txt pop
+

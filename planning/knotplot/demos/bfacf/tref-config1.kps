@@ -1,0 +1,23 @@
+load mscl/3.1
+trans 0 5 0
+bfacf load
+
+bfacf clear 30
+cyl-rad=3
+load 3.1
+scale 4
+bfacf fill tube
+bfacf dilate
+bfacf clear tube
+
+bfacf fill
+mode cB
+cyl-rad=.1
+ccmode=2
+
+bfacf copy
+txt clobber on
+txt font 2
+txt fill off
+txt cent
+txt c -44 "configuration 1"

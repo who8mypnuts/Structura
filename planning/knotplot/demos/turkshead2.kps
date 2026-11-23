@@ -1,0 +1,25 @@
+% different method for making Turk's head knots
+
+reset all
+silent=t
+cyl=.3
+load unsafeknot.k
+until timelimit 30
+until safe "torus;about z 90;refine 3;disp t;nap .1;alter;disp t;nap .1"
+stu=1
+
+%#10 delete down 0;ago 22
+
+go 188
+silent=f
+
+func silent
+func init
+
+echo " "
+echo " "
+echo " *** Creating a ``Turk's head'' knot by alternating a torus knot"
+echo "     (doesn't always work well, keep trying)"
+echo " "
+
+

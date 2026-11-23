@@ -1,0 +1,17 @@
+reset all
+
+mode B
+back=black
+disp t
+scale=\rr[.4/.8]
+glop backface t
+bead=\rr[.1/.6]
+unknot \ri[211/755]
+
+idle "swirl .1"
+
+clrfun z
+texture env lupin
+texture on 
+
+info

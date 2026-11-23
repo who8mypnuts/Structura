@@ -1,0 +1,21 @@
+
+require KPbuild 4217
+
+button Nbuttons 5
+button hspace 4 
+button pos 1
+button height 8
+
+button blank @
+button Nbuttons 8
+
+button 18 "Initial conformations - click button to load knot into BFACF engine" nop 4 265 102 10 4 3
+
+
+
+
+
+
+
+
+

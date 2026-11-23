@@ -1,0 +1,8 @@
+scenery rotate none
+scenery set rotate autorotate 0 0 0 0
+oal listener space orient  0 0 1 0 1 0
+
+oal listener
+
+
+

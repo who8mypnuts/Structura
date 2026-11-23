@@ -1,0 +1,112 @@
+require KPbuild 4691
+require KPbuild 4556
+
+reset all
+
+silent=t
+func silent
+func 1 <monolith.kps
+scenery object eobj/monolith-old  % changed 4 March 2023
+scenery on
+
+anchor = true
+ancauto = false
+
+% why does draw flat and draw hflat turn off anchor lines?
+
+alias ~ah "txt hide \rr[5/6]"
+
+txt fcolour royalblue .6
+txt lineskip -25
+txt font 3
+txt right
+txt fill on
+~ah
+txt phantom fullscreen
+txt -15 15 fullscreen "full toggle"
+~ah
+txt -15 a anchors "mode ~a"
+~ah
+txt -15 a monolith "scenery toggle"
+~ah
+txt -15 a knot "hstart=\rr360;mode ~s"
+txt fill off
+~ah
+txt phantom
+txt -15 a toggle:
+txt on
+
+N-torus=\rr[900/1600]
+rand eunif -25 25 -25 25 -25 25
+anchor
+rand unif -35 35 -25 25 -15 -14
+
+% interesting when sound on:
+alias ~x "unknot;anchor;jitter 99999;fitto 10"
+alias ~y "torus;anchor;jitter 99999;fitto 10"
+
+alias ~inv "test paradj 0 -1 0;test paradj 1 -1 0;test paradj 2 -1 0"
+alias ~adj "test paradj 0 1 \rr+-0.001;test paradj 1 1 \rr+-0.001;test paradj 2 1 \rr+-0.001
+alias ~yyy nop
+alias ~ago "ago 1"
+
+alias ~rot "rotate x \ppar0;rotate y \ppar1;rotate z \ppar2;~inv;about x \ppar0;about y \ppar1;about z \ppar2;~inv"
+
+
+par0 = \rr+-55
+par1 = \rr+-55
+par2 = \rr+-55
+
+~rot
+
+par0 = \rr+-.2
+par1 = \rr+-.2
+par2 = \rr+-.2
+
+coll a 
+force 1
+
+scenery set autorotate 10 30 0 0 axis \rr+-1 \rr+-1 \rr+-1
+
+%idle "~yyy;~rot;jitter .004"
+idle "jitter .004"
+
+back=black
+
+mode b
+mathsv b 1 0 1 d
+mathsv b 1 0 1 e
+mathsv b 0 0 0 s
+
+
+bead=.05
+
+nsegments = 6
+ncurve = 15
+cyl-rad = 0.100000
+
+%func 2 "alias ~yyy ~ago"
+alias ~sound <monolith-aux.kps
+
+~ah
+alias ~bsound "txt fill on;txt c 20 {click me} ~sound"
+
+
+txt centre
+if macos then ~bsound
+
+trackmouse rotate off
+trackmouse scale off
+trackmouse translate off
+%cursor 1
+%bindkey " " "full toggle"
+
+silent=f
+
+#5 echo
+tfunc .3 "echo;echo;echo;echo;echo;echo;echo;echo;echo;echo randomized demo, try clicking again"
+
+
+
+~ah
+txt autohide on   % should be the last txt command

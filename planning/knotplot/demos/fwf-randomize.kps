@@ -1,0 +1,8 @@
+if \rr20 < 10 then elec=t else elec=f
+if \rr20 < 10 then mech=t else mech=f
+if \rr20 < 15 then velf=t else velf=f
+if \rr20 < 8 then ther=t else ther=f
+if \rr20 < 10 then grav=t else grav=f
+if \rr20 < 12 then anch=t else anch=f
+
+<fwf-aux.kps

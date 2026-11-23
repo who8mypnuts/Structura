@@ -1,0 +1,37 @@
+reset all
+pop
+
+func 1 <18apr98a.kps
+scale=.9
+cyl=.2
+hstart=33
+back=0
+viewmatrix 0.948353 -0.143800 -0.282751 -0.282438 0.023013 -0.959009
+conway 3
+rot fix
+dstep=10
+#3 go 102
+
+dstep=1
+
+force 1
+coll a
+
+broff = -8
+draw brok
+ncur=19
+nseg=18
+twfix 102.2
+backface t
+sbuff
+disp t
+
+clrfun n
+
+frame setup 18apr98a.csh
+frame script script
+
+
+frame -29 to 1
+
+

@@ -1,0 +1,30 @@
+load 10.2.1
+trans to latt
+centre
+trans to latt
+save 10.2.1
+load 12.2.1
+trans to latt
+centre
+trans to latt
+save 12.2.1
+load 14.2.1
+trans to latt
+centre
+trans to latt
+save 14.2.1
+load 16.2.1
+trans to latt
+centre
+trans to latt
+save 16.2.1
+load 18.2.1
+trans to latt
+centre
+trans to latt
+save 18.2.1
+load e1.2.1
+trans to latt
+centre
+trans to latt
+save e1.2.1

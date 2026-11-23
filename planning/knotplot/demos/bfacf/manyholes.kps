@@ -1,0 +1,30 @@
+require KPbuild 4161
+
+reset all
+
+alloc 30000
+
+scale = 0.396509
+cyl-rad = 0.100000
+mode cB
+viewmatrix 0.714606 -0.023529 -0.699131 -0.258955 0.919534 -0.295633
+
+bfacf init
+bfacf load mscl/4.1
+
+spec bfacf
+
+alias ~clearbox "bfacf fcoffset \rr+-11 \rr+-11 \rr+-11;bfacf clear 2"
+
+
+bfacf fill 15
+bfacf latshow 13
+
+silent=t
+#108 ~clearbox
+silent=f
+
+bfacf fcoffset 0 0 0
+bfacf clear 3
+bfacf fill
+

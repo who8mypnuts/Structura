@@ -1,0 +1,26 @@
+require KPbuild 4776
+
+txt init
+txt font 4
+txt centre
+txt c -20 "Tangle Holder Select"
+txt font 3
+txt lineskip 18
+txt c -40 "create tangle holders by left clicking the mouse"
+txt c  a   "near the locations where you want tangle holders"
+txt c a1.5 "exit by right clicking mouse"
+
+
+
+
+txt on
+show +tholder
+
+
+exit
+
+txt fill on
+txt fcolour royalblue
+txt font 4
+txt c -102.2 "exit"  "tholder exit"
+

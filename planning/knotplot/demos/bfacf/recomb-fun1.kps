@@ -1,0 +1,8 @@
+~kload \ri[2/250]
+bfacf ned 0 9999
+bfacf recomb dist 0
+bfacf recomb direct on
+bfacf recomb limit off
+bfacf nap \ri[.1/.15]
+alias ~doit ~recomb
+<bfacf/recombo-search.kps

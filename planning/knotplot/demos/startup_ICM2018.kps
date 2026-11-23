@@ -1,0 +1,88 @@
+
+reset all
+
+silent=t
+ncurve = 7
+nsegments = 15
+vcn = 4
+vcphi = 0.000000
+vcA = 0.568359
+scale = 0.864361
+cyl-rad=.2
+load KnL_p139d.k
+
+go 216
+stus=1
+fixcofm = t
+%show orient
+txt centre
+txt font 4
+txt c -30 "Welcome to KnotPlot at ICM2018!"
+txt c a " "
+tanforce = on
+tanmag = 0.005248
+
+tfunc 11 go
+
+txt c a "KnotPlot can be used to explore mathematical knots, tangles, braids"
+txt c a "and some other unusual things. Use the `DemoA' tab on the Control Panel"
+txt c a "to explore more mathematical constructions.  The `DemoB' tab has a wide"
+txt c a "variety of demos, some not-so-mathematical (but there's 4D knots!)." 
+
+txt c a " "
+
+txt c a "Various knot families can be created on the `Cons' tab."
+txt c a "Use the `Celtic' tab to create knots in the Celtic style."
+txt c a "Draw your own knots using the `Sketch' panel (click on the"
+txt c a "`basic sketching' button to watch a YouTube demo)."
+txt c a "The tutorials section on `DemoA' has a link to more YouTube videos."
+
+
+txt c a " "
+
+txt c a "KnotPlot was developed by Rob Scharein at the University of British Columbia"
+txt c a "in Canada during the 1990s. Rob is a self-employed software developer, artist"
+txt c a "and researcher working with knots and other kinds of mathematical entities."
+
+
+txt c a "If you like KnotPlot please consider purchasing a copy from the"
+txt c a "KnotPlot Site (knotplot.com). Personal copies are only CAD35 and"
+txt c a "site licenses are also available for university departments."
+
+
+txt fill on
+txt colour #000
+txt fcolour hsv:33/0/1
+
+txt font 4
+
+txt fill off
+
+txt c a " "
+
+txt colour #fff
+%txt lineskip 14
+txt c a " " 
+
+txt c a "Be sure to click on the `help' button to read about"
+txt c a "basic KnotPlot user interaction tasks (on the top of"
+txt c a "the KnotPlot Control Panel)."
+txt c a "Use the `reset' button to the left of `help' to reset"
+txt c a "KnotPlot to its startup state."
+txt c a " " 
+
+txt font 4
+txt fill on
+txt colour #000
+
+txt fill on
+txt fcolour hsv:33/0/.8
+txt font 4
+
+txt c a "start plotting knots!" "reset all"
+
+txt fill off
+
+
+txt on
+silent=f

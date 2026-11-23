@@ -1,0 +1,17 @@
+bfacf z 1
+bfacf run 1000000
+
+txt delete group 421720571
+txt push
+txt group 421720571
+txt right
+txt fill on
+txt font 3
+txt -10 -20 complexify <bfacf/complexify.kps
+txt pop
+
+echo "running with z value 1 to fill cavity, click `stop' on KnotPlot Control Panel to stop"
+echo "try changing the z value with the slider or"
+echo "run with different step sizes"
+
+

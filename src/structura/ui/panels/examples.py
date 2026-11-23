@@ -28,6 +28,7 @@ from ..i18n import tr
 RESOURCES = Path(__file__).resolve().parents[2] / "resources"
 SOURCES = (  # (group, folder, sub-folders become their own groups)
     ("Structura v2", RESOURCES / "examples" / "v2", False),  # materials, glass, lights, lenses, looks
+    ("Creatures", RESOURCES / "examples" / "creatures", False),  # Medusarium: medusa and the wider fauna
     ("Classic", RESOURCES / "legacy" / "examples", True),
     ("Community", RESOURCES / "examples" / "community", False),
 )

@@ -1,0 +1,11 @@
+reset all
+Draw=f
+scale=.13
+draw spec
+sradius=.2
+background = black
+nlorenz init \rr22 \rr22 \rr22
+nlorenz 444
+centre
+Draw=t
+

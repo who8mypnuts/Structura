@@ -1,0 +1,20 @@
+reset all
+silent = t
+
+broff = -.65
+cyl = .8
+blend one one
+
+back = 0
+zbuff f
+backface t
+draw broken
+broff = -1
+ncur = 10
+nseg = 3
+
+load 9.3.18
+
+twfix 44
+
+silent = f

@@ -1,0 +1,4 @@
+
+if par0 != 102.2 then <lorenz-idle2.kps
+
+idle "nlor 200;nlor setback 195"

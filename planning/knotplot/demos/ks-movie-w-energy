@@ -1,0 +1,49 @@
+Draw = f
+silent = t
+cyl = .2
+scale = .23
+drop all 45 35 -20
+spe back
+popview = f
+
+hstart = 33
+ncur = 2
+nseg = 8
+load ks0
+Draw = t
+nap .2
+
+load ksa
+load ksb
+load ksc
+load ksd
+load kse
+load ksf
+
+!echo "echo iter = \$1 > ks-energy-script" > ks-energy-setup
+!echo "echo energy >> ks-energy-script" >> ks-energy-setup
+!chmod ugo+rx ks-energy-setup
+
+frame setup ks-energy-setup
+frame script none
+frame save "load ks%d; read ks-energy-script"
+frame post none
+
+silent = f
+energy file ks-energy.data
+
+
+frame 1 
+frame 2
+frame 3
+
+frame 5 to 99 step 2
+frame 100 to 199 step 3
+frame 200 to 299 step 4
+frame 300 to 399 step 6
+
+energy file 
+
+
+
+silent = f

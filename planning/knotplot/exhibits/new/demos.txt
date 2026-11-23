@@ -1,0 +1,14 @@
+painting 10 16 2 .1
+painting .3 1.6 2
+StElmo .3 1.6 2
+StElmo .3 1.6 2 .6
+graphicsH .3 1.6 2
+graphicsHa .3 1.6 2
+graphicsEa .3 1.6 2
+graphicsEb .3 1.6 2
+graphicsEc .3 1.6 2
+graphicsI .3 1.6 2 .6
+graphicsJ .3 1.6 2
+%knottype .3 1.6 2
+BjorkA .3 1.6 2 .1
+violently-happy .2 1.6 2

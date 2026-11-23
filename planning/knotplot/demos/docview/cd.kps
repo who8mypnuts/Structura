@@ -1,0 +1,4 @@
+delete all
+~nogo
+until Ncomp 1 "knot cd"
+nbead 200

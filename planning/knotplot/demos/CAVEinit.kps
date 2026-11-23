@@ -1,0 +1,8 @@
+version
+
+mode cb                % display cylinders and beads
+back=x555555           % hex value BBGGRR
+cyl=.1                 % radius of cylinders
+bead=.23               % radius of beads
+mathsv k 0 0 1 d       % knot surface colour
+load CAVEstartknot.k   % something to look at to start with

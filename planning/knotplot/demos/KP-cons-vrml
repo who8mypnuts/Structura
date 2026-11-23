@@ -1,0 +1,79 @@
+#!/bin/csh -f
+
+# Very basic constructor routine: KP-cons-vrml
+# Jan 30, 1997
+# Rob Scharein
+
+# Constructor to create VRML files from Wavefront '.obj' files.
+#
+# Usage:  in KnotPlot, enter
+#
+#            cons vrml filename
+#
+#         This will write the VRML in the file 'filename.wrl'. 
+#         You should be in smooth tubes mode.
+
+set objfile = $1".obj"
+
+switch ($4)
+
+case 0:
+  
+  echo silent=t > $1
+  echo wave $1 >> $1
+  echo silent=f >> $1
+  breaksw
+
+case 1:
+
+  touch $2
+
+# Find the resource directory.  Note, the following may not work
+# correctly if KnotPlot is run from the demos directory and . is in
+# the path before the demos directory.
+
+  set thisfile = $0
+  set demos = $thisfile:h
+  set kphome = $demos:h
+  set resdir = $kphome/resource
+
+  switch ($#argv)
+  case 5:
+    set vrmlfile = knot.wrl
+    breaksw
+  case 6:
+    set vrmlfile = $6".wrl"
+    breaksw
+  endsw
+
+
+  cp $resdir/wrl-header $vrmlfile
+
+  echo `date` >> $vrmlfile
+
+  cat $resdir/wrl-data >> $vrmlfile
+
+  grep v $objfile | awk '{print $2, $3, $4, ","}' >> $vrmlfile
+
+  echo " 0 0 0] " >> $vrmlfile
+
+  echo "	    } " >> $vrmlfile
+  echo "		   IndexedFaceSet {" >> $vrmlfile
+  echo "			coordIndex	[" >> $vrmlfile
+
+ 
+  grep f $objfile | awk  '{print $2,  ",", $3,   ",", $4, ",", $5, ", -1," }' >> $vrmlfile
+
+  tail -1 $objfile | grep f |  awk  '{print $2,  ",", $3,   ",", $4, ",", $5, ", -1" }' >> $vrmlfile
+
+  echo "]  " >> $vrmlfile
+  echo " " >> $vrmlfile
+  echo "            } " >> $vrmlfile
+  echo "        } " >> $vrmlfile
+  echo "    } " >> $vrmlfile
+  echo "} " >> $vrmlfile
+
+  breaksw
+
+endsw
+

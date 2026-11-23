@@ -1,0 +1,48 @@
+pop 0
+fullscreen
+cursor 1
+aspect=1.3333
+persp 60 .2 102.2
+clrfun zf
+conway 3
+
+frame comm "read cmode%d"
+
+%cmode 1 356.2 337.7 280.3
+%cmode 2 2 5 2
+%cmode 3 0.954 0.298 0.896
+
+frame \ri[0/23]
+
+disp t
+back=0
+back t
+sbuff
+scale=.75
+broff=-.2
+ncur=10
+nseg=12
+cyl=.03
+bead=.03
+coll a
+force 1
+draw sbrok
+popview=f
+mode cbs
+func 1 torus \rr99 \rr99 \rr99:about z \rr360
+func 2 unknot \ri[3/30] \rr[1/10]:about z \rr360
+
+func 4 clrfun zf:disp t:clrfun z
+func 5 clrfun zf
+func 6 clrfun z
+func 7 pop 0:fullscreen
+func 8 pop 1
+
+func 9 cmode -1
+func 10 cmode 0
+func 12 <save-cmode
+
+go 1000000000
+clrfun z
+<thing1a-aux
+

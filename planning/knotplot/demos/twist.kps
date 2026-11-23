@@ -1,0 +1,38 @@
+reset all
+
+silent=t
+
+if \rr1 < .5 then "rotate z -90" else "rotate z 90"
+hstar=\rr360
+cyl=\rr[.9/1.5]
+scale=.055
+%if \rr16 < 991 then "read electric.kps;ncur=4;spec"
+braid -str 2 0^14
+scale 2 1 1 
+join all
+split 4
+ago 20
+
+%#26 swirl end 22.5;disp t
+#26 swirl end 22.5;disp t
+%#24 swirl end 22.5;disp t
+
+Draw=f
+silent=t
+save |tw1
+refl yx
+warp rec2ann 102
+save |tw2
+load |tw1
+Draw=t
+deform to |tw2 55
+Draw=f
+frame comm "load |tw1;warp rec2ann %d;disp t"
+frame 102 to -6 step 4
+silent=f
+Draw=t
+
+echo
+echo
+
+

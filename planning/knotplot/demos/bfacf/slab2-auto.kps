@@ -1,0 +1,4 @@
+tfunc reset
+tfunc 1 "bfacf wall 1" 0 rep 1
+txt delete auto
+txt delete auto

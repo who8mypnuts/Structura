@@ -1,0 +1,9 @@
+ortho
+
+if \rr3 < 2 then "<DecoAltExhib.kps" else "knot cd;refine 3;fitto 16"
+
+mode s
+disp t
+
+nap \rr[4/6]
+

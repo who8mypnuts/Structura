@@ -1,0 +1,115 @@
+require KPbuild 4691
+%`-
+require KPbuild 4207
+
+reset all
+
+panel set bfacf 2
+
+txt clobber on
+txt fcolour "royal blue" .5
+txt font 3
+txt fill on
+txt left
+txt lineskip -24
+txt 10 10 "reload demo" <bfacf/9_46-eqclass.kps
+txt 10 a "toggle ec1 <> ec2" ~toggle
+txt 10 a "ec 2" ~load2
+txt 10 a "ec 1" ~load1
+
+alias ~autobutt "txt cent;txt fill on;txt font 3;txt c 20 auto-toggle ~autotog"
+alias ~stopbutt "txt cent;txt fill on;txt font 3;txt c 20 stop ~stop;txt c 45 faster ~faster;txt c 70 slower ~slower"
+
+alias ~slower "test paradj 2 1.4"
+alias ~faster "test paradj 2 .7142857"
+
+txt right 
+txt -10 10 "do moves" "~stop;scenery init;~editblurt;scenery on;~loadscenery;panel set edit;mode cB;~blurt2"
+alias ~loadscenery "if par0 == 1 then {scenery obj bfacf/9.46-2} else {scenery obj bfacf/9.46-1}"
+
+
+alias ~editblurt "txt fill off;txt cent;txt font 3;txt c -40 {select `flex bead' on Control Panel and then click on beads to make moves}"
+
+alias ~blurt2 "echo;echo;echo;echo select `flex bead' on Control Panel and then click on beads to make type-0 moves;echo"
+
+~autobutt
+
+txt push
+txt font 3
+txt cent
+txt fill off
+txt c -40 "click on the ? button over there for instructions -->"
+txt fill on
+txt font 4
+txt right
+txt -15 -25 ? "help popup bfacf/9_46-eqclass.kps;txt delete click"
+
+txt pop
+txt on
+
+alias ~autotog "~stopbutt;idle {~toggle;nap \ppar2}"
+
+alias ~stop "~autobutt;idle;txt delete fast;txt delete slow"
+
+par2=.2
+
+load bfacf/9.46-2
+save |2
+
+load bfacf/9.46-1
+save |1
+
+alias ~title "txt fill off;txt font 4;txt cent;txt c -20 {equivalence class $0}"
+
+
+alias ~load1 "load |1;par0=1;~title 1;disp t"
+alias ~load2 "load |2;par0=2;~title 2;disp t"
+
+~load1
+
+alias ~toggle "if par0 == 1 then ~load2 else ~load1"
+
+par0=1
+
+scale = 1.380726
+hstart = 33.000000
+cyl-rad = 0.060000
+bead-radius = 0.180000
+mode cB
+trx = 0.539018
+try = -0.431189
+trz = 0.000000
+viewmatrix -0.865695 0.500246 -0.017333 -0.149233 -0.224888 0.962879
+
+exit
+
+%`+
+
+This shows two minimal edge candidates for the knot 9_46 on the simple
+cubic lattice.  The claim is that the knots are in different equivalence
+classes, where two knots are considered to be in the same equivalence
+class iff one can be transformed into the other using only BFACF Type-0
+moves (which don't change the length of the chain). 
+
+Things to try:
+
+  --- click on the buttons "eq 1" and "eq 2" to load representatives from 
+      equivalence class 1 and 2, respectively
+
+  --- click on the toggle button to toggle between them, or click on
+      the auto-toggle button to have KnotPlot toggle automatically
+
+  --- if you are skeptical that the two knots are in different 
+      equivalence classes, click on the "do moves" button.  This 
+      will take you to the KnotPlot knot editor.
+      On the KnotPlot Edit panel, select the "flex bead" option in
+      the "Default operation:" section.  Make sure the 
+      "prohibit unsafeness" option is selected (this will prevent you
+      from making illegal moves).  Then click on any bead to "flex it"
+      to a new position (i.e., do a BFACF Type-0 move on that bead).
+
+      You should see a skeleton of the other knot.  This is your target.
+      Try to get to it by flexing beads.
+
+      Let me know what happens.
+

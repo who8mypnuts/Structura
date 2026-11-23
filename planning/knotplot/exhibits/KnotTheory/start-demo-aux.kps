@@ -1,0 +1,16 @@
+reset all
+spe vwt
+font 4
+nstring cm -40 "To quit the exhibit, hit the ESC key (and wait)." 0
+disp t
+nap 1
+nstring cm cm "To quit the exhibit, hit the ESC key (and wait)." 1
+disp t
+nap 1
+nstring cm +40 "To quit the exhibit, hit the ESC key (and wait)." 2
+disp t
+nap 1
+disp t
+nap 3
+demo closewin
+<dispatch.kps

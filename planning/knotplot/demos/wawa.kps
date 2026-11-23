@@ -1,0 +1,6 @@
+wave c 3
+wave nwave 1000
+mode sw
+wave start 0
+wave skip 15
+blend one one

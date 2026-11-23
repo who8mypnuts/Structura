@@ -1,0 +1,21 @@
+
+
+cut inside
+cut x -10
+disp t; nap .3
+cut y -10
+disp t; nap .3
+cut z -10
+disp t; nap .3
+
+cut outside
+cut x 10
+disp t; nap .3
+cut y 10
+disp t; nap .3
+cut z 10
+disp t; nap .3
+
+
+
+

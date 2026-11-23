@@ -1,0 +1,30 @@
+tangle sense biology
+
+button tangle "get UL" "string;solv get 0" 5 58 30 10 0 1
+button tangle "get UR" "string;solv get 1" -1 -1 30 10 0 1
+button tangle "get LL" "string;solv get 2" 5 46 30 10 0 1
+button tangle "get LR" "string;solv get 3" -1 -1 30 10 0 1
+
+
+button tangle up "solv view 1" 5 32 20 10 0 1
+button tangle down "solv view -1" -1 -1 20 10 0 1
+
+button tangle "incr" "solv view 2" -1 -1 20 10 0 1
+button tangle "decr" "solv view -2" -1 -1 20 10 0 1
+
+button tangle "incr2" "solv view 3" -1 -1 20 10 0 1
+button tangle "decr2" "solv view -3" -1 -1 20 10 0 1
+
+
+%button 0 "tangle solver" "panel set 14" 72 272 30 10
+%button tangle "Main panel" "solve reset;string;panel set 0" 72 272 30 10 0 1
+
+tg1off=6
+cyl=.4
+mode s
+reset sliders
+
+load tsolver_sumNumer.k
+thold install s
+delete all
+

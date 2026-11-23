@@ -1,0 +1,46 @@
+%reset all
+if par9 != 8263493 then "reset all;back=#000" else <wave-init.kps
+
+silent=t
+
+txt push
+txt font \ri[3/4]
+txt cent
+txt fill on
+txt hide 9
+txt expire \rr[4/8]
+txt fcolour royalblue .6
+txt c -54 "click me!" "txt delete click;untran;rotate x \rr{90/90}"  % either -90 or 90, chosen with equal probability
+txt pop
+
+
+N-tor = \ri[20/77]
+unknot 
+
+if \rr7 < 1 then "shift \ri999"
+
+about y 90
+if \rr2 < 1 then "about x 90"
+spe comm "swirl 1;if \rr44 < 1 then <wave_demo6_aux.kps"
+cyl=.06
+wave skip \pN-torus
+
+coll a
+force 1
+wavefront nwaves 222
+wavefront c \rr[2/7]
+wavefront init
+
+verbose = f
+
+go inf limit 30
+
+func init
+func silent
+
+alias ~sel6 "txt set selected"
+<wave_demo_aux.kps
+alias ~sel6 nop
+txt exec wb 109
+
+silent=f

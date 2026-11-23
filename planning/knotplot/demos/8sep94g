@@ -1,0 +1,68 @@
+singlebuffer
+
+Draw = f
+background = 0
+blendfunction one one
+backface f
+zbuffer f
+draw broken
+load 10.123
+twist = -279.640381
+nseg = 36
+ncur = 125
+vcn = 10
+vcA = 1.691380
+broff = -1.927703
+hstart = 245.145187
+hincr = -120.000000
+value = 0.338120
+saturation = 1.000000
+scale = 0.700000
+cyl = 1.020000
+Draw = t
+nap 2
+
+Draw = f
+background = 0
+blendfunction one one
+backface f
+zbuffer f
+draw sbroken
+load 9.44
+twist = -27.171692
+nseg = 24
+ncur = 130
+vcn = 13
+vcA = 0.162769
+broff = -1.791150
+hstart = 320.550476
+hincr = 120.000000
+value = 0.922909
+saturation = 1.000000
+scale = 0.700000
+cyl = 1.020000
+Draw = t
+nap 2
+
+
+Draw = f
+background = 0
+blendfunction one one
+backface f
+zbuffer f
+draw broken
+load 10.34
+twist = 233.994263
+nseg = 25
+ncur = 130
+vcn = 14
+vcA = -1.008676
+broff = -1.777448
+hstart = 25.707815
+hincr = -120.000000
+value = 0.893786
+saturation = 1.000000
+scale = 0.700000
+cyl = 1.020000
+Draw = t
+nap 2

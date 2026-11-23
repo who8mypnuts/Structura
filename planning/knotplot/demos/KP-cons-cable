@@ -1,0 +1,42 @@
+#!/bin/csh -f
+
+# Very basic constructor routine: KP-cons-cable
+# March 16, 1996
+# Rob Scharein
+
+# Note that there are two symbolic links in this directory to 
+# this file, KP-cons-double and KP-cons-companion.
+
+# Constructor arguments:
+#    $0 Constructor executable file (this file).
+#    $1 First file read by KnotPlot (the prefile).
+#    $2 Second file read by KnotPlot (the postfile).
+#    $3 Type of machine we're running on (sgi, ibm, etc...)
+#    $4 A flag either 0 or 1.
+#    $5 Name of constructor.
+#       Anymore more arguments are the arguments to the contructor
+#       from the KnotPlot command line.
+
+# Uncomment the following line and set Debug = t in KnotPlot to see
+# the sequence of events.
+
+# echo KP-cons-cable command line arguments are: $*
+
+# The best way to see what happens is to run KnotPlot in non-graphics mode:
+
+#     knotplot -nog -par Debug t
+
+# This is one of the simplest possible constructor routines.
+# Simply echo argument 4 (the name of the constructor) to the first file.
+
+# $5 will have the value `double', `companion', or `cable' depending on
+# exactly which constructor is called.
+
+# Echo nothing to the second file.
+
+echo $5 > $1
+echo " " > $2
+
+
+
+

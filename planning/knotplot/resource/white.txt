@@ -1,0 +1,12 @@
+248 248 255  GhostWhite
+245 245 245  WhiteSmoke
+255 250 240  FloralWhite
+250 235 215  AntiqueWhite
+255 222 173  NavajoWhite
+255 255 255  white
+255 255 255 USA White
+255 255 255 Canada White
+241 242 241 Italian White 
+255 255 255 French White
+255 255 255 UK White
+#FFFFFF Iceland White

@@ -1,0 +1,11 @@
+%% Generated Sun May 17 20:49:46 2009
+%% with command line: multiif kload.txt
+par3 = \rr140
+if par3 < 1 then "kload 3 1;par3=142"
+if par3 < 2 then "kload 4 1;par3=142"
+if par3 < 4 then "kload 5 \ri[1/2];par3=142"
+if par3 < 7 then "kload 6 \ri[1/3];par3=142"
+if par3 < 14 then "kload 7 \ri[1/7];par3=142"
+if par3 < 30 then "kload 8 \ri[1/21];par3=142"
+if par3 < 60 then "kload 9 \ri[1/49];par3=142"
+if par3 < 141 then "kload 10 \ri[1/165];par3=142"

@@ -1,0 +1,47 @@
+% bfacf commands to create a 1x2 tube and funnel
+% File auto-generated on Tuesday, 14-Feb-12 23:18:53 PST
+
+<bfacf/PxQ-aux1.kps
+
+bfacf latshow -34 -6 -5  113 5 4
+bfacf clear -34 -6 -5  113 5 4
+
+bfacf fill -33 -1 -1  0 1 0
+bfacf fill 0 -1 -1  8 1 0
+bfacf fill 8 -2 -1  16 1 0
+bfacf fill 16 -2 -2  24 1 0
+bfacf fill 24 -2 -2  32 2 0
+bfacf fill 32 -2 -2  40 2 1
+bfacf fill 40 -3 -2  48 2 1
+bfacf fill 48 -3 -3  56 2 1
+bfacf fill 56 -3 -3  64 3 1
+bfacf fill 64 -3 -3  72 3 2
+bfacf fill 72 -4 -3  80 3 2
+bfacf fill 80 -4 -4  88 3 2
+bfacf fill 88 -4 -4  96 4 2
+bfacf fill 96 -4 -4  104 4 3
+bfacf fill 104 -5 -4  112 4 3
+
+bfacf dilate
+
+bfacf clear -33 -1 -1  0 1 0
+bfacf clear 0 -1 -1  8 1 0
+bfacf clear 8 -2 -1  16 1 0
+bfacf clear 16 -2 -2  24 1 0
+bfacf clear 24 -2 -2  32 2 0
+bfacf clear 32 -2 -2  40 2 1
+bfacf clear 40 -3 -2  48 2 1
+bfacf clear 48 -3 -3  56 2 1
+bfacf clear 56 -3 -3  64 3 1
+bfacf clear 64 -3 -3  72 3 2
+bfacf clear 72 -4 -3  80 3 2
+bfacf clear 80 -4 -4  88 3 2
+bfacf clear 88 -4 -4  96 4 2
+bfacf clear 96 -4 -4  104 4 3
+bfacf clear 104 -5 -4  112 4 3
+
+bfacf fill
+scenery object bfacf/1x2.eobj
+
+<bfacf/PxQ-aux2.kps
+

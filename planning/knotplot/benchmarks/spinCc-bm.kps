@@ -1,0 +1,22 @@
+reset all
+
+all 4444
+mode c
+cyl=.3
+scale=.43
+
+R-torus=4
+d-torus=5
+torus 33 15 4444
+
+
+
+spec fra
+
+idle "about y 2"
+
+<../benchmarks/blurb-bm.kps
+
+
+
+

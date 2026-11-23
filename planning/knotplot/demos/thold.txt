@@ -1,0 +1,23 @@
+par2
+5 read thold_cube.kps
+3 read thold_a.kps
+6 read thold_b.kps
+4 read thold_c.kps
+3 read thold_f.kps
+3 read thold_g.kps
+4 read thold_h.kps
+5 read thold_nm.kps
+2 read thold_1st.kps
+2 read thold_Denom.kps
+2 read thold_Numer.kps
+6 read thold_6st.kps
+6 read thold_6sst.kps
+6 read thold_8st.kps
+6 read thold_9st.kps
+6 read thold_10st.kps
+6 read thold_10sst.kps
+6 read thold_10ssst.kps
+6 read thold_11st.kps
+6 read thold_8stvar.kps
+6 read thold_10stvar.kps
+4 read thold_3st.kps

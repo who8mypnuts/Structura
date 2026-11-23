@@ -1,0 +1,233 @@
+%`-
+
+require KPbuild 4154
+
+reset all
+
+silent=t
+
+alloc comp 4000
+alloc bead 15000
+
+func init
+func silent
+
+
+par2 = 1
+
+unknot 11 7
+save |.ring   % save internally (i.e. in RAM, not on the hard drive)
+
+torus 2 3 22
+save |.trefoil
+
+unknot 4 11
+#2 split
+save |.a.square
+
+unknot 3 7
+#2 split
+save |.triangle
+
+line numb 2
+line dir 0 \rr[2/4] 0
+line 
+fitto 7
+save |.rod
+
+
+
+delete all
+
+if \rr1 < .3 then "back=0"
+if \rr1 < .3 then "spe back"
+
+if stereo then "back=0"
+
+if \rr1 < .2 then "read fancy-lights.kps;back=0"
+scale=.11
+cyl=.9
+par0=1.8
+%new=f  % not needed anymore
+alias ~offset "trans \rr+-$0 \rr+-$0 \rr+-$0 last"
+par1=22
+
+stus=11
+
+
+auto=f
+hstart=\rr360
+hincr=\rr+-30
+%sat=\rr[.6/1]
+
+func 1 <ring-pack.kps
+func c 2 "alias ~placeit {refl gr last;~offset \ppar1;~show}"
+func c 3 "alias ~placeit {refl grG last;tran \rr+-2 \rr+-2 \rr+-2 last;~show}"
+
+func c 5 "par4=6;alias ~show {disp t}"
+func c 6 "par4=5;alias ~show nop"
+func exec c \ri[5/6]
+
+
+func c 8 "echo packing triangles;save |.tmp;load |.triangle;save |.itemus;scale \ppar2;save |.item;load |.tmp"
+func c 9 "echo packing rings;save |.tmp;load |.ring;save |.itemus;scale \ppar2;save |.item;load |.tmp"
+func c 10 "echo packing trefoils;save |.tmp;load |.trefoil;save |.itemus;scale \ppar2;save |.item;load |.tmp"
+func c 11 "echo packing squares;save |.tmp;load |.a.square;save |.itemus;scale \ppar2;save |.item;load |.tmp"
+func c 12 "echo packing rods;save |.tmp;load |.rod;save |.itemus;scale \ppar2;save |.item;load |.tmp"
+func exec c 2
+
+load |.ring
+save |.itemus    % item unscaled
+scale \ppar2
+save |.item      % scaled item, what is actually packed
+
+par5=1
+alias ~create "disp refr \ppar5;load comb |.item;about z \rr360 last"
+
+func s 5 "par2=.25;load |.itemus;scale \ppar2;save |.item"
+func s 6 "par2=.5;load |.itemus;scale \ppar2;save |.item"
+func s 7 "par2=.75;load |.itemus;scale \ppar2;save |.item"
+func s 8 "par2=1;load |.itemus;scale \ppar2;save |.item"
+
+
+verbose=f
+
+alias ~pack "meta pack custom;txt unselect group 16008;save |.itemus;scale \ppar2;save |.item;delete all;<ring-pack-start.kps"
+
+energy model ncomps
+energy format "Ncomps = %.0f"
+
+spec energy
+
+txt fcolour royalblue .5
+
+txt font 4
+txt fill on
+txt right
+txt -14 14 ? "help popup ring-pack.kps handoff"
+
+txt clobber on
+<ring-pack-start.kps
+
+
+txt font 2
+txt left
+txt lineskip -24
+txt fill on
+txt select on
+txt scolour #000
+txt sfcolour orange .9
+
+alias ~new "delete all"
+
+
+txt group 102
+txt 15 40 "thick" "~new;cyl-rad=.9;par0=1.8;meta thickness thick"
+txt set selected  % sets the last txt object to be selected
+txt 15 a "svelte" "~new;cyl-rad=.45;par0=.9;meta thickness svelte"
+txt 15 a "thin" "~new;cyl-rad=.22;par0=.44;meta thickness thin"
+txt 15 a "v. thin" "~new;cyl-rad=.11;par0=.22;meta thickness v.thin"
+txt 15 a "zero" "~new;cyl-rad=.1;par0=-.108;meta thickness zero"
+txt fill off
+txt 10 a thickness:
+meta thickness thick
+
+txt fill on
+txt group 1008
+txt 15 a1.3 "large" "func exec s 8;meta size large"
+txt set selected
+txt 15 a "medium" "func exec s 7;meta size medium"
+txt 15 a "small" "func exec s 6;meta size small"
+txt 15 a "tiny" "func exec s 5;meta size tiny"
+txt fill off
+txt 10 a size:
+meta size large
+
+txt fill on
+txt group 108
+txt select on
+txt 15 a1.3 "from centre" "func exec c 3"
+txt 15 a "in box" "func exec c 2"
+txt set selected  % sets the last txt object to be selected
+txt fill off 
+txt 10 a "pack how:"
+
+txt group 16008
+txt fill on
+txt 15 a1.3 rods "func exec c 12;meta pack rods"
+txt 15 a squares "func exec c 11;meta pack squares"
+txt 15 a triangles "func exec c 8;meta pack triangles"
+txt 15 a trefoils "func exec c 10;meta pack trefoils"
+txt 15 a rings "func exec c 9;meta pack rings"
+txt set selected
+txt fill off
+txt 10 a "pack what:"
+meta pack rings
+
+txt group 0
+txt right
+txt fill on
+txt select off
+txt -15 60 fullscreen "full toggle"
+txt -15 a  steps <ring-pack-steps.kps
+txt fill off
+txt -10 a toggle:
+
+txt fill on
+lnknum method new
+txt -15 a1.3 lnknum "echo;echo;echo;echo;lnknum"
+txt fill off
+txt -10 a calc:
+
+txt off
+
+silent=f
+
+echo 
+echo 
+echo 
+echo 
+echo " *** Click on the `?' button in the view window for more info"
+echo "     Press F1 to rerun demo"
+echo
+
+
+
+
+exit
+
+%`+
+Ring packing
+
+Pack rings and other things into a confined space!  The objects packed have 
+some thinkness, so they can't get too close to each other (this is known as
+"volume exclusion").  You can change this thickness several different values. 
+
+Every time a new object is created, it is oriented and positioned randomly.
+If it fits into the place according to the current thickness, it is left there
+and a new object is created.  New random orientations and positions are tried
+until it fits. When the demos starts, a random choice is made as to whether to
+show all the steps in the placement procedure.  
+
+How to work it:
+
+   --- while packing is stopped, set the type of thing you want to pack and
+       its size and thickness.  then click on `clear' to get rid of everything
+       before clicking on `begin packing'.
+
+   --- click on `steps' to toggle on/off the showing of the placement steps.
+
+   --- select `zero' thickness to pack without volume exclusion.
+
+   --- if you want to try packing something else, load a knot from somewhere
+       or create something new in KnotPlot. Then click in the command window
+       and enter the command:
+
+           ~pack
+
+       Note some objects may be too thick to pack.  If packing doesn't seem
+       to be working, reduce the thickness of the object.
+
+
+This demo was inspired by a talk given by Yuanan Diao. 
+

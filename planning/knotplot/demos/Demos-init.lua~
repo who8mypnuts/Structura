@@ -1,0 +1,101 @@
+  function TitleAux (title, position)
+  executeKP ([[
+  txt push
+  txt on
+  txt fill off
+  txt centre
+  txt font 4
+  ]])
+  executeKP ("txt c " .. position .. " \"" .. title .. "\"")
+  executeKP ("txt pop")
+end
+
+function Title (title)
+  TitleAux (title, -20)
+end
+
+function BotTitle (title)
+  TitleAux (title, 12)
+end
+
+function ButtonAux (title, position, action)
+  executeKP ([[
+  txt push
+  txt on
+  txt fill on
+  txt centre
+  txt font 3
+  ]])
+  executeKP ("txt c " .. position .. " \"" .. title .. "\""  .. " \"" .. action .. "\"")
+  executeKP ("txt pop")
+end
+
+function Button (title, action)
+  ButtonAux (title, -20, action)
+end
+
+function BotButton (title, action)
+  ButtonAux (title, 12, action)
+end
+
+function Random (kind)
+  return tonumber (captureKP ("echo \\" .. kind))
+end
+
+function FlipCoin ()
+  local p = Random ("rr100")
+  if p < 50 then
+    return true
+  else
+    return false
+  end
+end
+
+function Interpolate (A, B, p)
+  return (1.0 - p) * A + p * B
+end
+
+function Safe ()
+  -- shouldn't I be able to just return the capture value?
+  if captureKP ("safe -s") == "true" then
+    return true
+  else
+    return false
+  end
+end
+
+-- see http://lua-users.org/wiki/NumbersTutorial
+function Thickness ()
+  stuff = tcaptureKP ("thickness")
+  return tonumber (stuff [2])
+end
+
+function ThicknessFull ()
+  return tcaptureKP ("thickness full")
+end
+
+
+function Colour (name)
+  stuff = tcaptureKP ("colour -lookup " .. name)
+  return stuff [0] .. " " .. stuff [1] .. " " .. stuff [2]
+end
+
+
+function ShowLuaSource ()
+  executeKP ('file show "' .. luaSource .. '"')
+end
+
+function ShowSourceButton ()
+  if not luaDebug then return end
+  
+  executeKP ([[
+    txt push
+    txt fill on
+    txt font 4
+    txt right
+    txt delete "show Lua source"
+    txt -15 15 "show Lua source" "lua . ShowLuaSource ()"
+    txt pop
+  ]])
+end
+

@@ -1,0 +1,18 @@
+All the files in this directory, with the exception of those ending in
+the extension `.kps' and this README file, are KnotPlot knot or link files.
+The files ending in `.kps' are KnotPlot command scripts, they may be 
+executed by entering one of the following at the KnotPlot> prompt:
+
+<the-script.kps
+
+     or
+
+read the-script.kps
+
+-------------------------------------------------------------------------
+
+update-formats.kps --- script to change the file format used in the basic
+                       directory, see this file for documentation
+
+
+

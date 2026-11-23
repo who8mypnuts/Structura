@@ -1,0 +1,16 @@
+reset all
+
+txt font 4
+txt centre
+txt c -40 "click on one of the buttons below:"
+txt fcolour "royal blue" .6
+txt lineskip 35
+txt fill on
+txt c a "obstacle1" <bfacf/obstacle1.kps
+txt c a "obstacle2" <bfacf/obstacle2.kps
+txt c a "obstacle3" <bfacf/obstacle3.kps
+txt c a "obstacle4" <bfacf/obstacle4.kps
+txt c a "obstacle5" <bfacf/obstacle5.kps
+txt c a "obstacle5" <bfacf/obstacle5.kps
+txt c a "obstacle6" <bfacf/obstacle6.kps
+txt on

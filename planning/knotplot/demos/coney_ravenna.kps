@@ -1,0 +1,73 @@
+require KPbuild 4998  % for view command (replacement for viewmatrix)
+
+reset all
+
+func init
+func silent
+silent=t
+
+func 1 <coney_ravenna.kps
+func 2 <random-lights
+
+
+light off all
+light define 1 % currently on
+light ambient 0.00 0.00 0.00 1.00  % R G B A
+light colour 1.00 0.09 0.00 1.00  % R G B A
+light specular 1.00 1.00 1.00 1.00  % R G B A
+light position 3.07 7.93 -19.71 1.00  % x y z w
+light on 1
+light define 2 % currently on
+light ambient 0.00 0.00 0.00 1.00  % R G B A
+light colour 1.00 1.00 0.00 1.00  % R G B A
+light specular 1.00 1.00 1.00 1.00  % R G B A
+light position 0.51 -7.90 -9.23 1.00  % x y z w
+light on 2
+light define 3 % currently on
+light ambient 0.00 0.00 0.00 1.00  % R G B A
+light colour 0.00 1.00 0.13 1.00  % R G B A
+light specular 1.00 1.00 1.00 1.00  % R G B A
+light position -4.09 -10.22 -16.72 1.00  % x y z w
+light on 3
+
+light model local
+
+scale = 0.212484
+
+trx = 1.065227
+try = -0.157647
+view matrix 0.406736 0.913545 0.000000 -0.189937 0.084565 0.978148
+
+saturation = 0.000000
+cyl-rad = 0.246376
+background = black
+
+scenery object coney
+scenery on
+
+load ravenna.k
+scale 1.5
+trans 12.8 -3.7 0
+
+fog on
+fog end 40
+fog colour black
+
+persp 66 2 108
+
+%nseg=2
+tfunc .3 "nseg=2"  % why?
+ncur=7
+draw hflat
+cyl=1.33
+
+func 3 <coney_ravenna_aux.kps
+
+silent=f
+echo
+echo
+echo -n  " *** Unfinished demo, Coney on the "
+name
+echo
+
+tfunc \rr[4/11] "echo Press F3"

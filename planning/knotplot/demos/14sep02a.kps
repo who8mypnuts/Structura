@@ -1,0 +1,30 @@
+
+
+silent=t
+<gravity-init.kps
+
+load 14sep02a.k
+
+if \ppar4 != 1 then "scale = 0.29"
+par4=1
+
+if \rr2 < 1 then "rotate y 180"
+if \rr2 < 1 then "refl z"
+if \rr2 < 1 then "refl x"
+if \rr1 < .11 then "refl y;trans 0 12 0"
+if \rr1 < .11 then "about z 90;scale=.2"
+mcyl 0 .5
+mcyl 1 1
+mech=f
+amech=t
+spring=1
+mass all 1
+mass comp 1 0
+grastr=.001
+dstep=3
+grav=t
+velfo=t
+force 1
+go
+
+silent=f

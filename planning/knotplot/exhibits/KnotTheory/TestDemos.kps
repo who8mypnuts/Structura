@@ -1,0 +1,24 @@
+
+button Nbuttons 3
+button pos 1
+button DemoA freedman <freedman.kps -2 -1 0 10 0 10
+button DemoA ringToss <ringToss.kps -1 -1 0 10 0 10
+button DemoA new_monster <new_monster.kps -1 -1 0 10 0 10
+button DemoA cubicSAW <cubicSAW.kps -1 -1 0 10 0 10
+button DemoA brunnian <brunnian.kps -1 -1 0 10 0 10
+button DemoA random-lights2 <random-lights2.kps -1 -1 0 10 0 10
+button DemoA random1 <random1.kps -1 -1 0 10 0 10
+button DemoA twist-knot <twist-knot.kps -1 -1 0 10 0 10
+button DemoA braids <braids.kps -1 -1 0 10 0 10
+button DemoA combo-monster <combo-monster.kps -1 -1 0 10 0 10
+button DemoA tref-drop <tref-drop.kps -1 -1 0 10 0 10
+button DemoA simp <simp.kps -1 -1 0 10 0 10
+button DemoA stick-symm <stick-symm.kps -1 -1 0 10 0 10
+button DemoA SE <SE.kps -1 -1 0 10 0 10
+button DemoA orbit <orbit.kps -1 -1 0 10 0 10
+button DemoA PerkoExhib <PerkoExhib.kps -1 -1 0 10 0 10
+button DemoA ring-pack <ring-pack.kps -1 -1 0 10 0 10
+button DemoA ChiralKnots <ChiralKnots.kps -1 -1 0 10 0 10
+button DemoA fly-thru <fly-thru.kps -1 -1 0 10 0 10
+button DemoA KnotPaint <KnotPaint.kps -1 -1 0 10 0 10
+button DemoA simple-relax <simple-relax.kps -1 -1 0 10 0 10

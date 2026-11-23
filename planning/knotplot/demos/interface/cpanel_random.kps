@@ -1,0 +1,20 @@
+panel colour svalue #rrrrrr   % slider value field
+panel colour sbox  #rrrrrr  % slider box
+panel colour sbutton #rrrrrr % slider button
+
+panel colour rbfill #rrrrrr  % radio button fill
+panel colour rbbord #rrrrrr % radio button border
+
+panel colour button #rrrrrr
+panel colour press #rrrrrr % button press 
+panel colour blab  #rrrrrr
+
+panel colour background #rrrrrr
+panel colour ghost #rrrrrr
+
+panel colour label #rrrrrr
+
+
+
+
+

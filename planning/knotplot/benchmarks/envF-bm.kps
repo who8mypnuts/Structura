@@ -1,0 +1,20 @@
+reset all
+silent=t
+panel set 0
+font 20
+spec cpan
+spec +fram
+back=x330000
+idle "rotate z 1"
+scale=.55
+
+silent=f
+
+func 9 "font 3;echo Press F10 to use GLF fonts.;panel draw"
+func 10 "font 20;echo Press F10 to use GLUT fonts.;panel draw"
+<../benchmarks/blurb-bm.kps
+echo "Press F9 to use GLUT fonts."
+echo "Press F12 to go back to benchmarks panel."
+func 12 panel set 13
+
+

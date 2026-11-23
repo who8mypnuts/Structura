@@ -1,0 +1,10 @@
+reset all
+
+atw=t
+aftwist = t
+
+knot
+
+tex /u/scharein/images/rug.ppm 1 2 26
+
+

@@ -1,0 +1,12 @@
+
+about x 80
+trans 14
+disp
+save |AntNeck_ring-L.k
+refl x
+disp
+load comb |AntNeck_ring-L.k
+disp
+load comb |AntNeck_ring-accum.k
+disp
+

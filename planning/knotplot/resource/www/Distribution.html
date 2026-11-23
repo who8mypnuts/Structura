@@ -1,0 +1,134 @@
+<html>
+<head>
+<title>KnotPlot Distribution</title>
+</head>
+
+<body>
+
+<h2>KnotPlot Distribution</h2>
+
+This is a list of the major directories in the KnotPlot distribution
+and what they contain.
+To find where these directories are located, first find the
+<b>KnotPlot home</b> (use the 
+<a href="commands.html#version">version</a> command).
+From the KnotPlot home you should see the following 
+sub-directories (at least).
+
+<dl>
+<dt>
+<b>basic</b>
+<dd>
+    These are the knot and link files in the basic
+    <a href="KnotCatalogue.html">knot catalogue.</a>
+
+<p>
+
+<dt>
+<b>demos</b>
+<dd>
+    This is the <a  href="DemosDir.html">demos  directory</a>.
+    It consists of mostly demo scripts, including those that define the default
+    <a href="BasicDemos.html">basic demos</a> seen on the Demos control panel.
+
+<p>
+
+<dt>
+<b>resource</b>
+<dd>
+    This is the <a href="ResourceDir.html">resource directory.</a>
+    It contains a number of sub-directories:<p>
+    <dl>
+
+    <dt>
+    <b>ps</b>
+    <dd>
+    A number of files needed for Postscript output.<p>
+
+    <dt>
+    <b>sgi</b>
+    <dd>
+    Location of a few executable files (SGI version).
+
+    <dt>
+    <b>src</b>
+    <dd>
+    Source code for several useful utilities including the 
+    following files:
+    <ul>
+    <li><a href="../src/ppm2cur.c">ppm2cur.c</a>  A program to convert
+         raw PPM files into the '.cur' format needed for a KnotPlot
+         <a href="UnimportantInfo.html#cursor">cursor.</a>
+    <li><a href="../src/showpnm.c">showpnm.c</a> A very simple program
+         to display 
+         <a href="FileFormats.html#PPM">raw PPM</a> image files on an SGI screen, useful to 
+         look at the output from the 
+         <a href="commands.html#ppmout">ppmout</a> command.
+    <li><a href="../src/ginv.c">ginv.c</a> Very useful little utility
+         by Rodney Hoinkes to query the graphics capability of your
+         system.  Lets you know the number of bitplanes for each colour
+         component in both double and single buffered mode. 
+    <li><a href="../src/cat4dsurf.c">cat4dsurf.c</a> A program to 
+         concatenate two 4D surfaces into one.
+         <a href="../../demos/make-van-zee.kps">An example</a>
+         using this program to construct the
+         <a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/links/VanKampenZeeman.html">Van
+         Kampen - Zeeman Linked Spheres</a> 
+         is found in the demos directory.
+    <li><a href="../src/eqspace.c">eqspace.c</a> A simple filter to 
+         create a knot coord file that has a bead spacing not less than
+         a minimum amount.
+    <li><a href="../src/kpfsnoop.c">kpfsnoop.c</a> Snooping program to 
+	examine contents of a KnotPlot
+	<a href="FileFormats.html#knotplot">knot or link file.</a>
+    <li><a href="../src/unknot.c">unknot.c</a> Very simple example program
+	to create a KnotPlot file containing a stack of unknots. 
+    <li><a href="../src/Makefile">Makefile</a>
+    </ul>
+
+    <dt>
+    <b>www</b>
+    <dd> Location of the on-line hypertext manual (this manual).<p>
+         <dl>
+         <dt>
+         <b>inlines</b>
+         <dd>
+         A sub-directory where the images in the on-line manual are located.
+         </dl>
+
+    </dl>
+
+<p>
+
+<dt>
+<b>special</b>
+<dd>
+    These are the knot and link files in the 
+    <a href="SpecialColl.html">special collection.</a>
+
+<p>
+
+<dt>
+<b>unknots</b>
+<dd>
+    A large number of unknots in various states of relaxation are
+    located here.
+</dl>
+
+<hr>
+
+[<a href="KnotPlotManual.html">KnotPlot Manual</a>], 
+[<a href="ViewWindow.html">View Window</a>], 
+[<a href="ControlPanel.html">Control Panel</a>], 
+[<a href="CommandWindow.html">Command Window</a>],
+[<a href="KPManOverView.html">Overview</a>]
+<br>
+[<a href="http://www.cs.ubc.ca/spider/scharein">Rob Scharein's</a>
+ main WWW site], 
+[<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/KnotPlot.html">KnotPlot Site</a>]
+
+
+
+</body>
+</html>
+

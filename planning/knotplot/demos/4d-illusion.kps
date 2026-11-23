@@ -1,0 +1,17 @@
+reset all
+<tsinit
+silent=t
+ortho
+disp t
+spin 0 0 0
+4dop disp s
+4dto3d ortho
+par3 = \rr[4/11]
+idle "spin tincr \ppar3 0 0"
+silent=f
+
+echo " " 
+echo " *** Does this look like an object rigidly rotating in 3D?"
+echo " "
+
+tfunc 6 <4d-illusion-aux.kps

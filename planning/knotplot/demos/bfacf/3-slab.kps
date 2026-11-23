@@ -1,0 +1,66 @@
+require KPbuild 4691
+require KPbuild 4255
+alias ~moveWallAnnounce "echo moved wall to x = $0"
+
+if \ppar0 != 9152998 then <bfacf/slab-init.kps
+
+par5 = -2
+#4 echo
+txt init
+txt centre
+txt font 4
+txt c -20 "Force a knot into a 3-slab"
+txt on
+txt fcolour hsv:108/.6/.6 .6
+
+txt clobber on
+
+alloc 5555
+
+bfacf centre off
+
+alias ~savebutt "txt push;txt delete group 108;txt fill on;txt font 3;txt cent;txt group 108;txt c -70 {save $0_$1-3slab.k} {save $0_$1-3slab.k};txt group 108 off;txt pop"
+
+
+alias ~foundnew "txt push;txt fill off;txt cent;txt font 3;txt c -70 {found min of $0 edges};txt pop"
+
+
+alias ~rerun "txt push;txt fill on;txt cent;txt font 4;txt c 30 rerun {reset all;read bfacf/boxinit.kps;read bfacf/3-slab.kps;read bfacf/buttons-search.kps};txt pop"
+
+
+alias ~setaction "bfacf wall action <bfacf/slab-search.kps"
+alias ~startbutt "txt push;txt font 4;txt delete start;txt centre;txt fill on;txt c 30 start {read bfacf/slab2-auto.kps;bfacf run 1000000;txt delete start};txt pop"
+
+alias getknot "knot number $0 mscl;bfacf init;~trans;bfacf load;read bfacf/slab2-box.kps"
+alias ~trans "about y 90;centre;trans to lattice;trans 25 0 0"
+alias ~annote "~savebutt $0 $1;txt fill off;txt left;txt font 4;txt 5 -20 $0_$1;txt font 2;txt cent;txt c -44 {$0 xing knot}"
+
+
+alias kload  "bfacf init;mode cB;load mscl/$0.$1;~trans;bfacf load;~annote $0 $1;read bfacf/slab2-box.kps;~setaction;~startbutt"
+mode cB
+alias kloaduser "bfacf init;mode cB;load user$0;~trans;bfacf load;read bfacf/slab2-box.kps;~setaction;~startbutt"
+
+<bfacf/kload.kps
+
+
+txt font 3
+
+<bfacf/slab-config-buttons.kps
+
+txt fill on
+txt group 0
+
+txt right
+
+txt centre
+
+%txt c 30 "search for min" <bfacf/1-slab-search.kps
+%txt fill off
+%txt c 66 "don't click on the button below"
+%txt c 50 "until you see the wall move to x = 0"
+
+
+scenery init
+scenery object bfacf/slab-border3
+scenery on
+

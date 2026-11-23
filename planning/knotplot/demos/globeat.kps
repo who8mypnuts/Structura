@@ -1,0 +1,36 @@
+require accbuff
+
+reset all
+silent=t
+verbose=f
+cyl=.3
+func init
+func silent
+
+
+%ortho
+
+spec back
+
+accbuff decay 0.980730
+accbuff accum 0.233067
+accbuff return 0.152134
+accbuff on
+accbuff clear
+
+scale = 0.164797
+load ravenna.k
+
+
+tfunc .1 "anim cyl .3 2 11;anim cyl 2 .3 11" 0 rep 1
+
+tfunc 10 "echo;echo;echo Unfinished demo, but try pressing F2" 0 rep 11 33
+
+func 1 <globeat.kps
+func 2 "persp 77;scale=.45;knot s;mech=t;elec=t;velf=t;force 1;go"
+
+silent=f
+echo 
+echo 
+echo "Unfinished demo"
+echo 

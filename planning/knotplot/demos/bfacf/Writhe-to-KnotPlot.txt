@@ -1,0 +1,40 @@
+correspondence between writhe convention knot files (with underscores, 0_1, 3_1, 4_1, 5_1, 5_2 ...)
+and KnotPlot convention (with periods, 0.1, 3.1, 4.1, 5.1, 5.2 ...) is:
+
+
+0_1 same
+3_1 same
+4_1 same
+5_1 same
+5_2 same
+6_1 same
+6_2 same
+6_3 same
+7_1 same
+7_2 same
+7_3 flipped
+7_4 flipped
+7_5 same
+7_6 same
+7_7 flipped
+8_1 same
+8_2 same
+8_3 same
+8_4 same
+8_5 flipped
+8_6 same
+8_7 flipped
+8_8 flipped
+8_9 same
+8_10 flipped
+8_11 same
+8_12 same
+8_13 flipped
+8_14 same
+8_15 same
+8_16 same
+8_17 same
+8_18 same
+8_19 flipped
+8_20 same
+8_21 same

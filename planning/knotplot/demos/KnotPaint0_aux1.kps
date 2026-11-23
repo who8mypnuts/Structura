@@ -1,0 +1,9 @@
+delete all
+func exec 3
+untran
+if \rr2 < 1 then "rotate x 90" else "rotate x -90"
+unknot \ri[3/333]
+par3 = \rr+-.2
+spec comm "swirl \ppar3"
+
+

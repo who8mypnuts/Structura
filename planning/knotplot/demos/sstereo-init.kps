@@ -1,0 +1,2 @@
+tfunc .4 "wlay sstereo"
+tfunc .6 "knot;reset;scale=.2"

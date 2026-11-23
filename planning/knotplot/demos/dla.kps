@@ -1,0 +1,30 @@
+alias d <dla.kps
+
+reset all
+back=black
+dla init
+
+dla seed 0 0 0
+
+alias s "silent=t;rand eunif 99;fitto sphere $0;dla point knot;silent=f"
+s .1
+dla info
+
+alias c "silent=t;unknot 300;fitto .1;dla point knot;silent=f"
+scale=4
+
+
+%dla threshold .01
+%dla stepsize .01
+idle "dla 1;dla compact;nap .01"
+
+cyl-rad = .01
+dla luxo on
+
+txt on
+txt fcolour royalblue .7
+txt font 3
+txt cent
+txt fill on
+txt c 20 reload <dla.kps
+

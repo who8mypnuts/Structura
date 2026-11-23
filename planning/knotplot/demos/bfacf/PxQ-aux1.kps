@@ -1,0 +1,17 @@
+require KPbuild 4583
+
+%reset all
+alias ~method1 nop
+
+delete all
+idle
+tfunc reset
+go 0
+txt init
+scenery init
+bfacf init
+
+PxQ-load
+translate 106 0 0
+silent=t
+bfacf load

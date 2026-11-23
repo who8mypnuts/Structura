@@ -1,0 +1,7 @@
+txt -15 a1.5 buzz "read sound/buzz.kps;oal listener screen" 
+txt -15 a "ping j" "read sound/pingj.kps;oal listener screen" 
+txt -15 a "ping 5" "read sound/ping2.kps;oal listener screen" 
+txt -15 a "adjust 1" "read sound/adjust1.kps;oal listener screen"
+txt -15 a "adjust 2" "read sound/adjust2.kps;oal listener screen"
+txt -15 a "adjust 3" "read sound/adjust3.kps;oal listener screen"
+txt -15 a "adjust 4" "read sound/adjust4.kps;oal listener screen"

@@ -1,0 +1,97 @@
+#!/bin/csh -f
+
+# Very basic constructor routine: KP-cons-inbetween
+# Jan 9, 1997
+# Rob Scharein
+
+# A constructor to do inbetweening (interpolation) between two knots.
+
+# Limitations: `deform' command only works with one component knots.
+#              results may a little strange if the two knots have different
+#              numbers of beads.
+
+# Usage: Two different usages depending on the number of arguments
+
+#        cons inbetween knotA knotB factor
+
+#        will construct a knot interpolated between `knotA' and `knotB'.
+#        normal range of `factor' is from 0 to 1, values outside this range
+#        may be used to perform extrapolations instead of interpolations.
+#        if `factor' is 0 then the resulting knot is the same as `knotA'.
+#        if `factor' is 1 then the resulting knot is the same as `knotB'.
+
+
+#        cons inbetween basename num
+
+#        this second form is useful if you have a collection of knots with
+#        file names k1, k2, k3, and so on.
+#        you could use `cons inbetween k 102.2' to interpolate 0.2 of the
+#        way from k102 to k103, i.e. the same result as using
+#        `cons inbetween k102 k103 0.2'
+
+
+# Note that drawing is turned off during the `load' and `deform' commands.
+# This may have the side effect of turning drawing on if it was off before
+# the constructor was executed.
+
+# Also note that the file KP-cons-inter is soft linked to the file
+# KP-cons-inbetween in this directory.  So, for convenience you could
+# use `cons inter' in place of `cons inbetween' (it's less typing too).
+
+# Constructor arguments:
+#    $0 Constructor executable file (this file).
+#    $1 First file read by KnotPlot (the prefile).
+#    $2 Second file read by KnotPlot (the postfile).
+#    $3 Type of machine we're running on (sgi, ibm, etc...)
+#    $4 A flag either 0 or 1.
+#    $5 Name of constructor.
+#       Anymore more arguments are the arguments to the contructor
+#       from the KnotPlot command line.
+
+
+switch ($4) 
+
+# Only do something on first call (that is, when $4 is 0)
+
+case 0:
+  touch $2
+
+  switch ($#argv)
+
+# This is the `cons inbetween knotA knotB factor' version
+
+  case 8:
+    set knotA = $6
+    set knotB = $7
+    set factor = $8
+    breaksw
+
+# This is the `cons inbetween basename num' version
+
+  case 7:
+    set basename = $6
+    set frac = $7:e
+    set floor = $7:r
+
+    @ ceil = $floor + 1
+
+    set knotA = $basename$floor
+    set knotB = $basename$ceil
+    set factor = "0."$frac
+    breaksw
+
+  default:
+    echo echo '"Usage: cons '$5' knotA knotB factor"' > $1
+    echo echo '"       cons '$5' basename num"' >> $1
+    exit
+    
+  endsw
+
+  echo "Draw = f" > $1
+  echo load $knotA >> $1
+  echo deform by $knotB $factor >> $1
+  echo "Draw = t" >> $1
+  breaksw
+
+endsw
+

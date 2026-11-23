@@ -1,0 +1,92 @@
+%`-
+
+require KPbuild 4353 midi
+
+reset all
+
+silent = t
+alias ~load "knot numb \ri[1/250] $0;scale 10;centre;split;split;split;shift rand;revb rand;play bead 0 0"
+
+cyl-rad=.4
+scale = .14
+rotate x \rr[-56/-76]
+rotate z \rr[35/55]
+
+draw spec
+
+~load mscl
+scenery object eobj/sphere1 bead 0
+scenery on
+
+par0 = .03
+
+alias ~start "play init;idle {play bead;nap \ppar0}"
+alias qfix
+
+txt font 4
+txt cent
+txt c -20 "play a knot as a `musical' sequence"
+
+txt fcolour "royal blue" .6
+txt lineskip -25
+
+txt push
+txt font 3
+txt left
+txt group 108
+txt fill on
+txt 15 15  ms   "~load ms;split;split"
+txt 15 a  mseq "~load mseq;split;split"
+txt 15 a mscl "~load mscl"
+txt fill off
+txt 10 a "load a knot:"
+
+txt font 3
+txt right
+txt fill on
+txt -15 60 fullscreen "full toggle"
+txt -15 a  player "scenery toggle"
+txt fill off
+txt -10 a toggle:
+
+txt fill on
+txt -14 a2 "faster" "test paradj 0 0.840896;par par0"
+txt -14 a "normal" "par0=.03;par par0"
+txt -14 a "slower" "test paradj 0 1.189207;par par0"
+txt fill off
+txt -10 a speed:
+txt pop
+txt group 108 off
+
+txt push
+txt group 102
+txt lineskip 30
+txt c 108 "make sure your sound is on but not too loud,"
+txt c a "when you're ready click the button below to start the music!"
+txt fill on
+txt c a1.4 "start the music!" "txt group 108 on;txt delete group 102;~start"
+txt pop
+
+txt font 4
+txt fill on
+txt right
+txt -14 14 ? "help popup music/play-knot.kps handoff"
+
+
+
+txt on
+func init
+func 1 <music/play-knot.kps
+silent = f
+echo
+echo
+echo
+
+exit
+
+%`+
+
+no yelp yet!
+
+
+

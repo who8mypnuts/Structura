@@ -1,0 +1,20 @@
+reset all
+
+load smallmonster
+scale=.84
+trx=.9
+try=-.2
+
+go 600
+splt=.03
+seed 12934
+#10 go 100; split stuck; del downto 33
+
+go 300
+
+
+#20 go 5; del bead \ri10
+
+
+
+

@@ -1,0 +1,46 @@
+
+
+load mscl/3.1
+#3 dupl
+trans 0 -8 0
+trans 0 0 \ri[-26/22] 0
+trans 0 32 -24 1
+trans 0 0 \ri30 1
+trans 15 32 24 2
+trans 0 0 \ri[-30/0] 2
+trans 0 -16 8 3
+trans \ri[-17/17] 0 0 3
+bfacf load
+
+bfacf latshow 30
+
+load mscl/3.1
+scale 16
+#4 split
+info
+leng
+centre
+trans to lattice
+
+bfacf clear 30
+cyl=3
+save a1 int
+bfacf fill tube
+bfacf dilate
+bfacf clear tube
+
+bfacf fill
+
+spec bfacf
+
+bfacf copy
+
+cyl=.1
+txt clobber on
+txt font 2
+txt fill off
+txt cent
+txt c -44 "configuration 3"
+%show +axes
+
+hincr=90

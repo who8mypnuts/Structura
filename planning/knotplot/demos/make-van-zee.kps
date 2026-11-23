@@ -1,0 +1,30 @@
+% KnotPlot script: 7 Nov 1995
+
+% Creates the Van Kampen - Zeeman Linked Spheres.
+
+reset all
+
+% Construction of the linked spheres is implemented as a KnotPlot constructor.
+% See the file KP-cons-VanZee in this directory to see how it's done.
+% (note that the file KP-cons-VanZee is a soft link to the file KP-cons-AndCur)
+
+construct VanZee
+spin 90 0 0
+back= 0
+4dhmult = 3.47
+4dsat = 1
+4dscm=1
+
+panel set 1
+reset sliders
+
+pop
+disp
+disp
+
+alert "Click with the left mouse anywhere to stop animation." OK
+
+reset sliders
+
+smov -40 r10 r10 r10
+

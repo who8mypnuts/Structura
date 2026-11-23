@@ -1,0 +1,33 @@
+reset all
+
+ortho
+
+show grid
+unknot 360 10
+cut 359
+cut 90
+keep 0
+
+translate -10 -10 0
+
+save |x
+reflect xy
+load comb |x
+
+save |tile
+
+save |accum
+
+vscale = .03
+
+alias ~rot "if \rr2 < 1 then {about z 90}"
+
+frame comm "load |tile;~rot;translate %d 0 0;load comb |accum;save |accum"
+frame 20 to 160 step 20
+centre
+
+
+
+
+
+

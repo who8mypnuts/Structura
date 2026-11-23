@@ -1,0 +1,10 @@
+par0 = 3952998
+
+scale = 0.21
+ccmode = 2
+cyl-rad = 0.100000
+bead-radius = 0.180000
+mode cB
+untran
+rotate x \rr[-20/-40]
+

@@ -1,0 +1,1 @@
+if \rr1 < .5 then "read tref-relax.kps" else "read fig8-relax.kps"

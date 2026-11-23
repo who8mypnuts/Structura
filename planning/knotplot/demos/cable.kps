@@ -1,0 +1,103 @@
+require KPbuild 4691
+if par0 != 52186024 then "reset all;par0=52186024"
+
+idle
+head off
+
+silent=t
+func silent
+func init
+txt init
+
+%alias ~getknot "if \rr5 < 4 then {knot 1} else {knot cd}"
+%
+alias ~getknot "knot 1"
+
+delete all
+until Ncomp 1 ~getknot
+
+glop back f
+
+<randorient.kps
+hstar=\rr360
+fitto 10
+cyl=.01
+save |path
+double
+%refine 3
+refine 3
+warp install
+delete all
+cyl=.15
+new=f
+Draw=f
+d-torus = \rr[.1/.2]
+if \rr8 < 1 then "d-torus=\rr[.1/.3]"
+silent=f
+echo " " 
+echo " " 
+torus \ri[2/7] \ri[40/67] 444
+if \rr2 < 1 then "shift random"
+revb random
+save |torus
+echo "and warping it along a knot."
+echo " " 
+silent=t
+warp conf
+warp along
+if \rr10 < 1 then "draw spec" else "draw norm"
+save |cable
+
+alias ~cmode "<cmode/$0"
+if par1 == 1 then "draw spec;~cmode 23"
+
+%dfunc symm 2 1
+Draw=t
+
+idle "head tdraw"
+head tset \rr[44/222] 1 "idle;txt delete you;txt group 108 on;~relaxifsafe"
+
+alias ~relaxifsafe "txt delete relax;if safe then {txt right;txt fill on;txt -15 c relax go}"
+
+stus = 1
+
+txt lineskip -24
+
+txt font 3
+txt fcolour royalblue .5
+txt fill on
+txt clobber on
+
+txt space _
+
+txt 15 15 "!" "silent=t;back=black;par1=1;silent=f;echo;echo;echo rerun the demo;echo;txt delete !;txt font 4;txt fill off;txt cent;txt c c rerun_the_demo;disp t"
+if par1 == 1 then "txt delete !"
+
+txt right
+txt -15 15 fullscreen "fullscreen toggle"
+txt -15 a  "rerun demo" <cable.kps
+
+txt push
+txt group 108
+txt fill on
+txt -15 a2 "cable knot"  "load |cable;~relaxifsafe"
+txt -15 a  "warp path"  "load |path;~relaxifsafe"
+txt -15 a  "torus knot" "load |torus;~relaxifsafe"
+txt fill off
+txt -10 a show:
+txt group 108 off
+txt pop
+
+txt fill off
+txt centre
+txt c 33 "you can rotate or scale the knot while it's being drawn"
+txt on
+
+silent=f
+
+
+
+
+
+
+

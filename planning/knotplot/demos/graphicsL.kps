@@ -1,0 +1,60 @@
+% This is partly a demo of lighting features and 
+% partly a demo of the use of random parameters.
+
+% 6 April 2000, Rob Scharein
+
+reset all
+
+Draw = f
+
+back=0
+if \rr400 < 360 then knot else "knot spe"
+if \rr5 < 1 then "knot cd"
+<randorient.kps
+
+if \rr6 < 1 then "open all"
+
+silent=t
+satu = 0.0    % looks cooler if knot surface is white
+
+light reset
+light off 0
+
+light define 1
+light hcolour \rr360 1 1    % Random hue, but max saturation and value
+light pos \rr[-30/30] \rr[-30/30] \rr[-30/30] 1
+light on 1
+
+light define 2
+light hcolour \rr360 1 1
+light pos \rr[-30/30] \rr[-30/30] \rr[-30/30] 1
+light on 2
+
+light define 3
+light hcolour \rr360 1 1
+light pos \rr[-30/30] \rr[-30/30] \rr[-30/30] 1
+light on 3
+
+
+
+
+ncur=\ri[5/10]
+nseg=\ri[2/5]
+
+
+coll a
+force 1
+
+fixcofm=t
+Draw = t
+draw hflat
+twfix \rr[-102/102]
+
+velf=t
+if \rr2 < 1 then go
+
+
+silent=f
+
+
+

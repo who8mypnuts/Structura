@@ -1,0 +1,6 @@
+4dop disp +p 6
+4deye=15
+spin 0 90 0
+~4dpersp
+
+~label "tiling in 4D"

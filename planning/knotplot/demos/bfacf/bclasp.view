@@ -1,0 +1,8 @@
+scale = 0.363008
+ccmode = 2
+hstart = 33.000000
+cyl-rad = 0.100000
+bead-radius = 0.180000
+mode cB
+untran
+viewmatrix 0.577270 0.816473 -0.011540 -0.314772 0.235549 0.919474

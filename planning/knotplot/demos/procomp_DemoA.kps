@@ -1,0 +1,13 @@
+reset all
+
+% NOTE: effect will not be disabled via `reset' or `reset all'
+%       use `ProComp disable' to disable
+
+knot 1
+twfix
+coll a
+force 1
+ProComp enable
+mapchannel A cyl 1 0
+mapchannel B hstart 1 0
+go 999999999

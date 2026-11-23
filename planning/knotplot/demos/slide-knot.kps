@@ -1,0 +1,59 @@
+reset all
+
+func 1 <slide-knot.kps
+silent=t
+cyl-rad = 0.45
+scale = \rr[.25/.5]
+tanforce = on
+tanmag = \rr[.1/.8]
+
+fixcofm = true
+hstart=\rr360
+disp t
+
+par0=\rr100
+if par0 < 50 then "load opensquare.k;par0=102"
+if par0 < 75 then "load bowline.k;par0=102"
+if par0 < 100 then "load Figure8open.k;par0=102"
+
+open all
+
+align ax
+about y \rr360
+about z 45
+
+<randorient.kps
+
+if \rr4 < 1 then "align ax;about y \rr360;about x \rr360"
+
+if \rr2 < 1 then "revb 0"
+
+if \rr4 < 2 then "read slide-knot-aux.kps"
+if \rr4 < 2 then "read slide-knot-aux.kps"
+if \rr4 < 2 then "read slide-knot-aux.kps"
+if \rr4 < 2 then "read slide-knot-aux.kps"
+
+if \rr4 < 1 then "read slide-knot-aux.kps"
+if \rr4 < 1 then "read slide-knot-aux.kps"
+if \rr4 < 1 then "read slide-knot-aux.kps"
+
+save |.tmp
+
+tfunc \rr6 revb 0 rep 1 7
+
+go 
+if \rr11 < 1 then "scale=\rr[.3/.7];texture norm lupin;draw texture;satu=\rr1;texture on;texture rep 3 0;go 9999999 limit 44"
+
+if \rr2 < 1 then "vcA=1;vcn=1;vcphi=3.14159;cyl=.22"
+
+if \rr102 < 1 then "sbuff;clrfun n;cyl=.1"
+
+
+silent=f
+echo " " 
+echo " " 
+echo " " 
+echo " Randomized demo, try again!" 
+echo " " 
+
+par scale

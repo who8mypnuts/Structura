@@ -1,0 +1,8 @@
+save |tmp
+keep 1
+test clkembed
+save |tmp1
+load |tmp
+keep 0
+test clkembed
+load comb |tmp1

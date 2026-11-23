@@ -1,0 +1,17 @@
+% old negative cylinder space
+
+reset all
+silent = t
+back=0
+backface f
+zbuff f
+cyl = -5
+blend one one
+draw brok
+
+silent = f
+knot
+silent = t
+twfix 102.2
+silent = f
+

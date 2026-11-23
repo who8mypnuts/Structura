@@ -1,0 +1,28 @@
+% all this just so we can preserve the wave and background colours!
+
+txt init
+verbose = f
+cyl-rad = 0.900000
+trx = 0.000000
+try = 0.000000
+trz = 0.000000
+scale = 0.350000
+N-torus = 80
+tfunc reset
+force 2
+coll f
+wavefront rotate 1
+wavefront nsegments 102 90.000000
+wavefront start 0
+wavefront skip 1
+wavefront c 5.000000
+wavefront nwaves 0
+delete all
+untran
+idle
+go 1
+mass off
+spec
+%blend sa msa
+%zbuff t
+

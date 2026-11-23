@@ -1,0 +1,78 @@
+% Idea #5 --- 27 May 2002
+
+% Modified from Idea #4 (Feb 23, 1994)
+% Note this looks best when ncur and nseg are quite large.
+
+% Same as Idea #4 except drawing of the quad frame is omitted.
+
+/p .7 def
+/omp {1 p sub} def
+
+
+/halfway {
+  add 2 div def} def
+
+/interp {
+  p mul
+  exch
+  omp mul
+  add def} def
+
+/stringto {
+  newpath
+  moveto
+  curveto
+  stroke } def
+
+102 srand 
+
+/Patch {
+    0 setlinewidth
+    /yd exch def   /xd exch def
+    /yc exch def   /xc exch def
+    /yb exch def   /xb exch def
+    /ya exch def   /xa exch def
+    1 setgray
+    newpath
+    xa ya moveto
+    xb yb lineto
+    xd yd lineto
+    xc yc lineto
+    xa ya lineto
+    fill
+    0 setgray
+    /xe xa xb halfway
+    /ye ya yb halfway
+    /xf xb xd halfway
+    /yf yb yd halfway
+    /xg xd xc halfway
+    /yg yd yc halfway
+    /xh xc xa halfway
+    /yh yc ya halfway
+    /xm xe xg halfway
+    /ym ye yg halfway
+    /xl xh xm interp
+    /yl yh ym interp
+    /xi xe xm interp
+    /yi ye ym interp
+    /xj xf xm interp
+    /yj yf ym interp
+    /xk xg xm interp
+    /yk yg ym interp
+    xe xa sub dup mul
+    ye ya sub dup mul add sqrt 7 div /diste exch def
+    xh xa sub dup mul
+    yh ya sub dup mul add sqrt 7 div /disth exch def
+    diste disth lt
+    {diste} {disth} ifelse
+    setlinewidth
+    rand 1073741825.0 div 1.0 ge
+    {xi yi xl yl xh yh xe ye stringto
+     xk yk xj yj xf yf xg yg stringto}
+    {xi yi xj yj xf yf xe ye stringto
+     xl yl xk yk xg yg xh yh stringto}
+    ifelse
+    stroke pop pop 
+     } def
+
+% End of Idea #5 prologue.

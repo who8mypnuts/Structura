@@ -1,0 +1,5 @@
+par0=8
+if KPbuild > 3363 then "thold cube \ri[3/6];fitto sphere \ppar0" else "thold cube"
+echo "  *** Cube tangle template"
+txt c -30 "Cube tangle template"
+

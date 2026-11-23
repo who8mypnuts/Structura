@@ -1,0 +1,36 @@
+% how rgs_1_coords.txt was made
+
+reset all
+alloc 6000
+
+cyl-rad=.1
+load 10.81
+double
+warp install
+
+mode cb
+
+torus 2 21 400 10 .2
+warp along
+
+scale 6
+split
+split
+
+test clkembed
+bfacf load
+bfacf target 9999
+bfacf search on
+bfacf run 1000000
+
+exit
+
+let it run for a while, fiddling with the z-slider, then stop it and do the following:
+
+load |min
+centre
+trans to lattice
+save rgs_1_coords.txt int
+
+
+

@@ -1,0 +1,8 @@
+<bfacf/basicinit.kps
+
+ccmode=2
+
+bfacf init
+load mscl/2.2.1
+if \rr2 < 1 then "swap 0 1"
+bfacf load

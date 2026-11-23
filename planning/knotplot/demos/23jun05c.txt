@@ -1,0 +1,4 @@
+par7
+30 unknot 20000
+20 torus 0 0 20000
+10 knot 1;nbead 20000

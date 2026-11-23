@@ -1,0 +1,51 @@
+reset all
+panel set Bench
+
+silent=t
+spec back
+txt font 4
+txt centre
+txt colour orange
+txt c -20 "How to allow the use of the accumulation buffer"
+
+txt lineskip 24
+txt c a " "
+txt left
+txt colour white
+
+
+txt 30 a "The `accumulation buffer' is a very nice feature in OpenGL that allows for"
+txt 30 a "numerous interesting visual effects, for example motion blur."
+txt 30 a " "
+txt 30 a "Unfortunately, some graphics cards give very poor performance or even"
+txt 30 a "incorrect results when using the accumulation buffer.  Since several"
+txt 30 a "KnotPlot demos use the accumulation buffer for a motion blur effect, it's"
+txt 30 a "important to make sure that your accumulation buffer is working properly"
+txt 30 a "before allowing its use."
+txt 30 a " "
+txt 30 a "Here is what you do:"
+txt 30 a " "
+txt 30 a "   --- click on the `accbuff' buttons in the `Other graphics tests'"
+txt 30 a "       section on the control panel"
+txt 30 a " "
+txt 30 a "   --- compare your results to the reference renderings on the web"
+txt 30 a " "
+txt 30 a "   --- if performance is reasonable (frame rate is pretty good) AND you"
+txt 30 a "       get the correct rendering (or close enough), then click on the"
+txt 30 a "             `allow accbuff permanently'"
+txt 30 a "       button you see on the control panel.  This will enable the"
+txt 30 a "       accumulation buffer in all future KnotPlot sessions."
+txt 30 a " "
+txt 30 a "   --- you can also disallow accumulation buffer use permanently (next button)"
+txt 30 a "       in case you find you don't want the accumulation buffer to be used"
+txt 30 a " "
+
+txt font 3
+txt centre
+txt lineskip 14
+txt c a "Rob Scharein"
+txt c a "17 April 2007"
+
+silent=f
+txt on
+

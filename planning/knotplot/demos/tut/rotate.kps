@@ -1,0 +1,178 @@
+%`-
+
+require KPbuild 4799
+
+reset all
+
+silent = t
+
+txt font 4
+txt centre
+txt c -20 "KnotPlot Rotation Tutorial"
+txt push
+txt expire 12
+txt font 3
+txt c -40 "click on the ? button on the bottom right of this window for more information"
+txt pop
+
+txt on
+
+func 1 <tut/rotate.kps
+
+3dop ipos 133 10
+show axes euler
+knot
+cyl-rad=.3
+
+
+txt left
+txt lineskip -25
+txt fcolour royalblue .6
+txt font 3
+
+txt 10 10 "current euler angles:"
+
+
+
+
+txt fill on
+txt 15 a2 "about z" "~abo z"
+txt 15 a "about y" "~abo y"
+txt 15 a "about x" "~abo x"
+txt fill off
+txt font 4
+txt 10 a1.5 "change embedding"
+txt font 3
+
+txt fill on
+txt 15 a2 "rotate k" "~rot k"
+txt 15 a "rotate j" "~rot j"
+txt 15 a "rotate i" "~rot i"
+txt fill off
+txt 10 a "camera"
+txt fill on
+txt 15 a1.5 "rotate z" "~rot z"
+txt 15 a "rotate y" "~rot y"
+txt 15 a "rotate x" "~rot x"
+txt fill off
+txt 10 a "world"
+
+txt fill on
+txt 15 a1.5 "rotate dir 1 1 1 z" "rotate dir 1 1 1 z"
+txt 15 a "rotate dir -1 -1 -1" "rotate dir -1 -1 -1"
+txt 15 a "rotate dir 1 1 1" "rotate dir 1 1 1"
+txt 15 a untran untran
+txt fill off
+
+txt font 4
+txt 10 a1.5 "change view"
+txt font 3
+
+
+txt font 4
+txt fill on
+txt right
+txt -14 14 ? "help popup tut/rotate.kps handoff"
+
+
+txt font 3
+txt fill on
+txt select off
+txt -15 60 fullscreen "full toggle"
+txt -15 a  grid "show ~grid"
+txt -15 a  axes "show ~axes"
+txt fill off
+txt -10 a toggle:
+
+txt fill on
+txt -15 a2 "rerun demo" <tut/rotate.kps
+txt -15 a "new knot" knot
+txt -15 a "gimble lock"  "txt group 102 off;par1=0;~clob;idle;<tut/rotate-gimble.kps"
+txt -15 a "print angles" "txt group 102 off;par1=0;~clob;idle;echo;echo;echo;view euler"
+
+alias ~update "if par1 == 1 then ~last"
+
+txt push
+txt fill on
+txt centre
+txt group 102
+txt c+150 35 "reset" "par0=1;~update"
+txt c+50 35 "reverse" "test paradj 0 -1 0;~update"
+txt c-150 35 "slower" "test paradj 0 .8 0;~update"
+txt c-50 35 "faster" "test paradj 0 1.25 0;~update"
+%txt fill off
+%txt -10 a speed:
+txt c 10 "stop rotation" "txt group 102 off;par1=0;~clob;idle"
+txt pop
+txt group 102 off
+
+
+par0=1
+
+par1 = 0  % whether currently rotating
+
+alias ~rot "txt group 102 on;~setlast ~rot $0;par1=1;~blurt $0 \ppar0;idle {rotate $0 \ppar0}"
+
+alias ~abo "txt group 102 on;~setlast ~abo $0;par1=1;~blurta $0 \ppar0;idle {about $0 \ppar0}"
+
+alias ~setlast "alias ~last {$0 $1}"
+
+alias ~clob "txt delete group 108"
+alias ~blurt "~clob;txt push;txt group 108;txt fill off;txt cent;txt font 4;txt c 88 {repeatedly executing command:};txt c 62 {rotate $0 $1};txt pop"
+alias ~blurta "~clob;txt push;txt group 108;txt fill off;txt cent;txt font 4;txt c 88 {repeatedly executing command:};txt c 62 {about $0 $1};txt pop"
+
+alias ~testdir "line dir $0 $1 $2;line;rotate dir $0 $1 $2 $3"
+alias ~td "~testdir \rr+-2 \rr+-2 \rr+-2 \ri2"
+
+silent = f
+
+exit
+
+%`+
+KnotPlot Rotation Tutorial
+
+This demo illustrates the options for rotating things in KnotPlot.  It also explains the 
+difference between the `rotate' and `about' commands, that may at first glance appear to do the
+same thing. 
+
+The `rotate' command changes the view only and does not affect the actual embedding of the knot.
+It will not change the coordinate values of the vertices in the knot. `rotate' has two versions:
+
+  --- x y or z for rotations about the world coordinate axes
+  --- i j or k for rotations about the camera (viewer) coordinate axes, think of the ij plane
+      as being the coordinate system of your screen
+
+The view may also be changed using the "virtual trackball" within KnotPlot. Try the following:
+
+   --- click down with the left mouse in the view window and drag.
+   --- try pressing x y or z before clicking down to perform world centered rotations (it might
+       be best to click the `stop rotation' button first if the knot is auto-rotating.  it'll be
+       easier to see what is happening).
+   --- or press i j or k before clicking to perform camera centered rotation. 
+
+With any of the latter options, make sure the view window has keyboard focus (clicking once
+anywhere in the window will give it keyboard focus).
+
+In contrast, the `about' command changes the knot's coordinates and has no effect on the view. 
+
+To work the demo, try the following:
+
+  --- click on any of the `rotate' or `about' buttons on the left hand part of the window. 
+  --- while the knot is rotating or abouting, rotate the knot using the virtual trackball as
+      explained above.
+  --- observe the current euler angles and when you feel like it, click on `print angles' to see
+      the KnotPlot commands that can reproduce the current view. If you want to save these 
+      commands to a file, type the following into the KnotPlot Command Window:
+      view angles > myangles.txt
+      Note the spaces before and after the >.   To reproduce the view, type the command
+      <myangles.txt
+      into the KnotPlot Command Window. `myangles.txt' is arbitrary, use whatever name you want.
+  --- turn off both the axes and grid, then click on one of the `rotate' x, y or z buttons.  
+      then click on the corresponding `about' button. you should see little or no difference
+      in the animation when switching between the two.  only when the grid or axes are on will
+      the difference be apparent. 
+  --- the `gimble lock' button illustrates the problem with using pitch, roll and yaw (euler 
+      angles) to specify an orientation.  click down near the X that appears and drag the mouse
+      in small circles around the X.  note that the last of the euler angles experiences huge
+      discontinuous changes as you do this.  this singularity in the pitch/roll/yaw coordinate
+      system is the source of the `gimble lock' problem afflicting robot arms and camera tripods.

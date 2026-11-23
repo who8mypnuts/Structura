@@ -1,0 +1,13 @@
+txt group 305726975
+txt font 4
+txt fill off
+txt centre
+txt lineskip 20
+txt c 200 "Icosahedron subdivision timeout!"
+txt c a "See instructions in command window"
+txt c a "to increase the subdivision time."
+txt fill on
+txt font 3 
+txt c a ok "txt delete group 305726975"
+txt group 0
+txt on

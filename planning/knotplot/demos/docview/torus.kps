@@ -1,0 +1,11 @@
+scale = .35
+untran
+~nogo
+mode 0
+silent=t
+delete all
+until Ncomp 1 "torus \ri[1/5] \ri[2/8] 200"
+read randorient3.kps
+~tload
+silent=f
+

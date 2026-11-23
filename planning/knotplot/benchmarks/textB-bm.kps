@@ -1,0 +1,41 @@
+reset all
+back=black
+txt centre
+txt font 4
+txt c 20 "Press F1 to toggle text"
+
+txt fill on
+txt font 4
+
+blend one one
+
+func silent
+func init
+func s 1 "txt on;echo;echo;echo *** Press F1 to turn text off;echo;par4=2"
+func s 2 "txt off;echo;echo;echo *** Press F1 to turn text on;echo;par4=1"
+par4 = 1
+func 1 "func exec s \ppar4"
+
+func c 1 "if \rr2 < 1 then {txt \ri700 \ri700 Knot} else {txt \ri700 \ri700 Plot}"
+
+#1022 txt depth \rr1;txt colour \rr.1 \rr.1 \rr.1 .5;txt fcolour \rr.1 \rr.1 \rr.1 .3;func exec c 1
+
+txt on
+
+load c5/106.k
+disp t
+
+
+
+txt on
+cyl=.8
+sat=.7
+
+
+spec fra
+idle "about x .1"
+
+
+func exec 1
+
+<../benchmarks/blurb-bm.kps

@@ -1,0 +1,5 @@
+% does something simple.  just used to test demo sequences
+
+reset all
+knot
+nap .3

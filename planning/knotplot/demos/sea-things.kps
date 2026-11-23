@@ -1,0 +1,44 @@
+% Sea things.
+
+% Rob Scharein  27 March 2002
+
+reset all                 % Start from a clean state.
+
+disp t        % why is this needed?
+
+hstar=250
+auto=f
+hincr=120
+
+func 1 <sea-things.kps
+func 2 reset all
+
+silent = t                % Don't want to see all the output.
+back = 0                  % Looks best on a black background.
+zbuff f                   % Turn off z-buffering.
+glop backface t                % Turn off backfacing polygon drawing.
+blend one one             % Set blending for additive blending.
+draw broke                % Draw broken surface.
+ncur = 10 
+
+cyl = 2
+nseg = 3
+broff = -1.28
+
+load 8.2.1                % A nice link to start with.
+
+twfix 23232               % The twisting value is arbitrary, try other values.
+
+% The Sea Things button self-destructs when pressed, so provide a new button
+% to replace it.  More Sea Things is exactly like Sea Things except a different
+% two component link is loaded at random each time the button is pressed.
+
+button 11 "More Things"  <more-sea-things.kps 5 255 33.75 10
+
+
+
+silent = f                % OK to see output now.
+<demo-relaxA.kps
+
+
+

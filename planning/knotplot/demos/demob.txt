@@ -1,0 +1,4 @@
+par2
+1 button DemoB do_not_click <do-not-click.kps -1 -1 0 0
+5 button DemoB Weird_Cone <WeirdCone.kps -1 -1 0 0
+20 button DemoB Freaky <FreakyA.kps -1 -1 0 0

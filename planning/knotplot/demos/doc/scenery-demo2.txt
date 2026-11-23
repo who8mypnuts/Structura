@@ -1,0 +1,5 @@
+Loading Scenery into KnotPlot (part 2)
+
+Scenery may be positioned anywhere in 3D, or attached to a bead
+or component.  Click on the buttons below to load at random positions.
+

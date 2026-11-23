@@ -1,0 +1,7 @@
+echo
+echo
+
+if ncomp == 1 then "echo Standard conformation is:;bfacf news stand" else "echo *** must have exactly one component"
+silent=t
+if ncomp == 1 then "bfacf news stand load" 
+silent=f

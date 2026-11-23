@@ -1,0 +1,17 @@
+
+require KPbuild 4907
+
+% approx 1GB of random data
+
+timer start
+
+alloc 2183000
+
+alias rk "silent=t;random uniform 2083000;save ???????????.k locd;silent=f;timer check"
+
+#20 rk
+
+timer check
+
+
+

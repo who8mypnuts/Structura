@@ -1,0 +1,5 @@
+unknot 300
+#10 cut \ri300
+jit 9999
+fitto 10
+go

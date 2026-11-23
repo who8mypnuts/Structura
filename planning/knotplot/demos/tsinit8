@@ -1,0 +1,18 @@
+reset all
+mode cb
+cyl = .06
+load 3.1ts
+close=.03
+max-dr=.033
+
+split
+split
+split
+4dss=320
+splane 384 0 7
+tsba=48
+tsbb=336
+tsn=1
+
+4dv0=.1
+4dv1=0

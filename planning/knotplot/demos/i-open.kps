@@ -1,0 +1,57 @@
+require KPbuild 4691
+reset all
+
+% this should use the fancy cyl-rad!!
+say -v Whisper
+say -bg
+
+% par0 is 1 if closed, 0 if open
+
+alias ~open "open all;par0=0"
+alias ~close "close all;par0=1"
+
+alias ~o1 "if \ppar0 == 1 then {say i open;~open}"
+
+tfunc .1 ~o1 0 rep 10 40
+
+alias ~o2 "if \ppar0 == 1 then {say but i must open, so, i open;~open}"
+
+tfunc .1 ~o2 0 rep 10 40
+
+alias ~c1 "if \ppar0 == 0 then {say i close;~close;cyl-rad=\rr[.2/.5]}"
+
+tfunc .1 ~c1 0 rep 10 40
+
+alias ~c2 "if \ppar0 == 0 then {say i close;~close;cyl-rad=\rr[.2/.5]}"
+
+tfunc .1 ~c2 0 rep 10 40
+
+alias ~c3 "if \ppar0 == 0 then {say i am afraid to open;~close;cyl-rad=\rr[.2/.4]}"
+
+tfunc .1 ~c3 0 rep 10 40
+
+
+tfunc .1 "play \ri[20/60];cmode -1;cmode 3 \rr[.5/1] \rr[.5/1] \rr[.5/1]" 0 rep 10 54
+tfunc .1 "play \ri[60/108];vcn=\rr11" 0 rep 10 108
+back = black
+cyl-rad=\rr[.2/.5]
+
+vcA = 1
+vcphi = 3.14159
+
+cmode -1
+draw spec
+
+tfunc 1 "say -on;play init"
+
+tfunc \rr11 "knot 1;par0=1;say i change it;hstar=\rr360;proj r;untran;dfunc symm \ri[2/9] \ri2" 0 rep 20 55
+tfunc \rr22 "knot 2;par0=1;say now different;hstar=\rr360;proj r;untran;dfunc symm \ri[2/9] \ri2" 0 rep 30 75
+tfunc \rr33 "knot 3;par0=1;say a new one;hstar=\rr360;proj r;untran;dfunc symm \ri[2/9] \ri2" 0 rep 35 105
+
+glop back f
+
+coll a
+velf=t
+force 1
+go
+

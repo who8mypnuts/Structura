@@ -1,0 +1,4 @@
+load tholda.k
+par0=12
+echo "  *** Disconnected tangle template"
+txt c -30 "Disconnected tangle template"

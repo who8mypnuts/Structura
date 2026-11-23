@@ -1,0 +1,65 @@
+require KPbuild 4404
+require KPbuild 5010   % re-implementation in Lua
+
+button Nbuttons 5
+button hspace 4 
+button pos 1
+button height 8
+
+button Nbuttons 5
+
+button 18 "Cavities" nop 4 262 102 10 4 1
+
+button pos 4
+button 18 "README"  "help popup bfacf/README.txt handoff" -1 -1 0 0 0 1
+
+
+
+button 18 rect "read bfacf/boxinit.kps;read bfacf/rect.kps;read bfacf/buttons.kps" -2 -1 0 0 0 1
+button 18 rings "read bfacf/boxinit.kps;read bfacf/rings.kps;read bfacf/buttons.kps" -1 -1 0 0 0 1
+button 18 slab "read bfacf/boxinit.kps;read bfacf/slab.kps;read bfacf/buttons.kps" -1 -1 0 0 0 1
+button 18 sphere "read bfacf/boxinit.kps;read bfacf/sphere.kps;read bfacf/buttons.kps" -1 -1 0 0 0 1
+button 18 tref "read bfacf/boxinit.kps;read bfacf/tref.kps;read bfacf/buttons.kps" -1 -1 0 0 0 1
+button 18 walk "read bfacf/boxinit.kps;lua run bfacf/walk" -1 -1 0 0 0 1
+button 18 curl "read bfacf/boxinit.kps;read bfacf/curl.kps;read bfacf/buttons.kps" -1 -1 0 0 0 1
+button 18 cube "read bfacf/boxinit.kps;read bfacf/cube.kps;read bfacf/buttons.kps" -1 -1 0 0 0 1
+button 18 blob "read bfacf/boxinit.kps;read bfacf/blob.kps;read bfacf/buttons.kps" -1 -1 0 0 0 1
+button 18 tube "read bfacf/boxinit.kps;read bfacf/tube.kps;read bfacf/buttons.kps" -1 -1 0 0 0 1
+button 18 xwing "read bfacf/boxinit.kps;read bfacf/xwing.kps;read bfacf/buttons.kps" -1 -1 0 0 0 1
+button 18 prism "read bfacf/boxinit.kps;read bfacf/prism.kps;read bfacf/buttons.kps" -1 -1 0 0 0 1
+button 18 phage "read bfacf/boxinit.kps;read bfacf/phage.kps;read bfacf/buttons.kps" -1 -1 0 0 0 1
+button 18 odd "read bfacf/boxinit.kps;read bfacf/odd.kps;read bfacf/buttons.kps" -1 -1 0 0 0 1
+button 18 door "read bfacf/boxinit.kps;read bfacf/door.kps" -1 -1 0 0 0 1
+button 18 "Min / max stick search" nop -2 -1 102 10 4 1
+button pos 4
+button 18 "README2"  "help popup bfacf/README-search.txt handoff" -1 -1 0 0 0 1
+button 18 1-slab "read bfacf/boxinit.kps;read bfacf/1-slab.kps;read bfacf/buttons-search.kps" -2 -1 0 0 0 1
+button 18 2-slab "read bfacf/boxinit.kps;read bfacf/2-slab.kps;read bfacf/buttons-search.kps" -1 -1 0 0 0 1
+button 18 3-slab "read bfacf/boxinit.kps;read bfacf/3-slab.kps;read bfacf/buttons-search.kps" -1 -1 0 0 0 1
+button 18 PxQ_tube <bfacf/PxQ-tube.kps  -1 -1 0 0 0 1
+button Nbuttons 3
+button hspace 4
+%button main  "BFACF Basic" "panel set bfacf 0" 4 4 0 10 0  0
+%button main  "BFACF Fancy" "panel set bfacf 1" -1 -1 0 10 0  0
+%button main  "BFACF Demos" "panel set bfacf 2" -1 -1 0 10 0  0
+%button disp  "BFACF Basic" "panel set bfacf 0" 4 4 0 10 0  0
+%button disp  "BFACF Fancy" "panel set bfacf 1" -1 -1 0 10 0  0
+%button disp  "BFACF Demos" "panel set bfacf 2" -1 -1 0 10 0  0
+%button dyna  "BFACF Basic" "panel set bfacf 0" 4 4 0 10 0  0
+%button dyna  "BFACF Fancy" "panel set bfacf 1" -1 -1 0 10 0  0
+%button dyna  "BFACF Demos" "panel set bfacf 2" -1 -1 0 10 0  0
+%button demoa  "BFACF Basic" "panel set bfacf 0" 4 4 0 10 0  0
+%button demoa  "BFACF Fancy" "panel set bfacf 1" -1 -1 0 10 0  0
+%button demoa  "BFACF Demos" "panel set bfacf 2" -1 -1 0 10 0  0
+%button demob  "BFACF Basic" "panel set bfacf 0" 4 4 0 10 0  0
+%button demob  "BFACF Fancy" "panel set bfacf 1" -1 -1 0 10 0  0
+%button demob  "BFACF Demos" "panel set bfacf 2" -1 -1 0 10 0  0
+%button bfacf  "BFACF Basic" "panel set bfacf 0" 4 4 0 10 0  0
+%button bfacf  "BFACF Fancy" "panel set bfacf 1" -1 -1 0 10 0  0
+%button bfacf  "BFACF Demos" "panel set bfacf 2" -1 -1 0 10 0  0
+%button bfacf  "BFACF Basic" "panel set bfacf 0" 4 4 0 10 0  1
+%button bfacf  "BFACF Fancy" "panel set bfacf 1" -1 -1 0 10 0  1
+%button bfacf  "BFACF Demos" "panel set bfacf 2" -1 -1 0 10 0  1
+%button bfacf  "BFACF Basic" "panel set bfacf 0" 4 4 0 10 0  2
+%button bfacf  "BFACF Fancy" "panel set bfacf 1" -1 -1 0 10 0  2
+%button bfacf  "BFACF Demos" "panel set bfacf 2" -1 -1 0 10 0  2

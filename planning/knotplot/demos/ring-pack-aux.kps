@@ -1,0 +1,10 @@
+silent=t
+if par0 < .8 then "unknot 11 9" else "torus 2 3 22"
+refl grG last
+tran \rr+-22 \rr+-22 \rr+-22 last
+until timelimit 15
+until athick 1.8 "refl grG last;tran \rr+-2 \rr+-2 \rr+-2 last;disp t"
+until timelimit 9999999
+if athick < 1.80001 then "delete last"
+disp t
+silent=f

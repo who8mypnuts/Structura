@@ -1,0 +1,127 @@
+Celtic Knots Help
+
+This control panel implements a method of constructing Celtic knots that I
+learned from the beautiful books of Aidan Meehan.  I won't fully describe 
+the method here, please refer to his books to find out more (references at 
+end).  
+
+The method works by first creating a regular grid of (not-necessarily) 
+square cells.  This is called the primary grid (you can see it easiest if
+you unselect everything else in the Show: radio button section).  Another
+grid, the secondary grid is created by subdividing this primary grid, and
+yet a third grid, the tertiary grid created from the secondary (hidden by
+default in KnotPlot).  It is along the tertiary grid that the knot path
+will follow.  Try clicking on the `diagram' button to see the knot.
+
+Here is how stuff works:
+
+   Show:  --- you can turn on and off the primary and secondary grids.
+              note that primary and secondary breaklines can only be 
+              placed or removed if the corresponding grid is visible. 
+
+   diagram  --- click on this button to draw the knot path 
+
+   auto diagram --- if checked, draw the knot diagram every time the 
+                    grid or breakline pattern changes
+
+   place a breakline --- hover over the spot where you want the breakline
+                         and click.  if you have `auto diagram' checked
+                         you should see a new knot appear. 
+
+   clear a breakline --- hover over an existing breakline and click
+  
+The two sets of sliders allow you to create various sorts of grids.
+Select `auto create' to have the grids created and displayed as you change
+the sliders.  It's funnest to have both `auto create' and `auto diagram'
+checked and have the `Knot interlace' shown. 
+
+Other things to try:
+
+   turn off primary cells --- do this by first making sure that the view
+                              window has mouse focus (click in an empty
+                              region).  then press and hold down the `A'
+                              key and move the mouse over a primary grid
+                              cell (the primary grid needs to be visible).
+                             
+                              when hovering over a primary grid cell, you 
+                              should see that cell highlighted.  if you 
+                              then click the mouse, that cell will be
+                              turned off and not used in the interlace
+                              creation.  you can turn that cell on again
+                              by clicking it a second time.
+
+                              NOTE: there is a bug in KnotPlot in that it
+                              allows you to turn off a primary cell that
+                              contains a secondary breakline.  if you do
+                              that you get a `Bad path found' error.
+
+   copy to arena --- KnotPlot uses a very lightweight drawing method when
+                     showing the Celtic knotting.  nothing is actually 
+                     copied to the KnotPlot `arena' (the main location 
+                     where stuff in KnotPlot happens) until you click on
+                     this button.  You have to exit the Celtic Knotting 
+                     panel to see what's in the arena. 
+
+   scale the drawing space --- use the right mouse
+
+
+Although this control panel only allows you to create regular and circular
+grids, KnotPlot allows for arbitrary Celtic knot grids, which can consist
+of any collection of quads embedded in various ways in 3D.  To see a some
+examples, try the `splaits' and `star/box' demos on DemoA.
+
+If you've laboured long to create a beautiful Celtic knot grid and would
+like to save it, just use KnotPlot's `save' command.  The grid is saved
+along with the knot in the arena (if any).  You can load the knot back 
+with the `load' command (see the manual for more information). 
+
+Another good reference for Celtic knotting, which describes a method at
+first glance different from Meehan's, is Iain Bain's `Celtic Knotwork'. 
+The method is mathematically equivalent to the Meehan method. 
+
+Several Celtic grids constructed from examples in the references are 
+included with the KnotPlot distribution. 
+
+Bugs
+
+The Celtic knotting tool is somewhat unpolished.  There are a few bugs:
+
+   --- allows you to turn off primary cells that contain a secondary 
+       breakline.  well, at least KnotPlot detects the bad path.
+
+   --- if you click on `reset', KnotPlot returns to its default mode, and
+       the Celtic knotting features are no longer enabled.  to get back,
+       simply go to some other control panel and then return to the Celtic
+       knotting control panel.
+
+   --- when loading a Celtic grid from a file and `auto diagram' is 
+       selected, doesn't draw the diagram.  you have to click `diagram'
+       yourself. 
+
+
+REFERENCES
+
+Even the quickest look through any of the following excellent books will
+make it obvious that there is much more to Celtic Knotting than what
+KnotPlot can offer. 
+
+Bain, George    `Celtic Art: The Methods of Construction'
+                Dover Publications Inc., 1973, (ppbk edition)
+                A classic and a must-have for those interested in Celtic Art.
+
+Bain, Iain      `Celtic Knotwork'
+                Constable and Company Limited, 1990 (ppbk edition)
+                A beautiful book and my favourite on Celtic knotting.  Has 
+                many illustrations of the great masterpieces of Celtic Art.
+                
+
+Meehan, Aidan   `Knotwork - The Secret Method of the Scribes', 
+                Thames and Hudson, 1991
+                Part of a series of delightful books on Celtic Art by Meehan.
+
+                `Celtic Knots - Mastering the Traditional Patters'
+                Thames & Hudson, 2003
+                This book has a huge number of illustrations, 2843 in fact,
+                and is a delight to flip thru for many interesting breakline
+                patterns.
+

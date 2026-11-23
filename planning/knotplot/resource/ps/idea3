@@ -1,0 +1,63 @@
+
+
+% Idea #3
+
+% a FUZZY knot!
+
+/Patch {
+    /yd exch def   /xd exch def
+    /yc exch def   /xc exch def
+    /yb exch def   /xb exch def
+    /ya exch def   /xa exch def
+    /value exch def
+    /area exch def
+    1 setgray
+    newpath
+    xa ya moveto
+    xb yb lineto
+    xd yd lineto
+    xc yc lineto
+    xa ya lineto
+    fill
+    /bax {xb xa sub} def
+    /bay {yb ya sub} def
+    /cax {xc xa sub} def
+    /cay {yc ya sub} def
+    /ndots {area .05 mul} def
+    0 setgray
+    newpath
+    putdots
+    stroke
+     } def
+
+.01 setlinewidth
+
+/putdots {
+  0 1 ndots {putdot} for} def
+
+/putdot {
+  pop
+  randpoint
+  moveto
+  randpoint
+  randpoint
+  randpoint
+  curveto
+} def
+
+/randpoint {
+  /rba {rand 2147483647 div 2 mul .5 sub} def
+  /rca {rand 2147483647 div 4 mul 1.5 sub} def
+  rba bax mul 
+  rca cax mul
+  add
+  xa add
+  rba bay mul
+  rca cay mul
+  add
+  ya add
+} def  
+
+
+% end of Idea #3
+

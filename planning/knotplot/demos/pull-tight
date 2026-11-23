@@ -1,0 +1,27 @@
+
+reset all
+
+panel off
+cyl=.4
+scale=.54
+drec=f
+
+spe back
+Draw=f
+load 3.1
+colour 0 orange
+#10 about z -5
+cut 31
+trans to .5 -5 0
+pop=f
+Draw=t
+mass open
+spe +vwt
+silent = t
+
+frame comm "mbead 0 .15; mbead 46 -.15; go 1; string 0 -6 -6  3 6 %d"
+frame 1 to 300
+silent = f
+
+
+panel on

@@ -1,0 +1,18 @@
+
+load NotMonster.k
+disp t
+nap 5
+
+load NotMonsterMovie.k
+
+txt c 60 "It's a trefoil!"
+disp t
+nap 2
+
+if \rr1 < .021 then <freedman-extra.kps
+
+Draw = t
+silent=f
+
+
+

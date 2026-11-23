@@ -1,0 +1,128 @@
+#!/bin/csh -f
+
+# Very basic constructor routine: KP-cons-braid
+# March 16, 1996
+# Rob Scharein
+
+# A braid constructor.
+
+# Constructor arguments:
+#    $0 Constructor executable file (this file).
+#    $1 First file read by KnotPlot (the prefile).
+#    $2 Second file read by KnotPlot (the postfile).
+#    $3 Type of machine we're running on (sgi, ibm, etc...)
+#    $4 A flag either 0 or 1.
+#    $5 Name of constructor.
+#       Anymore more arguments are the arguments to the contructor
+#       from the KnotPlot command line.
+
+# Uncomment the following line and set Debug = t in KnotPlot to see
+# the sequence of events.
+
+# echo KP-cons-braid command line arguments are: $*
+
+# The best way to see what happens is to run KnotPlot in non-graphics mode:
+
+#     knotplot -nog -par Debug t
+
+
+# Only do something upon first call (when $4 is equal to 0)
+
+  
+switch ($4)
+case 0:
+  
+  echo " "
+  echo "" > $1
+  echo "" > $2
+
+  if ($#argv < 7) then
+    echo "KP-cons-braid: ERROR --> Too few arguments."
+    exit
+  endif
+
+  set N    = $6
+  @ ngen = $#argv - 6
+
+  echo $N-string braid with $ngen generators.
+  echo % $N-string braid with $ngen generators. >> $1
+
+  set i = 7
+  set comp = 0
+  set y = 0
+  echo silent = t >> $1
+  echo Draw = f >> $1
+  echo delete all >> $1
+  @ hincr = 360 / $N
+
+  while ($i <= $#argv)
+   
+   set g = $argv[$i]
+
+   set ag = $g
+   set r = 0
+
+   if ($g < 0) then
+     @ ag = $g * (-1)
+     set r = 1
+   endif
+
+   @ agone = $ag + 1
+
+   echo " " >> $1
+   echo % Generator $g >> $1
+        
+   set j = 1
+   set x = 0
+
+   if ($g == 0) then
+     set ag = 0
+     set agone = 0
+   endif
+
+   while ($j <= $N)
+     
+     switch ($j)
+     case $ag:
+       echo load comb sigma-k-a >> $1
+       if ($r) then
+         echo reflect z $comp >> $1
+       endif
+       breaksw
+     case $agone:
+       echo load comb sigma-k-b >> $1
+       if ($r) then
+         echo reflect z $comp >> $1
+       endif
+      
+       breaksw
+     default:
+       echo load comb sigma-k-c >> $1
+       
+       breaksw
+     endsw
+
+     echo translate $x $y 0 $comp >> $1
+     @ comp++
+     @ x = $x + 5
+     @ j++
+   end
+
+   @ y = $y - 10      
+  
+
+ 
+   @ i++
+  end
+  echo centre >> $1
+  echo jthresh = 3 >> $1
+  echo join all >> $1
+  echo silent = f >> $1
+  echo hincr = $hincr >> $1
+  echo Draw = t >> $1
+
+  breaksw
+endsw
+
+
+

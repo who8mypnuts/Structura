@@ -1,0 +1,68 @@
+reset all
+
+func silent
+func init
+
+func 1 <wings.kps
+func 3 <wings_aux1.kps
+
+par3=3
+func c 3 "panel set Broken;echo;echo;echo Press that key again to get back to DemoB panel.;echo;par3=4"
+func c 4 "panel set DemoB;echo;echo;echo Press that key again to get back to secret panel.;echo;par3=3"
+func 4 "func exec c \ppar3"
+
+silent = t
+
+broff = -.65
+cradius = .8
+sradius = .8
+blend one one
+hstart=\rr360
+if \rr2 < 1 then "saturation=\rr1"
+
+background = black
+if \rr5 < 1 then "show back"
+zbuff f
+glop backface t
+draw broken
+broff = -1
+ncur = 10
+nseg = 3
+
+% multif < wings.txt
+par0 = \rr50
+if par0 < 10 then "knot 2;par0=52"
+if par0 < 25 then "knot 3;par0=52"
+if par0 < 30 then "torus;par0=52"
+if par0 < 32 then "knot spe;par0=52"
+if par0 < 34 then "knot cd;par0=52"
+if par0 < 42 then "knot 1;par0=52"
+if par0 < 43 then "knot 4;par0=52"
+if par0 < 51 then "knot;par0=52"
+
+if \rr2 < 1 then "revb"
+<randorient.kps
+
+% this stuff with par1 and par2 below really is pretty awkward
+if \rr3 < 1 then "texture mode eye;par1=1765" else "texture mode norm"
+if \rr3 < 1 then "texture lupin;draw tbrok;par2=\ppar1" else "texture off"
+
+twfix \rr[33/55]
+twdef = \ptwist
+aftw = t
+
+if \rr2 < 1 then "tanf=t"
+
+force 1
+coll a
+velf=t
+go
+
+silent = f
+
+echo
+echo
+echo "  *** wings"
+echo "      Try some of the function keys F1 thru F4."
+echo
+

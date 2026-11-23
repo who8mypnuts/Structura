@@ -1,0 +1,19 @@
+load 8.12
+
+construct clkembed
+bfacf init
+bfacf load
+
+bfacf run 1000000
+
+bfacf search on
+bfacf centre on
+
+
+tfunc 10 "bfacf z 0.20815" 0 rep 5 20
+tfunc 10 "bfacf prob 1 1 0" 0 rep 20 40
+
+echo 
+echo 
+echo Press F6 to stop
+echo

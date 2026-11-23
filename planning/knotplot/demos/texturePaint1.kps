@@ -1,0 +1,53 @@
+reset all
+silent=t
+verb=f
+
+func init
+func silent
+func 1 <texturePaint1.kps
+func 2 "jitt 99999;fitto .1"
+func 3 "cyl=\rr[.04/1];hstar=\rr360;satu=\rr1"
+
+back=black
+cheapo
+scale=.6
+
+knot 1
+
+%% Generated Tue Oct 03 12:25:36 2006
+%% with command line: c:\usr\KnotPlot\resource\win32\multiif.exe texturePaint1-face.txt
+par4 = \rr31
+if par4 < 10 then "tex eye lupin;par4=33"
+if par4 < 20 then "tex eye varo;par4=33"
+if par4 < 30 then "tex eye face;par4=33"
+if par4 < 32 then "tex eye aum;par4=33"
+
+
+draw tex
+tex on
+
+if \rr4 < 3 then "tex appmode modu" else "tex appmode blend"
+
+velf = t
+force 1
+coll a
+
+glop back t
+zbuff f
+
+
+func exec 3
+
+tfunc \rr[3/15] "func exec 2;read random-lights" 0 rep 5 20
+tfunc \rr[3/15] "func exec 2;func exec 3" 0 rep 5 20
+tfunc 2 "func exec 2" 0 rep 1 9
+
+tfunc 1 "clrfun z"
+
+go
+silent=f
+
+echo 
+echo 
+echo " *** Press F1 to reload this demo with different settings"
+echo

@@ -1,0 +1,29 @@
+reset all
+all 1022
+sbuff
+cyl=.04
+hsta=264
+back=0
+ppm=3
+Draw=f
+disp t
+disp t
+
+frame command "unknot 1022 %d;scale .1 .1 .1;swirl 22 y;swirl 22 x;fitto 10;disp t;about z 72;disp t;about z 72;disp t;about z 72;disp t;about z 72;disp t"
+
+ortho
+scale=.29
+back=0
+zbuff f
+blend one one
+backface t
+back=0
+clrfun n
+
+silent=t
+frame 50 to 150 step 15
+silent=f
+
+gflush
+
+nap 2

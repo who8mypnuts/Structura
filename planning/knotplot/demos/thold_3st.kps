@@ -1,0 +1,5 @@
+load 3stpoly.k
+thold embed
+par0=12
+echo "  *** Supercoiling 3-string tangle template"
+txt c -30 "Supercoiling 3-string tangle template"

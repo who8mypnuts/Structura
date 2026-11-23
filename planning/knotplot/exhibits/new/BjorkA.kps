@@ -1,0 +1,20 @@
+<StElmo_aux.kps
+
+silent=t
+if \rr3 < 2 then "persp 155;scale=3"
+
+load Bjork2.k
+if \rr2 < 1 then "refine 2"
+
+<randorient.kps
+if \rr9 < 1 then "refl r"
+if \rr22 < 1 then "open all"
+
+silent=f
+
+
+echo " "
+echo " "
+echo " *** Random parameters, try again... "
+echo "     Variation on `H'."
+echo " "

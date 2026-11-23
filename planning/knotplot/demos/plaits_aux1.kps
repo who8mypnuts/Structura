@@ -1,0 +1,3 @@
+echo " *** Augmenting with primary breaklines."
+celtic random primary \rr[.05/.3]
+<plaits_aux4.kps

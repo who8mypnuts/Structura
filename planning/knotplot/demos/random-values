@@ -1,0 +1,48 @@
+% random-values
+
+% March 7, 1996
+% Rob Scharein
+
+% This file is just to illustrate the setting of parameters
+% and command arguments to random values.
+
+reset all
+
+% Use the function key F1 to repeatedly load a new link at random
+
+func 1 <random-values  % Binds function key F1 to a value
+
+draw hflat             % Easier to see twisting when hflat
+
+knot \ri[2/3]          % Load a two or three component link
+nap \rr.3              % Nap somewhere between 0 and .3 seconds
+cyl = \rr[.3/.9]       % Set the cylinder radius between .3 and .9 inclusive
+nseg = \ri[3/10]       % nseg >= 3 and <= 10
+ncur = \ri[2/5]        % ncur between 2 and 5 inclusive
+scale = \rr[.27/.55]   % scale >= .27 and <= .55
+nap \rr.3              % Nap somewhere between 0 and .3 seconds
+value = \rr[.5/.9]     % value >= .5 and <= .9
+sat = \rr1             % saturation chosen uniformly between 0 and 1
+hstart = \rr360        % starting hue between 0 and 360 
+nap \rr.3              % Nap somewhere between 0 and .3 seconds
+hincr = \rr+-120       % hue increment between -120 and 120
+vcn = \ri7             % between 0 and 7 waves (inclusive)
+
+twfix \rr[-30/45]      % twist between -30 and 45 inclusive
+
+rotate x \ri+-10       % Rotate about x-axis between -10 and +10
+rotate y \rr-20        % Rotate about y-axis between 0 and -20
+rotate z \ri[-40/99]   % Rotate about z-axis between -40 and 99
+
+
+par cyl
+par nseg
+par ncur
+par scale
+par value
+par sat
+par hstart
+par hincr
+par vcn
+
+

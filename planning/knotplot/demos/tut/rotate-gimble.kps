@@ -1,0 +1,19 @@
+silent=t
+untran
+show +axes
+rota x 179.5
+txt delete group 73265
+txt push
+txt group 73265
+txt expire 10
+txt font 4
+txt cent
+txt fill off
+txt lineskip 42
+txt c -100 "click down near the X below, then drag mouse down a bit, then up a bit"
+txt c a "observe that the last euler angle suddenly changes from something"
+txt c a "greater than 170 to something less than -170 (and vice versa)"
+txt c a "(click on the `?' button lower right for more info)"
+txt c c X
+txt pop
+silent=f

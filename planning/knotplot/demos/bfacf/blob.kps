@@ -1,0 +1,35 @@
+scale=.176
+
+#4 echo
+txt init
+txt centre
+txt font 4
+txt c -20 "In a random blob"
+txt on
+txt fcolour hsv:108/.6/.6 .6
+
+glop back f
+
+bfacf load mscl/3.1
+
+disp t
+
+delete all
+unknot \ri[10/20]
+jit 99999
+fitto rad 28
+refine 3
+translate to 0 0 0
+shift random
+open all
+
+cyl=1
+bfacf fill 2
+bfacf fill tube
+bfacf dilate
+bfacf clear tube
+
+bfacf latshow 40
+bfacf fill
+cyl=.1
+bfacf copy

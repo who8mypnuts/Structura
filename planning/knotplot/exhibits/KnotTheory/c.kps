@@ -1,0 +1,6 @@
+Draw=f
+knot 3
+disp t
+nap 1
+if T < Tmax then "tfunc 0 <c.kps" else <dispatch.kps
+

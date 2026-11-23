@@ -1,0 +1,4 @@
+if stereo then nop else "anaglyph init;anaglyph r.gb"
+
+
+

@@ -1,0 +1,49 @@
+if \ppar0 != 9152998 then <bfacf/slab-init.kps
+
+#4 echo
+txt init
+txt centre
+txt font 4
+txt c -20 "Maximal stick in a thin slab"
+txt on
+
+txt clobber on
+
+alloc 5555
+
+func 1 <bfacf/slab-config1.kps
+func 2 <bfacf/slab-config2.kps
+func 3 <bfacf/slab-config3.kps
+func 4 <bfacf/slab-config4.kps
+func 5 <bfacf/slab-config5.kps
+func 6 <bfacf/slab-config6.kps
+
+%func c 1 "txt left;txt font 3;txt 5 -20  name;txt set last"
+
+func exec \ri[1/6]
+%func exec c 1
+
+txt fcolour hsv:108/1/1 .6
+txt fcolour hsv:108/.6/.6 .6
+txt font 3
+
+txt group 33
+txt lineskip -25
+txt 15 0 " "
+txt fill on
+txt 30  a "8 xing" "func exec 6;func exec c 1"
+txt 30  a "7 xing" "func exec 5;func exec c 1"
+txt 30  a "6 xing" "func exec 4;func exec c 1"
+txt 30  a "5 xing" "func exec 3;func exec c 1"
+txt 30  a "4 xing" "func exec 2;func exec c 1"
+txt 30  a "3 xing" "func exec 1;func exec c 1"
+
+txt fill off
+txt left
+txt 5 a "Configurations:"
+
+txt centre
+txt fill on
+txt c 20 "search for max" <bfacf/slab-maxstick.kps
+
+txt group 0

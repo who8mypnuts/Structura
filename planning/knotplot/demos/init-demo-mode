@@ -1,0 +1,12 @@
+demomode = t
+
+func 5 load F5-demo
+func 6 load F6-demo
+func 7 load F7-demo
+func 8 load F8-demo
+
+func 9 load F9-demo
+func 10 load F10-demo
+func 11 load F11-demo
+func 12 load F12-demo
+

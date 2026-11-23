@@ -1,0 +1,32 @@
+demo p 0 1.000100 magnetic1
+demo p 1 1.000100 weaveA
+demo p 2 1.000100 random-chain
+demo p 3 1.000100 gravity
+demo p 4 1.000100 newhopf
+demo p 5 1.000100 splaits
+demo p 6 1.000100 plaits
+demo p 7 1.000100 simple-relax
+demo p 8 1.000100 10sep05a
+demo p 9 1.000100 thingtoss
+demo p 10 1.000100 graphs
+demo p 11 1.000100 linkRings
+demo p 12 1.000100 orbit
+demo p 13 1.000100 violently-happy
+demo p 14 1.000100 20oct05a
+demo p 15 1.000100 KnotPaint2
+demo p 16 1.000100 Mandala3b
+demo p 17 1.000100 marcus
+demo p 18 1.000100 Dolphins
+demo p 19 1.000100 say/intro
+demo p 20 1.000100 4d-spun-knot
+demo p 21 1.000100 StElmo
+demo p 22 1.000100 ConeyMagic2
+demo p 23 1.000100 PA
+demo p 24 1.000100 ringToss
+demo p 25 1.000100 new_monster
+demo p 26 0.050000 brunnian
+demo p 27 1.000100 braids
+demo p 28 0.200000 twist-knot
+demo p 29 1.000100 fly-thru
+
+demo probs

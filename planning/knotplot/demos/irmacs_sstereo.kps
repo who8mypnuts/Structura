@@ -1,0 +1,7 @@
+
+reset all
+func 1 <irmacs_sstereo.kps
+wlay sstereo
+
+tfunc .3 <irmacs_sstereo_aux.kps
+

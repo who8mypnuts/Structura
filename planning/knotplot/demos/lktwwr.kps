@@ -1,0 +1,143 @@
+require KPbuild 4691
+%`-
+
+require KPbuild 4553
+
+reset all
+alias ~ah "txt hide \rr[5.5/6]"
+alias ~ah "txt hide 99000333"
+
+silent = t
+dowker proj view
+dowker compute lktwwr
+par8=1
+cyl=.2
+scale=.24
+show orient
+%3dop ostart 0;3dop oscale .6;3dop ostep 2;3dop colo #fa0
+3dop ostart 3;3dop oscale .4;3dop ostep 4;3dop colo #000
+
+txt clobber on
+txt font 4
+txt centre
+txt hide 9000999
+txt group 9
+txt c -20 "Lk = Tw + Wr"
+txt group 0
+
+~ah
+
+txt fcolour "royal blue" .7
+txt scolour #000
+txt sfcolour orange .9
+txt lineskip -24
+txt right
+
+txt group 0
+txt right
+txt font 3
+txt fill on
+txt -15 60 fullscreen "full toggle"
+txt -15 a map "scenery toggle"
+txt fill off
+txt -10 a toggle:
+
+alias ~init "~nocode;fitto length \ppar0;pars;save |x;cyl-rad=.1;double;warp install;load |x;parr"
+alias ~nocode "txt delete group 1008;show none;txt xing off"
+~ah
+
+txt font 4
+txt fill on
+txt right
+txt -14 14 ? "help popup lktwwr.kps handoff"
+par0=130
+
+alias ~refl "if \rr2 < 1 then {refl x}"
+
+alias ~ruff "proj r;revb;shift;~refl;proj r;rota x \rr360;rota y \rr360;rota z \rr360"
+
+~ah
+
+txt fill off
+txt left
+txt group 1
+txt 10 -60 "Step 1: choose a path"
+txt lineskip 25
+txt font 3
+txt fill on
+txt 15 a "randomly choose knot from catalog" "~nocode;knot 1;~init"
+txt phantom "figure 8"
+txt 15 a  "unknot"  "~nocode;unknot 144;~ruff;par0=70;~init"
+txt 75 a0 "trefoil" "~nocode;load 3.1;~ruff;par0=130;~init"
+txt 135 a0 "figure 8" "~nocode;load 4.1;~ruff;par0=130;~init"
+txt 15 a "fav 1" "~nocode;load fav1;~ruff;par0=130;~init"
+txt 75 a0 "fav 2" "~nocode;load fav2;~ruff;par0=130;~init"
+txt 135 a0 "fav 3" "~nocode;load fav3;~ruff;par0=130;~init"
+txt phantom
+txt 15 a "create something new" "~nocode;<lktwwr-new.kps"
+
+~ah
+txt fill off
+txt 10 a "and fit it to length:"
+txt push
+txt select on
+txt fill on
+txt 15 a "100" "par0=100;~init"
+txt 55 a0 "110" "par0=110;~init"
+txt 15 a "120" "par0=120;~init"
+txt 55 a0 "130" "par0=130;~init"
+txt set selected
+txt 15 a "140" "par0=140;~init"
+txt 55 a0 "150" "par0=150;~init"
+txt select off
+txt pop
+~ah
+
+txt font 4
+txt 10 a2 "Step 2: create a link"
+txt font 3
+txt fill on
+txt 15 a "T(2,24)" "torus 2 24 300 10 .2;save |tor;warp along;<lktwwr-xing.kps"
+txt 72 a0 "T(2,26)" "torus 2 26 300 10 .2;save |tor;warp along;<lktwwr-xing.kps"
+txt 15 a "T(2,28)" "torus 2 28 300 10 .2;save |tor;warp along;<lktwwr-xing.kps"
+txt 72 a0 "T(2,30)" "torus 2 30 300 10 .2;save |tor;warp along;<lktwwr-xing.kps"
+txt 15 a "T(2,32)" "torus 2 32 300 10 .2;save |tor;warp along;<lktwwr-xing.kps"
+txt 72 a0 "T(2,34)" "torus 2 34 300 10 .2;save |tor;warp along;<lktwwr-xing.kps"
+
+
+func 1 <lktwwr.kps
+
+~ah
+txt 15 a3 "relax" <lktwwr-relax.kps
+
+txt 15 a3 autorun <lktwwr-autorun.kps
+txt group 0
+txt font 4
+txt centre
+txt fill on
+~ah
+txt group 8
+txt c 20 "reload demo" <lktwwr.kps
+
+
+txt on
+
+
+stus=1
+drag=t
+
+silent = f
+
+#4 echo
+
+txt autohide on   % should be the last txt command
+
+
+exit 
+
+%`+
+Help for Lk = Tw + Wr
+
+This demo illustrates the theorem by James White.
+
+

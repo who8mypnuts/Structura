@@ -1,0 +1,16 @@
+panel colour svalue black   % slider value field
+panel colour sbox  black  % slider box
+panel colour sbutton grey % slider button
+
+panel colour rbfill grey  % radio button fill
+panel colour rbbord black % radio button border
+
+panel colour button grey
+panel colour press yellow % button press 
+panel colour highlab black
+panel colour lowlab black
+
+panel colour background white
+panel colour ghost #eee
+
+panel colour label black

@@ -1,0 +1,41 @@
+reset all
+func 12 <twist-knot.kps
+
+font 4
+
+if \rr1 < .5 then "rotate z -90" else "rotate z 90"
+
+spe +vwt
+
+hstar=\rr360
+cyl=\rr[.9/1.5]
+scale=.055
+braid -str 2 0^14
+scale 2 1 1 
+nstring cm +40 "Creating a twist knot"
+join all
+split 4
+ago 20
+
+%#26 swirl end 22.5;disp t
+#26 swirl end 22.5;disp t
+%#24 swirl end 22.5;disp t
+
+Draw=f
+silent=t
+save |tw.tmp
+refl yx
+warp rec2ann 102
+save |tw2.tmp
+load |tw.tmp
+Draw=t
+morph to |tw2.tmp 55
+Draw=f
+frame comm "load |tw.tmp;warp rec2ann %d;disp t"
+frame 102 to -6 step 4
+silent=f
+Draw=t
+nap 2
+
+
+

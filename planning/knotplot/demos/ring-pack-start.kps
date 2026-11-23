@@ -1,0 +1,9 @@
+idle -noredraw
+idle "if athick < \ppar0 then ~placeit else ~create;~placeit"
+txt centre
+txt font 3
+txt fill on
+txt c 40 stop <ring-pack-stop.kps
+txt c 10 clear "delete all"
+
+

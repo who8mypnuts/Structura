@@ -1,0 +1,152 @@
+<html>
+<head>
+<title>Tangle Calculator</title>
+</head>
+
+<body bgcolor="#c0c0c0">
+
+
+<h2>
+<img src="inlines/TangleCalcPict.gif" align=middle>
+Tangle Calculator
+</h2>
+
+<b><blockquote>
+Note: This page is rather sketchy but should suffice until a better one
+is written. 
+The interface to the tangle calculator will be completely redone in 
+the near future.
+</b>
+</blockquote>
+<p><hr>
+
+Some familiarity with the famous and influential paper
+by John Conway is assumed. 
+
+
+<p>
+
+The tangle calculator is a stack based calculator for tangles,
+the top four tangles in the stack are displayed.  
+To use the tangle calculator, select the appropriate option from the
+<a href="PopupMenus.html#tangcalc">pop-up menus.</a>
+The buttons on the top of the control panel have functions that can
+be divided into four categories.
+
+<dl>
+<dt>
+<b>Creating new tangles</b>
+<dd>
+The <b>1 2 3 4 5 6 7 8 9</b> buttons will produce a new tangle of the
+type indicated on the button.
+The <b>0</b> and <b>i</b> buttons create zero and infinity tangles respectively.
+<p>
+
+<dt>
+<b>Binary operations</b>
+<dd>
+<ul>
+<li><font size=+2><b>#</b></font> takes the top two tangles and replaces them with their direct sum
+<li><font size=+2><b>*</b></font>takes the top two tangles and replaces them with their product
+         as defined by Conway
+</ul>
+<p>
+
+<dt>
+<b>Unary operations</b>
+<dd>
+<ul>
+<li><font size=+2><b>+ -</b></font> put a twist  on the bottom of the current tangle
+<li><font size=+2><b>x y </b></font> flip in x or y direction
+<li><font size=+2><b>@ </b></font>   rotate tangle
+<li><font size=+2><b>r </b></font>   pressing  3 2 *   is the same as pressing 3 r 2 #
+<li><font size=+2><b>m M</b></font>  Two slightly different reflections in the plane
+</ul>
+<p>
+
+<dt>
+<b>Stack operations</b>
+<dd>
+<ul>
+         <li><font size=+2><b>!</b></font>  duplicate tangle
+
+         <li><font size=+2><b>~</b></font>  delete tangle
+
+         <li><font size=+2><b>&lt; &gt;</b></font>  roll up or down (or down or up) tangle stack
+
+         <li><font size=+2><b>e</b></font>    exchange top two tangles in stack
+
+</ul>
+<p>
+
+</dl>
+To exit the tangle calculator press the <b>1*</b> button, you 
+       should have one tangle on the stack at that time
+       or have six tangles on the stack and then press the <b>c</b> button 
+       (this embeds the six tangles in the
+       faces of a cube).
+
+<p>
+
+The sliders on the bottom of the panel have the following functions:
+<blockquote>
+<dl>
+<dt><b>tgfuzz  </b>
+<dd>
+controls a small amount of jitter added to the position of
+                  each bead.
+      
+<dt><b>tgspace  </b>
+<dd>
+controls amount of space between beads when a tangle is
+                    created.
+          
+<dt><b>tg1*off  </b>
+<dd>
+controls how much offset there is when the tangle is 
+                    pasted into its 1* polyhedron, you might want it about
+                    2 or so.
+          
+<dt><b>tgvas  </b>
+<dd>
+cylinders with length less than this number are split
+                    in two recusively
+
+          
+<dt><b>scale and offset  </b>
+<dd>
+just control the display of the tangle stack
+
+</dl>
+</blockquote>
+
+<p>
+
+          
+One other problem with the tangle calculator is that if you don't exit
+properly (say, by pressing the blank button with other than 1 tangle)
+it might leave you with the tangle calc panel displayed but inactive.
+In a case light that use the pop-up menus to go to a different control panel
+or to reenter the tangle calculator.     
+
+
+<p>
+
+<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/tang-calc/tang-calc.html">Examples</a>
+ of knots and links created with the tangle calculator can be found at the KnotPlot Site.
+
+<hr>
+
+[<a href="KnotPlotManual.html">KnotPlot Manual</a>], 
+[<a href="ViewWindow.html">View Window</a>], 
+[<a href="ControlPanel.html">Control Panel</a>], 
+[<a href="CommandWindow.html">Command Window</a>],
+[<a href="KPManOverView.html">Overview</a>]
+<br>
+[<a href="http://www.cs.ubc.ca/spider/scharein">Rob Scharein's</a>
+ main WWW site], 
+[<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/KnotPlot.html">KnotPlot Site</a>]
+
+</body>
+</html>
+

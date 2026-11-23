@@ -1,0 +1,35 @@
+delete all
+scenery init
+untran
+scale = .4
+
+%
+% bind F1 key to reload script
+function 1 <annu2.kps
+
+hstart = \rr360
+
+torus 3 8   
+cyl-rad = .4
+
+
+save |x        % save into RAM
+ago 102        % relax a bit
+load comb |x   % combine relaxed knot with unrelaxed
+refine 6       % make it nice
+
+save |y        % save link into RAM
+revbeads       % reverse the orientation
+trans 0 0 .5   % move it a bit
+load comb |y   % combine it with the other one
+centre
+
+% use the current two component link to create
+% some scenery. note that this is an undocumented
+% option and may change for reasons unknown (but time will tell)
+scenery object .link   
+
+scenery on     % actually show the scenery
+
+delete all     % get rid of the torus knots
+

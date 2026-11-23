@@ -1,0 +1,44 @@
+
+reset all
+mode cb
+cyl=.06
+braid -cheapo a
+
+random braid 3 3
+fitto 2
+trans 0 0 3
+about z \rr360
+save dum.k
+
+silent=t
+
+frame comm "load dum.k;trform icos %d 4;save dum%d.k"
+frame 0 to 19
+
+delete all
+
+frame comm "load comb dum%d.k"
+frame 0 to 19
+
+silent=f
+
+
+join all
+info
+safe
+
+exit
+info
+
+mode s
+cyl=.6
+save ddum.k
+load ddum.k
+
+exit
+dstep=17
+
+#11 ago 33;par iter;thick
+
+save 14dec02c.k
+

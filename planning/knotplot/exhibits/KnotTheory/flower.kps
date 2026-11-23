@@ -1,0 +1,10 @@
+scale=.3
+silent = t
+Draw=f
+unknot \ri[14/25]    % Random number of beads from 14 to 25 inclusive
+moire f .4 f f f     % Undocumented command!  (as of March 7, 1996)
+twfix
+disp t
+Draw=t
+silent=f
+nap 1

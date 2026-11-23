@@ -1,0 +1,8 @@
+tfunc reset 22
+tfunc 1 "oal pitch \ri32 cr -1200" 11 rep 1 7
+tfunc 1 "oal pitch \ri32 cr  1200" 11 rep 1 7
+
+echo adjust1
+
+exit
+

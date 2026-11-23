@@ -1,0 +1,8 @@
+tfunc reset
+frame comm "oal pitch %d cr \rr+-16"
+
+tfunc .1 "silent=t;frame 0 numb 8;silent=f" 0 rep .6 1.4
+
+#3 echo
+echo adjusting pitch of sources by -16 to 16 cents every 0.6 to 1.4 seconds
+echo

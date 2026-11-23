@@ -1,0 +1,220 @@
+require KPbuild 4691
+%`-
+require KPbuild 4555
+
+reset all
+
+Draw=f
+silent=t
+mode cb
+cyl = .06
+load 3.1ts
+splane 48 0 7
+tsba=6
+tsbb=42
+tsn=1
+reset sliders
+
+disp t
+
+4dop disp p
+cyl-rad = 0.033278
+scale = 1.645767
+spin 0 0 0
+
+4dto3d ortho
+
+func init
+func silent
+
+4deye=15
+func 1 <4dpolytopes.kps
+func 2 "www astronomy.swin.edu.au/~pbourke/polyhedra/platonic4d"
+
+
+
+alias ~ah "txt hide \rr[5/8]"
+
+txt fcolour royalblue .6
+txt scolour #000
+txt sfcolour #fb0 .8
+
+txt lineskip -25
+~ah
+txt fill on
+txt centre
+txt font 3
+txt c 20 "reload demo" <4dpolytopes.kps
+
+~ah 
+txt push
+txt left
+txt group 873264
+txt select on
+txt phantom "600 cell"
+txt 15 15   "tiling"    <108cell.kps
+txt 15 a   "klein"    <109cell.kps
+txt fill off
+txt phantom
+txt 10 a other:
+txt fill on
+txt phantom "600 cell"
+txt 15 a1.5   "600 cell" <600cell.kps
+txt 15 a    "120 cell" <120cell.kps
+txt 15 a    "24 cell" <24cell.kps
+txt 15 a    "16 cell" <16cell.kps
+txt 15 a    "8 cell" <8cell.kps
+txt 15 a    "5 cell" <5cell.kps
+txt phantom
+txt fill off
+txt select off
+txt 10 a polytope:
+txt pop
+
+~ah
+txt right
+txt font 4
+txt -14 14 ? "help popup 4dpolytopes.kps handoff"
+txt font 3
+
+% slfjsdlfj
+
+~ah
+4dw = 2
+txt phantom fullscreen
+txt -15 a1.5 fullscreen "full toggle"
+txt -15 a "4d axes" "4dop disp ~a"
+txt -15 a "polytope" "4dop disp ~p"
+txt fill off
+txt -10 a toggle:
+txt fill on
+txt phantom
+
+%func 3 <5cell.kps
+%func 4 <8cell.kps
+%func 5 <16cell.kps
+%func 6 <24cell.kps
+%func 7 <120cell.kps
+%func 8 <600cell.kps
+
+%func exec \ri[3/8]
+
+
+
+
+~ah
+txt right
+txt push
+txt group 7755
+txt select on
+txt phantom persp
+txt -15 a1.5 "ortho" "4dto3d ortho"
+txt -15 a    "persp" "4dto3d persp"
+txt fill off
+txt phantom
+txt select off
+txt -10 a projection:
+txt -10 a.7 "4D --> 3D"
+txt pop
+if \rr2 < 1 then "txt exec ortho 7755" else "txt exec persp 7755"
+
+alias ~4dpersp "txt exec persp 7755"
+
+alias ~4dpanel <4dpolytopes-panel.kps    % alias auto-destructs when executed
+
+~ah
+txt fill on
+txt phantom random
+txt -15 a1.5 z-w    "~4dpanel;par0=0;par1=0;par2=\rr[3/6]"
+txt -15 a    y-z    "~4dpanel;par0=0;par1=\rr[3/6];par2=0"
+txt -15 a    x-w    "~4dpanel;par0=\rr[3/6];par1=0;par2=0"
+txt -15 a    random "~4dpanel;par0=\rr+-8;par1=\rr+-8;par2=\rr+-8"
+txt -15 a    reverse "~4dpanel;test paradj 0 -1 0;test paradj 1 -1 0;test paradj 2 -1 0"
+txt -15 a    faster "~4dpanel;test paradj 0 1.25 0;test paradj 1 1.25 0;test paradj 2 1.25 0"
+txt -15 a    slower "~4dpanel;test paradj 0 .8 0;test paradj 1 .8 0;test paradj 2 .8 0"
+%txt -15 a    reset   "spin 0 0 0"
+txt fill off
+txt phantom 
+txt -10 a rotation:
+
+alias ~cylrad "cyl-rad=$0;echo;echo equivalent to typing;echo cyl-rad=$0;echo into this window (try other values)"
+~ah
+txt fill on
+txt push
+txt select on
+txt group 883311
+txt -15 a1.5 "0.03" "~cylrad 0.03"
+txt -15 a    "0.02" "~cylrad 0.02"
+txt -15 a    "0.01" "~cylrad 0.01"
+txt select off
+txt fill off
+txt -10 a cyl-rad:
+txt pop
+txt exec 0.03 883311
+
+~ah
+alias ~colour  "mathsv c $0 1 1;echo;echo equivalent to typing;echo mathsv c $0 1 1;echo into this window (try other values)"
+txt fill on
+txt push
+txt phantom random
+txt group 9992226
+txt -15 a1.5 random "~colour \rr360"
+txt -15 a  blue "~colour 222"
+txt -15 a  green "~colour 108"
+txt -15 a  orange "~colour 22"
+txt -15 a  red "~colour 0"
+txt phantom
+txt fill off
+txt -10 a "set colour:"
+txt pop
+
+txt push
+txt awake \rr[20/40]
+txt group 23648
+~ah
+txt fill on
+txt -15 a1.5 blur <4dpolytopes-blur.kps
+txt fill off
+txt -10 a action:
+txt pop 
+
+
+~colour \rr360
+alias ~label "echo;echo;echo $0;echo;txt push;txt group 678;txt delete group 678;txt fill off;txt font 4;txt centre;txt c -30 {$0};txt pop"
+
+alias ~poly "spin 0 0 0;txt exec {$0 cell} 873264"
+
+%% Generated Wed Nov  9 19:14:42 2011
+%% with command line: multiif 4dpolytopes.txt
+parsave
+par8 = \rr53
+if par8 < 5 then "~poly 5;par8=55"
+if par8 < 15 then "~poly 8;par8=55"
+if par8 < 25 then "~poly 16;par8=55"
+if par8 < 35 then "~poly 24;par8=55"
+if par8 < 45 then "~poly 120;par8=55"
+if par8 < 54 then "~poly 600;par8=55"
+parrestore
+
+par0=\rr+-4
+par1=\rr+-4
+par2=\rr+-4
+idle "spin tincr \ppar0 \ppar1 \ppar2"
+
+txt on
+
+back=#111
+
+txt autohide on   % should be the last txt command
+
+
+silent=f
+Draw=t
+#11 echo
+
+exit
+%`+
+
+vertex data for the polytopes from astronomy.swin.edu.au/~pbourke/polyhedra/platonic4d (press F2 now to go there)
+
+

@@ -1,0 +1,5 @@
+bfacf z 1
+bfacf run 1000000
+
+txt fill on
+txt c -50 "unwalk" <bfacf/walk-unwalk.kps

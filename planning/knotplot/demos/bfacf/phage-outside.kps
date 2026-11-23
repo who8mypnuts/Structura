@@ -1,0 +1,17 @@
+silent=t
+scenery init
+scenery vscale 20
+scenery object eobj/prolate-icos
+scenery on
+spec -bfacf
+
+txt push
+txt fcolour hsv:108/.6/.6 .6
+txt font 3
+txt fill on
+txt left
+txt 15 c "show inside" <bfacf/phage-inside.kps
+txt pop
+
+par1 = 0
+silent=f

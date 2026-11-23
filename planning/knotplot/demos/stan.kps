@@ -1,0 +1,23 @@
+require KPbuild 4438
+
+reset all
+silent = true
+background = black
+txt font 4
+txt colour orange
+txt cent
+txt c -30 "using knots to explore the standard map"
+
+txt fill on
+txt fcolour royalblue .7
+
+txt c-108 -70 1 <stan1.kps
+txt c-54 -70 2 <stan2.kps
+txt c -70 3 <stan3.kps
+%txt c+54 -70 4 <stan4.kps
+%txt c+108 -70 5 <stan5.kps
+
+txt on
+
+silent=false
+#3 echo

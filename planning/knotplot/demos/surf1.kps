@@ -1,0 +1,23 @@
+reset all
+if \rr10 < 4 then "knot spe" else "knot cd"
+
+
+vcn = \ri[3/12]
+vcA = \rr[.5/2]
+sradius = \rr[.1/.8]
+%surface radf arc vcn mul vcphi add T \rr{3/16} mul add cos vcA mul \rr[.1/1] add clamp cyl mul
+surface radf arc vcn mul vcphi add T \rr{1/5} mul add cos vcA mul \rr[.1/1] add clamp cyl mul
+go
+background = black
+verb=f
+hstart=\rr360
+txt hide \rr[5/7]
+txt fcolour royalblue .6
+txt font 3
+txt centre
+txt fill on
+txt c 20 "reload demo" <surf1.kps
+txt on
+txt autohide on
+
+%dfunc symm 5 1

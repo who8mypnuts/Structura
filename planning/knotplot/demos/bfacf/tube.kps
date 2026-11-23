@@ -1,0 +1,39 @@
+if \ppar0 != 8314558 then <bfacf/tube-init.kps
+
+
+#4 echo
+txt init
+txt centre
+txt font 4
+txt c -20 "Knotted tube"
+txt on
+
+
+
+
+alloc 35000
+
+
+
+func 1 <bfacf/tube-config1.kps
+func 2 <bfacf/tube-config2.kps
+func 3 <bfacf/tube-config3.kps
+func 4 <bfacf/tube-config4.kps
+
+func exec \ri[1/3]
+
+
+txt fcolour hsv:108/1/1 .6
+txt fcolour hsv:108/.6/.6 .6
+txt font 3
+
+txt lineskip -25
+txt 15 0 " "
+txt fill on
+%txt 25  a 4 "func exec 4"
+txt 25  a 3 "func exec 3"
+txt 25  a 2 "func exec 2"
+txt 25  a 1 "func exec 1"
+txt fill off
+txt left
+txt 15 a "Configurations:"

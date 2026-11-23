@@ -1,0 +1,40 @@
+#!/bin/csh -f
+
+# Very basic constructor routine: KP-cons-symm
+# March 16, 1996
+# Rob Scharein
+
+# A symmetry constructor.
+
+# Constructor arguments:
+#    $0 Constructor executable file (this file).
+#    $1 First file read by KnotPlot (the prefile).
+#    $2 Second file read by KnotPlot (the postfile).
+#    $3 Type of machine we're running on (sgi, ibm, etc...)
+#    $4 A flag either 0 or 1.
+#    $5 Name of constructor.
+#       Anymore more arguments are the arguments to the contructor
+#       from the KnotPlot command line.
+
+# Uncomment the following line and set Debug = t in KnotPlot to see
+# the sequence of events.
+
+# echo KP-cons-symm command line arguments are: $*
+
+# The best way to see what happens is to run KnotPlot in non-graphics mode:
+
+#     knotplot -nog -par Debug t
+
+set accumfile = $1.ac
+set scratchfile = $1.sc
+
+
+switch ($4)
+case 0:
+  
+  echo save $scratch > $1
+  breaksw
+endsw
+
+
+

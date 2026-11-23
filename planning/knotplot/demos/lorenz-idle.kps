@@ -1,0 +1,20 @@
+reset all
+cyl-rad = 0.200000
+scale = 0.100000
+ncur=2
+nseg=10
+hstart=33
+
+nlor buffer 410
+nlor offset -.39 -.39 23.67
+nlor init \rr33 \rr33 \rr33
+nlor 222
+
+
+idle "nlor 200;nlor setback 195"
+
+echo " " 
+echo " " 
+echo "  *** You can rotate and scale the view as usual while the demo runs,"
+echo "  *** or go to the Main control panel and change display options."
+echo " " 

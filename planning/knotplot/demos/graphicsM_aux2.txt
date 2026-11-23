@@ -1,0 +1,16 @@
+par1
+5 mode s
+2 mode c
+4 mode cb
+4 mode sb
+4 mode b
+4 mode cB
+5 mode sB
+5 mode B
+1 mode f
+3 mode bf
+2 mode cbf
+1 mode sbf
+3 mode Bf
+2 mode cBf
+1 mode sBf

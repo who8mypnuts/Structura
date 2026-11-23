@@ -1,0 +1,10 @@
+txt fill on
+txt phantom "sing BN"
+txt 15 a2 "sing BN" "dna voice 2;<DNA-sing.kps"
+txt 15 a  "sing GN" "dna voice 1;<DNA-sing.kps"
+txt 15 a  "sing PO" "dna voice 0;<DNA-sing.kps"
+txt 15 a  "sing C" "dna voice 3;<DNA-sing.kps"
+txt 15 a  "sing B" "dna voice 4;<DNA-sing.kps"
+txt phantom 
+txt fill off
+txt 10 a fun:

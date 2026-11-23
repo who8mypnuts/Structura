@@ -1,0 +1,19 @@
+silent = t
+
+bfacf clear 30
+bfacf stop
+
+scenery init
+scenery vscale 19.5
+scenery object eobj/prolate-icos
+bfacf object 0 fill
+bfacf dilate
+bfacf object 0 clear
+bfacf fill
+bfacf copy
+
+silent = f
+
+if par1 == 0 then <bfacf/phage-outside.kps else <bfacf/phage-inside.kps
+
+scenery on

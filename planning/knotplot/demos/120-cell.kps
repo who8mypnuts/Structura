@@ -1,0 +1,28 @@
+reset all
+silent=t
+mode cb
+cyl = .06
+load 3.1ts
+splane 48 0 7
+tsba=6
+tsbb=42
+tsn=1
+reset sliders
+
+disp t
+
+4dop disp p
+cyl-rad = 0.033278
+scale = 1.645767
+spin 0 0 0
+silent=f
+
+echo  " "
+echo  " "
+echo " *** 1-skeleton of a 4D regular polytope (the 120 cell)."
+echo "     Try rotating the polytope in 4D, or use the trackball."
+echo "     Also try using an orthographic 4D-->3D projection."
+echo "     (click on the `Spin' button after changing the projection)"
+echo " "
+
+

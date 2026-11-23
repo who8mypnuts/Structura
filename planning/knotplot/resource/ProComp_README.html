@@ -1,0 +1,107 @@
+<html>
+<head>
+<title>KnotPlot ProComp Commands</title>
+<style type="text/css">
+body, td  { margin: 30px; 
+          color: black; 
+          background: #FFFFFF;
+          font-size: 1em;  
+          font-family:  verdana, geneva, arial, sans-serif; }
+a:link          { color: #000099; }
+a:visited       { color: red; }
+a:active        { color: #FF0000; }
+a:hover         { color: #00FF00; }
+</style>
+</head>
+<body>
+<h1>KnotPlot ProComp Commands</h1>
+
+<p>
+Command names and keywords are shown in <b>bold face</b>.
+Parameters requiring a value are shown in <i>italic face</i>. 
+</p>
+
+<dl>
+
+<dt><b>ProComp</b></dt>
+<dd>
+<p>
+With no arguments, prints the current values of all channels.
+</p>
+</dd>
+
+<dt><b>ProComp</b> <b>enable|disable</b> <i>allow-reset</i></dt>
+<dd>
+<p>
+Set ProComp state.
+<i>allow-reset</i> is a 
+boolean value
+(read about <a href="www/parameters.html">setting parameters</a>)
+</p>
+
+<p>
+Examples:
+<dl>
+<dt><b>ProComp enable</b></dt>
+<dd>Enable device. Device will not be disabled upon a "reset" command.</dd>
+<dt><b>ProComp enable t</b></dt>
+<dd>Enable device. Device will be disabled upon a "reset" command.
+The P button in the Graphics section of the DemoB panel (defined in 
+the file <a href="../demos/procomp_DemoB.kps">demos/procomp_DemoB.kps</a>) 
+uses this option.
+</dd>
+<dt><b>ProComp disable</b></dt>
+<dd>Disable device.</dd>
+</dl>
+</p>
+</dd>
+
+<dt><b>ProComp</b> <b>channels</b> <i>channel1</i>  <i>channel2</i>  <i>channel3</i>  <i>channel4</i>  </dt>
+<dd>
+<p>
+Maps ProComp device channels (A-G or a-g) to the displayed slider sets.
+The command <b>ProComp</b> and the keyword <b>channels</b> may be abbreviated to the 
+shortest unambiguous string (see <a href="www/parameters.html">KnotPlot Parameters</a> section of the manual)
+</p>
+<p>
+Examples:
+<dl>
+<dt><b>ProComp channels a b c d</b></dt>
+<dd>
+Default mapping of channels to sliders.
+</dd>
+<dt><b>Pro  chan a b c d</b></dt>
+<dd>
+Same as above, but showing an allowed abbreviation.
+</dd>
+</dl>
+</p>
+</dd>
+
+
+<dt><b>mapchannel</b></dt>
+<dd>
+<p>
+Shows the current mapping of channels to parameters.
+</p>
+</dd>
+
+
+
+<dt><b>mapchannel</b> <i>channel</i> <i>parameter</i> <i>M</i> <i>B</i></dt>
+<dd>
+<p>
+Maps a channel to the indicated parameter.
+</p>
+</dd>
+
+
+
+</dl>
+
+
+<address>
+<a href="mailto:scharein@cecm.sfu.ca">Rob Scharein</a>
+</address>
+</body>
+</html>

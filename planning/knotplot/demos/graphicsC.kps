@@ -1,0 +1,44 @@
+reset all
+
+back=0
+hstar=\rr360
+sbuff
+
+disp t 
+disp t 
+
+fixcofm=t
+spe comm "align ax"
+unknot \ri[55/88]
+
+scale = .36
+ncur=8
+nseg=22
+cyl=.04
+coll a
+force 1
+jit .0001
+%scale 1 1 0
+
+clrfun z
+
+go 99999999
+
+func 9 del all:clrfun zf:disp t:clrfun z:knot:hsta=\rr360
+func 10 del all:clrfun zf:disp t:clrfun z:knot 2:hsta=\rr360
+func 11 del all:clrfun zf:disp t:clrfun z:torus:hsta=\rr360
+
+func 1 clrfun zf:disp t:clrfun z
+
+tfunc allowreset
+
+tfunc 30.1 "echo Press one of the function keys."
+tfunc 30.3 "echo Press one of the function keys."
+tfunc 30.5 "echo Press one of the function keys."
+echo " " 
+echo " " 
+echo " " 
+echo " " 
+echo "Wait until the motion goes chaotic."
+echo " " 
+echo " " 

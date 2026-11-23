@@ -1,0 +1,158 @@
+
+require KPbuild 4912
+
+
+reset all
+mode s
+cyl-rad = .3
+
+coll a
+force 1
+velf = t
+tanf = t
+
+alias ~l "line numb \ri[$0/$1];line dir \rr+-1 \rr+-1 \rr+-1;line"
+
+
+scale = .18
+
+
+
+dstep = 11
+
+% hmm, not quite ready for anaglyph mode
+
+alias ~anaglyphOn  "show none;anag init;anag r.gb;anag eye;<anagblurb.kps" 
+alias ~anaglyphOff "anag off"
+
+% use par1 to indicate if anaglyph mode is on
+alias ~toggleanag "if par1 == 1 then {par1=0;~anaglyphOff} else {par1=1;~anaglyphOn}"
+
+sphere luxo 7
+sphere on
+mathsv S 240 1 1 d
+mathsv S 0 0 0 s
+alpha S 0.8
+sphere 19
+
+
+if \rr100 < 22 then "show sphere" else "show none"
+
+rotate x \rr360
+
+new=f
+
+alias ~clast "colour last hsv:$0/$1/$2"
+alias ~u "silent=t;unknot \ri[17/25] \rr[1/2];project random last;translate \rr+-16 \rr+-16 \rr+-16 last;~clast \rr360 \rr[0.7/1] \rr[0.75/1];open all;silent=f"
+
+
+vcn = 1
+vcphi = 3.14159
+vcA = 1
+
+%alias ~id "idle {ago 3;fitto sphere 20;particles ends}"
+alias ~id "idle {ago 3;fitto sphere 20}"
+% use par0 to indicate animation is occurring
+par0=1
+alias ~toggleanim "if par0 == 1 then {par0=0;idle} else {par0=1;~id}"
+
+~id
+~u
+
+
+% buttons
+
+alias ~ah "txt hide \rr[5/7]"
+txt fcolour royalblue .6
+
+txt fill on
+txt cent
+txt font 3
+txt c 20 "reload demo" <dance1.kps
+
+
+% right side buttons
+
+txt right
+txt lineskip -25
+
+~ah
+
+txt font 4
+txt fill on
+txt -14 14 ? "help popup file-not-found.kps handoff"
+txt font 3
+
+~ah
+
+
+
+txt -15 a2 fullscreen "full toggle"
+txt -15 a  animation ~toggleanim
+%txt -15 a  anaglyph ~toggleanag
+txt -15 a    sphere "show ~sphere"
+
+txt fill off
+txt -10 a toggle:
+
+~ah
+txt fill on
+txt -15 a2 white "background = white;display"
+txt -15 a  grey  "background = KnotPlotGrey;display"
+txt -15 a  blue  "background = DarkBlue;display"
+txt -15 a  black "background = black;display"
+txt fill off
+txt -10 a background:
+
+% left side buttons
+
+~ah
+txt left
+txt font 3
+txt fill on
+txt 15 15 forces "mode f;fscale=365;ascale=0.0155"
+txt 15 a  "q-slabs" "mode q;cyl-rad=1.2;~q"
+txt 15 a  "beads & cyls" "mode cb;cyl-rad=0.1;bead-rad=0.2"
+txt 15 a  beads "mode b;bead-rad=0.67"
+txt 15 a  smooth "mode s;cyl-rad=0.3"
+txt fill off
+txt 10 a "drawing mode:"
+
+% mode q uses the qslabs material (formerly arrow material) and
+% qmoption slaspect VALUE  (default is 0.125)
+alias ~q "mathsv q \rr360 \rr[.8/1] 1 d"
+
+~ah
+txt fill on
+txt 15 a2 split split
+txt 15 a reverse "revbeads"
+txt 15 a open/close "open toggle"
+txt 15 a "delete all" "delete all"
+txt 15 a  "new" ~u
+
+txt fill off
+txt 10 a strings:
+
+
+
+
+
+
+txt autohide on   % should be the last txt command
+txt on
+
+
+exit
+
+add split limiting with ability to increase the split limit for the session
+split limit 9999
+for example
+
+draw strings as orbs
+
+rewrite commands such as split, delete, etc. to conform to modern practices
+split ?
+help split
+split comp 4
+split comp 5 8
+

@@ -1,0 +1,23 @@
+random tangle
+freset all
+panel off
+silent = t
+dstep=3
+mode s 
+cyl = .1
+scale = 1.02
+
+% this knot is just conway 3 in a nice orientation
+
+colour 0 purple
+
+load demos-demo0.k
+
+collision allow  % turn off collision checking
+force 1          % Newtonian force 
+velforce = true  % but damped 
+
+ago 204
+
+silent = f
+panel on

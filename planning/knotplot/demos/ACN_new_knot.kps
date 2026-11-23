@@ -1,0 +1,16 @@
+Draw=f
+coll n
+force 2
+knot numb \ri[2/36] ms
+refl r
+stus=1
+ago 333
+coll a
+force 1
+zero
+stus=0
+Draw=t
+echo
+echo
+echo " *** Note: knot type allowed to change in this demo"
+echo

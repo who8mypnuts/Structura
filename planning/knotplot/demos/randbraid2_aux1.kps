@@ -1,0 +1,7 @@
+txt -15 -240 "stop relaxing" <randbraid2_aux2.kps
+txt -15 -280 "fast simplify" "delete downto 5"
+go
+
+echo
+echo "*** Use the `fast simplify' button to speed up the relaxation"
+echo

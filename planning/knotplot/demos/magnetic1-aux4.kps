@@ -1,0 +1,18 @@
+<magnetic1.kps
+line
+align ax
+refl r
+trans \rr+-1 \rr+-1 \rr+-1
+save |line
+align ax
+refl r
+trans \rr+-1 \rr+-1 \rr+-1
+load comb |line
+fixcofm=t
+revb rand
+field trace cubic gsize 5 ncell 3
+scale=.54
+
+txt cent
+txt fill on
+txt c 33 collide "veloc rad -3"

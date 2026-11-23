@@ -1,0 +1,65 @@
+require KPbuild 4040
+
+
+
+if par5 != 16052253 then <magnetic1-init.kps
+
+silent=t
+verbose=f
+
+scale = \rr[.23/.42]
+rota x \rr360
+field type magnetic tracer grid npoints 108 step .1 gsize 10 ncells 4
+
+mode sF
+cyl=.2
+knot 1 
+%nbead mult .5
+%fitto nats
+force 1
+coll a
+go
+
+txt clobber on
+txt centre
+txt font 4
+txt fill off
+txt c -20 "Magnetic Field"
+txt font 3
+txt c a "(unfinished demo)"
+
+txt font 2
+txt lineskip -24
+txt fill on
+txt right
+
+mass off
+
+txt -20 20 "unknot" "func exec 10"
+%txt -20 a "knot" "func exec 7"
+txt -20 a "hopf link" "func exec 9"
+txt -20 a "two lines fixed ends" "func exec 8"
+txt -20 a "two lines" "func exec 12"
+txt -20 a "two rings" "func exec 11"
+txt fill off
+txt -20 a "Presets:"
+
+
+txt delete collide
+
+spec orient
+3dop colo #f00
+
+select action 0 "click to reverse current" "revb 0"
+select action 1 "click to reverse current" "revb 1"
+select action 2 "click to reverse current" "revb 2"
+select action 3 "click to reverse current" "revb 3"
+select on
+txt on
+
+silent=f
+
+echo
+echo " *** Click on a component to reverse direction of current"
+echo "     (arrow indicates direction)"
+echo

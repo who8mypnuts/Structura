@@ -1,0 +1,9 @@
+% used by `violently-happy.kps'
+
+show grid
+if par2 != 738683223 then "rotate x -50"
+%vscale=\rr[.25/.4]
+frame comm "line num \ri[8/13];line dir \rr+-.3 \rr+-.3 \rr[.6/1];line \rr+-10 \rr+-10 0"
+frame 0 num \ri[7/12]
+
+if \rr3 < 1 then "velf=t"

@@ -1,0 +1,4 @@
+load tholdg.k
+par0=10
+echo "  *** Arbitrary tangle template #2"
+txt c -30 "Arbitrary tangle template #2"

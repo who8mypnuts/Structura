@@ -1,0 +1,5 @@
+tfunc reset
+tfunc 1 "bfacf z \rr.21" 0 rep 1 11
+tfunc 1 "bfacf z \rr[.09/.15]" 0 rep 1 11
+tfunc 1 "bfacf z .21" 0 rep 7 22
+

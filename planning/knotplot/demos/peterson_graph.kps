@@ -1,0 +1,34 @@
+delete all
+line num 5
+frame 0 num 15
+
+glue l0 l1
+glue l0 l2
+
+glue f1 l3
+glue f1 l4
+
+glue f0 l8
+glue f0 l14
+
+glue f8 l7
+glue f8 f5
+
+glue l5 f9
+glue l5 l6
+
+glue f2 l9
+glue f2 l13
+
+glue l11 f3
+glue l11 f6
+
+glue l10 f4
+glue l10 f7
+
+glue f14 f11
+glue f14 f12
+
+glue l12 f10
+glue l12 f13
+

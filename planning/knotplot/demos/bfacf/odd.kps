@@ -1,0 +1,53 @@
+require KPbuild 4691
+require KPbuild 4251
+
+if \ppar0 != 9152998 then <bfacf/slab-init.kps
+
+bfacf init
+delete all
+#4 echo
+txt init
+txt centre
+txt font 4
+txt c -20 "Some odd things"
+txt on
+%txt fcolour hsv:108/.6/.6 .6
+
+txt clobber on
+
+alloc 25000
+
+
+alias getknot "knot number $0 mscl;bfacf init;~trans;bfacf load;read bfacf/slab2-box.kps"
+alias ~trans "about y 90;centre;trans to lattice"
+alias ~annote "txt fill off;txt left;txt font 4;txt 5 -20 $0_$1;txt font 2;txt cent;txt c -44 {$0 xing knot}"
+
+
+alias kload  "clk init;mode cB;load mscl/$0.$1;~trans;clk load;~annote $0 $1"
+mode cB
+
+
+txt clobber on
+
+txt font 3
+
+txt group 33
+txt lineskip -25
+txt 15 0 " "
+txt fill on
+txt 30  a "odd 4" "<bfacf/odd4.kps"
+txt 30  a "odd 3" "<bfacf/odd3.kps"
+txt 30  a "odd 2" "<bfacf/odd2.kps"
+txt 30  a "odd 1" "<bfacf/odd1.kps"
+
+txt fill off
+txt left
+txt 5 a "Odds:"
+
+txt fill on
+
+
+txt group 0
+
+txt right
+

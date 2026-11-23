@@ -1,0 +1,39 @@
+reset all
+
+func silent
+func init
+silent=t
+
+mode cb
+scale = 0.466116
+cyl-rad = 0.156387
+bead-radius = 0.328759
+line dir 0 1
+line
+centre
+jit .01
+
+wavefront nwaves 222
+wavefront c \rr[2.5/4]
+wavefront skip 15
+mode cbw
+
+wand pull 0
+go 999999999
+velf = t
+force 1
+coll a
+
+func 1 "wand pull first 0"
+func 2 "wand pull last 0"
+func 3 "fitto 3;align ax;zero"
+
+silent=f
+
+echo 
+echo 
+echo "  *** Press F1 to pull first bead, F2 to pull last."
+echo "      Press F3 to centre knot."
+echo "      Press F12 to toggle wand display."
+func 12 "spec ~wand"
+echo

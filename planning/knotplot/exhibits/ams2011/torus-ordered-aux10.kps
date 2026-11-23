@@ -1,0 +1,2 @@
+frame comm "torus num %d 0;fitto 9;read rand_torient.kps;vport tile %d 10;disp t;gflush"
+frame 1 to 100

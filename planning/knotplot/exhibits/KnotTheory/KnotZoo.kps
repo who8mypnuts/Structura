@@ -1,0 +1,4 @@
+par0 = \rr100
+if par0 > 50 then <kzoo6.kps
+if par0 > 25 then <kzoo5.kps
+if par0 > 10 then <kzoo4.kps

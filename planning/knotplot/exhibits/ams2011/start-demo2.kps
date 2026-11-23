@@ -1,0 +1,10 @@
+% Script generated at Thu Mar 17 15:10:17 2011
+
+reset all
+spe vwt
+font 4
+%wlay compact
+<Ndemos.kps
+<Pdemos.kps
+demo closewin
+<dispatch.kps

@@ -1,0 +1,100 @@
+reset all
+func 12 <fig8.kps
+ortho
+%rotate z -60
+%rotate y -45
+Draw=f
+silent =t
+scale=1
+cyl=.13
+ncur = 4
+nseg = 15
+hstart = \rr360
+if \rr1 < .3 then "back=0"
+if \rr1 < .6 then "spe back;hstart=\rr[10/50]"
+
+load fig8symm.k
+load comb fig8symm.k
+hincr=0
+trans 4 0 0 1 
+trx = -2
+
+
+txt on
+txt centre
+txt font 4
+
+txt c -60 "an achiral knot"
+disp t
+nap 1
+txt c -85 "is equivalent to its mirror image" 
+disp t
+nap 1
+
+txt c 165 "these two knots start out looking the same" 
+disp t
+nap 1
+txt c 140 "rotate one by a quarter turn" 
+disp t
+
+
+%#45 about z 2 0;disp t
+nop \t0    % initialize clock
+par=90  % degrees per second
+% about z for 1 seconds at par0 degrees per second
+until timelimit 1
+until Ncomp 0 "about z \T1 0;disp t"
+
+
+txt c 115 "and they become mirror images" 
+disp t
+
+nap 3
+dofx = 0
+
+load 3.1
+fitto 1.7
+%save dum.k
+%load comb dum.k
+dupl
+hincr=0
+refl z 1
+
+txt init
+txt on
+txt centre
+txt font 4
+
+txt c -60 "almost all knots are chiral"
+trans 4 0 0 1
+disp t 
+nap 1
+txt c -85 "and are not equivalent to their mirror image" 
+disp t 
+nap 1
+
+txt c -110 "these two versions of the trefoil are mirror images" 
+disp t
+nap 1
+disp t 
+nap 2
+
+txt c 165 "these two trefoils are mirror images of each other" 
+disp t
+nap 1
+txt c 140 "rotate one by a half turn" 5
+
+%#45 about y 4 0;disp t
+
+nop \t0    % initialize clock
+par=180  % degrees per second
+% about y for 1 seconds at par0 degrees per second
+until timelimit 1
+until Ncomp 0 "about y \T1 0;disp t"
+
+
+txt c 115 "and they are still mirror images" 
+disp t
+nap 3
+silent=f
+Draw=t

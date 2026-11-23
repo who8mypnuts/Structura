@@ -1,0 +1,54 @@
+require KPbuild 4637
+
+reset all
+cyl-rad=.4
+new=f
+sphere 20
+
+
+txt on
+txt left
+
+txt fcolour royalblue .7
+txt lineskip -25
+txt fill on
+txt 15 15 5a <arcs-5a.txt
+txt r 15 5b <arcs-5b.txt
+txt 15 a 4a <arcs-4a.txt
+txt r a0 4b <arcs-4b.txt
+txt 15 a 3a <arcs-3a.txt
+txt r a0 3b <arcs-3b.txt
+txt 15 a 2a <arcs-2a.txt
+txt r a0 2b <arcs-2b.txt
+txt 15 a 1a <arcs-1a.txt
+txt r a0 1b <arcs-1b.txt
+txt fill off
+txt 10 a examples:
+
+
+txt right
+txt fill on
+txt -15 15 sphere "show ~sphere"
+txt -15 a axes "show ~axes"
+txt -15 a arrows "show ~orient"
+txt fill off
+txt -10 a toggle:
+
+txt clobber on
+
+new = f
+<arcs-1a.txt
+
+show sphere axes orient
+3dop oscale 1
+
+rotate norotate
+rotate z -37.141594
+rotate y -32.922337
+rotate x -35.661509
+scale = 0.13
+
+txt fill off
+txt font 4
+txt cent
+txt c -20 "example usages of `arc' command"

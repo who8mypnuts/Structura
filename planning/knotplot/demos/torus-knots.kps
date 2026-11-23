@@ -1,0 +1,78 @@
+require KPbuild 4993   % changed scenery method
+
+reset all
+
+
+unknot 654 8.25
+silent  = t
+mcyl all 2
+
+colour all navyblue
+twfix
+
+
+scenery alpha .7
+nseg 22
+scenery object .tube
+mcyl off
+
+delete all 
+silent = f
+
+nseg 12
+cyl-rad=.4
+colour off
+
+glop back t
+
+silent=t
+
+txt init
+
+% create an unknot with radius equal to 
+% current value of R-torus
+
+%unknot 102 8.25
+%save |temp
+
+% create the torus knot
+torus \ri[1/7] \ri[1/16] 200
+
+
+txt font 4
+txt 10 -20 temp
+txt set name
+txt 10 -45 "on surface of torus (dark blue)"
+
+
+
+
+% and combine it with torus
+%load comb |temp
+scenery on
+
+% make the torus knot skinny
+%mcyl all .4
+cyl-rad=.4
+
+% and the torus itself fat (should have a 
+% cyl-rad slightly smaller than current value of
+% d-torus
+%mcyl last 2.4
+
+
+txt font 2
+txt fcolour royalblue .6
+txt fill on
+txt right
+txt lineskip -24
+txt -20 20 "rerun demo" "<torus-show.kps"
+txt -20 a "toggle torus" "scenery toggle"
+
+
+txt on
+
+silent=f
+txt on
+
+

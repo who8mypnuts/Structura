@@ -1,0 +1,6 @@
+draw texture
+texture repeat 1 9
+#5 echo " "
+echo *** use `texture repeat P Q' where P and Q are integers
+echo "   " currently using P=1 and Q=9
+

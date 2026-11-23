@@ -1,0 +1,105 @@
+alias doit "par0=0;load $0;txt c -20 $0;disp t;fitto 88;refine 4;test clkembed;safe;echo -f;disp t;~min;save * int;play 88;leng;echo -f;ago 333;echo -f;nap 1"
+
+alias ~min "bfacf init;bfacf load;bfacf copy;~check2;show energy;bfacf cent on;bfacf search on ~check;bfacf target 999;~min2;load |min;cent;tran to lat;~check 0 \pncomp"
+alias ~min2 "#600 test paradj 0 1 1;bfacf z \rr[.1/.2];bfacf step 1000000;disp t;par par0;echo -f"
+ccmode = 2
+energy model nbead
+energy format "Nedges = %.0f"
+show energy
+txt cent
+txt font 4
+txt clobber on
+txt on
+play init
+mode cb
+cyl-rad=.1
+
+alias ~blink "#5 load |min;cent;disp t;play 36;leng;echo -f;nap .4;bfacf copy;cent;disp t;play 38;leng;echo -f;nap .4"
+alias ~blink2 "#5 load |min;cent;disp t;play 44;leng;echo -f;nap .4;bfacf copy;cent;disp t;play 49;leng;echo -f;nap .4"
+bfacf search on ~check
+alias ~check "if \pncomp != 2 then {echo number of components ($1) is wrong!;echo -f;disp t;play 33;~blink;exit f}"
+alias qfix
+
+alias ~ok "echo seems ok;echo -f;play 77;nap .2;play 79;nap .2"
+alias ~check2 "if \pncomp != 2 then {echo check2: number of components ($1) is wrong!;echo -f;disp t;play 33;~blink2;exit f} else ~ok"
+alias qfix
+
+alloc 99999
+alias doit "load $0;ago 555;align axes;gauss"
+
+exit
+gauss open check
+
+doit l3.1
+doit l4.1
+doit l5.1
+doit l5.2
+doit l6.1
+doit l6.2
+doit l6.3
+doit l7.1
+doit l7.2
+doit l7.3
+doit l7.4
+doit l7.5
+doit l7.6
+doit l7.7
+doit m3.1
+doit n3.1
+doit n3.1s
+doit n4.1
+doit o3.1
+doit o3.1s
+doit l6c_1
+doit l6c_2
+doit l7c_1
+gauss close
+exit
+doit t3.1
+doit t4.1
+doit t5.1
+doit t5.2
+doit u3.1
+doit u4.1
+doit u5.1
+doit u5.2
+doit u6.1
+doit u6.2
+doit u6.3
+doit u7.1
+doit u7.2
+doit u7.3
+doit u7.4
+doit u7.5
+doit u7.6
+doit u7.7
+doit u8.1
+doit u8.10
+doit u8.11
+doit u8.12
+doit u8.13
+doit u8.14
+doit u8.15
+doit u8.16
+doit u8.17
+doit u8.18
+doit u8.19
+doit u8.2
+doit u8.20
+doit u8.21
+doit u8.3
+doit u8.4
+doit u8.5
+doit u8.6
+doit u8.7
+doit u8.8
+doit u8.9
+doit v4.1
+doit u6c_1
+doit u6c_2
+doit u7c_1
+doit u8c_1
+doit u8c_2
+doit u8c_3
+doit u8c_4
+doit u8c_5

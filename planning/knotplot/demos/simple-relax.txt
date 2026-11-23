@@ -1,0 +1,8 @@
+par0
+10 read tref-relax.kps
+15 read fig8-relax.kps
+20 read 6.3-relax.kps
+15 read 7.1-relax.kps
+25 read relax2.kps
+85 read open-end.kps
+85 read slide-knot.kps

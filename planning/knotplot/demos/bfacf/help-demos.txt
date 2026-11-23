@@ -1,0 +1,34 @@
+BFACF Demos Help
+
+Simulation method: 
+You have the choice of two (soon three) simulation methods, BFACF and KJC (kink jump crankshaft).
+BFACF is ergodic and KJC isn't. However, KJC is length preserving and "ergodic enough" for some us,
+at least for long, loose knots. If you are using the KJC method, the z and p() sliders have no 
+meaning.
+
+Plot:
+Simulation needs to be running to see the plot update. If the plot is inappropriately scaled, try
+changing the scale with a command something like:
+plot scale 1.08
+plot scale 3
+(default is a scale of 1)
+
+set probs:
+These are convenience buttons to automatically set the probabilities. The "from z" button sets the 
+probabilities according to the standard formula. "0 only" is equivalent to the KnotPlot command
+bfacf prob 0 1 0
+and reduce equivalent to
+bfacf prob 0 1 1
+
+p(+2) p(0) p(-2) sliders:
+Set the probabilities for the different BFACF moves for your own crazy interests.  Useful for the
+minimal stick search, or to get very long knots. 
+
+z sliders:
+First slider goes from z=0 to z=0.208 (the critical value), giving you finer control over this
+range. The other slider is from z=0 to z=1.  Changing these slider values will automatically set
+the probabilities according to the formula.  To set a specific value for z, either use type it into
+the KnotPlot Command Window, for example:
+bfacf z .108
+or double click on the value field in the slider. 
+

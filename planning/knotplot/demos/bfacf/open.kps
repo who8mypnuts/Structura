@@ -1,0 +1,24 @@
+<bfacf/basicinit.kps
+
+bfacf load bfacf/open.k
+bfacf cent off
+
+txt font 4
+txt centre
+txt c -30 "BFACF Algorithm"
+txt c -55 "(Berg, Foersterand, de Carvalho, Caracciolo and Frolich)"
+txt on
+
+txt font 3
+txt c -90 "Thank you to E J Janse van Rensburg, S G Whittington, Chris Soteros, Claus Ernst, Mariel Vazquez, Javier Arsuaga"
+
+% 0.733539 0.664753 0.141502
+% 0.566086 -0.482366 -0.668484
+% -0.376121 0.570461 -0.730142
+viewmatrix 0.733539 0.664753 0.141502 0.566086 -0.482366 -0.668484
+scale = 0.350000
+
+bfacf nap 0.02
+tfunc 2 "bfacf run 1"
+
+

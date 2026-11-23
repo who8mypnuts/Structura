@@ -1,0 +1,61 @@
+require KPbuild 4604
+reset all
+silent=t
+verbose=f
+func init
+func silent
+func 1 <22jun05a.kps
+func 2 "idle;tfunc reset;silent=f"
+
+func 5 "ldna close \rr[45/90]"
+func 6 "par0=\rr[30/65];ldna cone \ppar0;ldna fan \ppar0"
+ldna ned 30
+func 7 "ldna ned \ri[12/30]"
+func 8 "ldna len \rr[7/14] \rr[7/14]"
+
+if \rr10 < 7 then "mode s" else "mode cb"
+hstart=\rr360
+cyl = .027
+bead = .056
+
+scale=\rr[1/2]
+
+light model twosided
+glop backface f
+%panel set cons 1
+
+ldna intang 0 180
+ldna arc 90 90
+ldna draw 67
+
+rotate x \rr[-45/-75]
+rotate z \rr360
+
+ldna acni \rr[.3/.4]
+ldna acnd \rr[.4/.5] 3
+
+if \rr4 < 2 then "sphere cheapo" else "sphere luxo"
+sphere 1
+sphere on
+
+func exec 5
+func exec 6
+%func exec 7
+func exec 8
+
+silent=f
+echo 
+echo
+echo "  *** Press F2 (preferred) or click `reset' button to stop animation."
+echo "      Press F1 to rerun demo."
+echo 
+
+idle "ldna 1.02;rota z 1"
+
+tfunc \rr10 "func exec 5" 0 repeat 5 15
+tfunc \rr10 "func exec 6" 0 repeat 5 15
+%tfunc \rr10 "func exec 7" 0 repeat 5 15
+tfunc \rr10 "func exec 8" 0 repeat 5 15
+tfunc \rr10 "sphere luxo" 0 repeat 5 15
+tfunc \rr10 "sphere cheapo" 0 repeat 5 15
+tfunc \rr[45/75] <22jun05a.kps

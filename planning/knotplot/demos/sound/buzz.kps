@@ -1,0 +1,52 @@
+require KPbuild 4524
+
+oal persistent off
+
+silent = t
+alias ~att "oal start \rr[.01/3] fadein \rr[.1/5] source $0 wav $2 attach bead $1 on"
+
+
+oal init
+oal doppler 1 \rr[.01/.02]
+oal alloff
+~att 0 0 buzz
+~att 1 4 buzz
+~att 2 8 buzz
+~att 3 12 buzz
+~att 4 16 buzz
+~att 5 20 buzz
+~att 6 24 buzz
+~att 7 28 buzz
+~att 8 32 buzz
+~att 9 36 buzz
+~att 10 40 buzz
+~att 11 44 buzz
+~att 12 48 buzz
+~att 13 52 buzz
+~att 14 56 buzz
+~att 15 60 buzz
+~att 16 64 buzz
+~att 17 68 buzz
+~att 18 72 buzz
+~att 19 76 buzz
+~att 20 80 buzz
+~att 21 84 buzz
+~att 22 88 buzz
+~att 23 92 buzz
+~att 24 96 buzz
+~att 25 100 buzz
+~att 26 104 buzz
+~att 27 108 buzz
+~att 28 112 buzz
+~att 29 116 buzz
+~att 30 120 buzz
+~att 31 124 buzz
+
+oal random
+
+oal pitch all \rr[.3/.5]
+<sound/tritone2.kps
+oal gain all 1
+oal veldiv \rr[10/20]
+oal pitch all cr -333
+

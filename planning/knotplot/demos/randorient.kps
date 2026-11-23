@@ -1,0 +1,9 @@
+if \rr2 < 1 then "reflect x"
+if \rr2 < 1 then "reflect y"
+if \rr2 < 1 then "reflect z"
+if \rr2 < 1 then "about x 180"
+if \rr2 < 1 then "about y 180"
+if \rr2 < 1 then "about z 180"
+revbeads random   % reverses orientation of each component separately with probability 0.5 
+shift random  % randomly shifts each component separately
+

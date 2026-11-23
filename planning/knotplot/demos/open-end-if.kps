@@ -1,0 +1,7 @@
+par0 = \rr150
+if par0 < 30 then "mode sA;spec;par0=152"
+if par0 < 80 then "mode s;spec;par0=152"
+if par0 < 110 then "mode s;spec orient;par0=152"
+if par0 < 120 then "mode sA;spec orient;par0=152"
+if par0 < 135 then "mode cb;cyl=.14;bead=.2;spec orient;draw norm;par0=152"
+if par0 < 151 then "mode cb;cyl=.14;bead=.2;draw norm;par0=152"

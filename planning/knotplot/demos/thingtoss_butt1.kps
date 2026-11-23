@@ -1,0 +1,40 @@
+txt init
+txt font 2
+txt right
+
+% try tossing strings and turning tanf=on !!
+% rods!!
+
+
+txt fcolour royalblue .6
+txt fill on
+txt lineskip -25
+
+%txt -20 20 "buttons" "
+txt -15 15 "fullscreen" "full toggle"
+txt -15 a "grid" "spec ~grid"
+if oal then "txt -15 a sound <sound/thingtoss.kps"
+txt fill off
+txt -10 a "toggle:"
+
+txt centre
+txt fill on
+func s 9  "echo {     Try rotating or scaling the view between tosses! Try putting your eye right under the hoop!"
+txt c 20 "toss now!" "read thingtoss.kps;func exec s 9"
+
+func s 6 "txt right;txt -20 c unlimit {func exec s 7}"
+func s 7 "txt delete unlimit;par0=1;echo;echo;echo Frame speed now at maximum, increase number of things tossed if it's too fast"
+if \ppar0 == 0 then "func exec s 6"
+
+txt left
+txt 20 20 "things" "par3=3;<thingtoss.kps"
+txt 20 a "strings" "par3=1;<thingtoss.kps"
+txt 20 a rings "par3=2;<thingtoss.kps"
+txt fill off
+txt 10 a "toss these:"
+
+func c 5 "txt fill on;txt 20 a3 follow {fog on;fog end 108;fog colour;persp 77 .3 108;par5=1;txt delete follow;fly follow 1;read thingtoss.kps}"
+
+if \ppar5 == 0 then "func exec c 5"
+
+txt on

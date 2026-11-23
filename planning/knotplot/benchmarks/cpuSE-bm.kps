@@ -1,0 +1,15 @@
+reset all
+
+chain
+ncur=4
+nseg=15
+twfix
+draw SE
+spec fra
+
+
+idle "about y 10"
+
+
+<../benchmarks/blurb-bm.kps
+

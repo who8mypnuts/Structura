@@ -1,0 +1,7 @@
+if \rr1 < 0.5 then "reflect x"
+if \rr1 < 0.5 then "reflect y"
+if \rr1 < 0.5 then "reflect z"
+if \rr1 < 0.5 then "about z 180"
+if \rr1 < 0.07 then "about z 90"
+%if \rr1 < 0.001 then "refl rr"
+

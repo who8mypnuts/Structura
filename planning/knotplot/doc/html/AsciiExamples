@@ -1,0 +1,106 @@
+
+
+KnotPlot: Imager Computer Graphics Laboratory (Thu Aug 10 14:16:14 PDT 1995)
+Copyright (c) 1995  Robert G. Scharein  Computer Science Dept.  U.B.C.
+
+Super-luxo features disabled.
+KnotPlot> load 3.1
+Link loaded from `3.1'.
+KnotPlot> fitto 10
+KnotPlot> ascii
+                                                  
+                    .   .   .                     
+                                .                 
+                .                                 
+                                   .              
+              .                                   
+                                                  
+            .                       .             
+                  .   .   .    .                  
+             .                     . .            
+        .   .                           .         
+    .                               .       .     
+             .                                    
+ .             .                  .             . 
+                                                  
+.                .              .                .
+                              .                   
+ .                  .                            .
+   .                   .  .                    .  
+       .              .     .                     
+           .     .               .     .   .      
+                                                  
+KnotPlot> load 4.1
+Link loaded from `4.1'.
+KnotPlot> fitto 10
+KnotPlot> ascii 33
+              . . . .            
+            .         .          
+           .           .         
+          .  . . . . . .         
+        ..             . .       
+    . .   .            .   .     
+   .      . .         .      .   
+  .          .     . .        .  
+ .             . .             . 
+ .             . . .           . 
+  .          ..     .         .  
+   .         .      .       ..   
+    .         . .  .    . .      
+      . . .  . .  .. .           
+KnotPlot> load 10.102
+Link loaded from `10.102'.
+KnotPlot> fitto 10
+KnotPlot> ascii 72
+                         .   .   .   .                                  
+                   .  .             .  ..  .   .   .                    
+                .                .        .            .                
+                               .           .              .             
+              .                           .                 .           
+            .                   .                                       
+          .                      .      .                     .         
+                                     . .                        .       
+         .                              .                        .      
+                                      .     . ..                        
+        .                                     .                   .     
+       .                               .   .                            
+                                   .                              .     
+      .                        .         .                        .     
+                             .             .                            
+     .                      .               .    .  .   .        .      
+     .                     .            .    .             .   .        
+                                  .  .                        .         
+     .                    . .  .              .              .          
+                    . ..   .                   .          .     .       
+      .                    .   .   .                  . .               
+       .                             . .  .   ..  .              .      
+                           .                                            
+         .                                      .               .       
+            .             .                                   .         
+               .   .                           .            .           
+                       .   .   .  .  .  .   .       .   .               
+                                              . .                       
+                            .               .                           
+                               .                                        
+                                  .   .  .                              
+KnotPlot> ascii 40 15
+          . . . . . . . . . .           
+       . .       ..    .      . .       
+      .          .     .         ..     
+      .           . ...            .    
+    ..               .. . .         .   
+    .                . . .          .   
+   .            .. .  .             .   
+   .           .      . .  . . .    .   
+   .           . . ..    .       ...    
+   .       .. .. .        .    ..  .    
+    .          .   ... . .. . .     .   
+     ..       ..          .       ..    
+        . . .  . . .. .   .  . . .      
+                .       . ..            
+                 . . . .                
+KnotPlot> exit
+
+
+Exiting KnotPlot.
+

@@ -1,0 +1,69 @@
+reset all
+
+rotate x \rr360
+rotate y \rr360
+rotate z \rr360
+
+txt clobber on
+txt font 4
+txt centre
+txt on
+
+func 12 <random1.kps
+%rotate 90 z
+Draw=f
+unknot \ri[99/222]
+jit 999999
+fitto .1
+hsta=22
+ncur=4
+scale = 0.616466
+
+
+
+txt c 40 "Creating a random knot (allowing crossing interchanges)"
+cyl=.15
+coll a
+Draw=t
+disp t
+nap .5
+
+fixcofm=t
+dstep=4
+until timelimit 33
+until thick .4 "ago 33"
+
+txt c 40 "Done creating random knot!"
+
+%#90 about z 4;disp t
+
+nop \t0    % initialize clock
+par=60  % degrees per second
+% about x for 3 seconds at par0 degrees per second
+until timelimit 3
+until Ncomp 0 "about x \T1;disp t"
+
+stu=11
+coll n
+dstep = 3
+
+txt c 40 "Simplifying (not allowing crossing interchanges)"
+disp t
+nap .5
+
+#19 del down 8;ago 55
+
+ago 55
+
+txt c 40 "Simplified"
+
+nop \t0    % initialize clock
+par=60  % degrees per second
+% about x for 3 seconds at par0 degrees per second
+until timelimit 3
+until Ncomp 0 "about y \T1;disp t"
+
+
+
+%align ax
+

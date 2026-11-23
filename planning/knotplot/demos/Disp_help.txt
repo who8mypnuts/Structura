@@ -1,0 +1,27 @@
+Display Settings Help
+
+This control panel is still unfinished, and subject to change.
+
+Two sliders control the camera settings:
+
+   FOV --- field of view (in degrees)
+
+   Distance --- distance (in KnotPlot units) from the camera to the origin
+
+Use `enable anaglyph stereo' to put KnotPlot into that display mode.  You'll
+need red/green or red/blue glasses to view things properly.  Most of KnotPlot's
+operations can be done in anaglyph stereo mode, but everything doesn't always
+display properly.  Because of this, some of the demos will not be interesting
+in anaglyph stereo. 
+
+The next set of sliders are for those rare displays that don't have square
+pixels.  You can use the sliders to set either the pixel aspect ratio in the
+x or y directions.  The actual pixel aspect ratio used is 
+
+             (pix asp y) / (pix asp x)
+
+
+Utility sphere
+
+Turn it on or off, change its radius, or how it is display, default is `cheapo'
+

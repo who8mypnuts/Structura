@@ -1,0 +1,28 @@
+require KPbuild 4132
+
+txt delete group 33
+
+txt group 55
+txt font 3
+txt cent
+txt lineskip -22
+
+txt fill on
+txt c 10 "retrieve max" <bfacf/slab-retrieve-max.kps
+
+
+txt fill off
+txt c a "try adjusting the z value up and down"
+txt c a "click on 1000000 button to improve speed"
+txt c a1.5  "searching for minimal stick in slab..."
+
+txt group 0
+
+bfacf target 108
+bfacf search on
+
+par0=0
+
+bfacf run 1000
+
+

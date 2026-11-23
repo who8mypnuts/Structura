@@ -1,0 +1,64 @@
+delete all
+line num 5
+frame 0 num 30
+
+glue l1 l2
+glue l1 l29
+
+glue f29 l3
+glue f29 l4
+
+glue l5 f3
+glue l5 l6
+
+glue f4 l9
+glue f4 l8
+
+glue f1 l0
+glue f1 l10
+
+glue f0 l11
+glue f0 f5
+
+glue f6 l12
+glue f6 f7
+
+glue l7 l13
+glue l7 f8
+
+glue f9 l14
+glue f9 f28
+
+glue l28 f2
+glue l28 l15
+
+glue f11 l16
+glue f11 f19
+
+glue l19 f12
+glue l19 l17
+
+glue f17 l21
+glue f17 f18
+
+glue l18 f13
+glue l18 l20
+
+glue f20 f14
+glue f20 l22
+
+glue l23 f16
+glue l23 f24
+
+glue l24 f21
+glue l24 l25
+
+glue f25 f22
+glue f25 l26
+
+glue f10 f23
+glue f10 f27
+
+glue l27 f26
+glue l27 f15
+

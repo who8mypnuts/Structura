@@ -1,0 +1,105 @@
+require KPbuild 4965
+silent=t
+<gravity-init.kps
+if \ppar4 != 3 then "scale = 0.35"
+par4=3
+
+cyl=.2
+
+if \rr1 < .5 then "therm = t"
+
+line num 3
+
+new=f
+
+% CHECK TIME MACHINE BACKUP
+
+line dir 1 0 0
+frame comm "line 1 %d 0"
+frame 1 to 3
+line dir 0 1 0
+frame comm "line %d 1 0"
+frame 1 to 3
+
+fitto \rr[5/8]
+
+centre
+swap randomize
+velf=t
+hstart=\rr360
+knot 3
+
+swap randomize
+mcyl all .8
+mcyl 1 .1
+mode s all
+mode cB 1
+mode B 0
+force 1
+stus=4
+%coll a
+%ago 200
+%coll a
+go
+
+tfunc \rr4 "velf=t" 0 rep 1 7
+tfunc \rr4 "velf=f" 0 rep 1 9
+tfunc \rr4 "tanf=f" 0 rep 1 7
+tfunc \rr4 "tanf=t" 0 rep 1 20
+tfunc \rr4 "revb \ri[0/2]" 0 rep 1 8
+
+tfunc \rr33 <21feb07b.kps 0 rep 1 44
+
+tanmag = 0.0005
+
+
+%%%%  WHY!!!!????
+
+%specials not drawn properly
+%spec comm "align ax"
+
+
+about x 90
+
+if \rr11 < 3 then "about x \rr+-33;about y \rr+-33;trans 0 3 0"
+
+txt push
+txt font 3
+txt cent
+txt fill off
+txt expire 5
+txt c 15 "if knot gets stuck on grid, toggle gravity off then on again"
+txt pop
+
+silent=t
+hstart = \rr360
+
+trans 0 -10 0 
+
+if \rr1 < .3 then "trans \rr+-3 \rr+-3 \rr+-3"
+
+torus 2 3 \ri[20/33]
+scale .3 .3 .3 last
+trans 0 12 0 last
+refl grG last
+% equal chance of L or R hand tref
+if \rr2 < 1 then "refl grG last"
+
+if \rr2 < 1 then "refl x"
+if \rr2 < 1 then "refl z"
+
+frame comm "about y 90"
+frame 0 to \ri[1/4]
+
+mass all 0
+mass comp 6 1
+
+force 1
+velfo = t
+grav =t
+self 0 0 0 0 0 0 
+silent=f
+if \rr1 < .005 then <electric.kps
+go 
+
+silent=f

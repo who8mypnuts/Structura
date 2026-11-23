@@ -1,0 +1,48 @@
+reset all
+
+func 12 <brunnian.kps
+Draw  = f
+silent = t
+cyl = .25
+scale=.23
+drop all 52 35 -20
+ncur=5
+nseg=14
+cyl = .2
+font 4
+hstar = \rr360
+if \rr1 < .5 then "spe back"
+popview = f
+
+if \rr1 < .5 then "drop ca 0xff000000;drop cb 0xff000000;drop cc 0xffff0000;drop cd 0xffff0000"
+
+if \rr1 < .5 then "back=0"
+
+rot x -60
+rot z 45
+
+spe +vwt
+3dop colt 44 1 1
+ 
+nstring cm 85 "Six Component" 0
+nstring cm 60 "Brunnian Link" 1
+
+load Brunnian6.k
+Draw = t
+
+silent = f
+disp t
+nap 2
+silent = t
+
+Draw = f
+
+disp limit 55
+load Brunnian6Movie.k
+disp limit -1
+
+silent = f
+Draw = t
+
+nap 1
+

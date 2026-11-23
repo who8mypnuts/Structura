@@ -1,0 +1,6 @@
+monster 0 0 1
+
+freedman 0 0 1
+
+brunnian 0 0 1
+

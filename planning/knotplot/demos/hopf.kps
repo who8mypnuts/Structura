@@ -1,0 +1,41 @@
+if par0 != 603083252 then "reset all;disp t;disp t"
+
+silent=t
+func silent
+func init
+
+back=black
+disp t
+par0 = 603083252
+
+cyl=.01
+scale=1
+%rot x -40
+N-tor=222
+
+sbuff
+clrfun nt
+
+func 1 untran:clrfun zf:del all:disp t:clrfun nt
+
+% why are the following different when electric.kps is read in?
+% is it because currently, dfunc glowing always clears frame buffer?
+
+idle "hopf \rr+-3 \rr+-3 \rr+-3;hsta=\rr360"
+%idle "hopf \rr+-3 \rr+-3 \rr+-3;hsta=\rr360;disp t"
+
+silent=f
+
+echo 
+echo
+echo "  *** Illustration of the Hopf fibration."
+echo "      Use the left mouse to rotate and the right mouse to scale the view."
+echo "      KnotPlot will clear the view as you transform."
+echo "      Press F1 to reset the view transformation."
+
+
+
+
+
+
+

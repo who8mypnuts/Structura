@@ -1,0 +1,3 @@
+echo -n "      Centering centre of mass at origin. "
+echo "Press F5, F7, or F8 for other centering options."
+idle "cubic step 1;cent mass"

@@ -1,0 +1,27 @@
+% 3jun96
+% Quick and dirty method to create a linked `handcuff' graph.
+
+panel off
+
+reset all
+
+mode cb
+cyl = .1
+scale = .65
+
+conway 2     % create a simple link
+go 55        % relax a bit
+split        % split beads in two
+
+line num 6   % set number of beads in line command to 6
+new = f      % disable line command from deleting everything 
+line         % create a `line' component 
+
+ident f0 f2  % identify first bead in component 0 with first in component 2
+ident f1 l2  % identify first bead in component 1 with last in component 2
+
+coll a       % allow cylinder collisions
+
+ago 200       % relax into place
+
+panel on

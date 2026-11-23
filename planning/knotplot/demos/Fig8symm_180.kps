@@ -1,0 +1,15 @@
+untran
+<Fig8symm_load.kps
+silent=t
+idle none
+
+ortho
+
+rotate z -60
+rotate y -45
+
+func 10 <Fig8symm_aboutz180.kps
+func 11 <Fig8symm_aboutz.kps
+
+silent=f
+

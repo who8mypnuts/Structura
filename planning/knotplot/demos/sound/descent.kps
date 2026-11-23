@@ -1,0 +1,20 @@
+%alias play "pla $0;mbead $0 \ri+-1 \ri+-1 \ri+-1"
+
+%exit
+
+reset all
+
+verbose = false
+
+alias ~note "tfunc $0 {play $0;mbead $0 \rr+-1 \rr+-1 \rr+-1} 0 rep $0"
+alias qfix
+
+frame command "~note %d"
+
+play init
+frame 108 to 4
+
+unknot 109
+cyl-rad=.14
+ncur=9
+

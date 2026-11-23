@@ -1,0 +1,23 @@
+silent=t
+Draw=f
+if \rr99 < 33 then "frame \ri[0/23]"
+if \rr99 < 80 then "torus \rr99 \rr99 \rr99" else "unknot \ri[3/30] \rr[1/10]"
+about z \rr360
+if \rr1 < .5 then "refl x"
+if \rr1 < .5 then "refl y"
+if \rr1 < .5 then "refl z"
+if \rr99 < 15 then "reflect r"
+if \rr99 < 1 then "read thing1-multi"
+if \rr99 < 77 then "mode s" else "mode cbs"
+scale=\rr[.5/1]
+broff=\rr[-8/2]
+ncur=\ri[22/35]
+nseg=\ri[11/22]
+d-to=\rr[2/12]
+twist=\rr+-555
+clrfun zf
+disp t
+clrfun z
+Draw=t
+tfunc \rr[30/102.2] "read thing3-aux" 1
+silent=f

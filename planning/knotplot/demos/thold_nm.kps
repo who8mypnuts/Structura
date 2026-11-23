@@ -1,0 +1,4 @@
+load NumerDenom.k
+par0=9
+echo "  *** Numerator and denominator tangle templates"
+txt c -30 "Numerator and denominator tangle templates"

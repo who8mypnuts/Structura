@@ -1,0 +1,58 @@
+reset all
+silent=t
+all 2222
+
+knot 1
+refine 4
+
+gloption polygonmode line
+
+cyl=.001
+if \rr8 < 1 then "twfix \rr+-22"
+
+double
+warp install
+load *
+ncur=\ri[3/8]
+nseg=\ri[8/25]
+twfix \rr+-555
+if \rr3 < 1 then "twfix \rr+-55"
+if \rr33 < 1 then "twfix \rr+-222"
+%twfix 222
+
+persp 90 .1 33
+
+draw brok
+broff=\rr[-4/-1]
+cyl=\rr[1/2]
+scale=1
+back f
+<random-lights
+back=0
+sat=0
+fly \rr[22/111]
+
+
+func 1 <random-lights
+func 1 <dance1.kps
+
+func 2 mode b:draw norm
+func 3 mode cb
+func 4 mode sb
+func 5 mode s:draw brok
+func 6 clrf z:zbuff t:blend sa msa:echo press F7 to undo this effect
+func 7 clrf zf
+func 8 mode s:twfix \rr+-222
+func 9 mode s:draw brok
+func 10 "cyl=\rr[.2/2];nseg=\ri[3/9]"
+func 11 "persp 160 .02 33;value=.6;zbuff f;blend one one;clrf zf"
+func 12 "cyl=.1;nseg=3;mode s;draw anorm;atw=t;twfix"
+
+silent=f
+
+echo " "
+echo " "
+echo " "
+echo " press some of the function keys!"
+echo " (different combinations can be interesting)"
+echo " "

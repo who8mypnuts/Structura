@@ -1,0 +1,19 @@
+
+delete all
+
+txt clobber on
+txt font 2
+txt fill off
+txt cent
+txt c -44 "3 xing knot"
+txt font 4
+txt left
+
+frame comm "load bfacf/initial/3_%d_coords.txt;bfacf load;txt 5 -20 3_%d"
+frame 1
+
+
+bfacf centre off
+spec bfacf
+
+~cavity

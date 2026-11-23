@@ -1,0 +1,75 @@
+require KPbuild 4965
+
+% based on kpath-demo0.kps
+
+reset all     
+
+back=white
+func silent
+func init
+
+silent=t
+% Press the function key `F1' to run the demo again
+func  1 <kpath-demo1.kps
+
+
+if \rr3 < 1 then "hstart=\rr360"
+panel off        % Turn off the control panel during the demo
+
+allocate 2000    % Need a bit more space for beads
+cyl=1            % Radius of outer knot
+ncur=5           
+nseg=12          
+
+silent=f
+echo " " 
+echo " " 
+echo Base knot:
+
+knot cd
+
+silent=t
+
+swap randomize
+keep 0
+align ax
+
+
+<randorient.kps
+
+
+
+
+save |.tmp
+
+smart=f          % Don't want KnotPlot to be smart about twist-fixing (i.e. we
+                 % want to do it explicitly
+atw=t            % Set this parameter to true so curve matches up properly
+if \rr2 < 1 then "twfix 555" else "twfix -555"
+
+% Write out points to a temporary file
+kpath KP_path.tmp
+
+ncur = 3         % Reset ncur to something reasonable
+
+% Load back the temporary file
+load KP_path.tmp
+
+load comb |.tmp  % Combine this with the original knot
+
+mcyl 0 .1        % make cyl-rad of component 0 equal to .1
+mcyl 1 .8        % make cyl-rad of component 1 equal to .8
+
+
+fog colour 1 1 1
+fog on
+
+
+hstart=\rr360
+
+panel on         % Turn on the control panel  
+
+smart=t          % set smart back to true
+silent=f
+
+% end of  kpath example file `kpath-demo0.kps'

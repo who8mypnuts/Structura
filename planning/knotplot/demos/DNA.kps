@@ -1,0 +1,185 @@
+%`-
+
+require KPbuild 4604
+
+reset all
+
+%silent = t
+
+txt font 4
+txt centre
+txt c -20 "DNA Display Mode"
+txt push
+txt expire 12
+txt font 3
+txt c -40 "click on the ? button on the bottom right of this window for more information"
+txt pop
+
+txt on
+txt fcolour royalblue .7
+txt fill on
+
+
+
+
+txt lineskip -25
+
+txt font 4
+txt fill on
+txt right
+txt -14 14 ? "help popup DNA.kps handoff"
+
+alias ~knot "knot;read randorient.kps;scale 6;refine 6"
+alias ~fix "fitto avlen 1;dna rand;dna twist 34"
+
+txt font 3
+txt fill on
+txt select off
+txt -15 60 fullscreen "full toggle"
+txt -15 a  "fancy" "dna draw toggle"
+txt fill off
+txt -10 a toggle:
+
+txt fill on
+txt -15 a2 "pick random" "~knot;~fix"
+txt push
+txt phantom 4.1
+txt -85 a  5.1 "load 5.1;scale 6;refine 6;~fix"
+txt -50 a0 5.2 "load 5.2;scale 6;refine 6;~fix"
+txt -15 a0 6.1 "load 6.1;scale 6;refine 6;~fix"
+txt -85 a  0.1 "load 0.1;scale 6;refine 6;~fix"
+txt -50 a0 3.1 "load 3.1;scale 6;refine 6;~fix"
+txt -15 a0 4.1 "load 4.1;scale 6;refine 6;~fix"
+txt phantom
+txt pop
+
+txt fill off
+txt -10 a knot:
+
+txt fill on
+
+txt push
+txt phantom GGGGGG
+txt -15 a2 CCCCCC "dna sequence C;dna twist 34"
+txt -15 a GGGGGG "dna sequence G;dna twist 34"
+txt -15 a TTTTTT "dna sequence T;dna twist 34"
+txt -15 a AAAAAA "dna sequence A;dna twist 34"
+txt -15 a random "dna rand;dna twist 34"
+txt pop
+txt fill off
+txt -10 a resequence:
+
+
+mode T
+
+txt cent
+txt fill on
+txt font 3
+txt c 20 "rerun demo" <DNA.kps
+
+txt left
+
+txt fill on
+txt 15 15 cytosine "help popup cytosine.txt handoff"
+txt 15 a guanine "help popup guanine.txt handoff"
+txt 15 a thymine "help popup thymine.txt handoff"
+txt 15 a adenine "help popup adenine.txt handoff"
+txt 15 a DNA-standard "help popup DNA-standard.kps handoff"
+txt fill off
+txt 10 a "show definition files:"
+
+%if macos then <DNA-fun.kps 
+
+txt fill on
+txt phantom labyrinth
+txt 15 a2 labyrinth <DNA-labyrinth.kps
+txt 15 a  rings <DNA-rings.kps
+txt 15 a  simple <DNA-simple.kps
+txt 15 a  standard <DNA-standard.kps
+txt fill off
+txt phantom
+txt 10 a "DNA model:"
+
+<DNA-standard.kps
+
+
+txt fill off
+
+dna scale .6
+scale = .07
+
+
+silent = f
+~knot
+~fix
+
+exit
+
+%`+
+Help for DNA Display Mode
+
+This is a demo of the DNA display mode for knots in KnotPlot. 
+It is still under review.  Comments or suggestions are welcome.
+
+To display a knot as DNA in KnotPlot, do the following:
+   --- set display mode to DNA triads using the command
+       mode T
+       dna draw fancy
+       dna scale .6
+   --- scale your knot so that it has a average edge length of 1
+       fitto avlen 1
+   --- randomize the base pair sequence
+       dna random
+   --- fix the twisting angle (in degrees) to something realistic
+       dna twist 34
+   --- load the standard model definition
+       <DNA-standard.kps
+
+There are several options for the dna command in KnotPlot that
+allow you to draw your basepairs pretty much arbitrarily. This
+example is for the Standard Model of DNA as opposed to the 
+Scharein Golden Mean and Fractal Vortex Model where each of 
+the basepairs is a Fibonacci Spiral. That example will come later. 
+
+In KP, you first say how many atoms you have and define them 
+as spheres of various colours and radii:
+
+dna atom 3               % three atom types
+% usage: dna atom INDEX RADIUS RED GREEN BLUE   
+dna atom 0 .75 .7 .7 .7  % carbon, a grey sphere
+dna atom 1 .8  .2 .4 1   % nitrogen, a blue sphere, slightly larger than carbon
+dna atom 2 .85  1 .4 .2  % oxygen, a red sphere, slightly larger than nitrogen
+
+then you say how many base pair types you have and tell where
+KnotPlot should look for the files defining the geometry of each.
+In this example (following the Standard Model), there are only 4 base pairs,
+but in the Scharein Golden Mean and Fractal Vortex Model there are of course
+54 different base pair types.  Whatever, you can have as many as you wish. 
+
+dna base 4                     % we have 4 base pair types
+% usage: dna base INDEX DEFN_FILE
+dna base 0 adenine.txt
+dna base 1 thymine.txt
+dna base 2 guanine.txt
+dna base 3 cytosine.txt
+
+the text files specify the layout of the atoms in that base pair.  
+These consist of simple commands. The five commands are summarized below:
+
+  s SCALE
+  scale the current graphics state by the value SCALE
+
+  t DX DY DZ
+  translate the current graphics state by the vector (DX, DY, DZ)
+
+  r ANGLE X Y Z
+  rotate the current graphics state by ANGLE degrees about the axis (X, Y, Z)
+
+  a ATOM X Y Z
+  place an atom of type ATOM at location (X, Y, Z) in the current coordinate frame
+
+  P      
+  push the current graphics state onto the stack   
+   
+  p             
+  pop the current graphics state off of the stack

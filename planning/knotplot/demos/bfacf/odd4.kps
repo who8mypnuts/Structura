@@ -1,0 +1,15 @@
+untran
+draw norm
+bfacf init
+hstar=\rr360
+back=#000
+kload 0 1   % just to set the labels
+txt delete "0 xing"
+load mscl/0.1
+bfacf ldslab 0
+scale=.14
+bfacf z \rr[.38/.7]
+bfacf run \ri[10/1008]
+spec
+mode E
+

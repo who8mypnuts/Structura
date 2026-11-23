@@ -1,0 +1,51 @@
+reset all
+
+silent=t
+all 2222
+
+knot 1
+refine 4
+
+cyl=.001
+if \rr8 < 1 then "twfix \rr+-22"
+
+double
+warp install
+
+delete all
+new=f
+
+
+load *
+
+twfix
+if \rr3 < 1 then "twfix \rr+-55"
+if \rr33 < 1 then "twfix \rr+-222"
+%twfix 222
+
+persp 90 .1 33
+
+draw brok
+broff=-.47
+cyl=.68
+scale=1
+back f
+<random-lights
+back=0
+sat=0
+
+if \rr7 < 6 then "fly \rr[8/33]" else  "fly \rr[-10/-22]"
+
+mech=f
+elec=f
+go inf limit 75
+
+
+silent=f
+
+echo " "
+echo " "
+echo " "
+echo " press some of the function keys!"
+echo " (different combinations can be interesting)"
+echo " "

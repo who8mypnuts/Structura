@@ -1,0 +1,78 @@
+require KPbuild 4802
+
+reset all
+
+scmode = 1
+ccmode = 1
+
+mathsv s 33 1 1
+mathsv c 1 0 .7
+
+cradius = .12
+sradius = 0.2
+
+mode cbs
+mech=f
+elec=f
+drag=t
+ncur=11
+
+go
+
+
+alias ~ah "txt hide \rr[5/7]"
+txt hide \rr[7/7.6]
+txt font 4
+txt centre
+txt c -20 "smooth tubes using Bezier interpolation"
+
+txt fcolour royalblue .6
+txt scolour #000
+txt sfcolour #fb0 .8
+
+~ah
+
+txt fill on
+txt cent
+txt font 3
+txt c 20 "reload demo" <bezier-drag.kps
+
+txt right
+txt lineskip -25
+
+~ah
+
+txt font 4
+txt fill on
+txt -14 14 ? "help popup file-not-found.kps handoff"
+txt font 3
+
+~ah
+
+txt -15 a1.5 fullscreen "full toggle"
+%txt -15 a    blending   ~toggleblend
+txt fill off
+txt -10 a toggle:
+
+
+~ah
+txt left
+
+alias ~tk "torus $0 $1 \ri[$2/$3];about z \rr360;project random"
+txt fill on
+txt 15 15 "T(3,5)" "~tk 3 5 15 25"
+txt 15  a "T(3,4)" "~tk 3 4 15 25"
+txt 15  a "T(2,5)" "~tk 2 5 15 25"
+%txt 15  a "T(2,4)" "~tk 2 4 10 20"
+txt 15  a "T(3,2)" "~tk 3 2 10 20"
+txt 15  a "T(2,3)" "~tk 2 3 10 20"
+txt fill off
+txt 10 a "create a knot:"
+
+~tk 2 3 10 20
+
+disp t
+
+
+txt autohide on   % should be the last txt command
+txt on

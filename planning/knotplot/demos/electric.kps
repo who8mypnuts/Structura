@@ -1,0 +1,8 @@
+%reset all
+cyl-rad = 1.043649
+nsegments = 3
+ncurve = 1
+value = 0.030000
+dfunc glowing
+mathsv k 0 0 .2 s
+

@@ -1,0 +1,112 @@
+% Changed 15 October 2003 to `DemoA.kps'.  When reading the following,
+% change all occuances of `basic-demos.kps' to `DemoA.kps'.
+
+% Default `basic-demos.kps' file.
+% 28 March 2002
+
+% This is the file that defines the buttons seen on the demos
+% panel.  It is easy to make a custom demo panel by simply 
+% creating your own `basic-demos.kps' file in a directory somewhere and
+% running KnotPlot from that directory.  KnotPlot will read in
+% the first `basic-demos.kps' file it finds in its path.  
+% To see what the current path is, enter the KnotPlot command `path'.
+
+% See the file `more-demos.kps' in this directory for more examples.
+% Also have a look at the definition of `basic-demos' in the 
+% ../projects/hopf directory to see how the demo panel can be
+% customized for a specific project.
+
+% First button location should always be absolute.
+
+% Arguments for the button command are:
+
+%  argu 1 - number of control panel you want the button on
+%  argu 2 - label for button, use quotation marks for more than one word
+%  argu 3 - action for button, ignored if a label
+%  argu 4 - x location of lower left corner of button, use -1 for auto-placement
+%  argu 5 - y location of lower left corner of button, use -1 for auto-placement
+%  argu 6 - x size of button
+%  argu 7 - y size of button
+%  argu 8 - (optional) button flags (4 means button is a label)
+ 
+echo " "
+echo " "
+echo "DemoA panel initialized from definition in" \f
+echo " "
+
+
+panel off  % comment this out to watch the panel being drawn
+
+button Nbuttons 4
+button hspace 4 
+button pos 2
+button 8 Reset reset    -1  270 0 10
+button 8 "Full screen" <full-screen.kps -1 -1 0 10
+
+button 8 "Knot theory" dum 4 265 102 10 4
+
+if \rr1 < .5 then <monster-aux1.kps else <monster-aux2.kps
+
+button 8 "Nasty" <freedman-anim.kps  -1 -1 0 10
+button 8 "Perko pair" <perko-anim.kps  -1 -1 0 10
+button 8 "Brunnian" <brun-relax-anim.kps  -1 -1 0 10
+button 8 "Whitehead" <whitehead-anim.kps  -1 -1 0 10
+button 8 "Fig-8 symm" <Fig8symm.kps -1 -1 0 10
+
+button 8 "Constructions" dum -2 -1 102 10 4
+
+button 8 "random braid" <randbraid2.kps -2 -1 0 10
+button 8 "close braid" <warpbraid2.kps -1 -1 0 10
+button 8 "chains" <chains.kps -1 -1 0 10
+button 8 "rchain" <random-chain.kps   -1 -1 0 10
+button 8 "BB frame" <BBframe.kps -1 -1 0 10
+button 8 "cable" <cable.kps -1 -1 0 10
+button 8 "braid warp" <braidwarp.kps -1 -1 0 10
+button 8 "twist knot" <new_twist.kps -1 -1 0 10
+button 8 "stick knots" <stick-knots.kps   -1 -1 0 10
+button 8 "stick things" <stick-things.kps   -1 -1 0 10
+button 8 D9 <D9.kps -1 -1 0 10
+button 8 "shadows" <shadows.kps -1 -1 0 10
+button 8 kpath <kpath-demo0.kps -1 -1 0 10
+button 8 ringpack <ring-pack.kps -1 -1 0 10
+button 8 gravity <gravity.kps  -1 -1 0 10
+button 8 Lorenz <lorenz-idle.kps -1 -1 0 10
+if KPbuild > 3181 then "button 8 THK <turkshead2.kps -1 -1 0 10"
+if KPbuild > 3181 then "button 8 alt_deco <altdeco.kps -1 -1 0 10"
+if KPbuild > 3181 then "button 8 alt_deco_moeb <altdeco-moeb.kps -1 -1 0 10"
+button 8 Lissajous <Lissajous.kps -1 -1 0 10
+button 8 Cubic_SAW <CubicSAW.kps -1 -1 0 10
+if KPbuild > 3325 then "button 8 tangles <thold.kps -1 -1 0 10"
+if KPbuild > 3371 then "button 8 random <rand_anchors.kps -1 -1 0 10"
+button 8 "Hopf fibration" <hopf.kps -2 -1 -2 10
+button 8 "Antoine's Necklace" <AntoinesNecklace.kps -1 -1 -2 10
+
+
+button 8 "Relaxations" dum -2 -1 102 10 4
+
+button 8 "Simple" <simple-relax.kps -2 -1 0 10
+%button 8 "Ring toss" <7jun00a.kps  -1 -1 0 10
+%button 8 "Anchors" <anchor-demoA -1 -1 0 10
+button 8 "Anchors" <28jul00a.kps -1 -1 0 10
+%button 8 "Fun w/ forces" <fun-w-forces.kps -1 -1 0 10
+if KPbuild > 3167 then "button 8 Graphs <graphs.kps   -1 -1 0 10"
+button 8 "Split/delete" <split-delete.kps    -1 -1 0 10
+button 8 "open end" <open-end.kps -1 -1 0 10
+button 8 "slide" <slide-knot.kps -1 -1 0 10
+button 8 "Ring toss" <ringToss.kps  -1 -1 0 10
+button 8 "Link rings" <linkRings.kps  -1 -1 0 10
+
+
+%if exists colabex/start-demo.kps then <exib-buttons.kps
+
+silent=t
+if KPbuild > 3222 then "<../exhibits/ExhibitList.kps"
+silent=f
+
+button Nbuttons 3
+button hspace 4
+button pos 1
+button 8 "This layout subject to change." nop -1 10 0 10 4
+
+panel on
+

@@ -1,0 +1,44 @@
+% RGS : 26 June 2020
+
+% modify this to work with guess knot and Nasty
+
+txt fill off
+
+% set dowker / gauss code compute mode to use the
+% view projection (default is z-projection)
+dowker proj view
+
+txt on
+
+txt font 3      % size should be 2, 3 or 4
+txt 10 10 d     % text `d' will be overwritten by code
+txt set dowker  % sets the text of the last defined txt object to the current code
+
+% uncomment only one of the following three lines
+%dowker compute dtcode
+%dowker compute pdcode   % not implemented yet, but coming soon
+dowker compute gauss
+
+% turn on display of crossing labels
+txt xing on
+
+% the next section sets the display of the knot orientation
+show +orientation
+
+% the orientation arrows can be scaled, the number of them
+% can be changed as well as the colour
+
+3dop ostart 3      % bead where the arrows start
+3dop oscale 0.5    % orientation arrow scale
+3dop ostep  7      % spacing between arrows (in number of beads)
+% note that the key word in the following command is `colo',
+% which is not an abbreviation for `colour' but has the meaning
+% `colour orientation arrows'
+3dop colo darkblue 
+% see https://knotplot.com/tutorials/setting-colour.pdf
+% for more info on how to set colours in KnotPlot
+
+% finally, but a small white sphere at the start of the knot
+scenery vscale 0.4      % scale the vertex values in scenery
+scenery object eobj/wsphere bead 0       % attach to bead 0
+scenery on

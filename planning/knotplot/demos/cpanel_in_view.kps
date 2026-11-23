@@ -1,0 +1,35 @@
+reset all
+
+scale=.2
+cyl-rad=.2
+coll a
+force 1
+
+txt font 4
+txt centre
+
+txt c -50 "IMPORTANT INFORMATION:"
+txt c a " "
+txt c a "At any time, press the `Insert' key to reset"
+txt c a "KnotPlot and bring back the control panel"
+txt font 3
+txt c a "(for example, why not press it now?)"
+txt c a " "
+txt font 4
+txt c a "Press the `Page Up' key to toggle control panel off/on"
+txt c a " "
+txt c a "Left drag on control panel background to move it"
+txt c a " "
+txt c a "Right drag on control panel to scale it"
+txt c a " "
+txt c a "Click on iconized control panel to de-iconize it"
+txt c a " "
+
+txt  c a " "
+txt fill on
+txt c a "enable fullscreen mode" fullscreen
+
+txt subw on
+txt on
+
+go

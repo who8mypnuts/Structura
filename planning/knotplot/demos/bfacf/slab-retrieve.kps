@@ -1,0 +1,23 @@
+bfacf init
+energy model nbeads
+spec energy
+
+txt delete group 102
+txt delete group 55
+
+load \min
+centre
+trans to lattice
+
+scale=.35
+
+
+
+txt font 4 
+txt centre
+txt fill off
+txt c 30 "Minimal stick candidate in slab found!"
+txt font 3 
+%txt c 10 "<--- E value gives number of sticks"
+
+

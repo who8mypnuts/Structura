@@ -1,0 +1,82 @@
+reset all
+
+silent=t
+scale=\rr[.23/.45]
+mode wbc
+%mode cb
+cyl=.06
+N-torus = \ri[10/20] 
+line num \pN-torus
+line
+jit 9999
+fitto 5
+tran to 0 0 0
+coll a
+force 1
+revbeads
+mass open
+mass 0 1
+
+<fun-with-accbuff.kps
+
+
+wavefront skip \pN-torus
+wavefront nwaves 222
+wavefront c \rr[2/7]
+wavefront init
+
+verbose = f
+
+%tfunc 2 "coll a;force 1"
+coll a
+force 1
+
+
+func init
+func silent
+
+silent=f
+
+func 9 "go 999999999;echo;echo;echo Frame speed limiting off.;echo;echo"
+func 10 "go 999999999 limit 30;echo;echo;echo Frame speed limiting set to 30fps.;echo;echo"
+func 11 "go 999999999 limit 60;echo;echo;echo Frame speed limiting set to 60fps.;echo;echo"
+func 12 "go 999999999 limit 90;echo;echo;echo Frame speed limiting set to 90fps.;echo;echo"
+
+echo " "
+echo " "
+
+
+echo " "
+
+func 2 mode w
+func 3 mode wb
+func 4 mode wbc
+
+func 5 back=0
+func 6 back=blue
+func 7 back=#444
+
+func s 1 <wave_demo1.kps
+func s 2 <wave_demo2.kps
+func s 3 <wave_demo3.kps
+func s 4 <wave_demo4.kps
+func s 5 <wave_demo5.kps
+func s 6 <wave_demo6.kps
+
+
+func 1 <5mar07a.kps
+mode w
+tfunc 1 back=#200 0 rep 1 22
+tfunc 1 back=#020 0 rep 1 22
+tfunc 1 back=#002 0 rep 1 22
+%tfunc 1 back=#000 0 rep 1 22
+
+func 7 accbuff clear
+func 8 "fullscreen toggle;tfunc .4 {func exec 7}"
+go inf limit 30
+
+echo 
+echo 
+echo  " *** Press F1 to rerun demo"
+echo  "     Press F8 to toggle full screen"
+echo 

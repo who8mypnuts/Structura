@@ -1,0 +1,133 @@
+%`-
+
+require KPbuild 4531
+
+silent = t
+panel set Main
+func 1 <trough.kps
+
+alias ^blurt "echo;echo;echo same as typing the command;echo $0 $1 $2;echo in this window;echo"
+
+alias ^smode "mode cb;cyl-rad=.1"
+txt init
+
+txt fcolour royalblue .6
+
+
+txt font 4
+txt centre
+txt c -20 "Creating a Trough"
+
+txt left
+txt 10 -46 "Step 1 - create a cross section"
+
+txt push
+txt font 3
+txt 10 a "sketch or load a cross section:"
+txt fill on
+txt 15 a sketch "reset;^smode;panel set sketch"
+txt 15 a   "1" "load tr1.k"
+txt 40 a0  "2" "load tr2.k"
+txt 65 a0  "3" "load tr3.k"
+txt 90 a0  "4" "load tr4.k"
+txt 115 a0  "5" "load tr5.k"
+txt 140 a0  "6" "load tr6.k"
+
+txt fill off
+txt 10 a "install the cross section using button below"
+txt fill on
+txt 15 a "trough xsect" "^blurt trough xsect;trough xsect"
+
+txt fill off
+txt 10 a1.5 "save a cross section using the buttons below"
+txt fill on
+txt 15 a   "1" "save tr1.k"
+txt 40 a0  "2" "save tr2.k"
+txt 65 a0  "3" "save tr3.k"
+txt 90 a0  "4" "save tr4.k"
+txt 115 a0  "5" "save tr5.k"
+txt 140 a0  "6" "save tr6.k"
+
+txt pop
+
+txt 10 a2 "Step 2 - load a space curve"
+txt fill off
+txt font 3
+txt 10 a "a) click on drawing mode `s'"
+txt 10 a "b) load a knot from the knot catalog"
+txt 10 a "c) click on drawing mode `x'"
+txt pop
+
+txt 10 a2 "Step 3 - choose a framing"
+
+txt push
+txt fill off
+txt font 3
+txt 10 a "not implemented yet"
+txt pop
+
+
+txt 10 a2 "Step 4 - adjust cyl-rad"
+txt fill off
+txt font 3
+txt 10 a "use the `cyl-rad' slider on Main"
+txt pop
+
+
+
+txt push
+txt right
+txt lineskip -25
+
+txt font 4
+txt fill on
+txt -14 14 ? "help popup trough.kps handoff"
+txt font 3
+
+txt -15 a1.5 fullscreen "full toggle"
+%txt -15 a  head "scen toggle"
+%txt -15 a axes "show ~axes"
+%txt -15 a path "mode ~s"
+txt fill off
+txt -10 a toggle:
+txt fill on
+
+txt -15 a1.5 cb "reset;read trough.kps;^smode
+txt fill off
+txt -38 a0 "for sketching:"
+txt fill on
+txt -15 a s "reset;read trough.kps;mode s"
+txt fill off
+txt -38 a0 "normal mode:"
+txt fill on
+txt -15 a x "mode x all"
+txt fill off
+txt -38 a0 "as trough:"
+txt fill off
+txt -10 a "drawing mode:"
+
+
+
+txt pop
+
+
+txt on
+
+silent = f
+
+exit
+
+%`+
+
+click on the reset button on Control Panel and reload demo if things get messed up
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,137 @@
+%!
+
+/normalize {
+  /y exch def
+  /x exch def
+  /n {x x mul y y mul add sqrt} def
+  x n div
+  y n div
+} def
+  
+
+/vdef {
+  t py mul ycen add def
+  t px mul xcen add def
+} def
+
+
+/thick 20 def
+/thin  10 def
+
+/stringto {
+  /dy2 exch def
+  /dx2 exch def
+  /y2 exch def
+  /x2 exch def
+  /dy1 exch def
+  /dx1 exch def
+  /y1 exch def
+  /x1 exch def
+  dy1 0 dx1 sub normalize
+  /py1 exch def
+  /px1 exch def
+  dy2 0 dx2 sub normalize
+  /py2 exch def
+  /px2 exch def
+
+  /xcen x1 def
+  /ycen y1 def
+  /px px1 def
+  /py py1 def
+  /t thin def
+  /x5 /y5 vdef
+  /t thick def
+  /x6 /y6 vdef
+  /t {0 thin sub} def
+  /x4 /y4 vdef
+  /t {0 thick sub} def
+  /x3 /y3 vdef
+
+  /xcen x2 def
+  /ycen y2 def
+  /px px2 def
+  /py py2 def
+  /t thin def
+  /x9 /y9 vdef
+  /t thick def
+  /x10 /y10 vdef
+  /t {0 thin sub} def
+  /x8 /y8 vdef
+  /t {0 thick sub} def
+  /x7 /y7 vdef
+
+  /x11 {x3 dx1 add} def
+  /y11 {y3 dy1 add} def
+  /x12 {x4 dx1 add} def
+  /y12 {y4 dy1 add} def
+  /x13 {x5 dx1 add} def
+  /y13 {y5 dy1 add} def
+  /x14 {x6 dx1 add} def
+  /y14 {y6 dy1 add} def
+ 
+  /x15 {x7 dx2 sub} def
+  /y15 {y7 dy2 sub} def
+  /x16 {x8 dx2 sub} def
+  /y16 {y8 dy2 sub} def
+  /x17 {x9 dx2 sub} def
+  /y17 {y9 dy2 sub} def
+  /x18 {x10 dx2 sub} def
+  /y18 {y10 dy2 sub} def
+
+  solidfill
+ 
+} def
+
+/solidfill {
+  cthick setgray
+  newpath
+  x3 y3 moveto
+  x11 y11 x15 y15 x7 y7   curveto
+  x10 y10 lineto
+  x18 y18 x14 y14 x6 y6 curveto
+  closepath
+  fill
+  stroke
+
+  cthin setgray
+  newpath
+  x4 y4 moveto
+  x12 y12 x16 y16 x8 y8 curveto
+  x9 y9 lineto
+  x17 y17 x13 y13 x5 y5 curveto
+  closepath
+  fill
+  stroke
+} def
+
+0 setlinewidth
+
+/cthick 1 def
+/cthin  0 def
+
+
+/P {
+  /yn exch def
+  /xn exch def
+  /ya exch def
+  /xa exch def
+  /yp exch def
+  /xp exch def
+
+  /xpi xp xa add 0.5 mul def
+  /ypi yp ya add 0.5 mul def
+
+  /xni xn xa add 0.5 mul def
+  /yni yn ya add 0.5 mul def
+
+  xpi ypi xa xpi sub ya ypi sub
+  xni yni xni xa sub yni ya sub
+  
+  stringto
+} def
+
+
+% 30 30 200 100 400 500 P showpage
+
+
+

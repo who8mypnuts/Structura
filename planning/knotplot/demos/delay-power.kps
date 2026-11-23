@@ -1,0 +1,2 @@
+tfunc allowreset
+tfunc \rr[2/6] "power=\rr[1/3]"

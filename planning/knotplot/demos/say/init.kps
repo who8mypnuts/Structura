@@ -1,0 +1,31 @@
+reset all
+
+silent=t
+
+silent=t
+back=black
+txt font 4
+txt colour orange
+txt cent
+
+txt fcolour royalblue .7
+
+
+txt c -30 "Knot Speak"
+txt font 3
+txt c -60 "make sure your volume is set appropriately and then click on one of the buttons below"
+
+txt fill on
+
+txt right
+txt c-15 -108 intro <say/intro.kps
+txt fill off
+txt left
+txt c+15 -108 "the speakers introduce themselves"
+%txt c+35 -108 play <say/play-knot.kps
+
+txt on
+
+
+silent=f
+#4 echo

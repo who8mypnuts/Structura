@@ -1,0 +1,11 @@
+reset all
+load c3/132.k
+vcn=6
+vcphi=3.770000
+vcA=0.892000
+ncur=2
+nseg=8
+cyl=0.35
+
+fitto 10
+centre mass

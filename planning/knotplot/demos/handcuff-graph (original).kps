@@ -1,0 +1,72 @@
+% 3jun96
+% Quick and dirty method to create a linked `handcuff' graph.
+
+panel off
+
+reset all
+
+silent=t
+par0=\rr360
+hstart = \ppar0
+mode cb
+cyl = .1
+cluster-radius = 0.700000
+mathsv C \ppar0 1 1 d
+
+scale = .65
+hincr=0
+
+rot x \rr360
+rot y \rr360
+rot z \rr360
+
+if \rr4 < 3 then "mode sC;cyl=.25"
+auto=f
+
+fixcofm = t  % it tends to drift a bit
+
+conway 2     % create a simple link
+if \rr2 < 1 then "revb 0"
+if \rr2 < 1 then "revb 1"
+shift \ri999 0
+shift \ri999 1
+<randorient.kps
+refl r
+ago 55       % relax a bit
+split        % split beads in two
+
+line num \ri[5/10]   % set number of beads in line
+new = f      % disable line command from deleting everything 
+line         % create a `line' component 
+
+
+glue f0 f2  % identify first bead in component 0 with first in component 2
+glue f1 l2  % identify first bead in component 1 with last in component 2
+
+
+coll a       % allow cylinder collisions
+
+
+panel on
+
+if \rr4 < 3 then "force 1;velf=t"
+go 999999      % relax into place
+
+silent=f
+
+func init
+func silent
+
+echo " "
+echo " "
+echo " *** Handcuff graph."
+echo "     Press F1 for more effects."
+echo "     Press F9 to rerun this demo."
+echo " "
+
+func 12 <complete-graph.kps
+func 11 <random-graphs1.kps
+func 10 <knot-cage.kps
+func 9 <handcuff-graph.kps
+
+func 1 "tanf=t;force 1;velf=t"

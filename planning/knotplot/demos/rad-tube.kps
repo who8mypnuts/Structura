@@ -1,0 +1,12 @@
+reset all
+
+silent = t
+back = black
+
+draw SE
+
+knot
+
+
+
+silent = f

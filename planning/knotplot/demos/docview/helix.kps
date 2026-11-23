@@ -1,0 +1,19 @@
+~nogo
+Draw=f
+%silent=t
+delete all
+line dir 0 .5 0
+line numb 47
+line 2 0 0
+dupl 
+refl x 0
+cent
+swirl 40
+join all
+ago 108
+nbead 200
+cent
+silent=f
+
+Draw=t
+

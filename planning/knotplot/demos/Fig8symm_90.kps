@@ -1,0 +1,15 @@
+untran
+<Fig8symm_load.kps
+silent=t
+idle none
+
+about x 90
+ortho
+dupl
+colour 4 purple
+
+func 6 <Fig8symm_aboutz90.kps
+func 7 <Fig8symm_aboutz.kps
+silent=f
+
+

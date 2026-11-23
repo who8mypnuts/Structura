@@ -1,0 +1,138 @@
+require KPbuild 4965
+
+reset all
+
+silent=t
+alloc 20000
+ortho
+scale=.063
+silent=f
+
+echo 
+echo 
+echo 
+echo "  *** Testing the direct sum of the following 3-component links:"
+echo -n "     "
+cyl=.4
+knot 3
+revb rand
+<randorient.kps
+swap randomize
+fitto 9
+save |a
+echo -n "     "
+knot 3
+revb rand
+<randorient.kps
+swap randomize
+fitto 9
+save |b
+echo
+silent=t
+par0=45
+par1=90
+par2=30
+par3=60
+
+txt centre
+
+txt c -20 "Testing Direct Sum Of Links"
+txt c -35 "(all possible sums of two 3-component links, an X indicates failure)" 
+txt on
+line dir 1 0 0
+line
+centre
+about z 45
+dup
+about z 90 0
+save |failure
+
+load |a
+trans -30 0 0
+load comb |b
+centre
+trans 0 45 0
+save |ab
+
+load |a
+load sum \b 0 0
+align axes
+about z 90
+if ncomp != 5 then "load |failure"
+trans 0 0 0
+save |0
+
+load |a
+load sum \b 0 1
+align axes
+about z 90
+if ncomp != 5 then "load |failure"
+trans \ppar0 0 0
+save |1
+
+load |a
+load sum \b 0 2
+align axes
+about z 90
+if ncomp != 5 then "load |failure"
+trans \ppar1 0 0 
+save |2
+
+load |a
+load sum \b 1 0
+align axes
+about z 90
+if ncomp != 5 then "load |failure"
+trans 0 \ppar2 0
+save |3
+
+load |a
+load sum \b 1 1
+align axes
+about z 90
+if ncomp != 5 then "load |failure"
+trans \ppar0 \ppar2 0
+save |4
+
+load |a
+load sum \b 1 2
+align axes
+about z 90
+if ncomp != 5 then "load |failure"
+trans \ppar1 \ppar2 0
+save |5
+
+load |a
+load sum \b 2 0
+align axes
+about z 90
+if ncomp != 5 then "load |failure"
+trans 0 \ppar3 0
+save |6
+
+load |a
+load sum \b 2 1
+align axes
+about z 90
+if ncomp != 5 then "load |failure"
+trans \ppar0 \ppar3 0
+save |7
+
+load |a
+load sum \b 2 2
+align axes
+about z 90
+if ncomp != 5 then "load |failure"
+trans \ppar1 \ppar3 0
+save |8
+
+frame comm "load comb |%d"
+
+delete all
+frame 0 num 9
+
+cent
+
+trans 0 -20 0
+load comb |ab
+silent=f

@@ -1,0 +1,55 @@
+reset all
+
+silent = t
+
+scale = .43
+bead-rad = .1
+mat-hsv b 0 0 0 d
+mat-hsv b 0 0 0 e
+mat-hsv b 0 0 0 s
+mat-hsv b 22 .9 .8 d
+
+singlebuffer
+load 0.1
+mode b
+cyl=.02
+
+blend one one
+
+back = 0
+force 1
+coll a
+clrfun 0
+disp
+disp
+clrfun 1
+go 1022
+
+
+
+jit .001
+mode c
+nseg = 6
+hstart = 250
+
+mat-hsv k 0 0 0 s
+mat-hsv k 0 0 0 a
+mat-hsv k 250 .9 .1 d
+anim scale .43 1.07 22
+
+clrfun zf
+disp
+disp
+clrfun 1
+
+go 765
+
+silent = f
+
+
+
+
+
+
+
+

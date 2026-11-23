@@ -1,0 +1,15 @@
+reset all
+
+tex reset
+tex appmode modulate
+load 9.2.13
+if \rr1 < .2 then swap
+if \rr1 < .5 then "texture varo.ppm" else "texture lupin.ppm"
+
+spec fra
+idle "about y 1"
+texture on
+
+
+<../benchmarks/blurb-bm.kps
+

@@ -1,0 +1,125 @@
+reset all
+
+silent=t
+verb=f
+func init
+func silent
+
+3dop ipos 108 10
+func 1 <Dolphins.kps
+
+back=rgb:0/0/.3
+
+rotate x -70
+satu = \rr1
+vcA=1
+%vcphi=3.14159
+vcphi = 3.722750
+vcn=1
+fog on
+fog colour 0 0 .3
+if sstereo then "fog range 25 31"
+
+cyl=.3
+
+torus 2 7 555
+%torus 7 2 555
+
+%frame comm "rotor phase .%02d period 2000 add gumby%02d"
+frame comm "rotor phase .%02d period 10000 add gumby%02d"
+%frame comm "rotor phase \rr1 period 10000 add gumby%02d"
+%frame comm "rotor phase \rr1 period \rr[8000/11000] add gumby%02d"
+
+frame 0 to 90 step 10
+frame comm "rotor let gumby%d0 pull fbead %d"
+frame 0 to 9 
+
+%spec rotor
+rotor list
+
+delete all
+line numb 9
+new=f
+Draw=f
+
+par0=2
+%if \rr10 < 8 then "#10 line" else "chain 10 9;par=1"
+#10 line   % always open slugs
+
+%colour all orange
+jitter 9999
+fitto 10
+rotor disable all
+coll a
+until safe "ago 5"
+
+frame comm "trans \rr+-29 \rr+-29 -29 %d"
+frame 0 to 9
+
+ago 44
+%texture checker
+texture mode norm
+texture appmode modu
+texture norm rug_bw
+draw texture
+texture rep 1 0
+texture on
+
+rotor enable all
+Draw=t
+func c 1 "echo If you close them at just the right time, they can link in pairs"
+func s 2 "close all;par0=1;echo;echo;echo Press F2 again to open rings"
+func s 1 "open all;par0=2;echo;echo;echo Press F2 again to close rings;func exec c 1"
+ 
+func 2 "func exec s \ppar0"
+
+func s 3 "rotor reverse all;par1=4"
+func s 4 "rotor forward all;par1=3"
+func 3 "func exec s \ppar1"
+
+func exec s \ri[3/4]
+
+func s 5 "echo {     Note: This demo best at 200 frames per second or better, press F5 to toggle display of frames per second (fps)}"
+
+txt left
+txt font 3
+txt fill on
+txt colour hsv:0/0/.8
+txt fcolour "royal blue" .4
+txt lineskip -30
+txt 20 20 rerun <Dolphins.kps
+txt 20 a open/close "silent=t;func exec 2;silent=f"
+txt 20 a reverse "silent=t;func exec 3;silent=f"
+txt 20 a  lengthen "split;txt delete lengthen"
+
+txt right
+txt -20 20 fullscreen "full toggle"
+txt -20 a  "frame rate" "spec ~fps"
+txt fill off
+txt -15 a toggle:
+
+txt push
+txt fill off
+txt centre
+txt lineskip 25
+txt expire 6
+txt c -20 "press the spacebar to hide / show buttons"
+txt c a "(you may need to click in this window first)"
+txt pop
+txt on
+
+go
+
+silent=f
+
+echo 
+echo 
+echo " *** Press F1 to rerun demo"
+echo "     Pressing F2 can be interesting, or press F3 to reverse direction"
+echo "     If dolphins swim too slowly, try increasing value of `dstep' (see the `Main' or `Dyna' panels)"
+
+tfunc 7 "func exec s 5"
+func 5 spec ~fra
+
+
+bindkey " " "txt toggle"

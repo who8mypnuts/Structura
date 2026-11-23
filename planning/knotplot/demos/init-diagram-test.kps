@@ -1,0 +1,11 @@
+reset all
+ortho
+cyl=.3
+txt on
+txt font 4
+txt centre
+txt c -20 "Dowker Diagram Test"
+
+txt clobber on
+
+scale=.3

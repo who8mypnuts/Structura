@@ -1,0 +1,5 @@
+echo " "
+echo "  *** Can't start demo loop!"
+echo "  *** KnotPlot build number must be at least 3030."
+echo " "
+

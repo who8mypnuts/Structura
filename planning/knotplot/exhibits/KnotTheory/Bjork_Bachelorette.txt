@@ -1,0 +1,11 @@
+%! 3163
+StElmo .3 .8 2
+graphicsH .3 .8 2
+graphicsHa .3 .8 2
+graphicsI .3 .8 2
+graphicsJ .3 .8 2
+%knottype .3 .8 2
+%fly-thru  .3 .8 2
+%ringToss  .3 .8 2
+%orbit  .3 .8 2
+%slide-knot  .3 .8 2

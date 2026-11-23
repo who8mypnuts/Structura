@@ -1,0 +1,40 @@
+% More Sea Things
+% See the documentation in the file sea-things.kps in this directory.
+
+reset all
+
+back=0
+disp t        % why is this needed?
+
+auto=f
+hincr=120
+hstar=250
+silent = t
+back = 0
+zbuff f
+glop backface t
+blend one one
+draw broke
+ncur = 10
+
+cyl = 2
+nseg = 3
+broff = -1.28
+
+silent = f
+if \rr1 < .999 then "knot 2" else "knot 3"
+
+if \rr1 < 0.5 then "swap 0 1"
+
+silent = t
+
+twfix 23232
+silent = f
+
+<demo-relaxA.kps
+
+
+
+
+
+

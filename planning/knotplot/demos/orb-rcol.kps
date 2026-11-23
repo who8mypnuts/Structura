@@ -1,0 +1,4 @@
+alias ~rcol "orb $0 lcol rgb:0/0/0;orb $0 hcol hsv:$2/1/1"
+frame comm "~rcol %d \rr360 \rr360"
+frame 0 numb \pnbeads
+

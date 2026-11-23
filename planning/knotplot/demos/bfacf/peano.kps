@@ -1,0 +1,4 @@
+mode cB
+cyl-rad=.1
+
+bfacf load bfacf/peano-5jul09.txt

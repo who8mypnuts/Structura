@@ -1,0 +1,64 @@
+reset all
+light model onesided
+silent = t
+verbose=f
+blend one one
+back = 0
+cyl = .01
+bead=.01
+coll a
+force 1
+tg1offset = 0.000000
+
+
+scale=\rr[1/2]
+
+par0=\rr10
+
+if par0 < 7 then "mode cb" else "mode b"
+
+hooke=30
+math k 22 .96 0 s
+math k  0 0 0 a
+math k 222 .9 .1 d
+
+math b 0 0 0 e
+math b 0 0 0 s
+math b 22 .94 .9 d
+math b 0 0 0 a
+
+if \rr9 < 3 then "math k 22 .9 .1 d;math b 222 .94 .9 d;bead=\rr[.01/.02]"
+
+if \rr1022 < 1 then "math k \rr360 .9 .1 d"
+
+tinc=.13
+if \rr4 < 3 then "tgvas=6;conway 3" else "tgvas=2;random tangle"
+
+if \rr22 < 1 then "braid -cheapo (aB)^4;fitto \rr[3/7]"
+
+<randorient.kps
+if \rr2 < 1 then revb
+if \rr5 < 1 then "tanf=t"
+if \rr7 < 1 then "about x 90"
+if \rr7 < 1 then "about y 90"
+if \rr7 < 1 then "about z 90"
+
+if par0 > 8 then "split"
+
+func init
+func silent
+func 1 "go 9999999 limit 102;echo;echo;echo Press F2 to stop painting, F3 to clear.;echo"
+func 2 "go 0;echo;echo;echo Press F1 to start painting, F3 to clear.;echo"
+func 3 "clrfun zf;disp t;disp t;clrfun z"
+func 4 "go 9999999 limit 102;clrfun zt;echo;echo;echo Rotate, scale, or translate the knot in the view window.;echo"
+
+func 6 "delete all;func exec 3;unknot \ri[9/33] \rr[.1/8];func exec 4"
+func 5 "delete all;func exec 3;conway 3"
+
+func exec 3
+
+go \ri[102/612] limit 102
+
+silent = f
+
+go 999999999 limit 102

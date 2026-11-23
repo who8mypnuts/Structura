@@ -1,0 +1,161 @@
+require KPbuild 4691
+%`-
+% File auto-generated on Saturday, 12-Nov-11 09:12:57 PST  DO NOT EDIT!!
+% by running the script `make.php' in /Applications/KnotPlot/KnotPlot.app/Contents/Resources/demos/eobj on Volta 
+
+
+reset all
+
+scenery on
+scenery scale 5
+
+txt on
+txt font 2
+
+txt clobber on
+
+
+txt lineskip 27
+txt fill on
+alias ~poly "scenery delete all;scenery object eobj/$0;~loadit $0"
+
+alias ~loadit "txt group 108;txt delete {<};txt font 2;txt c -45 {to load this object, use the command:};txt font 6;txt c -70 {scenery object eobj/$0};txt group 0"
+
+
+
+txt fcolour royalblue .5
+
+alias ~title "txt fill off;txt font 4;txt cent;txt c -20 $0"
+
+alias ~knot "hstar=\rr360;cyl-rad=\rr[.2/.5];knot;fitto \rr[3/9]"
+
+txt space @
+txt push
+txt group 108
+
+txt 10 -20 "compound@of@5@cubes" "~poly 5_cube_compound;~title compound@of@5@cubes;dele all"
+txt 10 -42 "Conway@aaaaH" "~poly aaaaH;~title Conway@aaaaH;dele all"
+txt 10 -64 "wire@cube" "~poly bluecube-wire;~title wire@cube;dele all"
+txt 10 -86 "translucent@blue@cube" "~poly bluecube;~title translucent@blue@cube;~knot"
+txt 10 -108 "blue@sphere" "~poly bsphere;~title blue@sphere;dele all"
+txt 10 -130 "Compound@octahedra" "~poly compound_octahedra;~title Compound@octahedra;dele all"
+txt 10 -152 "cyan@sphere" "~poly csphere;~title cyan@sphere;dele all"
+txt 10 -174 "cube" "~poly cube;~title cube;dele all"
+txt 10 -196 "128-face@deltahedron" "~poly delta128;~title 128-face@deltahedron;dele all"
+txt 10 -218 "Conway@dgk5dgD" "~poly dgk5dgD;~title Conway@dgk5dgD;dele all"
+txt 10 -240 "Conway@dk3dgD" "~poly dk3dgD;~title Conway@dk3dgD;dele all"
+txt 10 -262 "dodecahedron" "~poly dodecahedron;~title dodecahedron;dele all"
+txt 10 -284 "face" "~poly face;~title face;dele all"
+txt 10 -306 "green@sphere" "~poly gsphere;~title green@sphere;dele all"
+txt 10 -328 "hecatohedron;@50-gonal@dipyramid" "~poly hecatohedron_1;~title hecatohedron;@50-gonal@dipyramid;dele all"
+txt 10 -350 "hexagonal@prism@+@dual" "~poly hexagonal_prism_plus_dual;~title hexagonal@prism@+@dual;dele all"
+txt 10 -372 "black@icosahedron" "~poly icos000;~title black@icosahedron;dele all"
+txt 10 -394 "blue@icosahedron" "~poly icos001;~title blue@icosahedron;dele all"
+txt 10 -416 "green@icosahedron" "~poly icos010;~title green@icosahedron;dele all"
+txt 10 -438 "cyan@icosahedron" "~poly icos011;~title cyan@icosahedron;dele all"
+txt 10 -460 "red@icosahedron" "~poly icos100;~title red@icosahedron;dele all"
+txt 10 -482 "magenta@icosahedron" "~poly icos101;~title magenta@icosahedron;dele all"
+txt 10 -504 "yellow@icosahedron" "~poly icos110;~title yellow@icosahedron;dele all"
+txt 10 -526 "white@icosahedron" "~poly icos111;~title white@icosahedron;dele all"
+txt 10 -548 "icosahedron" "~poly icosahedron;~title icosahedron;dele all"
+txt 10 -570 "inverted@cube" "~poly inv-cube;~title inverted@cube;dele all"
+txt 10 -592 "black@sphere" "~poly ksphere;~title black@sphere;dele all"
+txt 10 -614 "line@obstruction" "~poly line-obs;~title line@obstruction;dele all"
+txt 10 -636 "medial@inverted@pentagonal@hexecontahedron" "~poly medial_inverted_pentagonal_hexecontahedron;~title medial@inverted@pentagonal@hexecontahedron;dele all"
+txt 10 -658 "monolith@from@"2001:@A@Space@Odyssey"" "~poly monolith;~title monolith@from@"2001:@A@Space@Odyssey";dele all"
+txt 10 -680 "magenta@sphere" "~poly msphere;~title magenta@sphere;dele all"
+txt fcolour purple .5
+txt 10 -702 "cube@in@dodecahedron" "~poly nested_cube_in_dodecahedron;~title cube@in@dodecahedron;dele all"
+txt 10 -724 "icosahedron@in@octahedron" "~poly nested_icosahedron_in_octahedron;~title icosahedron@in@octahedron;dele all"
+txt 10 -746 "octahedron@in@dodecahedron" "~poly nested_octahedron_in_dodecahedron;~title octahedron@in@dodecahedron;dele all"
+txt 10 -768 "octahedron@in@tetrahedron" "~poly nested_octahedron_in_tetrahedron;~title octahedron@in@tetrahedron;dele all"
+txt 10 -790 "tetrahedron@in@cube" "~poly nested_tetrahedron_in_cube;~title tetrahedron@in@cube;dele all"
+txt fcolour royalblue .5
+txt 10 -812 "octahedron" "~poly octahedron;~title octahedron;dele all"
+txt right
+txt -10 -20 "octants" "~poly octants;~title octants;dele all"
+txt -10 -42 "prolate@icosahedron" "~poly p;~title prolate@icosahedron;dele all"
+txt -10 -64 "parabiaugmented@truncated@dodecahedron@(J69)" "~poly poly113;~title parabiaugmented@truncated@dodecahedron@(J69);dele all"
+txt -10 -86 "gyrate@rhombicosidodecahedron@(J72)" "~poly poly116;~title gyrate@rhombicosidodecahedron@(J72);dele all"
+txt -10 -108 "paragyrate@diminished@rhombicosidodecahedron@(J77)" "~poly poly121;~title paragyrate@diminished@rhombicosidodecahedron@(J77);dele all"
+txt -10 -130 "metagyrate@diminished@rhombicosidodecahedron@(J78)" "~poly poly122;~title metagyrate@diminished@rhombicosidodecahedron@(J78);dele all"
+txt -10 -152 "bigyrate@diminished@rhombicosidodecahedron@(J79)" "~poly poly123;~title bigyrate@diminished@rhombicosidodecahedron@(J79);dele all"
+txt -10 -174 "snub@square@antiprism@(J85)" "~poly poly129;~title snub@square@antiprism@(J85);dele all"
+txt -10 -196 "hebesphenomegacorona@(J89)" "~poly poly133;~title hebesphenomegacorona@(J89);dele all"
+txt -10 -218 "octahemioctahedron" "~poly poly138;~title octahemioctahedron;dele all"
+txt -10 -240 "dodecadodecahedron" "~poly poly140;~title dodecadodecahedron;dele all"
+txt -10 -262 "echidnahedron" "~poly poly141;~title echidnahedron;dele all"
+txt -10 -284 "rhombic@dodecahedron" "~poly poly33;~title rhombic@dodecahedron;dele all"
+txt -10 -306 "triakis@octahedron" "~poly poly34;~title triakis@octahedron;dele all"
+txt -10 -328 "tetrakis@hexahedron" "~poly poly35;~title tetrakis@hexahedron;dele all"
+txt -10 -350 "trapezoidal@icositetrahedron" "~poly poly36;~title trapezoidal@icositetrahedron;dele all"
+txt -10 -372 "hexakis@octahedron" "~poly poly37;~title hexakis@octahedron;dele all"
+txt -10 -394 "triangular@cupola@(J3)" "~poly poly47;~title triangular@cupola@(J3);dele all"
+txt -10 -416 "pentagonal@orthocupolarontunda@(J32)" "~poly poly76;~title pentagonal@orthocupolarontunda@(J32);dele all"
+txt -10 -438 "pentagonal@orthobirotunda@(J34)" "~poly poly78;~title pentagonal@orthobirotunda@(J34);dele all"
+txt -10 -460 "great@icosahedron" "~poly poly8;~title great@icosahedron;dele all"
+txt -10 -482 "elongated@pentagonal@orthocupolarotunda@(J40)" "~poly poly84;~title elongated@pentagonal@orthocupolarotunda@(J40);dele all"
+txt -10 -504 "prolate@icosahedron" "~poly prolate-icos;~title prolate@icosahedron;dele all"
+txt -10 -526 "rhombitruncated@icosidodecahedron" "~poly rhombitruncated_icosidodecahedron;~title rhombitruncated@icosidodecahedron;dele all"
+txt -10 -548 "red@sphere" "~poly rsphere;~title red@sphere;dele all"
+txt -10 -570 "small@hexagrammic@hexecontahedron" "~poly small_hexagrammic_hexecontrahedron;~title small@hexagrammic@hexecontahedron;dele all"
+txt -10 -592 "snub@disicosidodecahedron@+@dual" "~poly snub_disicosidodecahedron_plus_dual;~title snub@disicosidodecahedron@+@dual;dele all"
+txt -10 -614 "snub@dodecahedron" "~poly snub_dodecahedron;~title snub@dodecahedron;dele all"
+txt -10 -636 "sphere1" "~poly sphere1;~title sphere1;dele all"
+txt -10 -658 "sphere2" "~poly sphere2;~title sphere2;dele all"
+txt -10 -680 "sphere2" "~poly sphere3;~title sphere2;dele all"
+txt -10 -702 "tetrahedron" "~poly tetrahedron;~title tetrahedron;dele all"
+txt -10 -724 "white@sphere" "~poly wsphere;~title white@sphere;dele all"
+txt -10 -746 "yellow@sphere" "~poly ysphere;~title yellow@sphere;dele all"
+txt -10 -768 "zonish@6@snub@dodecahedron" "~poly zonish-6-snub_dodecahedron;~title zonish@6@snub@dodecahedron;dele all"
+txt fill off
+txt cent 
+
+txt c 20 "left mouse to rotate, right mouse to scale"
+
+txt pop
+
+
+alias ~hide "txt group 108 off;~hideshow show"
+alias ~show "txt group 108 on;~hideshow hide"
+alias ~hideshow "txt push;txt font 3;txt left;txt fill on;txt 10 10 {$0 stuff} ~$0;txt pop"
+
+
+~show
+
+txt lineskip -24
+
+par0=0
+alias ~wireframe "if par0 == 0 then {glop poly line;par0=1} else {glop poly fill;par0=0}"
+
+
+par1=0
+glop back t
+alias ~backface "if par1 == 0 then {glop back f;par1=1} else {glop back t;par1=0}"
+
+
+txt font 3
+txt right
+txt fill on
+txt -10 60 fullscreen "full toggle"
+%txt -10 a  backface ~backface
+txt -10 a  wireframe  ~wireframe
+txt fill off
+txt -10 a toggle:
+
+txt font 4
+txt fill on
+txt -14 14 ? "help popup eobj-examples.kps handoff"
+
+txt fill off
+txt cent
+
+txt font 4
+txt c c "<--- Click one of the buttons --->"
+
+exit
+
+%`+
+
+examples
+

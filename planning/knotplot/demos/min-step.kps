@@ -1,0 +1,270 @@
+%`-
+
+
+% created Sunday, 19-Sep-21 13:37:06 PDT by running min-step.php in /Users/rob/projects/knots/newdemos
+
+require KPbuild 4996   % for save |c when there are no beads
+                       % also for KnotPlot scripts with parameters
+
+% NOTE: this script is meant to be called with arguments, for example
+% read min-step.kps 10.157 2 mscl/242.b 2
+% which will set
+% KNOTNAME to 10.157
+% NUMBER to 2
+% SEQFILE to mscl/242.b
+% GROUP to 2
+
+% PARAM KNOTNAME NUMBER SEQFILE GROUP
+
+% RGS 14 August 2021
+% show all NUMBER minimal step KNOTNAMEs in random positions
+
+reset all
+silent = t
+
+mode cb
+cyl-rad = 0.12
+bead-radius = 0.18
+ccmode = 2
+scale = 0.23
+force 1
+coll a
+velf = t
+
+% load all the knots in the sequence into internal knots
+sequence open SEQFILE
+frame comm "project random;shift random;centre mass;save |%d;sequ +"
+frame 1 to NUMBER
+sequence close
+
+frame command "load |%d;translate \rr[11/44] 0 0 ;project random;load combine |c;save |c"
+
+% save |c when there are no beads delete |c if it exists
+alias ~combine "echo -n .;echo -f;delete all;save |c;frame 1 to NUMBER"
+
+frame verbose off
+until once yes
+verbose = 0    % to keep project quiet
+
+silent = f
+
+#5 echo 
+echo -n "finding a safe embedding, please wait "
+timer start
+until safe ~combine
+echo -n " "
+timer check
+
+
+revbeads random
+
+% end of interesting code
+% everything below here is just for the demo
+
+txt group 102
+
+echo
+if NUMBER == 1 then "echo NUMBER minimal step KNOTNAME knot" else "echo NUMBER minimal step KNOTNAME knots"
+if NUMBER == 1 then "echo rotate/scale the view to see it if it's not showing" else "echo rotate or scale the view to see them all"
+
+
+txt font 4
+txt centre
+alias ~one "txt c -20 {NUMBER minimal step KNOTNAME knot}"
+alias ~many "txt c -20 {NUMBER minimal step KNOTNAME knots}"
+if NUMBER == 1 then ~one else ~many
+
+txt font 3
+txt lineskip 17
+alias ~rotMany "txt c a {rotate/scale the view to see them all}"
+alias ~rotOne "txt c a {rotate/scale the view to see it if it's not showing}"
+if NUMBER == 1 then ~rotOne else ~rotMany
+txt c a "click on the KNOTNAME button on the left to create another arrangement"
+txt c a "or try another knot type (they are in 3 groups)"
+
+txt fcolour royalblue .6
+txt fill on
+txt font 4
+txt c 20 GO ~go
+txt on
+txt clobber on
+
+alias ~openall "open all;tanf = on;txt font 3;txt fill on;txt c 20 {join all} {join all;txt delete join}"
+
+alias ~go "go;txt delete GO;tfunc \rr[2/6] ~openall"
+
+
+txt lineskip -25
+%txt -15 a2  "toggle fullscreen" "fullscreen toggle"
+
+
+txt left
+txt font 3
+txt push
+txt group 0
+txt fill off
+
+txt 15 0 " "
+txt fill on
+txt 15 a 9.31 "read min-step.kps 9.31 1 mscl/67.b 0"  % 54 beads
+txt 15 a 9.29 "read min-step.kps 9.29 8 mscl/65.b 0"  % 448 beads
+txt 15 a 9.19 "read min-step.kps 9.19 20 mscl/55.b 0"  % 1080 beads
+txt 15 a 9.5 "read min-step.kps 9.5 35 mscl/41.b 0"  % 1890 beads
+txt 15 a 9.4 "read min-step.kps 9.4 26 mscl/40.b 0"  % 1404 beads
+txt 15 a 8.20 "read min-step.kps 8.20 5 mscl/35.b 0"  % 220 beads
+txt 15 a 8.16 "read min-step.kps 8.16 2 mscl/31.b 0"  % 100 beads
+txt 15 a 8.14 "read min-step.kps 8.14 15 mscl/29.b 0"  % 750 beads
+txt 15 a 8.12 "read min-step.kps 8.12 54 mscl/27.b 0"  % 2808 beads
+txt 15 a 8.11 "read min-step.kps 8.11 4 mscl/26.b 0"  % 200 beads
+txt 15 a 8.10 "read min-step.kps 8.10 35 mscl/25.b 0"  % 1750 beads
+txt 15 a 8.7 "read min-step.kps 8.7 1 mscl/22.b 0"  % 48 beads
+txt 15 a 8.5 "read min-step.kps 8.5 24 mscl/20.b 0"  % 1200 beads
+txt 15 a 8.3 "read min-step.kps 8.3 1 mscl/18.b 0"  % 48 beads
+txt 15 a 7.7 "read min-step.kps 7.7 11 mscl/15.b 0"  % 484 beads
+txt 15 a 7.4 "read min-step.kps 7.4 4 mscl/12.b 0"  % 176 beads
+txt 15 a 7.3 "read min-step.kps 7.3 10 mscl/11.b 0"  % 440 beads
+txt 15 a 6.3 "read min-step.kps 6.3 74 mscl/8.b 0"  % 2960 beads
+txt 15 a 4.1 "read min-step.kps 4.1 76 mscl/3.b 0"  % 2280 beads
+txt 15 a 3.1 "read min-step.kps 3.1 75 mscl/2.b 0"  % 1800 beads
+txt 15 a 0.1 "read min-step.kps 0.1 1 mscl/1.b 0"  % 4 beads
+
+txt fill off
+txt 10 a "knot type:"
+txt pop
+txt group 0 off
+
+txt push
+txt group 1
+txt fill off
+
+txt 15 0 " "
+txt fill on
+txt 15 a 10.73 "read min-step.kps 10.73 30 mscl/158.b 1"  % 1800 beads
+txt 15 a 10.72 "read min-step.kps 10.72 1 mscl/157.b 1"  % 60 beads
+txt 15 a 10.69 "read min-step.kps 10.69 2 mscl/154.b 1"  % 120 beads
+txt 15 a 10.54 "read min-step.kps 10.54 50 mscl/139.b 1"  % 3000 beads
+txt 15 a 10.48 "read min-step.kps 10.48 30 mscl/133.b 1"  % 1800 beads
+txt 15 a 10.47 "read min-step.kps 10.47 14 mscl/132.b 1"  % 840 beads
+txt 15 a 10.45 "read min-step.kps 10.45 31 mscl/130.b 1"  % 1860 beads
+txt 15 a 10.42 "read min-step.kps 10.42 42 mscl/127.b 1"  % 2520 beads
+txt 15 a 10.31 "read min-step.kps 10.31 5 mscl/116.b 1"  % 300 beads
+txt 15 a 10.30 "read min-step.kps 10.30 35 mscl/115.b 1"  % 2100 beads
+txt 15 a 10.27 "read min-step.kps 10.27 35 mscl/112.b 1"  % 2100 beads
+txt 15 a 10.18 "read min-step.kps 10.18 21 mscl/103.b 1"  % 1260 beads
+txt 15 a 10.17 "read min-step.kps 10.17 5 mscl/102.b 1"  % 290 beads
+txt 15 a 10.16 "read min-step.kps 10.16 40 mscl/101.b 1"  % 2400 beads
+txt 15 a 10.14 "read min-step.kps 10.14 12 mscl/99.b 1"  % 720 beads
+txt 15 a 10.6 "read min-step.kps 10.6 45 mscl/91.b 1"  % 2700 beads
+txt 15 a 10.5 "read min-step.kps 10.5 10 mscl/90.b 1"  % 580 beads
+txt 15 a 10.3 "read min-step.kps 10.3 5 mscl/88.b 1"  % 290 beads
+txt 15 a 9.41 "read min-step.kps 9.41 3 mscl/77.b 1"  % 162 beads
+txt 15 a 9.40 "read min-step.kps 9.40 7 mscl/76.b 1"  % 378 beads
+txt 15 a 9.38 "read min-step.kps 9.38 44 mscl/74.b 1"  % 2552 beads
+txt 15 a 9.34 "read min-step.kps 9.34 6 mscl/70.b 1"  % 336 beads
+
+txt fill off
+txt 10 a "knot type:"
+txt pop
+txt group 1 off
+
+txt push
+txt group 2
+txt fill off
+
+txt 15 0 " "
+txt fill on
+txt 15 a 10.165 "read min-step.kps 10.165 44 mscl/250.b 2"  % 2464 beads
+txt 15 a 10.162 "read min-step.kps 10.162 32 mscl/247.b 2"  % 1792 beads
+txt 15 a 10.161 "read min-step.kps 10.161 18 mscl/246.b 2"  % 900 beads
+txt 15 a 10.158 "read min-step.kps 10.158 11 mscl/243.b 2"  % 616 beads
+txt 15 a 10.157 "read min-step.kps 10.157 2 mscl/242.b 2"  % 108 beads
+txt 15 a 10.138 "read min-step.kps 10.138 20 mscl/223.b 2"  % 1120 beads
+txt 15 a 10.126 "read min-step.kps 10.126 9 mscl/211.b 2"  % 486 beads
+txt 15 a 10.124 "read min-step.kps 10.124 16 mscl/209.b 2"  % 768 beads
+txt 15 a 10.123 "read min-step.kps 10.123 1 mscl/208.b 2"  % 60 beads
+txt 15 a 10.121 "read min-step.kps 10.121 40 mscl/206.b 2"  % 2400 beads
+txt 15 a 10.119 "read min-step.kps 10.119 28 mscl/204.b 2"  % 1736 beads
+txt 15 a 10.115 "read min-step.kps 10.115 10 mscl/200.b 2"  % 620 beads
+txt 15 a 10.113 "read min-step.kps 10.113 2 mscl/198.b 2"  % 120 beads
+txt 15 a 10.112 "read min-step.kps 10.112 20 mscl/197.b 2"  % 1200 beads
+txt 15 a 10.110 "read min-step.kps 10.110 4 mscl/195.b 2"  % 248 beads
+txt 15 a 10.107 "read min-step.kps 10.107 37 mscl/192.b 2"  % 2294 beads
+txt 15 a 10.101 "read min-step.kps 10.101 42 mscl/186.b 2"  % 2604 beads
+txt 15 a 10.98 "read min-step.kps 10.98 26 mscl/183.b 2"  % 1612 beads
+txt 15 a 10.97 "read min-step.kps 10.97 6 mscl/182.b 2"  % 372 beads
+txt 15 a 10.86 "read min-step.kps 10.86 3 mscl/171.b 2"  % 180 beads
+txt 15 a 10.85 "read min-step.kps 10.85 25 mscl/170.b 2"  % 1500 beads
+txt 15 a 10.82 "read min-step.kps 10.82 7 mscl/167.b 2"  % 420 beads
+
+txt fill off
+txt 10 a "knot type:"
+txt pop
+txt group 2 off
+
+
+txt group GROUP on
+
+txt group 102
+alias ~group "txt group 0 off;txt group 1 off;txt group 2 off;txt group $0 on"
+
+txt sfcolour orange .9
+
+
+txt fill on
+txt select on
+txt 15 a1.5  "1" "~group 0"
+if GROUP == 0 then "txt set selected"
+txt 38 a0 "2" "~group 1"
+if GROUP == 1 then "txt set selected"
+txt 61 a0 "3" "~group 2"
+if GROUP == 2 then "txt set selected"
+txt select off
+txt fill off
+txt 10 a "show group:"
+
+txt fill on
+txt right
+txt font 4
+txt -15 15 ? "help popup min-step.kps handoff"
+
+txt font 3
+txt fill off
+txt -15 a2 " "
+txt fill on
+txt -15   a "pick one" "go 0;~choose \ri[1/NUMBER] NUMBER" 
+
+txt fill off 
+txt -10 a "action:"
+
+txt -15 a2 " "
+txt fill on
+txt -15 a "data"   "www knotplot.com/data/min-step"
+txt -15 a "paper"  "www iopscience.iop.org/article/10.1088/1751-8113/42/47/475006"
+txt fill off
+txt -10 a "web:"
+
+alias ~choose "echo knot $0 of $1;load |$0;txt delete GO;txt delete join;~label $0 $1"
+alias ~label  "txt centre;txt fill off;txt font 4;txt c 20 {knot $0 of $1}"
+
+exit
+
+%`+
+
+This demo shows a portion of the minimal step embeddings on the simple cubic lattice
+for proper knots to 10 crossings. These were reported in the paper
+Bounds for the minimum step number of knots in the simple cubic lattice
+R Scharein, K Ishihara, J Arsuaga, Y Diao, K Shimokawa and M Vazquez
+Published 9 November 2009, IOP Publishing Ltd
+Journal of Physics A: Mathematical and Theoretical, Volume 42, Number 47
+(click `min step paper' button in the KnotPlot Arena to access the paper)
+
+The available sequences are knot up to nine crossings that have at least two
+representatives. Also the number of vertices is limited to 3000. To access all
+the sequences, click the `min step data' button in the KnotPlot Arena. 
+
+The data was obtained by Rob Scharein in 2008 whilst working for San Francisco
+State University under the supervision of Mariel Vazquez and Javier Arsuaga.
+
+Support for this work came from NIH grants 2S06GM052588 and NSF DMS-0920887.
+
+

@@ -1,0 +1,27 @@
+reset all
+echo "  "
+coll allow  % in case people wonder why there are self-intersections
+silent=t
+tg1off = \rr[2/4]
+dstep = \ri[1/3]
+hstar=\rr360
+auto-colour=off
+hincr=\rr[20/180]
+satu=\rr[.7/1.0]
+ncur=2
+nseg=10
+cyl=\rr[.3/.5]
+force 1
+velfo=t
+vcA=\rr[.2/1.0]
+if \rr1 < .2 then "mathsv k \rr360 1 .5 e"
+if \rr1 < .1 then "vcn=\ri[3/6]"
+velmag=\rr[.05/.1]
+if \rr1 < .2 then "back=0"
+if \rr1 < .5 then "tangle 2@!z#" else "tangle 111Z1Z11c"
+if \rr1 < .01 then "random tangle"
+if \rr1 < .5 then "refl rr" else "refl r"
+if \rr1 < .01 then "draw spec"
+if \rr1 < .1 then "scale \rr[.5/2] \rr[.5/2] \rr[.5/2]"
+go 99999
+silent=f

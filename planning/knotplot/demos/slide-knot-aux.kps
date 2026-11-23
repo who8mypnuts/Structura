@@ -1,0 +1,12 @@
+
+par0=\rr100
+if par0 < 50 then "load comb opensquare.k;par0=102"
+if par0 < 75 then "load comb bowline.k;par0=102"
+if par0 < 100 then "load comb Figure8open.k;par0=102"
+
+refl grG last
+if \rr2 < 1 then "revb 1"
+until timelimit 15
+until athick .9 "refl grG last;tran \rr+-1 \rr+-1 \rr+-1 last"
+until timelimit 9999999
+if \rr2 < 1 then "align ax"

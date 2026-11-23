@@ -1,0 +1,4 @@
+par2
+10 celtic box \ri[1/6] \ri[1/6] \ri[1/6] \ppar1;celtic scale 2
+10 celtic box \ppar0 \ppar0 \ri[1/4] \ppar1;celtic scale 2
+8 celtic star \ri[3/7] \ri[1/5]

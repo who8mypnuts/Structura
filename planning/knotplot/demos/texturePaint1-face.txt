@@ -1,0 +1,5 @@
+par4
+10 tex eye lupin
+10 tex eye varo
+10 tex eye face
+1 tex eye aum

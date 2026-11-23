@@ -1,0 +1,4 @@
+
+button Nbuttons 3
+button pos 1
+button DemoA DanceIX <DanceIX.kps -2 -1 0 10 0 10

@@ -1,0 +1,23 @@
+demo p 0 1.000100 freedman
+demo p 1 1.000100 ringToss
+demo p 2 1.000100 new_monster
+demo p 3 1.000100 cubicSAW
+demo p 4 0.050000 brunnian
+demo p 5 1.000100 random-lights2
+demo p 6 1.000100 random1
+demo p 7 0.200000 twist-knot
+demo p 8 1.000100 braids
+demo p 9 1.000100 combo-monster
+demo p 10 1.000100 tref-drop
+demo p 11 1.000100 simp
+demo p 12 0.500000 stick-symm
+demo p 13 1.000100 SE
+demo p 14 1.000100 orbit
+demo p 15 1.000100 PerkoExhib
+demo p 16 1.000100 ring-pack
+demo p 17 1.000100 ChiralKnots
+demo p 18 1.000100 fly-thru
+demo p 19 1.000100 KnotPaint
+demo p 20 1.000100 simple-relax
+
+demo probs

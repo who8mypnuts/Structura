@@ -1,0 +1,58 @@
+reset all
+
+silent=t
+verbose=f
+
+field lorenz
+
+back=0
+3dop colF \rr360 1 1
+
+nlor par \rr[2/11] \rr[1/5] 5
+
+
+if \rr2 < 1 then "mode bF" else "mode F"
+
+if \rr2 < 1 then "unknot \ri[10/75] \rr[.3/10];about z \rr360" else knot
+
+par1 = 11
+if \rr2 < 1 then "mode F;zbuff f;3dop colF \rr44 1 .4;blend one one;par1=12"
+
+
+% multiif < field_lorenz.txt 
+par2 = \rr3
+if par2 < 1 then "about x 90;par2=5"
+if par2 < 2 then "about y 90;par2=5"
+if par2 < 4 then "nop;par2=5"
+
+
+coll a
+force 1
+go inf
+
+func init
+func silent
+
+func 1 <field_lorenz.kps
+
+func c 11 "mode F;zbuff f;3dop colF \rr44 1 .4;blend one one;par1=12"
+func c 12 "zbuff t;mode bF;3dop colF \rr360 1 1;par1=11;blend sa msa"
+
+par3 = 8
+func c 8 "silent=t;panel set Lorenz;par3=9;silent=f"
+func c 9 "panel set DemoB;par3=8"
+
+func 12 "func exec c \ppar3"
+
+func 2  "func exec c \ppar1"
+func 3 "nlor par \rr[2/11] \rr[1/5] 5"
+func 4 knot
+
+silent=f
+
+echo 
+echo 
+echo "  *** Try changing the parameters `sigma', `b', and `r' on the `Lorenz' panel (F12 to toggle between panels)."
+echo "      Press F1 to rerun demo (always different)."
+echo "      Press F2 to toggle blending modes, F3 to randomize parameters."
+echo 

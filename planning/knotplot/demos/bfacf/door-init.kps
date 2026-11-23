@@ -1,0 +1,10 @@
+
+reset all
+bfacf init knotmode
+mode cB
+scale=.238
+
+<bfacf/doorview1.kps
+
+
+par0 = 5988631

@@ -1,0 +1,4 @@
+frame comm "knot number %d;energy -TeX"
+
+frame 2 to 36
+

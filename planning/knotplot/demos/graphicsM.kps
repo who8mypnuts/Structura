@@ -1,0 +1,89 @@
+reset all
+silent=t
+func init
+func silent
+glop backface f
+cyl=\rr[.6/.9]
+scale=\rr[.35/.5]
+hstart=\rr360
+bead=\rr[.18/.61]
+if \rr9 < 7 then back=0
+
+gloption polygonmode line
+
+%% Generated Sun Oct 30 14:07:05 2005
+%% with command line: c:\usr\KnotPlot\resource\win32\multiif.exe graphicsM_aux1.txt
+par1 = \rr457
+if par1 < 300 then "knot;par1=459"
+if par1 < 355 then "knot s;par1=459"
+if par1 < 458 then "knot cd;par1=459"
+
+<randorient.kps
+if \rr2 < 1 then revb
+
+twfix
+
+%% Generated Sun Oct 30 14:09:36 2005
+%% with command line: c:\usr\KnotPlot\resource\win32\multiif.exe graphicsM_aux2.txt
+par1 = \rr46
+if par1 < 5 then "mode s;par1=48"
+if par1 < 7 then "mode c;par1=48"
+if par1 < 11 then "mode cb;par1=48"
+if par1 < 15 then "mode sb;par1=48"
+if par1 < 19 then "mode b;par1=48"
+if par1 < 23 then "mode cB;par1=48"
+if par1 < 28 then "mode sB;par1=48"
+if par1 < 33 then "mode B;par1=48"
+if par1 < 34 then "mode f;par1=48"
+if par1 < 37 then "mode bf;par1=48"
+if par1 < 39 then "mode cbf;par1=48"
+if par1 < 40 then "mode sbf;par1=48"
+if par1 < 43 then "mode Bf;par1=48"
+if par1 < 45 then "mode cBf;par1=48"
+if par1 < 47 then "mode sBf;par1=48"
+
+
+velforce = on
+velmag = \rr.2
+force 1
+stus=\ri3
+a-scale=.02
+fixcofm = true
+fscale=\rr[11/111]
+
+if \rr2 < 1 then "tanf=on"
+
+go 999999999
+
+par2=12
+func s 11 "glop poly line;par2=12"
+func s 12 "glop poly fill;par2=11"
+func 2 "func exec s \ppar2"
+func 1 <graphicsM.kps
+
+func 3  "mode s"
+func 4  "mode c"
+func 5  "mode cb"
+func 6  "mode sb"
+func 7  "mode b"
+func 8  "mode f"
+func 9  "mode bf"
+func 10  "mode cbf"
+func 11  "mode sbf"
+func 12  "mode sf"
+
+
+func c 1 <fun-with-accbuff.kps
+func c 2 accbuff clear
+func c 3 imgout ss
+
+silent=f
+
+
+echo 
+echo
+echo "  *** Various wireframe display modes."
+echo "      Press F1 to rerun demo."
+echo "      Press F2 to toggle polygon mode."
+echo "      Press F3 thru F12 to set various display modes."
+echo

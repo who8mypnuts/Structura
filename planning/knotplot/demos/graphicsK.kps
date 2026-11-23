@@ -1,0 +1,56 @@
+reset all
+
+if \rr3 < 2 then "back=f"
+if \rr5 < 1 then "disp t"
+
+silent=t
+tanforce = t
+tanmag = 9
+mode cb
+if \rr22 < 1 then "mode cbf"
+if \rr22 < 1 then "mode bf"
+if \rr22 < 1 then "mode f"
+fscale=.1
+
+cyl=.02
+bead=.024
+
+dbfail=44
+
+stu=1022
+%sbuff
+clrfun z
+scale=\rr[1.5/3]
+a-scale=\rr[.0006/.0025]
+
+par0 = \rr140
+
+
+par par0
+if par0 < 25 then "knot num \ri[2/384] ms;par0=999;echo a" 
+if par0 < 50 then "knot num \ri[2/251] mseq;par0=999;echo b"
+if par0 < 75 then "knot;del down 16;par0=999;echo c"
+if par0 < 100 then "knot num \ri[2/384] ms;fixc=t;stu=\ri[22/222];echo d"
+if par0 < 120 then "knot cd \ri[3/8] d;del down 0;fitto \rr[5/8];par0 = 977"
+if par0 < 140 then "knot cd \ri[3/8] c;del down 0;fitto \rr[5/8];par0 = 977"
+
+<randorient.kps
+if \rr2 < 1 then "revb"
+
+if \rr5 < 1 then "fixc=t"
+
+if par0 > 988 then "split;split"
+if \rr6 < 1 then "refl r"load *
+
+
+go 9888888
+
+
+silent=f
+echo " " 
+echo " " 
+echo " " 
+echo " Randomized demo, try again!" 
+echo " " 
+
+

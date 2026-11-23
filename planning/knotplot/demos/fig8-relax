@@ -1,0 +1,39 @@
+reset all
+panel off
+silent = t
+
+special backdrop
+persp 600 1 20    % Otherwise backdrop will disappear!
+
+matrgb knot .5 .5 .5 s
+matrgb knot .2 .5 1  d
+matrgb knot 0  .2 .2 a
+
+cyl = .06
+scale = .88
+mode cfb
+
+load demos-demo2.k
+charge 15
+hooke 1
+time 15
+ago 102
+
+Draw = off
+mode s
+sat = .8
+Draw = on
+
+anim cyl .06 .6 27 log
+
+twfix
+
+broff = .01
+draw broke
+
+anim broff .01 5 14 log
+
+
+
+silent = f
+panel on

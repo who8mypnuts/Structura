@@ -1,0 +1,41 @@
+reset all
+silent=t
+ortho
+
+<eofill-colour.kps
+
+
+if \rr3 < 1 then "mode bE" else "mode E"
+scale = 0.471431
+tanforce = on
+tanmag = \rr[.3/9]
+
+if \rr99 < 44 then "knot s" else knot
+<randorient.kps
+if \rr11 < 1 then "refl r"
+if \rr22 < 1 then "rot x \rr360"
+if \rr22 < 1 then "rot y \rr360"
+if \rr22 < 1 then "rot z \rr360"
+
+if \rr3 < 1 then "tanf=f;force 1;coll a;velf=t"
+if \rr6 < 1 then "glop poly l"
+
+go 9999999
+silent=f
+func init
+func silent
+
+func 3 "glop poly l"
+func 4 "glop poly f"
+
+func 6 mode bE
+func 5 mode cE
+func 1 <graphicsG.kps
+func 2 "load *"
+echo " "
+echo " "
+echo " Randomized demo, try again! (doesn't work with open components, if you see nothing, click again)"
+echo " Also, try rotating and scaling the knot using the mouse!"
+echo " F1 to reload demo, F2 to reload last knot."
+echo " Also try F3 thru F6."
+echo " "

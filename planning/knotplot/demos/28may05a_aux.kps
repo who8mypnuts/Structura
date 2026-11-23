@@ -1,0 +1,6 @@
+%% c:\usr\KnotPlot\resource\win32\multiif.exe 28may05a_aux.txt
+par2 = \rr197
+if par2 < 30 then "sphere cheapo \ri[3/22] \ri[3/22] \rr70;par2=199"
+if par2 < 130 then "sphere luxo \ri[2/4];par2=199"
+if par2 < 195 then "sphere icos \ri[2/4];par2=199"
+if par2 < 198 then "sphere teapot;par2=199"

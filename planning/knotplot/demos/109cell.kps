@@ -1,0 +1,8 @@
+4dop disp +p 7
+4deye=15
+spin r r r
+~4dpersp
+rot x \rr360
+rot y \rr360
+rot z \rr360
+~label "Klein Bottle"

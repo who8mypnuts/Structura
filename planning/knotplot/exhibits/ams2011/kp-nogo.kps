@@ -1,0 +1,15 @@
+% Script generated at Thu Mar 17 15:10:17 2011
+
+echo " "
+echo " "
+echo "  *** Can't start demo loop!"
+echo "  *** KnotPlot build number must be at least 3993."
+txt init
+txt font 4
+txt centre
+txt c -40 "Can't start demo loop!"
+txt c -70  "KnotPlot build number must be at least 3993."
+echo " "
+txt on
+disp t
+panel on

@@ -1,0 +1,97 @@
+%`-
+
+if \ppar4 != 30702 then "reset all;par5=1;cyl=.15"
+
+silent=t
+func init
+func silent
+
+func 1 <Lissajous.kps
+func 2 <lissa_simp.kps
+func s 1 "mode cb;cyl=.1;par5=2"
+func s 2 "mode s;cyl=.15;par5=1"
+
+go 0
+idle
+untran
+
+par4 = 30702
+echo " " 
+echo " " 
+echo " " 
+echo " **** Constructing a random 2-mode Lissajous knot...    (please be patient)"
+
+txt init
+txt fcolour "Swedish Blue" .4
+txt clobber on
+txt font 3
+txt 20 -20 " **** Constructing a random 2-mode Lissajous knot...    (please be patient)"
+
+txt on
+disp t
+
+silent=t
+
+load unsafeknot.k
+N-tor=180
+until thick .3 "2lissa \ri+-12 \ri+-12 \ri+-12 \ri+-12 \rr6.28 \rr6.28 \rr6.28"
+colour all "Swedish Yellow"
+
+silent=f
+sform=1
+refl rr
+save |x
+centre mass
+
+
+txt font 3
+txt 20 -20 temp
+txt set name
+txt on
+
+txt fill on
+txt 20 -65 "simplify knot" "func exec 2"
+txt 20 -110 "rerun demo" <Lissajous.kps
+
+
+txt 20 20 "toggle display mode" "func exec s \ppar5"
+
+txt push
+txt font 4
+txt fill on
+txt right
+txt -14 14 ? "help popup Lissajous.kps handoff"
+txt pop
+
+func 3 "www knotplot.com/manual/commands.html#lissajous"
+func 4 "www knotplot.com/knot-theory/lissajous.html"
+func 5 "www knotplot.com/manual/LissajousParams.html"
+
+silent=f
+
+echo;echo;echo;echo;echo;echo
+echo -n "Found a "
+name
+echo "Click on one of the buttons `simplify knot' or `rerun demo' (in the view window)"
+echo "Click on the `?' button for more info (in lower right of view window)"
+
+exit
+
+%`+
+
+For more information, please refer to the following:
+
+Bogle et.al. Journal of Knot Theory and Its Ramifications 3#2 (1994) p. 121-140.
+
+Usage information for the lissajous and 2lissajous KnotPlot commands
+                -- http://knotplot.com/manual/commands.html#lissajous
+                   (press F3 now to view with your web browser)
+
+Lissajous knots -- http://knotplot.com/knot-theory/lissajous.html
+                   (press F4 now to view with your web browser)
+
+Example parameters for lissajous command to create various knot types
+                -- http://knotplot.com/manual/LissajousParams.html
+                   (press F5 now to view with your web browser)
+
+NOTE: Close this window using the button below!  

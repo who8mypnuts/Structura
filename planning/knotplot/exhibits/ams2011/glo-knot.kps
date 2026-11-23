@@ -1,0 +1,40 @@
+reset all
+mathsv k 0 .4 .07 s
+back = 0
+
+Draw=f
+
+cyl=.06
+ncur=5
+nseg=17
+
+silent=f
+
+if \rr1 < .4 then "knot spe" else knot
+
+if \rr1 < .5 then "refl x"
+if \rr1 < .5 then "refl y"
+if \rr1 < .5 then "refl z"
+
+if \rr1 < .5 then "about z 180"
+if \rr1 < .5 then "about y 180"
+
+drec=f
+fitto 12
+
+scale=.3
+back t
+value=.01
+Draw=t
+sbuff
+disp
+disp
+clrfun n
+blend one one
+
+anim cyl .06 3 66 log
+
+nap 3
+
+
+

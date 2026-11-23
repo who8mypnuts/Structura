@@ -1,0 +1,127 @@
+% file created Thursday, 22-Feb-24 13:27:22 PST from data on
+% https://crayola.fandom.com/wiki/List_of_core_crayon_colors
+#ED0A3F Red
+#C32148 Maroon
+#FD0E35 Scarlet
+#C62D42 Brick Red
+#B94E48 Chestnut
+#FF5349 Orange-Red
+#FE4C40 Sunset Orange
+#FE6F5E Bittersweet
+#FF9980 Vivid Tangerine
+#FF7034 Burnt Orange
+#FF681F Red-Orange
+#FF8833 Orange
+#FFB97B Macaroni and Cheese
+#E77200 Mango Tango
+#FFAE42 Yellow-Orange
+#FBE7B2 Banana Mania
+#F2C649 Maize
+#F8D568 Orange-Yellow
+#FCD667 Goldenrod
+#FED85D Dandelion
+#FBE870 Yellow
+#F1E788 Green-Yellow
+#B5B35C Olive Green
+#ECEBBD Spring Green
+#FFFF99 Canary
+#FFFF9F Lemon Yellow
+#AFE313 Inchworm
+#C5E17A Yellow-Green
+#7BA05B Asparagus
+#9DE093 Granny Smith Apple
+#63B76C Fern
+#01A638 Green
+#5FA777 Forest Green
+#93DFB8 Sea Green
+#33CC99 Shamrock
+#1AB385 Mountain Meadow
+#29AB87 Jungle Green
+#00CC99 Caribbean Green
+#00755E Tropical Rain Forest
+#01786F Pine Green
+#00CCCC Robin's Egg Blue
+#008080 Teal Blue
+#8FD8D8 Light Blue
+#95E0E8 Aquamarine
+#6CDAE7 Turquoise Blue
+#2D383A Outer Space
+#76D7EA Sky Blue
+#0095B7 Blue-Green
+#009DC4 Pacific Blue
+#02A4D3 Cerulean
+#93CCEA Cornflower
+#2887C8 Green-Blue
+#003366 Midnight Blue
+#0066CC Navy Blue
+#1560BD Denim
+#0066FF Blue  III 
+#A9B2C3 Cadet Blue
+#C3CDE6 Periwinkle
+#3C69E7 Bluetiful
+#7A89B8 Wild Blue Yonder
+#4F69C6 Indigo
+#8D90A1 Manatee
+#9999CC Blue Bell
+#766EC8 Violet-Blue
+#6456B7 Blue-Violet
+#652DC1 Purple Heart
+#6B3FA0 Royal Purple
+#8359A3 Violet  II 
+#C9A0DC Wisteria
+#BF8FCC Lavender  I 
+#803790 Vivid Violet
+#D6AEDD Purple Mountains' Majesty
+#C154C1 Fuchsia
+#FC74FD Pink Flamingo
+#E29CD2 Orchid
+#8E3179 Plum
+#D8BFD8 Thistle
+#C8509B Mulberry
+#BB3385 Red-Violet
+#A50B5E Jazzberry Jam
+#614051 Eggplant
+#F653A6 Magenta
+#DA3287 Cerise
+#FF3399 Wild Strawberry
+#FBAED2 Lavender  II 
+#FFB7D5 Cotton Candy
+#FFA6C9 Carnation Pink
+#F7468A Violet-Red
+#E30B5C Razzmatazz
+#FDD7E4 Piggy Pink
+#DB5079 Blush
+#FC80A5 Tickle Me Pink
+#F091A9 Mauvelous
+#FF91A4 Salmon
+#CA3435 Mahogany
+#FEBAAD Melon
+#F7A38E Pink Sherbert
+#E97451 Burnt Sienna
+#AF593E Brown
+#9E5B40 Sepia
+#87421F Fuzzy Wuzzy
+#926F5B Beaver
+#DEA681 Tumbleweed
+#D27D46 Raw Sienna
+#FA9D5A Tan
+#EDC9AF Desert Sand
+#FFCBA4 Peach
+#805533 Burnt Umber
+#FDD5B1 Apricot
+#EED9C4 Almond
+#665233 Raw Umber
+#837050 Shadow
+#D9D6CF Timberwolf
+#E6BE8A Gold  II 
+#C9C0BB Silver
+#DA8A67 Copper
+#C88A65 Antique Brass
+#000000 Black
+#8B8680 Gray
+#C8C8CD Blue-Gray
+#FFFFFF White
+#F1D651 Crayellow
+#DDEBEC Cool Mint
+#D9DAD2 Oatmeal
+#C0D5F0 Powder Blue

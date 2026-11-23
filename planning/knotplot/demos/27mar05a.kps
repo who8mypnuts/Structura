@@ -1,0 +1,35 @@
+reset all
+
+silent=t
+back=0
+scale = 0.223564
+cyl-rad = 0.384013
+draw snorm
+tanforce = on
+tanmag = 0.100000
+velforce = on
+%coll a
+force 1
+tfunc allowreset
+tfunc \rr[3/15] "open all"
+
+if \rr2 < 1 then "knot" else "knot sp"
+<randorient.kps
+if \rr2 < 1 then revb
+
+go 999999999
+
+func init
+func silent
+func 1 <27mar05a.kps
+func 2 "silent=t;cmode -1;cmode 3 1 1 1;silent=f"
+
+func 5 "#22 cut \rr999"
+
+silent=f
+echo
+echo
+echo " *** Press F1 to rerun demo.  Unfinished demo."
+echo "     Press F2 for random colour change."
+echo
+

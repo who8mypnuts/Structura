@@ -1,0 +1,32 @@
+CC = g++
+
+CFLAGS = $(VOLTA_CFLAGS) -Wno-write-strings
+
+.SUFFIXES: .cpp
+
+.cpp.o:
+	$(CC) $(CFLAGS) -c $*.cpp -o $*.o
+
+
+OBJS = xinger.o main.o random.o util.o
+
+xinger: $(OBJS)
+	$(CC) -o xinger $(CFLAGS) $(OBJS)
+	strip xinger$(EXTEN)
+
+clean:
+	touch dum.o
+	/bin/rm *.o
+	dos2unix *csh
+	chmod ugo+rx *csh
+
+
+vclean:
+	touch dum~
+	/bin/rm *~
+	make clean
+
+install:
+	make
+	mv xinger $(TOPOII_INSTALL_DIR)
+	chmod ugo+rx $(TOPOII_INSTALL_DIR)/xinger

@@ -1,0 +1,11 @@
+go 1
+
+echo " "
+echo " "
+echo "KnotPlot got to"
+par iter
+echo "in 10 seconds." 
+echo " " 
+
+Draw=t
+

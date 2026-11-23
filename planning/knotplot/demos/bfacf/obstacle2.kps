@@ -1,0 +1,78 @@
+<bfacf/basicinit.kps
+ccmode=2
+silent=t
+%load bfacf/ob2.k
+load peano.k
+scale 2
+split
+%cut 729
+about z 90
+par5=\ri1
+
+if par5 == 0 then "load comb bfacf/linka.k" else "load comb bfacf/linkc.k"
+%exit
+bfacf load
+
+% the following nonsense is because of a bug in the recentering routines
+
+bfacf fill -120 -120 -120  120  120 -120
+bfacf fill -120 -120  120 120  120 120
+
+bfacf fill -120 -120 -120 -120  120  120 
+bfacf fill 120 -120 -120 120  120  120 
+
+bfacf fill -120 -120 -120   120 -120  120 
+bfacf fill -120 120 -120   120 120  120 
+
+
+bfacf box 28 28 \ri[5/8]
+bfacf fill
+scale = 0.165560
+ccmode = 4
+hstart = 33.000000
+bead-radius = 0.180000
+
+mode cB
+untran
+viewmatrix 0.861629 -0.507538 0.000000 0.394431 0.669612 0.629320
+
+
+colour 0 sienna
+colour 1 skyblue
+cyl-rad=.12
+
+bfacf freeze 0
+
+bfacf cent off
+
+
+bfacf copy
+silent=f
+
+#5 echo
+
+txt init
+txt space _
+txt on
+txt centre
+txt font 4
+if par5 == 0 then "txt c -20 unknot_tries_to_escape_from_a_peano_curve" else  "txt c -20 trefoil_tries_to_escape_from_a_peano_curve"
+txt font 3
+
+txt fcolour royalblue .6
+txt push
+txt expire 11
+txt c 45 "click on the `run' button on the KnotPlot Control Panel"
+txt pop
+
+txt fill on
+txt c 20 "reload obstacle2" <bfacf/obstacle2.kps
+
+mcyl off
+mode cB
+draw norm
+cyl-rad = .15
+ncur=3
+if \rr2 < 1 then "mode s;mcyl 0 .1;mcyl 1 .2;draw spec;ncur=5"
+
+txt on

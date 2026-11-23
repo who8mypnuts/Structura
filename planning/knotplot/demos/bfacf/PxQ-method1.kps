@@ -1,0 +1,13 @@
+
+alias ~method1 nop
+
+tfunc reset
+
+tfunc 1 "~thetime \E" 0 rep 5 10
+tfunc 1 "bfacf z 1" 0 rep 1 5
+tfunc 1 "bfacf z \rr.2" 0 rep 1 6
+tfunc 1 "bfacf z .2" 0 rep 1 4
+tfunc 1 "~mw" 0 rep 1 4
+tfunc 1 "~mw" 0 rep 1 4
+tfunc 1 "~mw" 0 rep 1 4
+

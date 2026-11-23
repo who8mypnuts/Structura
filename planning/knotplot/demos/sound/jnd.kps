@@ -1,0 +1,38 @@
+
+silent=t
+
+tfunc reset
+
+oal gain all 0
+frame comm "oal gain %d 1"
+frame 0 numb 8
+
+oal velmul 0
+~usvm
+~usvd
+
+
+oal pitch 0 c 0
+oal pitch 1 c 10
+oal pitch 2 c 20
+oal pitch 3 c 30
+oal pitch 4 c 40
+oal pitch 5 c 50
+oal pitch 6 c 60
+oal pitch 7 c 70
+
+txt delete group 777333
+
+txt push
+txt group 777333
+txt font 4
+txt fill off
+txt cent
+txt expire 4
+txt c -33 "just-noticeable difference in pitch of first 8 sources"
+txt font 3
+txt c -55 "velocity multiplier set to 0"
+txt pop
+
+
+silent = f

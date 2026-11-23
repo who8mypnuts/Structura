@@ -1,0 +1,12 @@
+silent=t
+txt push
+txt font 4
+txt cent
+txt fill off
+txt expire 12
+txt hide 9999
+txt c -60 "for more control over animation, go to the 4D control panel"
+txt c -90 "and click on `Start movie', then adjust `th0 inc', `th1 inc' and `th2 inc' sliders"
+txt pop
+alias ~4dpanel nop
+silent=f

@@ -1,0 +1,25 @@
+reset all
+silent=t
+verbose=f
+func silent 
+func init
+func 1 <Fig8symm.kps
+func 2 ortho
+func 5 <Fig8symm_90.kps
+func 9 <Fig8symm_180.kps
+
+<Fig8symm_load.kps
+
+silent=f
+
+echo 
+echo 
+echo 
+echo "  *** Examining symmetries of an embedding of the Figure-8 knot."
+echo "      Press F1 to reload demo.  Press F2 to switch to orthographic projection."
+echo "      Press F5 to see a quarter turn symmetry."
+echo "      Press F9 to see a half turn symmetry."
+echo 
+
+
+

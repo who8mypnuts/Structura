@@ -1,0 +1,33 @@
+
+% Older KnotPlot will always evaluate 
+% the following comparison to `false',
+% never reading in the init file.
+% Hence the order of comparison. 
+% See note in monster-init.kps.
+
+if 542376 != par1 then "<monster-init.kps"
+
+ncur = 2
+nseg = 7
+cyl = .44
+hstart = 44
+satu = .7
+mode s
+spe -vwt
+
+silent = true
+
+Draw = false
+
+popview = false
+silent = false
+load Monster.movie
+
+ncur = 3
+nbead 20
+power 3
+coll a
+Draw = t
+ago 200
+
+Draw = t

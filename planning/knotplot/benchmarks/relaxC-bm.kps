@@ -1,0 +1,21 @@
+reset all
+
+ncur=6
+nseg=17
+hstar=33
+
+force 1
+coll a
+
+torus 1 19 55
+spe frame
+dstep=16
+echo "dstep is 16"
+
+go 9999999
+
+
+
+<../benchmarks/blurb-bm.kps
+
+

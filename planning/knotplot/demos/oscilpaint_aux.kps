@@ -1,0 +1,12 @@
+% draw spe
+% draw spe;cmode -1;cmode 3 1 1 1
+% draw norm
+hstar=\rr360
+cmode 0
+
+% multiif < oscilpaint_aux.txt
+par2 = \rr111
+if par2 < 100 then "draw norm;par2=113"
+if par2 < 109 then "draw spec;par2=113"
+if par2 < 112 then "draw spec;cmode -1;cmode 3 1 1 1;par2=113"
+

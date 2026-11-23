@@ -1,0 +1,18 @@
+reset all
+silent=t
+func silent
+scale = \rr[.25/.4]
+cyl-rad = 0.4
+glop backface f
+hstar=\rr360
+
+if \rr5 < 1 then "back=xffffff"
+if \rr3 < 1 then "back=0"
+draw norm
+if \rr19 < 1 then "draw spec"
+
+if \rr1022 < 1 then "back=\ri9999999"
+
+if stereo then "spec -back;back=0"
+
+disp t

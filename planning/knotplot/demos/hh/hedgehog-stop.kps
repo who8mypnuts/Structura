@@ -1,0 +1,29 @@
+
+idle
+go 0
+mode cB
+~alignafter
+echo
+
+echo -n "Elapsed time was "
+timer check
+safe
+if safe then "echo Try relaxing the knot by clicking on the `go' button" else "echo Click on `go' button at your own risk!"
+
+txt group 102 on
+
+
+txt centre
+txt font 3
+txt fill on
+txt c 15 "make knot" <hedgehog-start.kps
+
+
+func s 1 "if relaxing then {go 0;echo;echo click on `go' again to start relaxation} else {go;echo;echo click on `go' again to stop relaxtion}"
+txt font 3
+txt c 60 go "func exec s 1"
+
+
+txt left
+txt font 2
+txt 15 15 construction <hh-spool-cons.kps

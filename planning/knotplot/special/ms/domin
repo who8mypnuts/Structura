@@ -1,0 +1,19 @@
+
+savimp = 2
+savener = 999999999
+sform=11
+save
+load
+
+silent=t
+Draw=f
+#1022 go 1;save *;load *
+Draw=t
+silent=f
+
+savimp=0
+saven=0
+sform=1
+
+fitto mindi .5
+

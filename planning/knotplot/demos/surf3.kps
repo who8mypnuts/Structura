@@ -1,0 +1,7 @@
+reset all
+knot spe
+vcn=\ri[3/12]
+vcA = \rr[.5/2]
+cyl-rad = \rr[.1/.8]
+surf radf arc vcn mul vcphi add T \rr{3/16} mul add cos vcA mul \rr[.1/1] add clamp cyl mul
+go

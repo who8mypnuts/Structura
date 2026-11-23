@@ -1,0 +1,3 @@
+par2
+10 button DemoA crankshaft <mangle-demo.kps -1 -1 0 0 
+15 button DemoA crankshaft <mangle-demo2.kps -1 -1 0 0 

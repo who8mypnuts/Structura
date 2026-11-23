@@ -1,0 +1,26 @@
+% arc with endpoints 40/-90 50/90 40/90 -50/90
+
+% Begin important stuff
+
+delete all
+
+arc lat 40 lon -90 in lat 50 lon 90 out 32
+arc lat 40 lon 90 in lat -50 lon 90 out 32
+
+% End important stuff
+
+
+
+% can ignore from here on
+
+txt delete group 108
+txt push
+txt group 108
+txt font 3
+txt cent
+txt fill off
+txt c 100 "orange: (40, -90) --> (50, 90)"
+txt c 70 "  blue: (40, 90) --> (-50, 90)"
+txt fill on
+txt c 20 "show arc commands" "www demos: arcs-2a.txt"
+txt pop

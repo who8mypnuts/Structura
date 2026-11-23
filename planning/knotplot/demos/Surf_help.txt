@@ -1,0 +1,33 @@
+Surface Properties Help
+
+KnotPlot has a confusing method to determine how the surface is auto-coloured.
+There are three different colouring methods, which can be individually set
+for either smooth tubes or for cylinders.
+
+   mat --- surface colour is set using the `mathsv' or `matrgb' commands.
+           see the manual for more information.
+
+   auto --- surface colour is automatically set according to the component 
+           number via the formula
+
+               hue = hstart + (component number) * hincr
+
+           note that components are numbered starting at 0
+
+   fancy --- surface colouring is set per component individually using the
+           `colour command'.  see the manual for more information.
+
+The full colour depends on the hue, the saturation, and the value (HSV).
+The first four sliders on this control panel are only active if the current
+colouring mode is `auto' and the corrent thing (smooth tubes vs. cylinders) is
+being display.  Play with it. 
+
+vcn / vcA / vcphi --- display as smooth tubes then try these out.  if you're
+           not already in smooth tubes mode, the simplest thing to do is just
+           type 
+
+                  mode s
+
+           into either the control panel or the command window.  You can also
+           set smooth tubes mode on the Main control panel. 
+

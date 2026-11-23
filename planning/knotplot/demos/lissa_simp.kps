@@ -1,0 +1,11 @@
+stus=5
+fixcofm=t
+idle "ago 33;delete down 5"
+echo 
+echo 
+echo "Press the button to stop simplification process (but keep relaxing)."
+txt 20 -65 "stop simplifying"  ~stop
+echo 
+alias ~stop "idle;go;echo Press F4 to stop relaxation."
+func 4 idle:go 0
+

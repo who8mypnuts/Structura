@@ -1,0 +1,27 @@
+DemoB Help
+
+It's best to NOT say much about most of demos on this panel.  Except for the
+following:
+
+   --- many of the demos rely on certain setting in your graphics driver. try
+       the `flicker test' first and, depending on whether you see flickering or
+       not, you may have to adjust your settings.
+
+   --- at the bottom are buttons to go into and out of anaglyph stereo mode (that
+       cheapo stereo 3D method using red/green or red/blue glasses).  some of the
+       demos (knottype, St. Elmo, J, E, Ea, Eb, Ec, the painting demos) do not 
+       work in this display mode.  Results may vary.
+
+   --- the demos are tuned for machines that I have access to.  You may find they
+       run too fast or too slow on your machine.  An example is the `snakes' 
+       demo.  Try changing the values of ncur and nseg (Main panel) to affect the
+       speed.  
+
+  --- the `Never ending exhibitions' are just that.  After clicking on these 
+       buttons, KnotPlot will go into fullscreen mode and run forever until you 
+       press the ESC button.
+
+
+
+
+

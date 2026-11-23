@@ -1,0 +1,23 @@
+reset all
+ortho
+cyl-rad = 0.108692
+scale = 0.644131
+
+line dir 1 0
+line num 10
+line
+clrfun z
+
+idle "about z 1"
+func init
+
+func 1 <flicker_test2.kps
+func 2 <flicker_test.kps
+
+func 3 dbuff
+func 4 sbuff
+
+echo " "
+echo " "
+echo " Most of the screen should not appear to be flickering or flashing."
+echo " "

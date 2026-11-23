@@ -1,0 +1,12 @@
+<helix.kps
+save a_tmp_junk.k
+<conical_helix.kps
+save b_tmp_junk.k
+
+echo 
+echo 
+echo "Click on `reset' button to stop animation"
+silent = t
+
+idle "deform to a_tmp_junk.k;deform to b_tmp_junk.k"
+

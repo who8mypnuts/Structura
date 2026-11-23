@@ -1,0 +1,4 @@
+scenery init       % initializes scenery
+scenery on         % turns scenery on
+scenery vscale 12  % scaling factor for scenery
+% then, load the scenery:

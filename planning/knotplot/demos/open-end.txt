@@ -1,0 +1,7 @@
+par0
+30 mode sA;spec
+50 mode s;spec
+30 mode s;spec orient
+10 mode sA;spec orient
+15 mode cb;cyl=.14;bead=.2;spec orient;draw norm
+15 mode cb;cyl=.14;bead=.2;draw norm

@@ -1,0 +1,35 @@
+silent=t
+alloc 12000
+mode p
+knot
+refine 10
+jit .4
+Draw=t
+func init
+func silent
+
+func 1 anag eye 3
+func 2 anag eye 4.2
+func 3 anag eye 6
+func 4 anag eye 8.5
+
+func 5 3dop point size 1
+func 6 3dop point size 2
+func 7 3dop point size 3
+func 8 3dop point size 4
+
+par0 = 1
+func 9 func exec s \ppar0
+func s 1 "3dop point smooth t;par0=2"
+func s 2 "3dop point smooth f;par0=1"
+
+silent=f
+echo "     Note: Most of the demos on the `DemoA' and `DemoB' panels will work in anaglyph mode."
+
+echo 
+echo " *** Press F1 thru F4 for different eye spacings"
+echo "     Press F5 thru F8 for different point sizes"
+echo "     Press F9 to toggle point antialiasing"
+echo
+
+

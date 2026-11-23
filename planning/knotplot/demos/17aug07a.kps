@@ -1,0 +1,52 @@
+require KPbuild 4691
+require accbuff
+require KPbuild 4048
+
+reset all
+
+func init
+func silent
+func 1 <17aug07a.kps
+
+txt space @
+
+silent=t
+verbose = f
+par0=\rr360
+hstar=\ppar0
+alias ~uuu "scale=\rr[.3/.9];cyl-rad=\rr[.1/.6]"
+~uuu
+
+tfunc 1 "~uuu;knot;proj r;cent" 0 rep 8 54
+back=#000
+
+alias ~delf nop
+alias ~newt "~delf;txt font \ri6;txt group \ri22;txt colour \rr1 \rr1 \rr1;~word"
+alias ~setword "alias ~word {txt \ri888 \ri888 $0@$1@$2@$3@$4@$5}"
+
+~setword Knots!
+
+txt on
+<fun-with-accbuff.kps
+coll a
+force 1
+
+txt font \ri6
+
+#444 ~newt
+alias ~delf "txt delete first"
+verbose=f
+
+alias ~adj "test paradj 0 1 \rr+-21;hsta=\ppar0"
+idle "txt colour \rr1 \rr1 \rr1;txt group \ri22 tog;ago 2;~newt;~adj"
+
+
+silent=f
+
+echo
+echo using:
+echo ~setword Knots!
+echo try entering things like:
+echo ~setword hello
+echo ~setword this is a test
+echo into this window

@@ -1,0 +1,26 @@
+require KPbuild 4965
+
+reset all
+par5 = 16052253
+
+3dop cols pink
+func init
+func silent
+func 1 <magnetic1.kps
+
+func 6 <magnetic1-aux5.kps
+%func 7 "knot 1;nbead mult .5;fitto nats;go"
+func 7 "knot 1;refine nbead mult .5;fitto nats;go"  % 4965
+func 8 "func exec 12;mass open"
+func 9 <magnetic1-aux1.kps
+func 10 <magnetic1-aux2.kps
+func 11 <magnetic1-aux3.kps
+func 12 <magnetic1-aux4.kps
+
+Draw=f
+conway 2
+ago 102
+save |hopf
+delete all
+Draw=t
+

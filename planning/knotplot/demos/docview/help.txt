@@ -1,0 +1,34 @@
+KnotPlot Document Viewer Help
+
+Basic operations - changing the view:
+
+  Rotate --- click left mouse button down and drag mouse.  release button
+             and repeat multiple times to get an arbitrary view.
+             imagine there is a ``trackball'' centered in the window
+
+  Scale --- click right mouse button down and drag mouse left to 
+            scale down, drag mouse to the right to scale up
+
+  Translate --- click middle mouse button down and drag left/right or up/down
+
+  Fullscreen --- click on the `fullscreen' button for best viewing (lower right)
+
+Things to try:
+
+  --- click on the `jumble' button in the action section.  rotate the text 
+      around to get a sense of the random juxtaposition of the words.  then
+      click on the `click here' button (top of the window) to re-form the 
+      words into the original order.  once the words stabilize, click on the
+      `scroll' button to help you read the text.
+
+  --- create a circle or torus and try swirling it
+
+  --- change the text size by clicking on one of the three buttons (lower left)
+
+  --- some decorative knots can be created using the `knot' button
+
+  --- toggle the start on to see where the text begins
+
+  --- play around with different combinations and have fun!
+
+Note: Click on the button below to close this window:

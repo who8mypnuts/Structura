@@ -1,0 +1,19 @@
+light off all
+light define 1 % currently on
+light ambient 0.00 0.00 0.00 1.00  % R G B A
+light colour 1.00 0.17 0.00 1.00  % R G B A
+light specular 1.00 1.00 1.00 1.00  % R G B A
+light position 17.71 -29.00 2.16 1.00  % x y z w
+light on 1
+light define 2 % currently on
+light ambient 0.00 0.00 0.00 1.00  % R G B A
+light colour 0.00 1.00 0.61 1.00  % R G B A
+light specular 1.00 1.00 1.00 1.00  % R G B A
+light position -7.86 19.36 12.60 1.00  % x y z w
+light on 2
+light define 3 % currently on
+light ambient 0.00 0.00 0.00 1.00  % R G B A
+light colour 0.21 1.00 0.00 1.00  % R G B A
+light specular 1.00 1.00 1.00 1.00  % R G B A
+light position 5.39 -3.94 -20.87 1.00  % x y z w
+light on 3

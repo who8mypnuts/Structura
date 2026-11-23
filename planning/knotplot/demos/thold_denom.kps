@@ -1,0 +1,4 @@
+load Denom.k
+par0=9
+echo "  *** Denominator tangle template"
+txt c -30 "Denominator tangle template"

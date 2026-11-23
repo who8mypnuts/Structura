@@ -1,0 +1,88 @@
+%reset all
+silent=t
+back=0
+all 2222
+
+
+knot 1
+refine 4
+
+par0 = \rr1.2
+if par0 > 1 then "knot num \ri[2/251] ms;fitto 15;split;split;split;refine 2"
+
+cyl=.001
+if \rr8 < 1 then "twfix \rr+-22"
+
+double
+warp install
+
+del all
+new=f
+unknot 102 12
+unknot 102 13
+warp along 
+%exit
+del 0
+double
+warp install
+
+load *
+
+func init
+func silent
+if par0 > 1 then "fitto 15;split;split;refine 2"
+
+%if par0 > 1 then "twfix \rr+-2.2" else twfix
+twfix
+
+if \rr3 < 1 then "twfix \rr+-55"
+if \rr33 < 1 then "twfix \rr+-222"
+%twfix 222
+
+persp \rr[90/140] .1 33
+
+if \rr2 < 1 then "draw norm" else "draw brok"
+
+cyl=\rr[.1/.5]
+broff=.02
+
+%if par0 > 1 then "par1=\rr100"
+%if par1 > 80 then "broff=\rr[-.17/-.15]"
+
+%cyl=.68
+scale=1
+glop backface f
+<random-lights
+back=0
+sat=0
+
+if \rr100 < 90 then "fly \rr[11/55]" else "fly \rr[-11/-55]"
+
+
+mech=f
+elec=f
+go
+
+func 1 <random-lights
+func 2 mode b:draw norm
+func 3 mode cb
+func 4 mode sb
+func 5 mode s:draw brok
+func 6 clrf z:zbuff t:blend sa msa:echo press F7 to undo this effect
+func 7 clrf zf
+func 8 mode s:twfix \rr+-222
+func 9 mode s:draw brok
+func 10 "cyl=\rr[.2/2];nseg=\ri[3/9]"
+func 11 "persp 160 .02 33;value=.6;zbuff f;blend one one;clrf zf"
+func 12 "cyl=.1;nseg=3;mode s;draw anorm;atw=t;twfix"
+
+silent=f
+
+echo " "
+echo " "
+echo " "
+echo " press some of the function keys!"
+echo " (different combinations can be interesting)"
+echo " "
+
+%func 1 <graphicsEc.kps

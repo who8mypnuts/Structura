@@ -1,0 +1,27 @@
+require KPbuild 4998  % for view command (replacement for viewmatrix)
+
+reset all
+mode cbf
+view matrix -0.514246 0.303950 -0.801971 -0.696374 0.397833 0.597314
+scale = 0.906740
+cyl-rad = 0.060000
+bead-radius = 0.180000
+velforce = on
+velmag = 0.100000
+force 1
+coll a
+
+if \rr1 < .4 then "conway 2" else "conway 3"
+if \rr1 < .2 then "tangle 111111c"
+
+anaglyph init
+echo "     Note: Most of the demos on the `DemoA' and `DemoB' panels will work in anaglyph mode."
+anaglyph r.gb
+
+ago 144
+velforce=off
+
+go
+
+
+

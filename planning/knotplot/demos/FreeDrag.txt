@@ -1,0 +1,8 @@
+par0
+3 line number \ri[20/33];line;align ax;about z 45
+5 unknot 60;open 0;cut \ri[20/33];keep 0;about z \rr360
+5 torus 2 3 60;cut \ri59;cut \ri[20/33];keep 0;about z \rr360
+5 torus 3 2 60;cut \ri59;cut \ri[20/33];keep 0;about z \rr360
+5 torus 2 5 60;cut \ri59;cut \ri[20/33];keep 0;about z \rr360
+2 torus 2 7 60;cut \ri59;cut \ri[20/33];keep 0;about z \rr360
+2 torus 5 2 60;cut \ri59;cut \ri[20/33];keep 0;about z \rr360

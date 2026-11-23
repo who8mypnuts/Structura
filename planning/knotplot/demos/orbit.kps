@@ -1,0 +1,49 @@
+reset all
+
+func init
+func silent
+func 1 <orbit.kps
+
+back=#004
+silent=t
+tanforce = t
+tanmag = 9
+3dop bead 30 30
+mode cB
+cyl=.06
+scale = 1.2
+dbfail=44
+if \rr7 < 1 then "mode sA;arrow N \ri[1/11]"
+
+if \rr22 < 1 then "mode cBf"
+if \rr22 < 1 then "mode Bf"
+if \rr22 < 1 then "mode f"
+fscale=.1
+
+if \rr55 < 1 then "glop poly line"
+
+par0 = \rr100
+
+par par0
+if par0 < 25 then "knot num \ri[2/384] ms;par0=999;echo a" 
+if par0 < 50 then "knot num \ri[2/251] mseq;par0=999;echo b"
+if par0 < 75 then "knot;del down 16;scale=.6;par0=999;echo c"
+if par0 < 102 then "knot num \ri[2/384] ms;fixc=t;stu=\ri[2/22];echo d"
+
+if \rr5 < 1 then "fixc=t"
+
+if par0 > 988 then "split;split"
+refl r
+
+tfunc \rr11 revb 0 rep 1 11
+
+if \rr10 < 8 then "go inf limit 66" else go
+
+if \rr5 < 1 then <fun-with-accbuff.kps
+
+silent=f
+echo " " 
+echo " " 
+echo " " 
+echo " Randomized demo, try again!" 
+echo " " 

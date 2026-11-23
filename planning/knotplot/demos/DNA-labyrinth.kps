@@ -1,0 +1,26 @@
+dna atom 3
+dna atom shape 5
+dna atom 0 .2 \rr[.5/1] \rr[.5/1] \rr[.5/1]
+dna atom shape 4
+dna atom 1  .3 .2 .4 1   % nitrogen
+
+
+save |tmp
+load ravenna.k
+scale .3
+
+dna base 4
+dna base 0 -
+silent=t
+unknot 3
+silent=f
+scale 0
+dna base 1 -
+dna base 2 -
+dna base 3 -
+
+load |tmp
+~fix
+echo "NOTE: only the A's are drawn as labyrinths"
+
+

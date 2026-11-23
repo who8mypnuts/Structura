@@ -1,0 +1,18 @@
+alias ~cat "nap .05;~att $0 $1 $2"
+txt delete group 108
+txt push
+txt font 3
+txt cent
+txt group 108
+oal alloff
+~cat 0 120 ping2
+~cat 1 105 ping2
+~cat 2 90  ping2
+~cat 3 75  ping2
+~cat 4 60  ping2
+~cat 5 45  ping2
+~cat 6 30  ping2
+~cat 7 15  ping2
+~cat 8 0   ping2
+txt pop
+

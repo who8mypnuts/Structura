@@ -1,0 +1,107 @@
+% dates from 23 Nov 2009
+% updated 4 Feb 2024
+
+reset all
+
+silent = true
+verbose = false
+hstart = \rr360
+
+if \rr8 < 7 then "mathsv C \phst 1 1 d" else "mathsv C 0 0 1 d"
+
+
+func init 
+func silent
+
+sradius =.2
+mode sC
+cluster = .6
+vscale = .23
+% first create an unknot
+
+unknot 102 10
+
+% cut it at two locations
+
+cut 0
+cut 49
+
+% delete the bottom component
+
+delete 1
+
+% duplicate the top component and reflect it in y
+
+dup 0
+reflect y 1
+
+% save it inside KnotPlot
+
+save |temp
+
+% set the line increment (vector displacement 
+% between consecutive beads in line)
+
+line dir 1 0 0
+
+% set number of beads in line
+
+line numb 33
+
+% create the line
+
+line
+
+% fit it to bounding box of +-10
+% and reflect in x direction
+
+fitto 10
+
+% combine it with circle arcs
+
+load comb |temp
+hincr = 0
+
+% glue last bead of component 0 to 
+% first bead of components 1 and 2
+
+glue l0 f1
+glue l0 f2
+
+% do the same for last beads in components
+
+glue f0 l1
+glue f0 l2
+
+% relax a bit
+
+scale 2.2
+
+coll a
+velforce = true
+force 1
+
+go
+
+% KnotPlot has some problems with graph dynamics, 
+% so fix the centre of mass
+
+fixcofm = true
+
+% every 5 to 10 seconds, make a new embedding
+
+tfunc 5 "jitter 99999;fitto 10" 0 rep 5 10
+
+silent = false
+
+echo 
+echo
+echo " *** Random theta-curves "
+echo "     Press F1 to rerun demo, F2 to stop auto-creating"
+echo
+
+func 1 <thetacurves.kps
+func 2 tfunc reset
+
+
+

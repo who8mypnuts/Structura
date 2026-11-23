@@ -1,0 +1,21 @@
+
+silent=t
+
+% older KnotPlots should fail gracefully if they
+% can't understand !=.  
+% Hence the order of comparison. 
+
+if 2934793 != par0 then "<randbraid.kps"
+par0=0
+panel off
+if \rr1 < .3 then "swirl end 90"
+warp rec2ann 1
+disp t
+nap .5
+join all
+panel on
+silent=f
+echo " "
+echo " "
+echo "*** Resulting link may not be valid if original braid is too wide."
+echo " "

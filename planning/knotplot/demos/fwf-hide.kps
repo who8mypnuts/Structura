@@ -1,0 +1,12 @@
+echo
+echo
+echo " *** Press F2 to show buttons again"
+echo
+
+txt font 4
+txt fill off
+txt centre
+txt c 108 "Press F2 to show buttons again"
+
+tfunc 2 "txt delete Press;txt off"
+

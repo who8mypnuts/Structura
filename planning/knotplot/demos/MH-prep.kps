@@ -1,0 +1,17 @@
+Draw=f
+if \pncomp > 0 then "save |.tmp;par2=1" else par2=0
+
+delete all
+
+unknot \ri[5/11] 2
+
+velf=t
+
+ago 44
+
+refl r
+trans \rr+-7 \rr+-7 \rr+-7 
+
+if \ppar2 == 1 then "load comb |.tmp"
+Draw=t
+

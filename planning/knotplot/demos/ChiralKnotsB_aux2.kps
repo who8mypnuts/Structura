@@ -1,0 +1,31 @@
+txt centre
+txt font 4
+txt fill off
+
+txt delete rotate
+txt delete rotate
+txt delete examine
+txt delete that
+txt delete try
+txt delete "(use"
+
+<rotate_comp_y.kps
+
+txt c 133 "this knot is chiral, and is not"
+txt c a "equivalent to its mirror image"
+txt font 3
+
+txt c a "(note that this demonstration is not a proof of chirality)"
+
+txt c a "try clicking on one of these buttons:"
+txt fill on
+txt c a "compare to an achiral knot" <ChiralKnotsB.kps
+txt c a "reload chiral knot demo" <ChiralKnotsBc.kps
+
+
+
+
+
+
+
+

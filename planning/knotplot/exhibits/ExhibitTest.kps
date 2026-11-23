@@ -1,0 +1,15 @@
+%% Auto-generated on Sat  3 Oct 2015 10:31:23 PDT
+
+button DemoA "Test exhibitions" dum 4 270 102 10 4 10
+button Nbuttons 4
+button hspace 4
+button pos 1
+button DemoA "Knots!" "path KPHOME exhibits/KnotTheory;<TestDemos.kps" -2 -1 0 10 0 0
+button DemoA "PsychFest" "path KPHOME exhibits/PsychFest;<TestDemos.kps" -1 -1 0 10 0 0
+button DemoA "AMS" "path KPHOME exhibits/ams2011;<TestDemos.kps" -1 -1 0 10 0 0
+button DemoA "Fly_thru" "path KPHOME exhibits/FlyThru;<TestDemos.kps" -1 -1 0 10 0 0
+button DemoA "Frenetic" "path KPHOME exhibits/Frenetic;<TestDemos.kps" -1 -1 0 10 0 0
+button DemoA "Poly_dance" "path KPHOME exhibits/PolyDance;<TestDemos.kps" -1 -1 0 10 0 0
+button DemoA "Paint_2" "path KPHOME exhibits/paint2;<TestDemos.kps" -1 -1 0 10 0 0
+button DemoA "Aum_Fly" "path KPHOME exhibits/AumFly;<TestDemos.kps" -1 -1 0 10 0 0
+button DemoA "glue_graphs" "path KPHOME exhibits/glueing;<TestDemos.kps" -1 -1 0 10 0 0

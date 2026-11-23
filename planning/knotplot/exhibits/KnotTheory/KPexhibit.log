@@ -1,0 +1,35 @@
+KnotPlot exhibit started at Thu Aug 16 09:52:05 2007 with 2 sequences.
+KnotPlot exhibit exited at  Thu Aug 16 09:53:14 2007 after 1.14 minutes.
+
+9 demo sequences called.
+Sequence #0 (freedman) called most with 5 times.
+Sequence #1 (cubicSAW) called least with 4 times.
+
+Sequence #0 (freedman) called 5 times (1.000, 1.111).
+Sequence #1 (cubicSAW) called 4 times (1.000, 0.889).
+
+
+KnotPlot 1.0000 (build 4047W).
+Compiled at 22:56:10, Aug 15 2007 on `Vespertine'.
+KnotPlot Home Directory: /usr/KnotPlot
+KnotPlot Resource Directory: /usr/KnotPlot/resource  (Distribution version #12).
+This copy of KnotPlot, running at Level 2, is 8.14 days old and never expires.
+
+HOSTNAME = Vespertine
+HOST = Vespertine
+HOSTTYPE = i386
+USER = rob
+USERNAME = rob
+HOME = C:\progs\cygwin\home\rob
+KNOTPLOT_PATH is not set
+APPDATA = C:\Documents and Settings\rob\Application Data
+
+OpenGL version: 2.0.1
+Vendor: NVIDIA Corporation
+Renderer: GeForce 6800 GT/AGP/SSE2/3DNOW!
+Point sizes from 1.000000 to 63.375000 with granularity 0.125000.
+draw buffer: 8 8 8 0 (bits in red, green, blue, alpha channels)
+depth buffer: 24 bits,  stencil buffer: 0 bits
+accumulation buffer: 16 16 16 16 (bits in red, green, blue, alpha channels)
+max texture size: 4096,  max hardware lights: 8
+use the command `GLinfo ext' to see supported extensions

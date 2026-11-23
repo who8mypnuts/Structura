@@ -1,0 +1,93 @@
+#!/bin/csh -f
+
+# Constructor routine: KP-cons-AndCur
+# April 6, 1996
+# Rob Scharein
+
+# Note: There are three links to this program in the demos directory,
+#       KP-cons-andcur does the same thing as KP-cons-AndCur, 
+#       KP-cons-VanZee and KP-cons-vanzee both construct the VanKampen-
+#       Zeeman linked spheres.
+
+# Constructor arguments:
+#    $0 Constructor executable file (this file).
+#    $1 First file read by KnotPlot (the prefile).
+#    $2 Second file read by KnotPlot (the postfile).
+#    $3 The type of machine we're running on (sgi, ibm, etc...)
+#    $4 A flag either 0 or 1.
+#    $5 Name of constructor.
+#       Anymore more arguments are the arguments to the contructor
+#       from the KnotPlot command line.
+
+switch ($4)
+case 0:
+
+  switch ($5)
+  case AndCur:
+  case andcur:
+    set knottype = AndCur
+    breaksw
+  case VanZee:
+  case vanzee:
+    set knottype = VanZee
+    breaksw
+  endsw
+  
+  echo mode cb >> $1
+  echo cyl = .06 >> $1
+
+  echo load $knottype".3d" >> $1 
+  echo keep 0 >> $1
+  
+  switch ($knottype)
+  case AndCur:
+    echo splane 0 16 90 >> $1
+    breaksw
+  case VanZee:
+    echo splane 0 38 0  >> $1
+    breaksw
+  endsw
+
+  echo spin 0 0 0 >> $1
+  echo ssave $1".a" >> $1
+
+  echo load $knottype".3d" >> $1
+  echo keep 1 >> $1
+
+  switch ($knottype)
+  case AndCur:
+    echo splane 0 48 90 >> $1
+    breaksw
+  case VanZee:
+    echo splane 0 17 0 >> $1
+    breaksw
+  endsw
+
+  echo spin 0 0 0 >> $1
+  echo ssave $1".b" >> $1   
+
+  breaksw
+
+case 1:
+
+# Find the cat4dsurf program.  Note that the following will not work
+# if KnotPlot is run from the demos directory and "." appears before
+# "demos" in the KnotPlot path.
+
+  set thisfile = $0
+  set demos = $thisfile:h
+  set kphome = $demos:h
+
+  set prog = $kphome/resource/$3/cat4dsurf
+
+# Uncomment the following line if you want to see what gets executed.
+#  echo Executing $prog $1".a.4d" $1".b.4d" \> $1".c.4d"
+
+  $prog $1".a.4d" $1".b.4d" > $1".c.4d"
+   
+  echo sload $1".c.4d" > $2
+
+  breaksw   
+endsw
+
+

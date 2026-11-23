@@ -1,0 +1,32 @@
+reset dclean
+
+silent = t
+sbuff
+back = 0
+
+
+clrfun 0
+disp
+disp
+clrfun 1
+scale = 2
+
+bead = .03
+coll a
+power 6
+time .3
+hooke 13
+
+force 1
+mode b
+
+
+
+con 3
+
+
+
+func 1 go 100
+
+
+silent = f

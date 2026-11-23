@@ -1,0 +1,74 @@
+require KPbuild 4091 ifnot "reset all"
+
+if par0 != 149446177 then "reset all;hsta=\rr360"
+par0=149446177
+
+velf=f
+force 2
+
+func init
+func silent
+func 1 <collideB.kps
+
+verbose=f
+silent=t
+Draw=f
+
+scale=.22
+
+knot num \ri[2/23] ms
+stus=1
+ago 108
+split
+ago 108
+
+<randorient.kps
+refl r
+mcyl 0 .9
+stus=0
+
+velf = t
+
+force 1
+
+%nbead mult .4
+%stus=1
+ago 108
+stus=0
+%velmag=.001
+
+fixcofm=f
+
+
+
+
+func c 2 "dele 1;velmag=.001;save |x;unknot 6 1.2;refl r;trans 20 20 0;about z \rr360;load comb |x;swap;velo 0 0 0;velo rad \rr[-.999/-1] comp 1;mcyl 1 .5;trans \rr+-3 \rr+-3 \rr+-3 1"
+
+silent=f
+
+func exec c 2
+about x \rr360
+about y \rr360
+about z \rr360
+Draw=t
+
+go
+
+txt init
+
+txt fcolour hsv:102.2/.4/.4 .6
+txt fill on
+txt lineskip -24
+
+txt clobber on
+txt font 3
+txt c 15 "go" <collideB.kps
+txt on
+
+if \rr2 < 13 then "fly follow 1;persp 77 2 155;fog on;fog colour;fog end 155"
+
+echo
+echo
+echo
+echo
+echo

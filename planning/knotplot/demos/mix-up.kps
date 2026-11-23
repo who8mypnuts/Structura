@@ -1,0 +1,16 @@
+require KPbuild 4965
+
+silent=f
+echo "Mixing up components ..."
+silent=t
+txt c 60 "Mixing up components ..."
+disp t
+
+% with no arguments, swap chooses two 
+% components at random, and swaps them.
+
+idle "swap"
+tfunc \rr2 "idle"
+
+silent = f
+

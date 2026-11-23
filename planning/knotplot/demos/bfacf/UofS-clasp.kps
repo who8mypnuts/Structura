@@ -1,0 +1,51 @@
+
+if \ppar0 != 682785410 then "reset all"
+par0 = 682785410
+
+load UofS-clasp.k
+
+scale = 0.815314
+cyl-rad = 0.100000
+bead-radius = 0.180000
+mode cB
+untran
+viewmatrix 0.500000 -0.866025 0.000000 0.484275 0.279596 0.829038
+
+%show labels orient
+3dop ostep 1
+3dop oscale .2
+3dop ostart 0
+
+bfacf init
+bfacf centre off
+
+bfacf load
+
+bfacf efreeze 0
+bfacf efreeze 1
+bfacf efreeze 2
+bfacf efreeze 3
+bfacf efreeze 8
+bfacf efreeze 9
+
+scenery init
+
+scenery object eobj/gsphere  0 -1  2
+scenery object eobj/gsphere  0 -1  3
+scenery object eobj/gsphere  0  0  3
+scenery object eobj/gsphere  0  1  3
+scenery object eobj/gsphere  0  1  2
+scenery object eobj/rsphere  1  0  0
+scenery object eobj/rsphere  0  0  0
+scenery object eobj/rsphere -1  0  0
+
+scenery dscale .2
+scenery on
+
+
+bfacf nedges 200 300
+
+energy model nbeads
+energy format "Nedges = %.0f"
+show energy
+

@@ -1,0 +1,23 @@
+
+silent=t
+if \rr1 < .1 then "torus" else "chain \ri[11/33]"
+
+
+cyl=.3
+jitter 99999
+dstep=3
+fitto .2
+coll a
+force 1
+velmag=.1
+velfo=t
+scale=.2
+
+par0=\rr1
+if par0 < .2 then "mode cbf"
+if par0 < .2 then "cyl=.06"
+
+Draw=t
+go 999999
+silent=f
+echo "     Note: Most of the demos on the `DemoA' and `DemoB' panels will work in anaglyph mode."

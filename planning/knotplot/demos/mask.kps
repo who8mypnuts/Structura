@@ -1,0 +1,24 @@
+silent = true
+
+background = white
+light reset
+light specular 0 0 0 0  % added 18 June 2023
+
+colour all black
+mathsv s 0 0 0 e
+mathsv s 0 0 0 s
+mathsv m 0 0 0 a    % added 18 June 2023, scenery uses the `m' material
+
+
+scenery colour black
+scenery set colour
+glsl off
+
+3dop colo black
+3dop colF black
+
+silent = false
+
+
+
+

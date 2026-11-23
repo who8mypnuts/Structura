@@ -1,0 +1,16 @@
+require accbuff
+txt delete group 23648
+txt push
+txt expire 8
+txt font 4
+txt fill off
+txt cent
+txt c -60 "click on the `reload demo' button to turn off effect"
+accbuff decay 0.980730;accbuff accum 0.217651;accbuff return 0.225359;back=#000;accbuff on;accbuff clear
+tfunc reset
+tfunc \rr5 "mathsv c \rr360 1 \rr1" 0 repeat 1.000000 10.000000
+tfunc \rr5 "par0=\rr+-9" 0 repeat 1.000000 10.000000
+tfunc \rr5 "par1=\rr+-9" 0 repeat 1.000000 10.000000
+tfunc \rr5 "par2=\rr+-9" 0 repeat 1.000000 10.000000
+tfunc \rr5 "par0=0;par1=0;par2=0" 0 repeat 1.000000 10.000000
+txt exec 0.01 883311

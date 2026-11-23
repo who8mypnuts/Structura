@@ -1,0 +1,71 @@
+reset all
+
+echo " "
+echo " "
+echo " "
+echo " "
+echo " *** Constructing a cage ..."
+echo " "
+
+
+silent=t
+cyl=.2
+
+par0 = \rr360
+
+mode sC
+
+if \rr22 < 1 then "mode cb;cyl=.07"
+hstart = \ppar0
+mathsv C 0 0 1 d
+cluster-radius = 0.700000
+
+coll a
+scale=.45
+%line num 5  % now done in individual files
+
+dstep=5
+
+new=f
+frame comm "line dir \rr+-1 \rr+-1 \rr+-1;line"
+
+silent=t
+
+par2 = \rr100
+
+if par2 < 10 then "read tetra_cage.kps;par2=102"
+if par2 < 25 then "read cube_cage.kps;par2=102"
+if par2 < 45 then "read octa_cage.kps;par2=102"
+if par2 < 70 then "read dodec_cage.kps;par2=102"
+if par2 < 101 then "read icos_cage.kps;par2=102"
+
+
+if \rr2 < 1 then "jit 99999;fitto 12"
+
+power=2
+fixc=t
+ago 300
+
+power=5
+stu=7
+coll n
+torus 2 3 33 3 1
+go 9999999
+
+silent=f
+func silent
+func init
+
+echo " "
+echo " "
+echo " *** Knot trapped in a cage."
+echo "     (knot might pass thru bars of cage, this is a bug)."
+echo "     Press F10 to rerun this demo."
+echo " "
+func 12 <complete-graph.kps
+func 11 <random-graphs1.kps
+func 10 <knot-cage.kps
+func 9 <handcuff-graph.kps
+
+%if \rr4 < 1 then "coll a" else "coll n;stu=11"
+

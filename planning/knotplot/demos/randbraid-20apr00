@@ -1,0 +1,6 @@
+reset all
+scale=.08
+random braid \ri[3/7] \ri[4/12]
+echo " "
+echo "*** Now try the `warp the braid' button to the right."
+echo " "

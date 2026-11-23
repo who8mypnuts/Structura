@@ -1,0 +1,27 @@
+plot off
+txt init
+clk init
+clk init knotmode
+clk centre off   % IMPORTANT!
+clk latshow 30
+
+hincr=180
+
+%txt fcolour hsv:108/.6/.6 .6
+func init
+func silent
+
+frame reset
+alloc 16008
+show bfacf
+ccmode = 2
+
+scenery init
+
+energy model nbead
+energy format "Nedges = %.0f"
+
+tfunc reset
+alias ~defview "persp"
+~defview
+

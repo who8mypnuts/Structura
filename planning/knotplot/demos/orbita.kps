@@ -1,0 +1,227 @@
+require KPbuild 4965    % for `refine nbeads'
+require KPbuild 4691
+%`-
+
+% original script 23jun05c.kps
+require KPbuild 4556
+
+reset all
+silent=t
+scale = 0.449199
+cyl-rad = 0.020000
+background = black
+mechforce = off
+amechforce = on
+spring-length = 1.391485
+hooke = 5.395182
+elecforce = off
+ncur = 3
+nseg = 5
+mode p
+
+swirl r 0
+
+go beadlimit 30000
+alloc 20000
+
+alias ~changeaxis "if \rr11 < 1 then {swirl r 0;play 44}"   % changes nothing except the axis of swirling
+
+
+
+
+
+alias ~p0 "if \rr2 < 1 then {par0 = \rr+-10.2} else  {par0 = \rr+-102.2}"
+
+alias ~i "idle {swirl a \ppar0;ago \ppar1}"
+
+%alias ~krazy "go 0;oal random;~p0;par1= \ri[2/6];~i"
+alias ~krazy "~changeaxis;play 88;go 0;oal pitch all cr \rr+-15;oal random;~p0;par1= \ri[2/6];~i"
+alias ~gokrazy nop
+tfunc .1 ~gokrazy 0 rep .1 4
+
+
+%alias ~knot "save |x;knot 1;proj r;nbead 20000;anchor;play 66;load |x"
+alias ~knot "save |x;knot;proj r;refine nbeads 20000;anchor;play 66;load |x"  % 27 Nov 2020
+%alias ~uuu "tfunc 1 ~knot 0 rep 4 11"
+alias ~goknot nop
+tfunc 1 ~goknot 0 rep 4 11
+
+func init
+func silent
+func 1 <orbita.kps
+%func 2 ~krazy
+%func 3 "alias ~blurt nop;tfunc .1 ~krazy 0 rep .1 4"
+
+par6 = 0
+alias ~colour nop
+alias ~autocolour "if \ppar6 == 1 then {echo;echo;echo *** disabled auto-colouring;par6=0;alias ~colour nop} else {echo;echo;echo *** enabled auto-colouring;par6=1;alias ~colour ~randcolour}"
+alias ~sethue "3dop colp hsv:$0/1/1"
+alias ~randcolour "~sethue \rr360"
+
+tfunc 1 ~colour 0 rep 1 4
+
+%alias ~x "echo press F2 again or try rotating that thing...;echo (this can be neat in anaglyph mode);echo"
+%alias ~y "tfunc 12 {echo if you get tired of pressing F2 repeatedly, then press F3}"
+%
+
+%alias ~blurt "~x;~y"
+
+
+
+coll a
+anchor = t
+dstep = 6
+ancauto=f
+
+%% Generated Sun Oct 30 09:54:21 2011
+%% with command line: multiif 23jun05c.txt
+parsave
+par7 = \rr60
+if par7 < 30 then "unknot 20000;par7=62"
+if par7 < 50 then "torus 0 0 20000;fitto 9;par7=62"
+if par7 < 61 then "knot 1;refine nbead 20000;par7=62"
+parrestore
+
+anchor
+jit 9999999
+fitto 10
+go
+
+txt on
+txt centre
+
+txt lineskip -25
+
+txt push
+txt font 4
+txt hide 15
+txt expire 8
+txt c -30 "structure will eventually form..."
+txt awake 8.1
+txt expire 15
+txt c -30 "when it does click on an action button"
+txt pop
+txt fill on
+
+alias ~ah "txt hide \rr[5/6]"
+
+txt fcolour royalblue .6
+
+
+~ah
+txt font 3
+txt c 20 "reload demo" <orbita.kps
+
+~ah
+txt right
+txt font 4
+txt -14 14 ? "help popup orbita.kps handoff"
+txt font 3
+
+% slfjsdlfj
+
+~ah
+
+txt -15 a1.5 fullscreen "full toggle"
+txt -15 a    "motion blur" "<fun-with-accbuff.kps"
+txt -15 a    auto-colour ~autocolour
+
+
+txt fill off
+txt -10 a toggle:
+txt fill on
+
+txt scolour #000
+txt sfcolour #fb0 .8
+
+~ah
+
+txt push
+txt group 883
+txt select on
+txt -15 a1.5 "undamped" "velf=t;force 1"
+txt -15 a    "damped"   "force 2"
+force 2
+txt set selected
+txt fill off
+txt -10 a forces:
+txt pop
+txt select off
+
+
+txt fill on
+
+~ah
+
+alias ~col "verb=t;echo;echo;echo;echo same as typing;echo 3dop colp $0;echo into this window;3dop colp $0;verb=f"
+
+alias ~rcol1 "~col rgbi:$0/$1/$2"
+alias ~rcol2 "~col hsv:$0/$1/$2"
+alias ~rcol3 "~col rgb:$0/$1/$2"
+
+txt phantom M
+txt -42 a1.5 r2  "~rcol2 \rr360 \rr1 \rr1"
+txt -15 a0   r3  "~rcol3 \rr1 \rr1 \rr1"
+txt -42 a    M   "~col magenta"
+txt -15 a0   r1   "~rcol1 \ri255 \ri255 \ri255"
+txt -15 a    Y   "~col yellow"
+txt -42 a0   C   "~col cyan"
+txt -15 a    B   "~col blue"
+txt -42 a0   G   "~col green"
+txt -15 a    R   "~col red"
+txt -42 a0   W   "~col white"
+txt phantom
+txt fill off
+txt -10 a colour:
+txt fill on
+
+~ah
+if composed then <23jun05c-oal.kps
+
+
+alias ~rablurt2 "txt c -55 {enabling auto-reanchor};txt c -77 {you might have to wait a few seconds to see the effect}"
+
+alias ~rablurt "txt push;txt font 4;txt cent;txt fill off;txt expire 6;~rablurt2;txt pop"
+
+par9=0
+alias ~action "test paradj 9 1 1;if \ppar9 == 2 then {txt delete action;txt delete when;txt delete structure}"
+
+
+txt hide 108
+txt left
+txt 15 15 reanchor "~action;txt delete reanchor;~rablurt;alias ~goknot ~knot"
+txt 15 a  "go krazy" "~action;txt delete go;alias ~gokrazy ~krazy"
+txt fill off
+txt 10 a action:
+
+~ah
+txt autohide on   % should be the last txt command
+
+silent=f
+verbose=f
+echo 
+echo 
+echo "structure will eventually form..."
+echo
+
+exit
+%`+
+
+Things to try:
+
+   --- rotate the view
+
+   --- view in anaglyph stereo, buttons to enable anaglyph stereo are at the 
+       bottom of the DemoB Control Panel.  note that when viewing in anaglyph
+       mode, it's best to keep the point colour white. 
+
+   --- click on the `motion blur' button on DemoB
+
+Things to avoid:
+  
+   --- in Dynamics, enabling the `elec' or `symm' forces or switching out of `collide' mode.
+       KnotPlot will slow down so much that you might have to force quit it.
+
+
+
+

@@ -1,0 +1,10 @@
+light model onesided
+silent = t
+back=0
+glop backface f
+zbuff f
+cyl = -5
+blend one one
+draw brok
+
+value=.4

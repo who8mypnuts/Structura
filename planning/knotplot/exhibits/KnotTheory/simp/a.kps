@@ -1,0 +1,7 @@
+delete all
+
+<../cubicSAW-aux.kps
+until safe <../cubicSAW-aux.kps
+
+align ax
+refl r

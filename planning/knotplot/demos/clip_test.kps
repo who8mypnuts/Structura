@@ -1,0 +1,125 @@
+%`-
+
+require KPbuild 4354
+
+reset all
+silent = t
+if \rr4 < 1 then "mode cb;cyl=.2;bead=.28"
+if \rr4 < 3 then "knot" else "knot s"
+
+
+spe clip
+clip on
+clip rand
+
+frame comm "clip point %d 0 0;disp t"
+%frame -11 to 11
+verb=f
+
+%idle "frame -12 to 12;frame 12 to -12"
+
+force 1
+velf=t
+velmag=\rr.1
+stu=11
+
+if \rr9 < 1 then "spe +axes"
+if \rr9 < 1 then "spe +grid"
+if \rr3 < 1 then "spe +orient"
+if \rr6 < 1 then "tanf=on"
+if \rr9 < 1 then <specommalignaxes.kps
+if \rr3 < 1 then <randorient2.kps
+
+%coll a
+go
+
+clip on
+silent=f
+func silent
+func init
+echo 
+echo 
+echo " *** Try rotating clipplane with the trackball (hover over sphere)."
+echo "     Rotate scene as normal with the trackball (don't hover over sphere)."
+echo "     (randomized demo, click again!)"
+echo
+
+txt fcolour "Royal Blue"
+txt lineskip -24
+txt right
+txt font 3
+txt fill on
+txt -15 60 fullscreen "full toggle"
+txt -15 a  "help text" "txt group 108 toggle"
+txt -15 a  "clipping plane" "clipplane toggle;show ~clipplane"
+txt fill off
+txt -10 a toggle:
+
+txt push
+txt group 108
+txt font 2
+txt cent
+txt c -2 " "
+txt lineskip 16
+txt c a "try rotating clipplane with the trackball (hover over sphere)"
+txt c a "rotate scene as normal with the trackball (don't hover over sphere)"
+txt c a "clip the ? button lower right this window for more info on how to use the clipping plane"
+txt c a "(randomized demo, click again!)"
+txt pop
+
+txt font 4
+txt fill on
+txt right
+txt -14 14 ? "help popup clip_test.kps handoff"
+
+
+
+
+txt on
+
+show +back
+
+exit
+
+%`+
+
+Clipping plane help
+
+KnotPlot can optionally show a clipping plane so you can see what's inside something.  
+To turn on / off the clipping plane without running this demo, use one of the following commands:
+
+clip on
+clip off
+clip toggle
+
+The clipping plane itself is not shown by default.  To see it, use the command
+
+show clip
+
+or 
+
+show +clip 
+
+to show the clipping plane if other special objects (backdrop, utility sphere, energy etc.) are being shown.
+
+To turn off the clipping plane if it is being shown use either
+
+show -clip
+
+or 
+
+show ~clip
+
+The latter toggles off / on the showing of the clipping plane.
+
+
+To rotate / move the clipping plane, hover your mouse over the little sphere at the centre of the clipping plane
+(make sure clipping plane is being shown) until the clipping plane "activates" (it will brighten sligtly). Then
+left-click-drag or right-click-drag to rotate or move the clipping plane, respectively.  Clicking down anywhere
+else will rotate / scale the view as usual. 
+
+
+
+
+
+

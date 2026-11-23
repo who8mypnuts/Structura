@@ -1,0 +1,46 @@
+reset all
+silent=t
+verbose=f
+atw=t
+cyl=.4
+hstar=\rr360
+draw anorm
+
+if \rr3 < 2 then knot else "knot s"
+if \rr5 < 1 then "knot num \ri[2/384] ms;fitto 19;split;split;split"
+twfix
+
+func silent
+func init
+
+txt centre
+txt clobber on
+txt fcolour hsv:102.2/.4/.7 .5
+
+func 1 <PTframe.kps
+func s 2 "mode 512;par3=3;func exec c 2;func exec c 1;txt c -30 {Frenet frame}"
+func s 3 "mode s;par3=2;func exec c 3;func exec c 1;txt c -30 {Parallel transport frame}"
+func 5 "back=0;unknot 444;swirl 222;mode 512;scale=.95;txt off"
+func c 1 "txt fill off;txt font 4"
+func c 2 "txt fill on;txt font 3;txt c 50 {click to see parallel transport frame} {func exec c 12}"
+func c 3 "txt fill on;txt font 3;txt c 50 {click to see Frenet frame} {func exec c 12}"
+txt on
+par3 = 3
+func c 12 "func exec s \ppar3"
+func exec c 12
+
+txt fill on
+txt font 3
+txt c 20 "load new knot" <PTframe.kps
+
+verbose=f
+silent=f
+
+echo
+echo
+echo "  *** Illustration of the parallel transport frame vs. the Frenet frame."
+echo "      Note: the Frenet frame may not be defined in some cases."
+echo "      Press F1 to rerun demo with a different knot."
+echo "      Press F5 when you get a chance."
+echo
+

@@ -1,0 +1,8 @@
+reset all
+
+torus 11 15 777
+twfix
+
+
+#222 about y 10;disp
+

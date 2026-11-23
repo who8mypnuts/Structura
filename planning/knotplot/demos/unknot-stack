@@ -1,0 +1,22 @@
+reset all
+silent = t
+cyl = .2
+
+ncur = 1
+nseg = 7
+
+frame save none
+frame setup none
+frame script unknot-stack-script
+
+
+frame 0 num 12
+
+centre
+hinc = 30
+silent = f
+
+
+
+
+

@@ -1,0 +1,12 @@
+reset all
+
+cyl-rad=1
+
+new=f
+frame comm "unknot 10 %d"
+frame 1 to 20
+scale .2
+
+load comb ravenna.k
+fitto 65
+mode s

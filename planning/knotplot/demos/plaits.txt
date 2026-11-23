@@ -1,0 +1,5 @@
+par1
+90 celtic grid \ri[3/12] \ri[3/12]
+10 celtic cgrid \ri[12/20] \ri[3/6] \rr[3/9];scale=.19
+12 celtic grid \ri[2/22] \ri[2/22];scale=.18;alloc 4444
+15 celtic grid \ri[12/22] \ri[12/22];scale=.18;alloc 4444

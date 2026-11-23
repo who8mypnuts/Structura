@@ -1,0 +1,53 @@
+require KPbuild 4691
+alias ~ah "txt hide \rr[5/8]"
+alias ~title "txt fill off;txt cent;txt font 6;txt c -20 {$0}"
+
+
+
+%txt init
+txt fcolour royalblue .6
+txt scolour #000
+txt sfcolour #fb0 .8
+txt lineskip -25
+txt font 3
+txt right
+txt fill on
+~ah
+txt -15 15 fullscreen "full toggle"
+txt fill off
+~ah
+txt -15 a toggle:
+
+txt left
+txt fill on
+txt phantom "Mandala 3b"
+~ah
+txt 15 15 "Mandala 4b" <Mandala4b.kps
+~ah
+txt 15 a "Mandala 4" <Mandala4.kps
+~ah
+txt 15 a "Mandala 3b" <Mandala3b.kps
+~ah
+txt 15 a "Mandala 3a" <Mandala3a.kps
+~ah
+txt 15 a "Mandala 3" <Mandala3.kps
+~ah
+txt 15 a "Mandala 2" <Mandala2.kps
+~ah
+txt 15 a "Mandala 1" <Mandala1.kps
+txt fill off
+txt phantom
+~ah
+txt 10 a "choose a mandala:"
+~ah
+
+txt cent
+txt fill on
+txt c 15 "rerun this mandala" "func exec 1"
+
+~ah
+txt autohide on   % should be the last txt command
+txt on
+
+par9 = 12836482   % needed for the multiif in Mandalas.kps
+

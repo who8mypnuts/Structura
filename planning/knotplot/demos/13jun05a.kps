@@ -1,0 +1,41 @@
+reset all
+func init
+func silent
+
+silent = f
+verbose = f
+%sphere on
+
+func 1 <13jun05a.kps
+
+scale = 0.345181
+cyl-rad = 0.139800
+
+func 3 "deform to \x 222;nap .2"
+func 4 "deform to \y 222;nap .2"
+%func 5 knot:refine 7:save |y:moeb:save |x:moeb:disp t
+func 5 knot:refine 7
+%func 5 knot num \ri[1/384] ms:fitto 10:split:split:split:split:split:save |y:moeb:save |x:moeb:disp t:sanap .3
+%func 6 sphere \rr[3/5] \rr+-5 \rr+-5 \rr+-5
+func 6 "sphere  \rr[3/5]  \rr+-15 \rr+-15 \rr+-15"
+func exec 6
+func exec 5
+func 2 idle
+
+sphere off
+back = 0
+disp t
+
+clrfun n
+
+idle "moeb;func exec 6"
+
+func 12 "clrfun zf;hstar=\rr360;disp t;clrfun n"
+tfunc \rr[4/10] "func exec 5;func exec 12" 0 repeat 5 15
+%tfunc \rr[4/10] "fitto \rr[5/10]" 0 repeat 1
+
+
+% also neat to load from minimal stick catalogue and
+% replace the above refine by a #5 split
+
+% knot num \ri[1/384] ms

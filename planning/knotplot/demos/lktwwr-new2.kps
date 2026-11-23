@@ -1,0 +1,6 @@
+~nocode;unknot 144;~ruff;par0=70;~init
+
+par6 = \ri[16/35]
+test paradj 6 2 0
+
+torus 2 \ppar6 600 10 .2;~refl;save |tor;warp along;<lktwwr-xing.kps

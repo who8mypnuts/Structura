@@ -1,0 +1,58 @@
+Sketch Help
+
+With this control panel, you can sketch a knot in 3D freehand using the mouse.
+
+To sketch something, either:
+
+   sketch beads one at a time --- click the mouse where you want a new bead to
+           appear.  if you click using the left mouse button, KnotPlot will 
+           attempt to place a connecting edge to the previous bead that is 
+           UNDER all other edges.  use right click (or SHIFT-left) to go 
+           over. 
+
+   sketch beads continuously --- click and drag out a knot path.  beads will
+           be created at a set interval.  this method also defaults to 
+           alternating over and under crossings when you cross paths with 
+           something previously drawn.
+
+   Delete all --- delete all knot components, click on `undo' if you regret
+           doing this
+
+   Delete last --- delete the last bead in the last component.  normally, this
+           is the bead you just sketched
+
+When creating a new knot component, it's best to place the last bead a short
+distance from the first (if it's a closed component), but not right on top of
+it.  A distance of about a centimeter (with a typical display) is about right.
+If you want to start playing with the your new knot, just go to some other
+control panel or click on `Finish'.  Clicking on `Finish' goes out of Sketch
+mode.  If you want to keep sketching, you'll have to exit and re-enter the 
+Sketch panel. 
+
+Complete this component... --- Use one of the buttons in this section if you
+want to sketch knots with more than one string (component).  The two options 
+are:
+
+   as open --- finishes sketching the component and leaves it open-ended
+
+   as closed --- closes up the end points of the component 
+
+Note that clicking on the `Finish' button or leaving the Sketch control panel
+by going to another control panel will automatically perform an `as closed'
+operation. 
+
+After sketching is completed, one of a number of operations can optionally
+be performed:
+
+   centre link --- usually this is what you want, but sometimes not
+
+   enable auto splitting --- this sets the value of `stusplit' (described on
+           the Dyna control panel help) to something non-zero.  This is useful
+           if you sketch something very roughly with very few beads and then
+           immediately relax it using the `Go' button (on Main or Dyna).  
+
+At the bottom is a button that goes to an alternate method for creating new
+knots, the Celtic knotting panel.
+
+
+

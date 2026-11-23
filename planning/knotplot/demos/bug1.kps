@@ -1,0 +1,64 @@
+require KPbuild 4998  % for view command (replacement for viewmatrix)
+
+reset all
+
+% give it a nice blue background so at least it looks nice!
+
+silent=t
+
+if anaglyph then back=x666666 else back=x995511
+cyl-rad = \rr[.1/.3]
+
+%trx = 0.966878
+%try = -0.918534
+scale = 0.267713
+
+%if \rr5 < 1 then "mode cb;cyl=.12;bead=.23;math k 33 1 1 d"
+%if \rr2 < 1 then "scale=.36;trx=0;try=1.45;view matrix 0.001309 -0.999132 -0.041600 0.572635 -0.033355 0.819130"
+dbfail=102
+
+%torus 5 11 80
+until unsafe "torus \ri[3/7] \ri[8/14] \ri[60/102];alternate"
+hincr = 0
+
+refine 2
+%if \rr3 < 1 then "refl z"
+
+stusplit=1
+
+%jitter 0.01
+silent=f
+
+func init 
+func silent
+
+func 1 <bug1.kps
+func 2 "del down 0;go"
+func 3 "untran;trx=10.3;try=0.117;scale=0.817"
+
+func 5 "mode s;cyl=\rr[.1/.3]"
+func 6 "mode cb;cyl=.12;bead=.23"
+func 7 "mode b;bead=\rr[.05/.16]"
+
+func 9  "clrfun zf;disp t;clrfun n"
+func 10 "clrfun zf;disp t;clrfun z"
+func 11 "clrfun zf"
+
+echo " " 
+echo " " 
+echo " *** Toothpaste tube extrusion bug!" 
+echo "     F1 reloads demo, F2 deletes beads and relaxes, F3 for a different view."
+echo "     F5 for smooth tubes, F6 for beads & sticks, F7 for just beads."
+echo " " 
+
+silent=t
+save |tmp
+go 333
+
+tfunc allowreset
+tfunc .5 "silent=f"  % to avoid the khat error report
+
+
+
+
+

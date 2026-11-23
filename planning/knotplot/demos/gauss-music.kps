@@ -1,0 +1,25 @@
+require KPbuild 4446
+~togauss
+idle
+untran
+txt delete group 379426
+txt delete group 374261
+txt push
+txt group 374261
+txt font 4
+txt fill off
+txt centre
+txt c 216 "click on one of the `start music' buttons below to start continuous gauss knot music"
+txt lineskip 40
+txt c a "to stop the music, click on `stop music' or `reset' on the Control Panel"
+txt fill on
+play volume 127
+txt c-195 a1.2 "start music 1" "play code method 1;<gauss-music-init.kps"
+txt c-65 a0    "start music 2" "play volume 93;play code method 2;<gauss-music-init.kps"
+txt c+65 a0    "start music 3" "play code method 3;<gauss-music-init.kps"
+txt c+195 a0   "start music 4" "play code method 4;<gauss-music-init.kps"
+txt fill off
+txt c a1.2 "NOTE: the music may take up to 38 seconds to stop, please be patient"
+txt fill on
+txt c a1.2 "nah... forget it!" "txt delete group 374261"
+txt pop

@@ -1,0 +1,4 @@
+reset all
+frame comm <flower.kps
+frame 0 to \ri[4/12]
+nap 2

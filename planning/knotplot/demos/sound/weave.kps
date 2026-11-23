@@ -1,0 +1,29 @@
+require KPbuild 4524
+
+oal persistent off
+oal close
+
+silent = t
+alias ~att "oal  fadein \rr[2/5] source $0 wav $2 attach bcomp $1 on"
+
+
+oal init
+oal listener screen
+oal doppler 1 \rr[.01/.02]
+oal alloff
+frame comm "~att %d %d buzz"
+frame 0
+oal pitch 0 c 0
+%oal pitch 2 c 204
+%oal pitch 3 c 386
+%oal pitch 4 c 498
+
+
+
+oal pitch all r \rr[.4/1.2]
+oal gain all 1
+oal velmul \rr[11/111]
+
+
+
+

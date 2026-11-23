@@ -1,0 +1,50 @@
+
+
+if par0 != 2228871 then "reset all;vscale=.3;background=white;value=0"
+
+silent=t
+
+hincr=0
+auto=f
+
+untran
+%silent=f
+if \rr2 < 1 then "knot cd \ri[3/8] d" else "knot cd \ri[3/7] c"
+% skelion image files ending in "d" where made with the following:
+if \rr22 < 1 then "knot cd \ri[3/7] c;save |skl;reflect x;load comb |skl"
+silent = true
+<randorient.kps
+mode E
+ortho
+fitto 12
+centre mass
+
+refine 3
+
+func 5 untran
+
+func silent
+func init
+
+func 1 "value=1;hstart=\rr44;background = black"
+func 2 "value=0;background = white"
+func 3 "value=0;background = red"
+
+func 7 "knot cd \ri[3/8] d;fitto 12;centre mass;refine 3" 
+func 8 "knot cd \ri[3/7] c;fitto 12;centre mass;refine 3" 
+
+func 9 "idle;silent=f;echo;echo;echo Press F10 to start rotation.;echo"
+func 10 "read unkflo-aux.kps;silent=f;echo;echo;echo Press F9 to stop, F10 again for a different speed or direction.;echo"
+func 11 untran
+func 12 <EOfill.kps
+
+
+par0=2228871
+silent = false
+
+echo " "
+echo " "
+echo " *** Press F1 for red on black, F2 for black on white, F3 for black on red."
+echo "       Press F10 to start rotation."
+echo "       F9 to stop rotation, F10 to change rotation speed or direction."
+echo "       F11 to unrotate, F12 to reload demo."

@@ -1,0 +1,47 @@
+Catalogues Help
+
+First are various buttons that load knots from the standard catalogues included
+with KnotPlot.
+
+   All --- loads a knot chosen randomly from the entire `basic' knot and
+           link catalogue.  this is essentially Appendix C from Dale Rolfsen's
+           classic book `Knot and Links'.
+
+   1  2  3  4 --- loads a knot/link chosen randomly from the basic catalogue
+           with 1, 2, 3, or 4 components, resp.
+
+   spec coll --- loads a knot chosen randomly from the `Special Collection'.
+           these are knots that are `special' for some reason (they have a 
+           name, they are mathematically interesting, they look neat, etc.)
+
+For more information about the basic catalogue, see the help page on the Main
+control panel.
+
+The next row of buttons load knots from basic catalogue, but displays them in
+a `zoo' where you can choose them interactively.
+
+   Rand --- selections are random chosen
+
+   A  B  C  D  E  F --- the entire basic knot and link catelogue, in the same
+           order they appear in `Knots and Links'
+
+   Torus --- a zoo of torus knots and links, in order of increasing crossing
+           number.  if you click on the button repeatedly, you get more and
+           more complex torus knots and links.
+
+   RandT --- a selection of torus knots and links, chosen randomly
+
+
+Decorative knots
+
+KnotPlot comes with what is perhaps an over abundance of decorative knots.  
+You can use these buttons to select one of them at random.  The knots are 
+grouped according to symmetry type, the symmetry being that of the knot `shadow'
+or projection to the xy-plane.  
+
+Because many of these knots look nicest when viewed in an orthographic projection
+and if the tube radius isn't too large, various display settings are set when
+you load one of the knots.  Use the check boxes to selectively turn these off.
+
+Some of the decorative knots are actually complicated unknots, or can be greatly
+simplified using KnotPlot's knot simplification techniques.

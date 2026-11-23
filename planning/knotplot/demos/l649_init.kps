@@ -1,0 +1,23 @@
+require KPbuild 4691
+require KPbuild 4516
+
+
+reset all
+
+
+silent=t
+back=black
+verbose=f
+txt cent
+txt font 4
+txt fcolour brown
+
+txt fill on
+txt c c "consult the oracle" "Fun 6/49"
+alias ~conoramus "txt c c-55 {consult the oracle (with music on)} {Fun 6/49 music}"
+
+if macos then ~conoramus
+txt on
+
+silent=f
+

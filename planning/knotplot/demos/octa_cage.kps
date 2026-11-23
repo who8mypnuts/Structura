@@ -1,0 +1,28 @@
+delete all
+line num \ri[4/9]
+frame 0 num 12
+
+glue l0 l1
+glue l0 l2
+glue l0 l3
+
+glue f1 l7
+glue f1 f4
+glue f1 l5
+
+glue l4 f2
+glue l4 l6
+glue l4 l10
+
+glue f5 f6
+glue f5 l9
+glue f5 l8
+
+glue f0 f7
+glue f0 f8
+glue f0 f11
+
+glue l11 f9
+glue l11 f10
+glue l11 f3
+

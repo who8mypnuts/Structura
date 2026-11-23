@@ -1,0 +1,3 @@
+% used by `TangledMess.kps'
+
+idle "silent=t;cyl=\rr[.01/.1];hsta=\rr360;knot;disp t;silent=f"

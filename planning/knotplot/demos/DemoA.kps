@@ -1,0 +1,175 @@
+
+require KPbuild 5084
+
+% Default DemoA.kps file.
+% This file defines the DemoA control panel.
+% If you want to make your a custom DemoA panel, create a DemoA.kps
+% file and put it in the KnotPlot read path ahead of the demos folder.
+
+% This is the file that defines the buttons seen on the demos
+% panel.  It is easy to make a custom demo panel by simply 
+% creating your own DemoA.kps file in a directory somewhere and
+% running KnotPlot from that directory.  KnotPlot will read in
+% the first DemoA.kps file it finds in its path.  
+% To see what the current path is, enter the KnotPlot command `path'.
+
+% See the file DemoB.kps in this directory for more examples.
+
+
+button hspace 4
+button pos 1
+button blank _
+button height 8
+button Nbuttons 4
+
+button panel DemoA
+
+button section "Knot theory"
+
+
+button "guess knot" "if \rr100 < 20 then <GuessKnotCompact.lua else <GuessKnotClassic.lua"
+
+%button "(un)knot?" "lua run Freedman"
+button "Perko pair" "lua run Perko"
+button "Brunnian" "lua run Brunnian"
+button  BruChain "lua run Brunnian-chain"
+button "random braid" <randbraid2.kps
+%button "random braid" "lua run random-braid 5"
+button Redm._moves <redm_moves.kps
+button chirality "if \rr100 < 50 then <ChiralKnotsB.kps else <ChiralKnotsBc.kps"
+
+button "min step" "read min-step.kps 3.1 75 mscl/2.b 0"
+
+% moebius inversion demo here  
+%button  "Za" <7jun05a.kps
+%button  "Zb" <7jun05b.kps
+
+%button "twist knot" <new_twist.kps
+button "twist knot" <twist-knots.lua
+
+button torus_knots <torus-knots.kps
+button satellite_knot <satellite.kps
+button Lissajous <Lissajous.kps
+
+button tangles <tangle-templates.kps
+
+button "rat tang" <rat_tangle.kps
+%button "rat tang" <rat_tangle_old.kps
+button ACN <ACN-static.kps
+button "BB frame" <BBframe.kps
+
+button "moebius" <moebius-inversion.kps
+button "magnetic" <magnetic1.kps
+button "codes" <knot-codes.kps
+%button "stick knots" <stick-knots.kps
+%button "rad tube" <rad-tube.kps
+
+%button " " "echo;echo;echo Coming soon...;echo"
+
+
+button section "Dynamics & Constructions"  % changed from "Dynamics & Relaxations" 26 jan 2024
+
+%button simplify "lua run simplify"
+button Split/delete <split-delete.lua
+button Forces <fwf.kps
+%button Anchors <28jul00a.kps
+button FreeDrag <FreeDrag.kps
+%button Gravity <gravity.kps
+
+button  ringpack <ring-pack.kps
+button  hedgehog <hedgehog.kps
+button  TSP <tsp.lua
+
+if spenabled then "button spool <spool1.kps"
+
+lua do chooseone "button crankshaft <mangle-demo.kps,button crankshaft <mangle-demo2.kps" "10,16"
+
+button "chains" <chains.kps
+button "rchain" <random-chain.kps  
+%button "stick things" <stick-things.kps  
+button "cable" <cable.kps
+button weave  <weaveA.kps 
+button "braid warp" <braidwarp.kps
+if stereo then nop else "button shadows <shadows.kps"
+button Lorenz <lorenz-idle.kps
+button DNA <DNA.kps
+%if KPbuild > 3181 then "button THK <turkshead2.kps"
+%if KPbuild > 3181 then "button alt_deco <altdeco.kps"
+%if KPbuild > 3181 then "button alt_deco_moeb <altdeco-moeb.kps"
+%button Cubic_SAW <CubicSAW.kps  REMOVED 18 February 2021
+%button random <rand_anchors.kps
+button Hopf <newhopf.kps
+button star/box <starbox.kps
+button celtic <22nov11.kps
+button plaits <plaits.kps
+button splaits <splaits.kps
+
+%button sum <test-sum-3comp.kps
+
+button "ant neck" <AntoinesNecklace.kps
+button trapped <trapped.kps
+
+button "Simple" <simple-relax.kps
+%button "Ring toss" <7jun00a.kps 
+%button "Anchors" <anchor-demoA
+button Graphs <graphs.kps  
+button "open end" <open-end.kps
+%button "undo" <slide-knot.kps
+%button "Ring toss" <ringToss.kps 
+button Thing_toss <thingtoss.kps
+button "Link rings" <linkRings.kps
+button test <not-exist.kps
+
+%button arcs <arcs.kps      % merge with helix
+%button helix <helix.kps
+button "knot drop" <knotdrop.lua
+button mosaics <mosaics.lua
+
+
+%if exists colabex/start-demo.kps then <exib-buttons.kps
+   
+button section Tutorials
+
+button rotate  <tut/rotate.kps 
+%button scripts <tut/scripts.kps
+button text <tut/txt.kps
+button scenery <tut/scenery-demo1.kps
+%button YouTube "www knotplot.com/tutorials" 
+%button poly <tut/eobj-examples.kps
+button "UI demo" <UI-demo.lua
+
+%button section "Lua scripted demos (new! 3 April 2022)"
+button section "Lua scripted demos"
+
+% can run Lua scripts in one of the following ways (since KPbuild 5043, 19jan2023)
+button helix   <helix.lua
+button construction  "lua run construction"
+
+button info  <info.lua
+button torus  "lua run torus"
+
+lua do chooseone "button relax-s <relax-s.lua,button relax-t <relax-t.lua" "1,1"
+
+button cut  <cut.lua
+button celtic  "lua run celtic-ball"
+button templates <templates.lua
+button colour "lua run colour"
+%button NEWSUD  <NEWSUD.lua
+button lattice <lattice.lua
+button "L-systems" <L-systems.lua
+%button lorenz "lua run lorenz"
+button lnknum <lnknum.lua
+
+%button Nbuttons 3
+%button hspace 4
+%button pos 1
+%button "This layout subject to change." nop -1 10 0 0 4
+
+%panel on
+
+
+button height 10
+
+<demo_panel_upgrade.kps
+
+

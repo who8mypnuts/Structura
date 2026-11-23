@@ -1,0 +1,71 @@
+reset all
+
+echo " "
+echo " "
+echo " "
+mode cb
+cyl=.1
+disp t
+Draw=f
+vport tile 2 2
+%spe axes
+spe +vwt
+silent=t
+if \rr2 < 1 then "ccmode = 1" else "ccmode = 2"
+%<stick-things-aux.kps
+%until safe <stick-things-aux.kps
+clrfun n
+silent=f
+verbose=f
+if \rr2 < 1 then "hstart = \rr360"
+
+torus \ri[3/222] \ri[3/222] \ri[22/222] 
+silent=t
+%until safe "torus \ri[3/66] \ri[3/66] \ri[10/66]"
+
+rotate x \rr360
+rotate y \rr360
+rotate z \rr360
+nstring 20 -20 "Perspective view (randomized)" 
+disp t
+
+ortho 
+untran
+vport tile 3 2
+nstring r-20 r-20  "Orthographic (xy plane)"
+disp t
+
+vport tile 0 2
+rot x -90
+nstring 20 20  "Orthographic (xz plane)"
+disp t
+
+rotate home
+
+vport tile 1 2
+rot y 90
+nstring r-20 20 "Orthographic (zy plane)"
+disp t
+
+func init
+func silent
+
+func 1 spec -vwt:clrfun zf:vport reset:Draw=t:untran
+vport reset
+trans 0 0 10000 % hack!
+nstring cm 40 "Hit F1 key to reset viewport"
+nstring cm 20  "and enable drawing." 1
+disp t
+trans 0 0 -10000 % hack!
+
+silent=f
+
+echo " *** Fun with aliasing!
+echo "     NOTE: not necessarily a torus knot."
+echo -n "     "
+safe
+echo " "
+
+
+
+

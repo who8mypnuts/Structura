@@ -1,0 +1,5 @@
+tfunc 300 "exit f"
+
+
+echo "Auto termination enabled."
+

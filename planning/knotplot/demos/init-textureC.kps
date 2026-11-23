@@ -1,0 +1,19 @@
+reset all
+
+texture reset
+back=0
+load 3.1
+fitto 7
+hsta=\rr360
+
+disp t
+tex view
+
+texture appmode replace
+
+par0 = 15029566
+
+zbuff f
+blend one one
+glop backface t
+

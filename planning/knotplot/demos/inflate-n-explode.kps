@@ -1,0 +1,11 @@
+if KPbuild < 2990 then "anim cyl .06 .6 27 log" else "anim cyl .06 .6 .75 log"
+
+twfix
+
+broff = .01
+draw broke
+
+if KPbuild < 2990 then "anim broff .01 5 14 log" else "anim broff .01 5 .2 log"
+
+
+

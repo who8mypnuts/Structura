@@ -1,0 +1,60 @@
+% 6 nodes in graph
+delete all
+new=f
+
+% component 0 from node 2 to node 5
+line -0.500000 0.866025 0.707107 1.000000 0.000000 0.707107
+
+% component 1 from node 2 to node 4
+line -0.500000 0.866025 0.707107 0.500000 0.866025 -0.707107
+
+% component 2 from node 4 to node 5
+line 0.500000 0.866025 -0.707107 1.000000 0.000000 0.707107
+
+% component 3 from node 0 to node 4
+line -1.000000 0.000000 -0.707107 0.500000 0.866025 -0.707107
+
+% component 4 from node 0 to node 2
+line -1.000000 0.000000 -0.707107 -0.500000 0.866025 0.707107
+
+% component 5 from node 0 to node 3
+line -1.000000 0.000000 -0.707107 0.500000 -0.866025 -0.707107
+
+% component 6 from node 0 to node 1
+line -1.000000 0.000000 -0.707107 -0.500000 -0.866025 0.707107
+
+% component 7 from node 3 to node 4
+line 0.500000 -0.866025 -0.707107 0.500000 0.866025 -0.707107
+
+% component 8 from node 3 to node 5
+line 0.500000 -0.866025 -0.707107 1.000000 0.000000 0.707107
+
+% component 9 from node 1 to node 2
+line -0.500000 -0.866025 0.707107 -0.500000 0.866025 0.707107
+
+% component 10 from node 1 to node 3
+line -0.500000 -0.866025 0.707107 0.500000 -0.866025 -0.707107
+
+% component 11 from node 1 to node 5
+line -0.500000 -0.866025 0.707107 1.000000 0.000000 0.707107
+
+
+
+glue f3 f4
+glue f3 f5
+glue f3 f6
+glue l6 f9
+glue l6 f10
+glue l6 f11
+glue f0 f1
+glue f0 l4
+glue f0 l9
+glue l5 f7
+glue l5 f8
+glue l5 l10
+glue l1 f2
+glue l1 l3
+glue l1 l7
+glue l0 l2
+glue l0 l8
+glue l0 l11

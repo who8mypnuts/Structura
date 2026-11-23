@@ -1,0 +1,8 @@
+if par0 != 15029566 then <init-textureC.kps
+hstar=\rr360
+scale=.55
+
+knot
+if \rr2 < 1 then "texture appmode modu" else "texture appmode repla"
+<demo-relaxA.kps
+texture on

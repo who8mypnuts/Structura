@@ -1,0 +1,7 @@
+bfacf z 0.20815
+bfacf run 1000
+echo "running with default z value, click `stop' on KnotPlot Control Panel to stop"
+echo "try changing the z value with the slider or"
+echo "run with different step sizes"
+
+

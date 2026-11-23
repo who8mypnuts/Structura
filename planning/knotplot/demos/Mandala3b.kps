@@ -1,0 +1,52 @@
+
+reset all
+require accbuff
+
+verb=f
+silent=t
+
+back=black
+
+
+
+func init
+func silent
+
+
+alias ~setsymm "dfunc symm \ri[3/33] \ri2"
+func 1 <Mandala3b.kps
+func s 2 "alias ~setsymm nop;dfunc symm 1 1"
+func 3 "torus 2 4 \ri[6/108];jit 99999;fitto .1;oal random"
+%func 3 "knot 2"
+func 5 "hstar=\rr[20/40];hincr=180"
+func 6 "hstar=0;hincr=120"
+func 10 accbuff clear
+func 9 "fullscreen toggle;tfunc .4 {func exec 10}"
+
+func 11 "torus 2 4 \ri108;jitt 99999;fitto .1;info;oal random"
+
+scale = 0.401117
+cyl-rad = 0.057644
+
+disp t
+coll a
+force 1
+glop back f
+
+~setsymm
+func exec 3
+go
+<fun-with-accbuff.kps
+
+tfunc \rr11 ~setsymm 0 rep 4 11
+tfunc \rr11 "func exec 3" 0 rep 4 11
+tfunc \rr11 "func exec 5" 0 rep 4 11
+tfunc \rr11 "func exec 6" 0 rep 4 11
+
+silent=f
+echo 
+echo
+echo %" *** Press F9 to toggle fullscreen"
+echo
+<mandala-common.kps
+~title "Mandala 3b"

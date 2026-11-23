@@ -1,0 +1,14 @@
+reset all
+
+torus 2 3 222
+twfix
+
+Draw = f
+
+echo " "
+echo " "
+echo "  *** Please wait 10 seconds.... "
+echo " " 
+tfunc 10 "<../benchmarks/stop-relax.kps"
+
+go 9999999

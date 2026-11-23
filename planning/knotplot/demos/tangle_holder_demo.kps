@@ -1,0 +1,26 @@
+reset all
+silent=t
+mode cb
+cradius=.07
+func init
+func silent
+func 1 <tangle_holder_demo_aux.kps
+
+par2 = \rr18
+if par2 < 3 then "read thold_10st.kps;par2=20"
+if par2 < 6 then "read thold_cube.kps;par2=20"
+if par2 < 9 then "read thold_8st.kps;par2=20"
+if par2 < 10 then "read thold_a.kps;par2=20"
+if par2 < 13 then "read thold_b.kps;par2=20"
+if par2 < 15 then "read thold_c.kps;par2=20"
+if par2 < 16 then "read thold_f.kps;par2=20"
+if par2 < 17 then "read thold_g.kps;par2=20"
+if par2 < 19 then "read thold_h.kps;par2=20"
+
+thold norm
+thold install t
+
+show thold
+
+silent=f
+

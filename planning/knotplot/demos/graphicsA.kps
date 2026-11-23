@@ -1,0 +1,22 @@
+if par0 != 81210201 then "reset all"
+if \rr1 < 0.5 then "back = 0"
+if \rr1 < 0.2 then "reset all;disp t"
+
+clrfun z
+cyl-rad = \rr[.1/.4]
+hsta=\rr360
+scale = 0.8
+sbuff
+
+
+if \rr1 < 0.1 then "draw spec" else "draw norm"
+if \rr1 < 0.9 then "torus 0 0 0" else "knot spe"
+
+if \rr1 < 0.5 then "anim scale .8 .005 33 log" else "anim scale .005 .8 33 log" 
+
+par0 = 81210201
+
+echo " "
+echo " "
+echo "  ***** Randomized demo, click it again!"
+echo " "

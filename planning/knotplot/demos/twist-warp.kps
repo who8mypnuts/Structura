@@ -1,0 +1,39 @@
+require KPbuild 4691
+
+Draw=f
+silent=t
+save |tw1
+refl yx
+warp rec2ann 102
+save |tw2
+load |tw1
+Draw=t
+deform to |tw2 55
+Draw=f
+frame comm "load |tw1;warp rec2ann %d;disp t"
+frame 102 to -6 step 4
+Draw=t
+
+txt delete group 102
+txt delete warp
+
+txt c 108 "create another twist knot" <new_twist.kps
+
+scale keep .3
+safe
+
+stus=1
+
+
+
+alias ~relax "if safe then go else {txt delete identify;echo;echo;echo current position is not safe, ignoring request}"
+
+
+alias ~id "identify;txt delete identify"
+
+txt c a "relax knot" "txt c a0 identify ~id;~relax"
+%txt c a "relax knot" "~relax"
+
+
+silent=f
+

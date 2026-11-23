@@ -1,0 +1,10 @@
+%par5
+%10 load ms/2.2.1;txt exec 2 108
+%6 load |brun3;txt exec 8 108;colour auto
+%5 load mscl/2.2.1;txt exec 2 108
+%%%%%%%%%%%%%%%
+
+par5 = \rr21
+if par5 < 10 then "load ms/2.2.1;txt exec 2 108;par5=23"
+if par5 < 16 then "load |brun3;txt exec 8 108;colour auto;par5=23"
+if par5 < 22 then "load mscl/2.2.1;txt exec 2 108;par5=23"

@@ -1,0 +1,26 @@
+
+func init
+func silent
+func 1 <paint3.kps
+
+wfocus view
+
+silent = t
+Drawing = off
+
+back = 0
+sbuff
+
+Drawing = on
+
+blend one one
+
+clrfun 0
+disp
+disp
+clrfun 1
+
+silent = f
+
+  
+

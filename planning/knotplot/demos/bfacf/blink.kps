@@ -1,0 +1,100 @@
+require KPbuild 4986
+require KPbuild 4691
+%`-
+
+require KPbuild 4225
+
+reset all 
+silent=t
+scale = 1.121498
+
+
+energy model nbead
+energy format "Nedges = %.0f"
+
+show energy rog
+cyl-rad = 0.100000
+bead-radius = 0.180000
+mode cB
+untran
+viewmatrix 0.917060 0.000000 -0.398749 -0.181028 0.891007 -0.416337
+
+Draw=f
+clk load mscl/8.7
+clk news astand load
+tran to 0 0 0
+tran -1 0 3
+save |a
+clk load mscl/10.123
+clk news astand load
+tran to 0 0 0
+tran -1 0 3
+save |b
+delete all
+Draw=t
+
+par0=.4
+
+alias ~knot "txt fill off;txt font 4;txt right;txt c -30 $0;txt left;txt font 3;txt c -35 $1"
+%alias ~loada "~knot 8 7;load |a;tfunc \ppar0 ~loadb"
+%alias ~loadb "~knot 10 123;load |b;tfunc \ppar0 ~loada"
+
+
+txt clobber on
+txt on
+
+%~loada
+blink "~knot 8 7;load |a" "~knot 10 123;load |b"
+
+txt fcol "royal blue" .5
+
+
+txt push
+txt expire 8
+txt font 3
+txt cent
+txt group 199
+txt c 85 "you can rotate or scale the scene whilst blinking"
+txt fill on
+txt c 65 ok "txt delete group 199"
+txt pop
+
+
+
+txt font 4
+txt fill on
+txt right
+txt -14 14 ? "help popup bfacf/blink.kps handoff"
+
+silent=f
+
+txt fill on
+txt font 3
+txt centre
+txt c 20 "reload demo" <bfacf/blink.kps
+
+
+txt left
+txt phantom 10_123
+txt lineskip -25
+txt 15 40 10_123 "~blurt;blink stop 2"
+txt 15 a 8_7 "~blurt;blink stop 1"
+txt fill off
+txt phantom
+txt 10 a "stop on:"
+
+txt centre
+txt font 3
+txt fill off
+alias ~blurt "txt push;txt expire 9;txt group 199;txt cent;txt delete group 199;txt c 85 {reload demo to restart blinking};txt pop"
+
+
+exit
+
+%`+
+
+Blink demo
+
+Two knots, 8_7 and 10_123 in a minimal stick conformation on the cubic lattice appear
+to overlap for much of their paths. Anyone have any ideas about this?
+

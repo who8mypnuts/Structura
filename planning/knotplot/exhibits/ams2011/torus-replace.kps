@@ -1,0 +1,7 @@
+clrf z
+% if ntiles is 0 then it gets set to the last positive value set
+frame comm "torus num 0 0;fitto 9;read rand_torient.kps;vport tile \ri[0/999999] 0;disp t;gflush;nap .5"
+
+%frame 0 to \ri[10/40]
+frame 0 to \ri[10/11]
+

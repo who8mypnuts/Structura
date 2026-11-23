@@ -1,0 +1,138 @@
+reset all
+silent=t
+
+if \rr1 < .3 then "back=0"
+if \rr1 < .67 then "spe back"
+
+%if \rr1 < .067 then "read fancy-lights.kps;back=0"
+
+if \rr1 < .03 then "spec;fog on;fog colour 1 1 1;back=xffffff"
+
+font 4
+silent=t
+line num 15
+line dir 0 1
+mode cb
+cyl=.06
+new=f
+line 0 -7 0
+disp
+mbead 0 5
+disp
+mbead 14 5
+swirl end -72
+disp
+about y -72
+disp
+save \D9_3
+del all
+
+#2 line 5 -7 0;about y 72;disp
+save \D9_1
+swirl end 36
+disp
+about y -36
+disp
+about y -72
+disp
+about y -72
+load comb \D9_1
+disp
+load comb \D9_3
+disp
+
+
+mass open
+dstep=44
+ago 33
+disp
+
+save \D9_1
+
+delete all
+
+jthresh=102
+func 2 <11mar99.kps
+load \D9_1
+disp
+unknot 5 5
+disp
+about x 90 last
+disp
+tran 0 7 0 last
+disp
+unknot 5 5
+disp
+about x 90 last
+disp
+tran 0 -7 0 last
+disp
+swirl end -24
+disp
+reap 6
+
+% Now delete some beads.
+
+frame comm "delete bead %d"
+frame 72 to 62 step 2
+frame 58 to 46 step 2
+frame 43 to 31 step 2
+frame 28 to 16 step 2
+frame 13 to 1  step 2
+
+%spe lab
+
+frame 39 to 33 step 2
+frame 30 to 25 step 2
+frame 22 to 17 step 2
+frame 14 to 9 step 2
+frame 6 to 1 step 2
+
+%silent=f
+%panel on
+%exit
+
+save \D9_2
+cyl=.5
+bead=.6
+
+
+#72 rotate y 5;disp
+anim scale .35 .0633 55 log
+anim try 0 -3.6 89
+delete all
+
+#9 about y -120;tran 0 15;load comb \D9_2;disp t;nap .1
+Draw=f
+try=0
+warp rec2ann 1
+Draw=t
+disp
+join all
+disp
+ago 8
+hstar=33
+cyl=.2
+scale=.35
+fitto 10
+refl z
+
+mode s
+disp t
+nap .4
+
+#20 rotate x -3;disp t;nap .01
+Draw=t
+spe +vwt
+silent=f
+panel on
+
+dstep=3
+
+nstring cm 85 "Knot with D9 symmetry" 0
+nstring cm 60 "(discovered by Thistlethwaite et al.)"  1
+disp t
+
+nap 4
+
+

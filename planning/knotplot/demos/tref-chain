@@ -1,0 +1,19 @@
+reset all
+
+cyl = .2
+
+ncur = 1
+nseg = 7
+
+frame save none
+frame setup none
+frame script tref-chain-script
+
+
+frame 0 num 6
+
+centre
+hinc = 25
+
+
+

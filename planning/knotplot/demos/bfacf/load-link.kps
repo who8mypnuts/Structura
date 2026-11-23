@@ -1,0 +1,9 @@
+trans to lattice
+save |xtmp
+keep 0
+bfacf load
+load |xtmp
+keep 1
+bfacf combine
+ccmode = 2
+

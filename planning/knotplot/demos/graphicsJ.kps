@@ -1,0 +1,14 @@
+<StElmo_aux.kps
+cyl=\rr[3/5]
+value=\rr[.00/.03]
+
+disp t
+
+if \rr3 < 1 then "mode c"
+
+
+echo " "
+echo " "
+echo " *** Random parameters, try again... "
+echo "     Variation on `St. Elmo'."
+echo " "

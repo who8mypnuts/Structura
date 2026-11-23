@@ -1,0 +1,5 @@
+echo " " 
+echo "Twist spun trefoil in 4 dimensions."
+echo "Click on `Spin' or `Start movie' button."
+echo "Then adjust `theta' sliders to rotate the knot in 4D."
+echo " "

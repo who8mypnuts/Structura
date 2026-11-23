@@ -1,0 +1,6 @@
+if \rr1 < .5 then "#100 about x .9;disp t" else "#100 about x -.9;disp t"
+nap 2
+if \rr1 < .5 then "#100 about y .9;disp t" else "#100 about y -.9;disp t"
+nap 2
+if \rr1 < .5 then "#100 about x .9;disp t" else "#100 about x -.9;disp t"
+nap 2

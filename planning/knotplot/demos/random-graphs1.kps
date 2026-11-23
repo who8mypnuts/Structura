@@ -1,0 +1,67 @@
+reset all
+
+echo " "
+echo " "
+echo " "
+echo " "
+echo " *** Constructing a random graph ..."
+echo " "
+
+
+silent=t
+cyl=.2
+
+par0 = \rr360
+
+mode sC
+
+if \rr22 < 1 then "mode cb;cyl=.07"
+hstart = \ppar0
+mathsv C 0 0 1 d
+cluster-radius = 0.700000
+
+coll a
+scale=.45
+%line num 5  % now done in individual files
+
+dstep=5
+
+new=f
+frame comm "line num \ri[3/8];line dir \rr+-1 \rr+-1 \rr+-1;line"
+%frame comm "line num \ri[6/17];line dir \rr+-1 \rr+-1 \rr+-1;line"
+
+silent=t
+
+par2 = \rr105
+if par2 < 10 then "read tetra_cage.kps;par2=107"
+if par2 < 25 then "read cube_cage.kps;par2=107"
+if par2 < 45 then "read octa_cage.kps;par2=107"
+if par2 < 65 then "read dodec_cage.kps;par2=107"
+if par2 < 85 then "read icos_cage.kps;par2=107"
+if par2 < 106 then "read peterson_graph.kps;par2=107"
+
+
+
+if \rr2 < 1 then "jit 99999;fitto 12"
+
+
+fixc=t
+
+go 9999999
+func silent
+func init
+
+silent=f
+
+echo " "
+echo " "
+echo " *** There are some problems with the dynamics!"
+echo "     Press F11 to rerun this demo."
+
+func 12 <complete-graph.kps
+func 11 <random-graphs1.kps
+func 10 <knot-cage.kps
+func 9 <handcuff-graph.kps
+
+echo " "
+

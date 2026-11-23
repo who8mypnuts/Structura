@@ -1,0 +1,216 @@
+require KPbuild 4691
+%`-
+
+require KPbuild 4165
+
+reset all
+
+func init 
+func silent
+func 1 <ACN-static.kps
+
+silent=t
+back=#000
+
+scenery vscale .1
+scenery object eobj/wsphere
+
+ortho
+mode cB
+cyl=.1
+
+% prepare something for possible loading later
+Draw=f
+unknot 6 8
+scale 1 .6 1
+save |x
+about x 90
+about y 90
+save |z
+about z 90
+about x 90
+load comb |z
+load comb |x
+save |brun3
+Draw=t
+
+alias ~trefoil "if \rr10 < 5 then {load ms/3.1} else {load mscl/3.1}"
+
+
+alias ~fig8 "if \rr10 < 5 then {load ms/4.1;txt exec 4 108} else {load mscl/4.1;txt exec 5 108}"
+
+
+ccmode=2
+
+alias ~noexplain "txt delete group 67254"
+alias ~minstick "knot numb \ri[2/383] ms;fitto 6"
+~minstick
+
+line numb 2
+alias ~segment "delete all;line dir \rr+-$0 \rr+-$0 \rr+-$0;line;centre"
+alias ~segments "~segment $0;save |seg;~segment $0;trans \rr[4/6] 0 0;load comb |seg;centre"
+
+glop back t
+
+scenery acn minx 3
+scenery acn level 5
+scenery acn on
+scenery on
+
+txt init
+txt font 2
+txt left
+
+txt fcolour royalblue .5
+txt scolour #000
+txt sfcolour orange .9
+
+txt lineskip -24
+
+% put a `disp t' in the following so that the `regions...' info is printed after the other info
+alias ~scenacnminx "echo;parsave;verb=t;scen acn minx $0;disp t;parres;echo;echo regions corresponding to $0 crossings or fewer will appear transparent"
+
+txt 20 1 "  "
+txt fill on
+txt group 108
+txt select on
+txt 50 a 15 "~scenacnminx 15"
+txt 20 a0 14 "~scenacnminx 14"
+txt 50 a 13 "~scenacnminx 13"
+txt 20 a0 12 "~scenacnminx 12"
+txt 50 a 11 "~scenacnminx 11"
+txt 20 a0 10 "~scenacnminx 10"
+txt 50 a 9 "~scenacnminx 9"
+txt 20 a0 8 "~scenacnminx 8"
+txt 50 a 7 "~scenacnminx 7"
+txt 20 a0 6 "~scenacnminx 6"
+txt 50 a 5 "~scenacnminx 5"
+txt 20 a0 4 "~scenacnminx 4"
+txt 50 a 3 "~scenacnminx 3"
+txt set selected
+txt 20 a0 2 "~scenacnminx 2"
+txt 50 a 1 "~scenacnminx 1"
+txt 20 a0 0 "~scenacnminx 0"
+
+
+txt fill off
+txt 10 a "transparent:"
+txt lineskip -15
+txt 10 a "to show as"
+txt 10 a "crossing number"
+
+
+txt lineskip -24
+
+verbose=f
+frame comm "~segment 5;trans \rr+-5 \rr+-5 \rr+-5;load comb |a;save |a"
+
+txt fill on
+txt select off
+txt group 276125
+txt 15 a2 "explanation" "read ACN_explain.kps;txt exec 2 108"
+txt 15 a "penta" "~noexplain;read ACN_penta.kps"
+txt 15 a "link" "~noexplain;read ACN_linkload.kps;fitto 6"
+txt 15 a "min stick" "~noexplain;~minstick;txt exec 3 108"
+%txt 15 a "5 xing" 
+txt 15 a "fig-8" "~noexplain;~fig8;fitto 6"
+txt 15 a "trefoil" "~noexplain;~trefoil;fitto 6;txt exec 3 108"
+txt 15 a "2 segments" "~noexplain;~segments 6;txt exec 0 108"
+txt 15 a "N segments" "~noexplain;~segment 5;trans \rr+-5 \rr+-5 \rr+-5;save |a;frame 0 numb \ri[2/7];txt exec 0 108;colour auto"
+txt fill off
+txt 10 a "load:"
+
+txt lineskip -24
+txt right
+
+txt group 0
+txt right
+txt fill on
+txt select off
+txt -15 60 fullscreen "full toggle"
+txt -15 a map "scenery toggle"
+txt fill off
+txt -10 a toggle:
+
+
+
+txt fill on
+txt select on
+txt group 102
+txt -15 a1.3 7 "scen acn level 7"
+txt -15 a 6 "scen acn level 6"
+txt -15 a 5 "scen acn level 5"
+txt set selected
+txt -15 a 4 "scen acn level 4"
+txt fill off
+txt -10 a "refinement level:"
+
+txt group 0
+txt fill on
+txt select off
+
+txt -15 a1.3 ACN acn
+txt fill off
+txt -10 a calc:
+
+
+txt centre
+txt fill on
+txt c 15 "run other ACN demo" <ACN-dynamic.kps
+txt c a "rerun this demo" <ACN-static.kps
+
+
+
+txt fill off
+txt centre
+txt font 4
+txt c -20 "Average Crossing Number Map"
+
+
+txt font 4
+txt fill on
+txt right
+txt -14 14 ? "help popup ACN-static.kps handoff"
+
+txt on
+
+
+
+silent=f
+echo
+echo
+echo
+echo
+
+exit
+ 
+%`+
+Average Crossing Number Map
+
+This demo attempts to illustrate how the average crossing number (ACN)
+is computed.  In the window, you should see a sphere enclosing a knot. The
+sphere has a number of different coloured regions, possibly transparent.  
+The colour indicates the number of crossings seen from a great distance
+in the direction of that region.
+
+There is also a small white dot at the centre of the window.  If this white
+dot is showing through one of the regions, then the knot will appear to 
+have a crossing number corresponding to that region. 
+
+What the buttons are for:
+
+   --- the `crossing number to show transparent' buttons allow you to change 
+       how many crossings correspond to the transparent region. any regions
+       with a crossing number less than or equal to the number selected will
+       be transparent.
+
+   --- the `refinement level' controls how fine the detail is in the map.
+       larger numbers make for a nicer looking map, but make it slower to draw.
+
+Things to try:
+
+   --- click on the `2 segments' button to see a very simple ACN map. 
+       each 1-crossing region will show as a spherical parallelogram on the map.
+       you may have to click several times to get a nice parallelogram.  also,
+       for this case, try increasing the refinement level.
+

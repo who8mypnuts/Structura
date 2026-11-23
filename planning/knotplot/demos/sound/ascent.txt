@@ -1,0 +1,8 @@
+par0
+10 unknot
+10 torus 2 3
+8 torus 5 2
+5 torus 2 5
+4 torus 5 2
+2 torus 2 7
+1 torus 7 2

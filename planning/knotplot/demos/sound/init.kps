@@ -1,0 +1,41 @@
+require KPbuild 4519
+oal persistent off
+
+reset all
+
+silent=t
+
+silent=t
+back=black
+txt font 4
+txt colour orange
+txt cent
+
+txt fcolour royalblue .7
+
+
+txt c -30 "Knot Music & Sound"
+txt font 4
+txt c -60 "make sure your volume is set appropriately"
+txt c -90 "and then click on one of the buttons below"
+
+txt fill on
+
+txt push
+txt phantom OpenAL
+%txt c-105 -108 ascent <sound/ascent.kps
+%txt c-35 -108 play <sound/play-knot.kps
+txt c-65 -130 MIDI <play.lua
+if oal then "txt c+65 -130 OpenAL <sound/oal.lua"
+%txt c-35 -108 play <sound/play-knot.kps
+%txt c+35 -108 cycle <sound/cycle.kps
+%if oal then "txt c+105 -108 OpenAL <sound/oal4.kps"
+
+txt pop
+
+txt fill off
+txt c -216 "note that the `codes' demo on `DemoA' also does knot music (click on `play init')"
+txt on
+
+silent=f
+#4 echo

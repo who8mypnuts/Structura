@@ -1,0 +1,13 @@
+reset all
+txt font 4
+txt on
+txt centre
+txt c -20 "graphics tests"
+txt fill on
+txt lineskip 35
+verbose = f
+txt phantom "flicker test"
+txt fcolour royalblue .7
+txt c a1.3 "flicker test" <flicker_test2.kps 
+txt c a "clip test" <clip_test.kps 
+txt c a "fog test" <graphicsB.kps 

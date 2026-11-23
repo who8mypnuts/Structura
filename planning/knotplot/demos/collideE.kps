@@ -1,0 +1,94 @@
+require KPbuild 4002 ifnot "reset all"
+
+if par4 != 36795246 then "reset all;rotate x -55;scale=.24;par1=90;par2=4;par3=2"
+persp 60 .2 120
+
+silent=t
+verb=f
+Draw=f
+delete all
+par4=36795246
+
+
+
+func init
+func silent
+
+func 1 "par1=0;par2=1;<collideE.kps"
+func 2 "par1=180;par2=2;<collideE.kps"
+func 3 "par1=120;par2=3;<collideE.kps"
+func 4 "par1=90;par2=4;<collideE.kps"
+func 5 "par1=72;par2=5;<collideE.kps"
+func 6 "par1=60;par2=6;<collideE.kps"
+func 7 "par1=51.429;par2=7;<collideE.kps"
+func 8 "par1=45;par2=8;<collideE.kps"
+func 9 "par1=40;par2=9;<collideE.kps"
+func 10 "par1=36;par2=10;<collideE.kps"
+func 11 "par1=32.7273;par2=11;<collideE.kps"
+func 12 "par1=30;par2=12;<collideE.kps"
+
+
+3dop gravity 0 0 -1
+
+grsize=80
+grmajor=20
+spec grid
+
+glop backface f
+
+line dir 3 0 3
+line numb 2
+line -10 0 0
+
+delete all
+
+new=f
+
+% make the target(s)
+unknot 7 3.4
+
+frame comm "about z 120;dupl;trans 8 0 -5 last"
+frame 1 numb 3
+trans 0 0 2.5
+
+mode s
+
+force 1
+velf=t
+grav=t
+
+
+func cs 12 "tfunc reset;tfunc .1 {func exec \ri[1/8]} 0 rep 4 6"
+
+
+velmag=.001
+velocity 0 0 0
+mass all 0
+
+zvareset=f   % needed to prevent the `unknot' command from zero-ing 
+             % the velocities of the previously created unknots
+
+line dir 1 0 0
+line numb \ri[5/10]
+
+func s 1 "line 0 0 0"
+func s 2 "unknot 6 1"
+
+% `mass comp -1 1' means set the mass of the last numbered component to 1
+frame comm "about z \ppar1;func exec s 2;mass comp -1 1;refl r last;trans -23 0 1 last;veloc 1 0 \rr[.8/2] comp last"
+
+frame 1 num \ppar2     % frame starting number is arbitrary
+
+cyl=.3
+about z \rr360
+
+Draw=t
+go inf limit 216
+
+silent=f
+
+echo
+echo
+echo
+echo
+echo

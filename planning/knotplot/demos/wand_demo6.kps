@@ -1,0 +1,47 @@
+reset all
+
+silent=t
+verbose=f
+
+field lorenz
+
+back=0
+3dop colF \rr360 1 1
+
+%nlor par \rr[2/11] \rr[1/5] 5
+nlor offset -.39 -.39 23.67
+
+%if \rr2 < 1 then "mode bF" else "mode F"
+mode bF
+
+unknot 6 .6
+
+par1 = 11
+%if \rr2 < 1 then "mode F;zbuff f;3dop colF \rr44 1 .4;blend one one;par1=12"
+
+
+coll a
+force 1
+velf=t
+go 999999999
+
+func init
+func silent
+
+func c 11 "mode F;zbuff f;3dop colF \rr44 1 .4;blend one one;par1=12"
+func c 12 "zbuff t;mode bF;3dop colF \rr360 1 1;par1=11;blend sa msa"
+
+func 2  "func exec c \ppar1"
+func 3 "nlor par \rr[2/11] \rr[1/5] 5"
+func 4 knot
+func 1 <wand_demo6.kps
+wand pull 0
+
+silent=f
+
+echo 
+echo 
+echo "  *** Try changing the parameters `sigma', `b', and `r' on the `Lorenz' panel."
+echo "      Press F1 to rerun demo (always different)."
+echo "      Press F2 to toggle blending modes, F3 to randomize parameters."
+echo 

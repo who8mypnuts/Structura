@@ -1,0 +1,51 @@
+reset all
+timer start
+silent=t
+back=#000
+disp t
+accbuff tallow
+hstar=22
+accbuff decay 0.97
+accbuff accum 0.9
+accbuff return 0.5
+
+mathsv c 0 0 0 s
+
+accbuff on
+accbuff clear
+
+mode cB
+%dfunc symm 6 1
+cyl-rad=.1
+unknot 222
+scale=.5
+#108 swirl 1
+coll a
+force 1
+velf=t
+
+txt font 4
+txt centre
+txt colour hsv:102.2/.6/.5
+txt c -40 "Accumulation buffer test"
+txt font 4
+txt colour black
+
+txt fill on
+txt c 40 "check web for reference rendering" "www knotplot.com/benchmarks/abuff.html"
+txt on
+
+ago 108
+silent=f
+
+echo 
+echo 
+echo " *** Click on the button in the view window to compare to the reference rendering   "
+echo -n "     or press the F1 button now.    Rendering time on your computer was "
+timer check
+echo "     and should be less than a few seconds."
+echo
+
+func init
+func 1 "www knotplot.com/benchmarks/abuff.html"
+

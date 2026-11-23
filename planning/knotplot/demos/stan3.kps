@@ -1,0 +1,29 @@
+require KPbuild 4691
+reset all
+
+silent=t
+back=black
+mathsv b 0 0 0 e
+tanf=t
+tanmag=.0005
+alias ~col "par0=\rr360;3dop colF \ppar0 1 1;test paradj 0 1 180;mathsv b \ppar0 1 1 d"
+%alias kol "par0=\rr360;math c \ppar0 1 1;test paradj 0 1 180;mathsv b \ppar0 1 1 d"
+alias ~poff "if \rr2 < 1 then {field poff 3.14159265} else {field poff 0}"
+
+
+alias ~ranrot "rotate x \rr+-180;rotate y \rr+-180;rotate z \rr+-180"
+tfunc .01 "~col;~poff;rand unif \ri[5/77];~ranrot" 0 rep 6 19
+bead = .09
+field type 3dstan
+field npoint 1022
+mode BF
+
+coll a
+force 1
+velf=t
+cursor 1
+
+go
+verbose=f
+silent=f
+

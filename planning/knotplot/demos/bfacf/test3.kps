@@ -1,0 +1,84 @@
+require KPbuild 4224
+alloc 16008
+
+reset all
+bfacf init
+bfacf init knotmode
+mode cB
+scale=.238
+
+back=#000
+
+load mscl/0.1
+trans 10 0 0
+bfacf load
+
+load mscl/0.1
+trans -10 0 0
+bfacf combine
+
+ccmode = 2
+colour 0 red
+colour 1 green
+
+bfacf box 12
+bfacf latshow 13
+bfacf fill 0 11 11
+%spec bfacf
+bfacf copy
+
+mode cB
+bfacf z 1
+
+scale = 0.333423
+cyl-rad = 0.100000
+bead-radius = 0.180000
+mode cB
+untran
+viewmatrix 1.000000 0.000000 0.000000 0.000000 0.843391 -0.537300
+light off all
+light define 1 % currently on
+light ambient 0.00 0.00 0.00 1.00  % R G B A
+light colour 0.95 0.00 1.00 1.00  % R G B A
+light specular 1.00 1.00 1.00 1.00  % R G B A
+light position 6.21 -9.82 17.87 1.00  % x y z w
+light on 1
+light define 2 % currently on
+light ambient 0.00 0.00 0.00 1.00  % R G B A
+light colour 0.00 1.00 0.55 1.00  % R G B A
+light specular 1.00 1.00 1.00 1.00  % R G B A
+light position 20.86 -7.07 11.60 1.00  % x y z w
+light on 2
+light define 3 % currently on
+light ambient 0.00 0.00 0.00 1.00  % R G B A
+light colour 0.00 0.04 1.00 1.00  % R G B A
+light specular 1.00 1.00 1.00 1.00  % R G B A
+light position 5.72 6.88 -11.32 1.00  % x y z w
+light on 3
+
+colour all white
+
+bfacf run 5000
+
+txt lineskip 20
+txt left
+txt font 3
+
+txt on
+
+%bfacf clear 0 1 1
+bfacf clear 0  3 3
+
+
+if \rr2 < 1 then "rotate y -10" else "rotate y 10"
+
+%spec bfacf
+func 9 accbuff clear
+
+bfacf z .228816
+
+bfacf run 5000
+
+scenery obj bfacf/test2
+scenery obj bfacf/test3a
+scenery on

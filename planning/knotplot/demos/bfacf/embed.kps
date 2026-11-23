@@ -1,0 +1,6 @@
+require KPbuild 4378
+alloc 15000
+embed clk
+ccmode=2
+safe
+

@@ -1,0 +1,8 @@
+func exec c \ppar4
+
+echo
+echo
+
+if par4 == 6 then "echo showing every step in the placement procedure" else  "echo NOT showing every step in the placement procedure"
+
+echo

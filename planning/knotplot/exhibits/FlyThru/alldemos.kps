@@ -1,0 +1,10 @@
+echo " "
+echo " "
+echo Demo `fly-thru'
+<fly-thru.kps
+echo " "
+echo " "
+echo " "
+echo All done!
+echo " "
+

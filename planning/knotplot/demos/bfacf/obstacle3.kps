@@ -1,0 +1,57 @@
+<bfacf/basicinit.kps
+ccmode=2
+silent=t
+load bfacf/ob3.k
+
+colour all tan
+colour last "robin egg blue"
+
+bfacf load
+
+% the following nonsense is because of a bug in the recentering routines
+
+bfacf fill -120 -120 -120  120  120 -120
+bfacf fill -120 -120  120 120  120 120
+
+bfacf fill -120 -120 -120 -120  120  120 
+bfacf fill 120 -120 -120 120  120  120 
+
+bfacf fill -120 -120 -120   120 -120  120 
+bfacf fill -120 120 -120   120 120  120 
+
+scale = 0.33
+cyl-rad = 0.1
+bead-radius = 0.180000
+mode cB
+untran
+
+
+bfacf freeze 0
+bfacf freeze 1
+bfacf freeze 2
+bfacf freeze 3
+
+bfacf cent off
+
+
+
+silent=f
+
+#5 echo
+
+txt font 4
+txt centre
+txt c -20 "unknot threaded through rings"
+
+txt font 3
+
+txt fcolour royalblue .6
+txt push
+txt expire 11
+txt c 45 "click on the `run' button on the KnotPlot Control Panel"
+txt pop
+
+txt fill on
+txt c 20 "reload obstacle3" <bfacf/obstacle3.kps
+
+txt on

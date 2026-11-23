@@ -1,0 +1,39 @@
+
+Draw=f
+silent=t
+<gravity-init.kps
+glop backface f
+if \rr1 < .8 then "hsta=\rr130"
+
+if \ppar4 != 2 then "scale = 0.1"
+par4=2
+
+coll a
+load 14sep02a.k
+keep 0
+mech=f
+elec=t
+symm=f
+velfo=t
+amech=t
+grav=t
+spring=0
+trans to 0 0 0 
+if \rr1 < .5 then "refl x"
+if \rr1 < .5 then "refl y"
+if \rr1 < .5 then "refl z"
+trans 0 35 0
+cyl=1
+about y \rr360
+cut 29
+cut 68
+delete 1
+mass open
+mass 0 1
+force 1
+
+if \rr1 < .03 then "sbuff;clrfun n;cyl=.2"
+Draw=t
+silent=f
+
+go 

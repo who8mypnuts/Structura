@@ -1,0 +1,89 @@
+reset all
+txt subwindows off
+light model onesided
+silent = t
+verbose=f
+tgvas = 6.000000
+tgas = true
+tgspace = 0.600000
+tgfuzz = -0.001000
+tg1offset = 0.000000
+tgzlow = -0.600000
+tgzhigh = 0.600000
+blend one one
+back = black
+
+cradius = 0.01
+sradius = 0.01
+bradius = 0.01
+
+coll a
+force 1
+vscale=\rr[1/2]
+
+par0=\rr10
+
+if par0 < 7 then "mode cb" else "mode b"
+
+hooke=30
+mathsv k 22 .96 0 s
+mathsv k  0 0 0 a
+mathsv k 222 .9 .1 d
+
+mathsv b 0 0 0 e
+mathsv b 0 0 0 s
+mathsv b 22 .94 .9 d
+mathsv b 0 0 0 a
+
+if \rr9 < 3 then "mathsv k 22 .9 .1 d;mathsv b 222 .94 .9 d;bradius=\rr[.01/.02]"
+
+if \rr1022 < 1 then "mathsv k \rr360 .9 .1 d"
+
+tinc=.13
+if \rr4 < 3 then "tgvas=6;conway 3" else "tgvas=2;random tangle"
+
+if \rr22 < 1 then "braid -cheapo (aB)^4;fitto \rr[3/7]"
+
+<randorient.kps
+if \rr2 < 1 then revb
+if \rr5 < 1 then "tanf=t"
+if \rr7 < 1 then "about x 90"
+if \rr7 < 1 then "about y 90"
+if \rr7 < 1 then "about z 90"
+
+if par0 > 8 then "split"
+
+func init
+func silent
+
+func 1 <KnotPaint0.kps
+
+par1 = 2
+func s 1 "go inf limit 102;echo;echo;echo Press F2 again to stop painting, F3 to clear.;echo;par1=2"
+func s 2 "go 0;echo;echo;echo Press F2 again to start painting, F3 to clear.;echo;par1=1"
+func 2 "func exec s \ppar1"
+
+func 3 "clrfun zf;disp t;disp t;clrfun z"
+func 4 "go inf limit 102;clrfun zt;echo;echo;echo Rotate, scale, or translate the knot in the view window.;echo"
+
+func 6 "delete all;func exec 3;unknot \ri[9/33] \rr[.1/8];func exec 4"
+func 5 "delete all;func exec 3;conway 3"
+func 7 <KnotPaint0_aux1.kps
+func 8 <KnotPaint0_aux2.kps
+
+func exec 3
+
+go inf limit 102
+
+if \rr1022 < 1 then "3dop bgimage lupin;spec +bgimage"
+
+silent = f
+
+echo " "
+echo " "
+echo " *** Press F1 to rerun, F2 to stop painting."
+echo "     Press F3 to clear."
+echo "     Also, try rotating, scaling, or translating the knot with the mouse."
+echo "     Press F4 to enable auto-clear while transforming."
+
+

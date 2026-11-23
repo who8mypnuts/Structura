@@ -1,0 +1,16 @@
+reset all
+
+%% Generated Thu Nov 10 09:57:18 2011
+%% with command line: multiif Mandalas.txt
+
+par9 = \rr65
+if par9 < 10 then "read Mandala1.kps;par9=67"
+if par9 < 15 then "read Mandala2.kps;par9=67"
+if par9 < 25 then "read Mandala3.kps;par9=67"
+if par9 < 37 then "read Mandala3a.kps;par9=67"
+if par9 < 51 then "read Mandala3b.kps;par9=67"
+if par9 < 60 then "read Mandala4.kps;par9=67"
+if par9 < 66 then "read Mandala4b.kps;par9=67"
+
+
+

@@ -1,0 +1,62 @@
+% based on split-delete.kps
+
+reset all
+mode cb
+cyl = .15
+bead=.21
+scale = .3
+rot z \rr360
+rot y \rr360
+rot x \rr360
+
+
+txt clobber on
+txt font 4
+txt centre
+txt on
+
+
+frame reset
+frame comm "load simp/%d"
+Draw=f
+frame \ri16
+%load simp/12
+%frame \ri[13/16]
+<randorient.kps
+refl r
+Draw=t
+
+nop \t0    % initialize clock
+
+par=45  % degrees per second
+
+% about x for 4 seconds at par0 degrees per second
+until timelimit 4
+until Ncomp 0 "about x \T1;disp t"
+
+
+
+font 4
+txt c 40 "Trying to simplify knot"
+
+stu=3
+until timelimit 25
+silent=t
+until nbeadslt 10 "ago 3;del down -4"
+silent=f
+
+txt c 40 "Trying harder!"
+until timelimit 33
+silent=t
+until nbeadslt 10 "ago 3;del down 5;del rrob"
+silent=f
+
+if nbeads < 15 then "txt c 40 Done!" else "txt c 40 Failed!"
+
+disp t
+
+if nbeads < 15 then "ago 222"
+
+nap 2
+
+

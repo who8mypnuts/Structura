@@ -1,0 +1,140 @@
+require KPbuild 4691
+reset all
+
+func init
+func silent
+silent=t
+alias ~ah "txt hide \rr[7/8]"
+
+back=black
+
+unknot 66 4.6
+sat=0
+disp t
+
+trans 0 0 .05
+scen on 
+scen obj .comp
+revb
+trans 0 0 -.1
+%scen obj .comp
+
+load ravenna.k
+
+refine 5
+
+vscale = 0.174193
+
+draw 
+glop back t
+draw hflat
+func 1 <ConeyRavenna1.kps
+func 2 <random-lights
+
+light model local
+
+vscale = 0.174193
+
+try = 0.180000
+
+light off all
+light define 1 % currently on
+light ambient 0.00 0.00 0.00 1.00  % R G B A
+light colour 0.00 1.00 0.55 1.00  % R G B A
+light specular 1.00 1.00 1.00 1.00  % R G B A
+light position 25.94 0.97 6.49 1.00  % x y z w
+light on 1
+light define 2 % currently on
+light ambient 0.00 0.00 0.00 1.00  % R G B A
+light colour 0.35 0.00 1.00 1.00  % R G B A
+light specular 1.00 1.00 1.00 1.00  % R G B A
+light position -4.88 9.67 -19.79 1.00  % x y z w
+light on 2
+light define 3 % currently on
+light ambient 0.00 0.00 0.00 1.00  % R G B A
+light colour 1.00 0.45 0.00 1.00  % R G B A
+light specular 1.00 1.00 1.00 1.00  % R G B A
+light position -1.10 -29.57 11.07 1.00  % x y z w
+light on 3
+
+
+scenery scale 1.2
+scenery obj coney
+scenery rotate walk
+scenery scale .7
+
+frame comm "scen obj coney bead %d"
+
+frame 0 to 1943 step 15
+%frame 0 to 390 step 15
+%frame 0 to 200 step 15
+
+tfunc .3 nseg=2
+
+func 9 accbuff clear
+
+func cs 1 "echo;echo;echo *** try rotating / scaling the scene with the mouse;echo"
+
+func 4 "func exec cs 1;idle {about z .6;rotate z -.6;scen shift 1}"
+
+txt left
+txt fcolour rgbi:0/127/229 .4
+txt sfcolour rgbi:0/141/255 .6
+txt lineskip -25
+txt fill on
+txt clobber on
+
+%txt 12 10 walk "func exec 4"
+alias ~but "~ah;txt left;txt 15 10 $0 {$1}"
+
+
+alias ~go "func exec 4;~but stop ~stop"
+alias ~stop "idle;~but walk ~go"
+
+~ah
+~but walk ~go
+txt 15 a  lights "func exec 2"
+txt push
+txt select on
+txt group 932472
+txt phantom M
+~ah
+txt 15 a  S "scen dscale .2"
+~ah
+txt 43 a0 M "scen dscale 0.4472"
+~ah
+txt 71 a0 L "scen dscale 1"
+txt set selected
+txt pop
+txt select off
+txt phantom
+
+~ah
+txt centre
+txt c 20 "reload demo" <ConeyRavenna1.kps
+
+~ah
+txt right
+txt -15 15 fullscreen "full tog"
+txt left
+txt on
+verb=f
+~ah
+
+txt autohide on   % should be the last txt command
+silent=f
+echo
+echo
+echo
+
+
+func 1 <ConeyRavenna1.kps
+exit
+
+need a version where the coneys walk to the centre,
+then back out again, then turn around
+
+this could be done by using two components and displaying them differently
+comp 0 displayed as labyrinth
+comp 1 hidden
+Coneys are attached to comp 1 and only comp 1 i shifted

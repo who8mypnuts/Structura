@@ -1,0 +1,14 @@
+value=1
+hstart=\rr360
+if \rr2 < 1 then "back=0" else "back=xffffff"
+par0 = \rr100
+if par0 < 33 then "value=0;back=xffffff;par0=888"
+if par0 < 66 then "sat=0;back=0;par0=888"
+
+if \rr97 < 1 then "back=xff0000"
+if \rr97 < 1 then "back=x00ff00"
+if \rr97 < 1 then "back=x0000ff"
+if \rr97 < 1 then "back=x00ffff"
+if \rr97 < 1 then "back=xff00ff"
+if \rr97 < 1 then "back=xffff00"
+

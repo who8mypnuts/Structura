@@ -1,0 +1,13 @@
+reset all
+scale=1.02
+par2=60
+par3=30635884
+elec=f
+mech=f
+velforce=on
+therm=f
+gravity=on
+anch=t
+
+cyl=.06
+mode facb

@@ -1,0 +1,54 @@
+
+silent=t
+frame reset
+frame comm "panel angle %d;panel draw"
+font 21
+frame 0 to \ri+-360
+silent=f
+
+par1=\rr102.2
+if par1 < 60 then "<violently-happy.kps" else "<ufos.kps"
+
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo
+echo " *** YOU WERE TOLD NOT TO CLICK! ***"
+echo
+echo
+
+silent=t
+frame reset
+frame comm "panel angle %d;panel draw"
+font 21
+frame 0 to \ri+-360
+silent=f
+verbose=f
+font 20
+tfunc \rr6 "frame 0" 0 rep 1 22
+tfunc \rr16 "frame 90" 0 rep 1 66
+tfunc \rr6 "frame 180" 0 rep 1 22
+tfunc \rr16 "frame 270" 0 rep 1 66
+tfunc \rr16 "frame \ri+-30" 0 rep 1 22
+tfunc \rr16 "frame 0 to \ri+-360" 0 rep 1 33
+
+txt init
+txt font 4
+txt centre
+txt fill on
+txt c 40 "reset control panel" "panel reset;panel draw"
+tfunc \rr10 "txt on" 0 rep 1 9
+tfunc \rr10 "txt off" 0 rep 1 5
+
+
+
+
+
+
+
+

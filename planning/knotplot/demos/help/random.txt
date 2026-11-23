@@ -1,0 +1,34 @@
+random
+
+Creates a random knot using one of several methods:
+
+1) Uniform random knots --- coordinates for vertices are selected uniformly at
+random within a specified range (defaults are provided).  Usage is
+
+random uniform <<optional parameters>>
+
+the number of optional parameters is either 0, 1, 2, 3, 6 or 7
+
+random uniform 
+creates a knot with default number of beads and coordinates in the range (-10, 10)
+default number of beads is current value of N-torus
+
+random uniform N
+creates a knot with N vertices and coordinates in the range (-10, 10)
+
+random uniform N R
+creates a knot with N vertices and coordinates in the range (-R, R)
+
+random uniform N MIN MAX
+creates a knot with N vertices and coordinates in the range (MIN, MAX)
+
+random uniform XMIN XMAX YMIN YMAX ZMIN ZMAX
+similar to above, but ranges for x, y and z are different.  number of beads is 
+set to current value of N-torus
+
+random uniform N XMIN XMAX YMIN YMAX ZMIN ZMAX
+similar to above, but ranges for x, y and z are different and number of beads is N.
+
+NOTE: In the above, `random uniform' may be abbreviated to `rand unif'. Also, it's
+easiest to see what's going on if you click on `beads & cyls' on Main control panel first.
+

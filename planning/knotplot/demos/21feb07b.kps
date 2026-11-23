@@ -1,0 +1,35 @@
+require KPbuild 4965
+
+reset all
+velf=t
+hstart=\rr360
+knot 3
+
+swap randomize
+mcyl all .8
+mcyl 1 .1
+mode s all
+mode cB 1
+mode B 0
+force 1
+stus=4
+%coll a
+%ago 200
+%coll a
+go
+
+tfunc \rr4 "velf=t" 0 rep 1 7
+tfunc \rr4 "velf=f" 0 rep 1 9
+tfunc \rr4 "tanf=f" 0 rep 1 7
+tfunc \rr4 "tanf=t" 0 rep 1 20
+tfunc \rr4 "revb \ri[0/2]" 0 rep 1 8
+
+tfunc \rr33 <21feb07b.kps 0 rep 1 44
+
+tanmag = 0.0005
+
+
+%%%%  WHY!!!!????
+
+%specials not drawn properly
+%spec comm "align ax"

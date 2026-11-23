@@ -1,0 +1,59 @@
+reset all
+
+silent=t
+cyl=.2
+
+par0 = \rr360
+
+mode sC
+
+if \rr22 < 1 then "mode cb;cyl=.07"
+hstart = \ppar0
+mathsv C 0 0 1 d
+cluster-radius = 0.700000
+
+coll a
+scale=.45
+%line num 5  % now done in individual files
+
+dstep=5
+
+new=f
+frame comm "line num \ri[5/12];line dir \rr+-1 \rr+-1 \rr+-1;line"
+%frame comm "line num \ri[6/17];line dir \rr+-1 \rr+-1 \rr+-1;line"
+
+%frame comm "line num 4;line dir \rr+-1 \rr+-1 \rr+-1;line"
+
+silent=t
+
+delete all
+
+par1 = \rr55
+if par1 < 10 then "read complete-graph5.kps;par1=57"
+if par1 < 25 then "read complete-graph6.kps;par1=57"
+if par1 < 40 then "read complete-graph7.kps;par1=57"
+if par1 < 56 then "read complete-graph8.kps;par1=57"
+
+
+jit 99999
+fitto .1
+
+
+fixc=t
+
+go 
+func silent
+func init
+
+silent=f
+
+echo " "
+echo " "
+echo " *** Random complete graph."
+echo "     Press F12 to rerun this demo."
+echo " "
+
+func 12 <complete-graph.kps
+func 11 <random-graphs1.kps
+func 10 <knot-cage.kps
+func 9 <handcuff-graph.kps

@@ -1,0 +1,23 @@
+require KPbuild 4691
+reset all
+
+cyl-rad=.5
+scale = .17
+rota x 102.2
+txt cent
+txt font 4
+txt fcolour royalblue .6
+txt fill on
+txt c 20 rerun <bracelet.kps
+txt on
+alias annote "txt fill off;txt c 108 {celtic cgrid  $0  $1  $2}"
+
+
+func 1 <bracelet.kps
+alias ~bracelet "unknot 200;dupl;trans 0 0 1 1;centre;warp install;celtic cgrid $0 $1 $2;celtic diagram;celtic copy;warp along;annote $0 $1 $2" 
+
+par0 = \ri[50/140]
+
+test paradj 0 .1
+~bracelet \ri[22/44] \ri[2/5] \ppar0
+scale 2

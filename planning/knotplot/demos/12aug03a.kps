@@ -1,0 +1,19 @@
+load c6/77.k
+
+cyl-rad = 4.040141
+tanforce = on
+value = 0.026469
+hbeads = false
+hstart = 201.377992
+hincr = 10.000000
+dstep = 3
+velforce = on
+velmag = 0.070604
+ncomps = 6
+ncurve = 1
+nsegments = 3
+ncurve = 1
+nsegments = 3
+dfunc glowing
+
+go 9999999

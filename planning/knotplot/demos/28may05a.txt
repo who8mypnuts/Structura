@@ -1,0 +1,4 @@
+par1
+100 nop
+77 rotate x \rr+-90
+33 rotate y \rr+-90

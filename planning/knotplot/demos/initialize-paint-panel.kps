@@ -1,0 +1,11 @@
+button 10 "Init Paint" <setup-paint 5 240 40 15 
+button 10 "clrfun 1" "clrfun 0; disp; disp; clrfun 1" -1 -1 30 15 
+button 10 "clrfun 3" "clrfun 0; disp; disp; clrfun 3" -1 -1 30 15 
+button 10 Blend "blend one one" -1 -1 30 15 
+button 10 Over  "blend sa msa" -1 -1 30 15 
+button 10 "Zbuff t" "zbuffer t" -1 -1 30 15 
+button 10 "Zbuff f" "zbuffer f" -1 -1 30 15 
+button 10 "Drawing on " "Draw = t" -1 -1 40 15 
+button 10 "Drawing off" "Draw = f" -1 -1 40 15 
+
+

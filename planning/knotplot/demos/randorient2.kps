@@ -1,0 +1,9 @@
+if \rr2 < 1 then "refl x"
+if \rr2 < 1 then "refl y"
+if \rr2 < 1 then "refl z"
+if \rr2 < 1 then "about x 180"
+if \rr2 < 1 then "about y 180"
+if \rr2 < 1 then "about z 180"
+if \rr2 < 1 then "refl r"
+refl r
+

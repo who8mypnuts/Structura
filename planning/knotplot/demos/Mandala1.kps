@@ -1,0 +1,51 @@
+reset all
+
+func init
+func silent
+func 1 <Mandala1.kps
+
+%silent=t
+verbose=f
+
+all 1022
+sbuff
+cyl=.04
+hsta=\rr350
+mathsv s 0 0 0 s
+back=black
+Draw=f
+disp t
+disp t
+value=\rr.05
+%draw spec
+
+par3=\rr+-108
+par4=\rr+-108
+
+frame command "unknot 1022 %d;scale .1 .1 .1;swirl y \ppar3;swirl x \ppar4;fitto 10;disp t;about z 72;disp t;about z 72;disp t;about z 72;disp t;about z 72;disp t"
+
+ortho 
+scale=.35
+back=0
+zbuff f
+blend one one
+glop backface t
+back=0
+clrfun n
+
+
+%frame 50 to 150 step 15
+idle "frame \ri[50/150]"
+
+silent=f
+
+<mandala-common.kps
+~title "Mandala 1"
+
+Draw=t
+par par
+par value
+
+
+
+

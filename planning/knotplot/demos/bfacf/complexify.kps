@@ -1,0 +1,17 @@
+txt delete group 421720571
+txt push
+txt group 421720571
+txt right
+txt fill on
+txt font 3
+txt -10 -20 "stop complexifying" <bfacf/stop-complexify.kps
+txt pop
+bfacf stop
+idle
+silent=t
+go 0
+silent=f
+alias ~cfy "bfacf step 1000000;bfacf recombo;disp t"
+idle ~cfy
+verbose = f
+bfacf recombo limit on

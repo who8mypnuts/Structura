@@ -1,0 +1,69 @@
+% Demo written in 2003 whilst listening to 
+% Björk's song `Violently Happy' (on headphones, repeatedly, repeatedly...)
+
+if par2 != 738683223 then "reset all"
+
+glop backface f
+delete all
+disp t
+silent=t
+
+new=f
+
+if \rr4 < 1 then "<vhappy-aux0.kps" else "<vhappy-aux1.kps"
+
+func silent
+func init 
+
+par1 = 1
+
+func 1 "func exec c \ppar1"
+func c 1 "par1 = 2;read idle-relax-rot-z.kps"
+func c 2 "idle;go;par1=1"
+func 3 "silent=t;frame 0;mass all 1;mass first all 0;silent=f"
+func 4 delete all
+
+func 5 "par2 = 738683223"
+func 6 "silent=t;sat=0;read random-lights;silent=f"
+
+background=black
+func c 7 "par0=8;accbuff off"
+func c 8 "par0=7;read fun-with-accbuff.kps"
+func 7 "func exec c \ppar0"
+
+func exec c \ri[7/8]
+
+func 12 <violently-happy.kps
+
+mass all 1
+mass first all 0
+
+mathsv k 21 1 \rr.4 e
+
+ncur=\ri[3/10]
+nseg=\ri[12/40]
+
+sradius=\rr[.07/.4]
+
+coll a
+force 1
+go
+mode sA
+
+arrow cap t
+arrow slice \rr[9/22]
+arrow base \rr[1/3] 0
+arrow height \rr[1/2] 0
+
+if \rr3 < 1 then "mathsv k 0 0 0 e;background=black;par0=8;sat=0;<random-lights"
+
+silent=f
+
+echo " " 
+echo " *** Randomized demo, try again!" 
+echo "     Press F1 to toggle rotation of scene."
+echo "     Press F3 to add another `schroom!  Press F4 to delete all of them."
+echo "     Press F5 to disable resetting the view and scale each time demo is run."
+echo "     Press F6 to randomize lighting, F7 to motion blur, F12 to rerun demo."
+echo "     Adjust the `ncur' and `nseg' sliders on the `Main' panel to change quality (and speed) of rendering."
+

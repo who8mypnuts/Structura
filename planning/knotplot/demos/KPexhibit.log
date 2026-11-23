@@ -1,0 +1,37 @@
+KnotPlot exhibit started at Thu Oct 12 15:21:23 2023 CDT with 30 sequences.
+KnotPlot exhibit exited at  Thu Oct 12 15:22:26 2023 CDT after 1.06 minutes.
+
+9 demo sequences called.
+Sequence #0 (magnetic1) called most with 1 times.
+Sequence #1 (weaveA) called least with 0 times.
+
+Sequence #0 (magnetic1) called 1 times (1.000, 3.333).
+Sequence #1 (weaveA) called 0 times (1.000, 0.000).
+Sequence #2 (random-chain) called 0 times (1.000, 0.000).
+Sequence #3 (gravity) called 1 times (1.000, 3.333).
+Sequence #4 (newhopf) called 0 times (1.000, 0.000).
+Sequence #5 (splaits) called 0 times (1.000, 0.000).
+Sequence #6 (plaits) called 1 times (1.000, 3.333).
+Sequence #7 (simple-relax) called 0 times (1.000, 0.000).
+Sequence #8 (10sep05a) called 0 times (1.000, 0.000).
+Sequence #9 (thingtoss) called 0 times (1.000, 0.000).
+Sequence #10 (graphs) called 0 times (1.000, 0.000).
+Sequence #11 (linkRings) called 1 times (1.000, 3.333).
+Sequence #12 (orbit) called 0 times (1.000, 0.000).
+Sequence #13 (violently-happy) called 0 times (1.000, 0.000).
+Sequence #14 (20oct05a) called 0 times (1.000, 0.000).
+Sequence #15 (KnotPaint2) called 1 times (1.000, 3.333).
+Sequence #16 (Mandala3b) called 0 times (1.000, 0.000).
+Sequence #17 (marcus) called 0 times (1.000, 0.000).
+Sequence #18 (Dolphins) called 0 times (1.000, 0.000).
+Sequence #19 (say/intro) called 0 times (1.000, 0.000).
+Sequence #20 (4d-spun-knot) called 0 times (1.000, 0.000).
+Sequence #21 (StElmo) called 1 times (1.000, 3.333).
+Sequence #22 (ConeyMagic2) called 0 times (1.000, 0.000).
+Sequence #23 (PA) called 1 times (1.000, 3.333).
+Sequence #24 (ringToss) called 0 times (1.000, 0.000).
+Sequence #25 (new_monster) called 1 times (1.000, 3.333).
+Sequence #26 (brunnian) called 0 times (0.050, 0.000).
+Sequence #27 (braids) called 1 times (1.000, 3.333).
+Sequence #28 (twist-knot) called 0 times (0.200, 0.000).
+Sequence #29 (fly-thru) called 0 times (1.000, 0.000).

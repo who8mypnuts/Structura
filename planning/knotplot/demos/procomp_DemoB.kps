@@ -1,0 +1,24 @@
+reset all
+
+% similar to procomp_DemoA.kps, except effect can be turned off via `reset'
+
+silent=t
+
+knot 1
+twfix
+coll a
+force 1
+ProComp enable true
+mapchannel A cyl 1 0
+mapchannel B hstart 1 0
+go 999999999
+func silent
+func init
+silent=f
+
+echo
+echo
+echo "  *** Try moving the mouse around."
+echo 
+echo
+

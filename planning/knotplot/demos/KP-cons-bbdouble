@@ -1,0 +1,70 @@
+#!/bin/csh -f
+
+# Constructor routine: KP-cons-bbdouble
+# January 7, 1998
+# Rob Scharein
+
+# Constructor arguments:
+#    $0 Constructor executable file (this file).
+#    $1 First file read by KnotPlot (the prefile).
+#    $2 Second file read by KnotPlot (the postfile).
+#    $3 Type of machine we're running on (sgi, ibm, etc...)
+#    $4 A flag either 0 or 1.
+#    $5 Name of constructor.
+#       Anymore more arguments are the arguments to the contructor
+#       from the KnotPlot command line.
+
+switch ($#argv)
+case 5:
+  set nbeads = 111
+  breaksw
+default:
+  set nbeads = $6
+  breaksw
+endsw
+
+touch $1 $2
+
+set len = $1.len 
+set fit = $1.fit
+
+switch ($4)
+
+case 0:
+  
+  echo silent=f > $1
+  echo length \> $len >> $1
+  echo parsave >> $1
+  echo silent=t >> $1
+  echo \!grep Nb $len \| awk \'\{print \"fitto length \", \$5\}\' \> $fit >> $1
+
+  echo cyl=.001 >> $1
+  echo double >> $1
+  echo Draw=f >> $1
+  echo refine 11 >> $1
+  echo warp install >> $1
+  echo warp bbconformal >> $1
+  echo del all >> $1
+  echo Draw=t >> $1
+
+  echo unknot $nbeads >> $1
+  echo \<$fit >> $1
+  echo cyl=.5 >> $1
+  echo double >> $1
+
+  echo warp along >> $1
+
+  breaksw
+
+case 1:
+
+  echo parrestore > $2
+  echo silent=f >> $2
+  breaksw
+
+endsw
+
+
+
+
+

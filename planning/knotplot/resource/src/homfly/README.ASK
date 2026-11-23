@@ -1,0 +1,13 @@
+Package name:     rjenkins
+Version number:   1.0
+Original author:  Bob Jenkins <rjenkins@cs.berkeley.edu>
+Report bugs to:   ftp@hpux.ask.uni-karlsruhe.de
+Tested on:        HP 9000/720 running HP-UX 8.07 or 9.03
+Purpose:
+Computation of the HOMFLY polynomial. The algorithm works by dynamic
+programming. The normal approach creates a binary tree (each node an
+intermediate knot; all the leaves unlinks).
+Date archived:    Fri 10 Jun 1994
+Special notes:  Test: homfly borromean.txt
+                Compile this with gcc! HPUX9 cc apparently does not handle
+                certain expressions correctly.

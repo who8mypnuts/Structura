@@ -1,0 +1,30 @@
+~noexplain
+untran
+scale=.35
+
+txt push
+txt group 67254
+txt fill off
+txt font 2
+txt centre
+txt 8.3 0 6 "6 crossing region"
+txt -8.3 0 -6 "6 crossing region"
+txt 0.047360 -10.1 0.790854 "4 crossing region"
+txt -0.047360 10.1 -0.790854 "4 crossing region"
+txt -0.678845 -0.177246 -11 "2 crossing region"
+txt 0.678845 0.177246 11 "2 crossing region"
+
+txt font 4
+txt lineskip 20
+txt c 140 "Rotate the knot so that the white dot in the centre of"
+txt c a "the window shows through one of the indicated regions"
+txt c a1.3 "You should then see the number of"
+txt c a "crossings corresponding to that region"
+
+%txt fill on
+%txt c a1.4 ok ~noexplain
+
+txt pop
+
+load ACN_explain.k
+

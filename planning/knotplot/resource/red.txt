@@ -1,0 +1,17 @@
+% red green blue name
+% spaces and case are ignored when a name is looked up
+205  92  92  IndianRed
+255  69   0  OrangeRed
+255   0   0  red
+219 112 147  PaleVioletRed
+208  32 144  VioletRed
+139   0   0  DarkRed
+199  21 133  medium violet red
+179 25 66 USA Red
+216 6 33 Canada Red
+206 43 55 Italian Red 
+239 65 53 French Red
+255 0 0 German Red
+200 16 46 UK Red
+#C1272D Lithuania Red
+220 30 53 Iceland Red

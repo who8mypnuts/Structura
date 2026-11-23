@@ -1,0 +1,19 @@
+reset all
+
+mode cb
+scale = 0.466116
+cyl-rad = 0.156387
+bead-radius = 0.328759
+line dir 0 1
+line
+centre
+jit .01
+
+wand pull 0
+go 999999999
+velf = t
+force 1
+coll a
+
+echo "      Press F12 to toggle wand display."
+func 12 "spec ~wand"

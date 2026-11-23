@@ -1,0 +1,22 @@
+reset all
+say -on
+say -bg
+
+background = black
+
+play init
+
+verbose = f
+
+tfunc \rr11 "tfunc saybad" 0 rep 22 55
+tfunc \rr11 "knot;proj r;play g0" 0 rep 11 33
+tfunc \rr11 "proj r;cyl-rad=\rr[.07/.6];play c1" 0 rep 11 33
+tfunc \rr11 "proj r;scale=\rr[.2/.9];play d1" 0 rep 11 33
+tfunc \rr11 "proj r;hsta=\rr360;play e1" 0 rep 11 33
+tfunc \rr11 "proj r;value=1;satu=1;play e3" 0 rep 22 55
+tfunc \rr11 "proj r;value=\rr1;play e6" 0 rep 54 108
+tfunc \rr11 "proj r;satu=\rr1;play d6" 0 rep 54 108
+tfunc \rr11 "play e5;open all;go 108" 0 rep 22 108
+
+tfunc 1 luxo
+

@@ -1,0 +1,46 @@
+reset all
+
+silent=t
+breakup s 2.06 .505 2
+if \rr2 < 1 then "breakup r 66.1 16.7 164" else "breakup r 11.3 -93.4 79.2"
+
+broff=.1
+
+back=0
+cyl-rad = 0.194670
+scale = \rr[.35/.7]
+nsegments = 40
+ncurve = 1
+glop backface t
+zbuff f
+blend one one
+if \rr6 < 1 then "draw sbro" else "draw brok"
+hstart=\rr260
+coll a
+force 1
+value=\rr[.2/1]
+if \rr2 < 1 then "knot s" else knot
+refl r
+
+func silent
+func init
+
+func 1 <30oct05a.kps
+func 4 value=\rr1
+
+func 5 breakup r \rr+-180 \rr+-180 \rr+-180
+func 6 breakup s \rr2 \rr2 \rr2
+
+
+func 8 "func exec 6;func exec 5"
+
+func 9 "jitt 99999;fitto .001;velf=t"
+
+go 999999999
+silent=f
+
+echo
+echo
+echo " *** Press F1 to rerun demo."
+echo "     Press F4 thru F9 to change display settings."
+echo

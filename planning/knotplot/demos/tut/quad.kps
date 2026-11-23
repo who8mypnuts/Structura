@@ -1,0 +1,73 @@
+require KPbuild 4739
+
+delete all
+scenery init
+untran
+
+alloc 9999
+
+knot 1
+fitto 9
+
+cyl-rad=.1
+double
+warp install
+
+delete all
+
+line dir 0 1 0
+line number 80
+new=f
+line 0 0 0
+line 1 0 0
+line 1 0 1
+line 0 0 1
+centre
+
+
+
+scale = .15
+cyl-rad=.1
+
+swirl ends 720
+
+warp rec2ann 1
+
+join f0 l0
+join f1 l1
+join f2 l2
+join f3 l3
+
+length
+revbeads
+
+warp along
+
+save |y
+
+refine 21
+
+save |x
+
+alias ~sc "load |x;delete $0;delete $1;colour all $2;$3;scenery object .link"
+
+
+% weird renumbering occurs on components when deleted?
+% need to have a command like: delete 0 3
+
+~sc 3 2 red revbeads
+~sc 3 0 orange nop
+~sc 0 1 green nop
+~sc 2 1 blue nop
+
+scenery on
+
+cyl-rad=.05
+scale=.5
+
+load |y
+refine 3
+colour all black
+
+scale = .42
+

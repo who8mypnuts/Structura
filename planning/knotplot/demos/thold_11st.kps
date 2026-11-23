@@ -1,0 +1,4 @@
+load 11stpoly.k
+par0=12
+echo "  *** Conway's 11* polyhedron"
+txt c -30 "Conway's 11* polyhedron"

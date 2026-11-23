@@ -1,0 +1,36 @@
+require KPbuild 4136
+
+reset all
+
+mode cb
+cyl=.3
+line numb 6
+
+line 0 0 0 3 1 0
+cut 4
+new=f
+line 3 1 0 4 -2 0
+
+join 4 5
+mode s
+
+about x 90
+scale 2
+trans 8 0 -12
+
+scenery init
+scenery on
+
+#5 scenery object .tube;about z 72
+delete all
+
+
+
+
+scenery vscale -10
+scenery object eobj/prolate-icos
+scenery object flags 1
+scenery vscale -10.05
+scenery object eobj/prolate-icos
+
+glop backface t

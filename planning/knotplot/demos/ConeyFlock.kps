@@ -1,0 +1,98 @@
+require KPbuild 4691
+
+if par7 != 8623823 then "reset all;timer start"   % set zero point of timer to now (used below)
+
+par7 = 8623823    % prevent a reset if demo is rerun
+
+silent=t
+verbose=f
+scenery init
+txt init
+coll a
+force 1
+velf=f
+tanf=f
+
+back=#000
+scenery rotate orient
+scenery dscale .3
+scenery on
+alias ~ah "txt hide \rr[5/7]"
+func 1 <ConeyFlock.kps
+alias ~knot "N-torus = \rr[54/108];random euniform"
+alias ~flatten "scale 1 1 0;anch=f;velf=t;tanf=t;cent;zero;untran;rota x -67;scen rot walk;scen set rot"
+
+mode b
+
+scale=.87
+
+glop back t
+alias ~att "scenery object coney bead $0"
+
+frame comm "scenery object coney bead %d"
+alias ~attach "scenery delete;frame 0 number $0"
+
+anchor = true
+ancauto = false
+
+~knot
+anchor
+~knot
+~attach \pnbead
+scenery dscale .1
+cyl-rad=.0424
+mathsv b \rr360 1 1 d
+mathsv b 0 0 0 e
+
+scenery set autorotate -1000 1000
+go
+
+
+txt fcolour royalblue .6
+
+~ah
+txt fill on
+txt font 3
+txt cent
+txt c 20 "reload demo" <ConeyFlock.kps
+
+txt right
+txt lineskip -25
+
+~ah
+
+txt font 4
+txt fill on
+txt -15 15 ? "help popup ConeyFlock.kps handoff"
+txt font 3
+
+~ah
+
+txt -15 a1.5 fullscreen "full toggle"
+txt fill off
+txt -10 a toggle:
+txt fill on
+
+~ah
+txt push
+txt phantom flatten
+txt awake timer        % awake time is relative to when `timer start' occurred (default is relative to when button is created)
+txt awake \rr[22/44]
+txt -15 a2 flatten "txt delete flatten;txt delete relax;~flatten;~notice"
+txt awake \rr[11/33]
+txt -15 a  relax "txt delete relax;velf=t;anch=f;~notice"
+txt pop
+txt phantom
+
+txt right
+txt fill off
+txt font 3
+alias ~notice "txt push;txt hide 99;txt expire \rr[4/6];txt -60 130 {click `reload demo' to get button(s) back}"
+
+
+txt on
+~ah
+
+txt autohide on   % should be the last txt command
+
+silent=f

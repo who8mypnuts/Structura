@@ -1,0 +1,24 @@
+reset all
+
+mode cb
+ccmode = 2
+cyl-rad=.1
+
+new = f
+
+until once t
+until time 11
+until safe "knot \ri[2/3];proj r;line dir 1 0 0;line numb 60;line -30 0 0;proj r;test clkembed;disp t"
+
+bfacf load
+bfacf freeze 3
+
+bfacf centre off
+bfacf run 1000
+
+exit
+
+more fun untils:
+
+until once yes
+until safe "unknot 200 22;proj r;swirl 55;test clkembed;disp t"

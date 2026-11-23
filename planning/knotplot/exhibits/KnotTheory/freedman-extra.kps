@@ -1,0 +1,17 @@
+spec
+back=0
+
+delete all
+disp t
+
+
+if \rr1 < .5 then "mode cb;cyl=.06"
+
+clrfun n
+
+load *
+disp t
+Draw=t
+
+nap 1
+

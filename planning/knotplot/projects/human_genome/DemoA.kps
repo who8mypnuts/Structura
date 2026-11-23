@@ -1,0 +1,53 @@
+
+panel off % comment this out to watch the panel being drawn
+button Nbuttons 4
+button hspace 4
+button pos 1
+button DemoA "Full screen" <full-screen.kps -1 275 0 10
+button DemoA "Chromosome" dum 4 265 102 10 4
+button Nbuttons 6
+button DemoA 1 "del all;load 1.k;func exec cs 1"  -2 -1 0 10
+button DemoA 2 "del all;load 2.k;func exec cs 1"  -1 -1 0 10
+button DemoA 3 "del all;load 3.k;func exec cs 1"  -1 -1 0 10
+button DemoA 4 "del all;load 4.k;func exec cs 1"  -1 -1 0 10
+button DemoA 5 "del all;load 5.k;func exec cs 1"  -1 -1 0 10
+button DemoA 6 "del all;load 6.k;func exec cs 1"  -1 -1 0 10
+button DemoA 7 "del all;load 7.k;func exec cs 1"  -1 -1 0 10
+button DemoA 8 "del all;load 8.k;func exec cs 1"  -1 -1 0 10
+button DemoA 9 "del all;load 9.k;func exec cs 1"  -1 -1 0 10
+button DemoA 10 "del all;load 10.k;func exec cs 1"  -1 -1 0 10
+button DemoA 11 "del all;load 11.k;func exec cs 1"  -1 -1 0 10
+button DemoA 12 "del all;load 12.k;func exec cs 1"  -1 -1 0 10
+button DemoA 13 "del all;load 13.k;func exec cs 1"  -1 -1 0 10
+button DemoA 14 "del all;load 14.k;func exec cs 1"  -1 -1 0 10
+button DemoA 15 "del all;load 15.k;func exec cs 1"  -1 -1 0 10
+button DemoA 16 "del all;load 16.k;func exec cs 1"  -1 -1 0 10
+button DemoA 17 "del all;load 17.k;func exec cs 1"  -1 -1 0 10
+button DemoA 18 "del all;load 18.k;func exec cs 1"  -1 -1 0 10
+button DemoA 19 "del all;load 19.k;func exec cs 1"  -1 -1 0 10
+button DemoA 20 "del all;load 20.k;func exec cs 1"  -1 -1 0 10
+button DemoA 21 "del all;load 21.k;func exec cs 1"  -1 -1 0 10
+button DemoA 22 "del all;load 22.k;func exec cs 1"  -1 -1 0 10
+button DemoA X "del all;load 23.k;func exec cs 1"  -1 -1 0 10
+button DemoA Y "del all;load 24.k;func exec cs 1"  -1 -1 0 10
+button Nbuttons 4
+button DemoA "  " dum -2 -1 0 10 4
+button DemoA untran untran -2 -1 0 10
+button DemoA "mode p" "mode p" -1 -1 0 10
+button DemoA "mode c" "mode c;cyl=.01" -1 -1 0 10
+button DemoA "mode s" "mode s;cyl=.01" -1 -1 0 10
+button DemoA "blend on" "blend on" -2 -1 0 10
+button DemoA "blend off" "blend off" -1 -1 0 10
+button DemoA "zbuff on" "zbuff on" -1 -1 0 10
+button DemoA "zbuff off" "zbuff off" -1 -1 0 10
+button DemoA "anag on" "anag on" -2 -1 0 10
+button DemoA "anag off" "anag off" -1 -1 0 10
+panel on
+
+button DemoA "Only the 21 and the Y chromosomes are " nop 4 70 10 5 4
+button DemoA "included in the KnotPlot distribution." nop 4 60 10 5 4
+button DemoA "The other chromosome data can be obtained over the web." nop  4 40 10 5 4
+button DemoA "See the instructions in the Data.html file in this project folder." nop 4 30 10 5 4
+
+func cs 1 "<chrdata.kps"
+

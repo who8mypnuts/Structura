@@ -1,0 +1,46 @@
+Constructions Help
+
+Use this control panel to create knots from various families of knots.
+
+Torus knots
+
+   --- create N/M torus knots, if `auto set' is selected, KnotPlot will try to
+       just the minimum number of beads needed to correctly represent that knot
+       type.  Unselecting this and explicitly changing the `ntor' slider can be
+       fun, but first display as `beads & cyls' (use the button on the Main 
+       control panel).  Because of aliasing (errors introduced when undersampling
+       a periodic function), you can get many interesting `sculptures' when ntor
+       is too small. More fun with aliasing can be had using the `stick things'
+       demo on the DemoA panel.
+
+Lissajous knots
+
+   --- a single mode Lissajous knot is created if nk = 0.  If nk is non zero, the
+       a two-mode Lissajous knot is created.  
+
+   --- phi values are in radians
+
+Chains
+
+   --- a chain of `N' unknots is created
+
+   --- `K' sets the number of beads per component
+
+   --- `twist' is the number of half twists in the chain
+
+
+For all of the above, it is interesting to select `auto create' because you 
+instantly see the result as a slider or roller value is changed.
+
+Braids
+
+   --- a-k are positive generators, A-K are negative
+
+   --- if you are using braids to create knots, then select `cheapo', which
+       tries to use as few beads as possible.  if you want nice looking braids,
+       the select `luxo'.
+
+   --- the KnotPlot download page has a tutorial on using the braid command,
+       which is much more powerful than the controls on this panel.
+
+ 

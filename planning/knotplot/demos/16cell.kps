@@ -1,0 +1,8 @@
+
+4dop disp +p 2
+
+if \rr2 < 1 then "spin 315 315 45" else "spin 0 0 0"
+
+echo
+~label "Hexadecachoron (16-cell)"
+echo

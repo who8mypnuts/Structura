@@ -1,0 +1,6 @@
+clk latshow 20
+clk fill sphere 17
+clk dilate
+clk clear sphere 17
+clk fill
+

@@ -1,0 +1,46 @@
+Export Help
+
+KnotPlot can export data in many different formats of different natures. The 
+knot data itself is saved and loaded using the `save' and `load' commands (see
+the manual).  Images and 3D models can be exported using this control panel.
+
+   Encapsulated PostScript --- There are many options for exporting EPS images.
+           See the manual for much more information, or the web site
+           www.knotplot.com/postscript
+           which gives many examples together with the KnotPlot commands that
+           are used to generate them.
+
+   Bitmap image --- The `imgout' button will export the view window as a binary 
+           bit map image. The output format options are:
+
+              ppm    --- exports as a Portable Pix Map (PPM).  Most image
+                         readers will have no trouble reading this in.  Beware
+                         that PPM images are uncompressed and can be rather
+                         large.
+
+              pgm    --- exports as a Portable Grey Map (PGM), like a PPM 
+                         image only greyscale.
+
+              raw    --- same data as PPM, but without the header.  for
+                         experts only.
+
+              image squishing factor --- the view window is reduced in size
+                         this amount.  if you don't want any reduction in size,
+                         set squish to 1
+
+   Surface model --- 3D surface models for import into raytracers and other
+           modelling software.  Options:
+
+              objout --- Alias|Wavefront OBJ format.  Very commonly used. 
+                         Note that individual components are exported into
+                         separate files. 
+
+              jvxout --- JavaView JVX format.  Visit the JavaView web page
+                         www.javaview.de 
+                         for more information and to download JVX viewers.
+
+              povout --- POV-Ray Bezier patches.  POV-Ray is a high quality
+                         free raytracer available at www.povray.org
+
+
+

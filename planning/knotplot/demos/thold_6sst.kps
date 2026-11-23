@@ -1,0 +1,4 @@
+load 6sstpoly.k
+par0=12
+echo "  *** Conway's 6** polyhedron"
+txt c -30 "Conway's 6** polyhedron"

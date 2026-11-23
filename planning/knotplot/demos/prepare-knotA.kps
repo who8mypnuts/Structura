@@ -1,0 +1,12 @@
+verbose=f
+torus 2 3 \ri[77/222]
+swirl \rr+-55
+refl r
+
+echo
+% equal chance of L or R hand tref
+if \rr2 < 1 then "refl r;echo -n Left" else "echo -n Right"
+echo -n "-hand trefoil with "
+par nbeads
+
+translate 0 0 12

@@ -1,0 +1,27 @@
+if par2 != 536527 then "reset all"
+back=0
+disp t
+silent=t
+scale = 1.029607
+cyl-rad = -0.040000
+nsegments = \ri[9/15]
+ncurve = \ri[2/4]
+draw SE 0 .3 0
+coll a
+force 1
+sbuff
+fixcofm=t
+if \rr4 < 3 then "conway 3" else "conway 32"
+if \rr11 < 1 then "torus 2 3 24"
+refl r
+if \rr33 < 1 then line
+jit 1
+if \rr2 < 1 then "hstart=\rr[11/28]" else "hstart=\rr[218/274]"
+clrfun z
+zbuff f
+ago 55
+zero
+if \rr44 < 1 then "unknot \ri[11/24]"
+par2=536527
+go
+silent=f

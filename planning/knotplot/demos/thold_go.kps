@@ -1,0 +1,10 @@
+go 0
+%if \pscale < .25 then "scale=.25"
+%rotate x 0  % because of bug in scenery scaling
+
+txt centre
+txt fill on
+txt font 4
+txt c 40 "start relaxing" <thold_relax.kps
+txt fill off
+txt c -55 "with tangles embedded"

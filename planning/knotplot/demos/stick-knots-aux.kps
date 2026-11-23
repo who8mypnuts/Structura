@@ -1,0 +1,62 @@
+reset all
+mode cb
+cyl=.1
+disp t
+Draw=f
+vport tile 2 2
+%spe axes
+spe +vwt
+silent=t
+
+clrfun n
+
+par0=\ri100
+
+silent=f
+if par0 < 40 then "knot num \ri[2/251] mseq" else "knot num \ri[2/251] ms" 
+silent=t
+fitto 5
+scale=.7
+
+rotate x \rr360
+rotate y \rr360
+rotate z \rr360
+nstring 20 -20 "Perspective view (randomized)" 
+disp t
+
+ortho 
+untran
+vport tile 3 2
+nstring r-20 r-20  "Orthographic (xy plane)"
+disp t
+
+vport tile 0 2
+rotate x -90
+nstring 20 20  "Orthographic (xz plane)"
+disp t
+
+rotate home
+
+vport tile 1 2
+rotate y 90
+nstring r-20 20 "Orthographic (zy plane)"
+disp t
+
+func 1 reset:mode cb:cyl=.1
+
+vport reset
+trans 0 0 10000 % hack!
+nstring cm 40 "Hit F1 key to reset viewport"
+nstring cm 20  "and enable drawing." 1
+nstring cm -20 "Minimal stick candidate" 2
+if par0 < 40 then "nstring cm -40 (equilateral) 3"
+disp t
+trans 0 0 -10000 % hack!
+
+
+
+silent=f
+
+
+
+

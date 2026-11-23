@@ -1,0 +1,3473 @@
+allo 9999
+load c3/0.k
+save new/c3/0.k  LOCS
+load c3/1.k
+save new/c3/1.k  LOCS
+load c3/10.k
+save new/c3/10.k  LOCS
+load c3/100.k
+save new/c3/100.k  LOCS
+load c3/101.k
+save new/c3/101.k  LOCS
+load c3/102.k
+save new/c3/102.k  LOCS
+load c3/103.k
+save new/c3/103.k  LOCS
+load c3/104.k
+save new/c3/104.k  LOCS
+load c3/105.k
+save new/c3/105.k  LOCS
+load c3/106.k
+save new/c3/106.k  LOCS
+load c3/107.k
+save new/c3/107.k  LOCS
+load c3/108.k
+save new/c3/108.k  LOCS
+load c3/109.k
+save new/c3/109.k  LOCS
+load c3/11.k
+save new/c3/11.k  LOCS
+load c3/110.k
+save new/c3/110.k  LOCS
+load c3/111.k
+save new/c3/111.k  LOCS
+load c3/112.k
+save new/c3/112.k  LOCS
+load c3/113.k
+save new/c3/113.k  LOCS
+load c3/114.k
+save new/c3/114.k  LOCS
+load c3/115.k
+save new/c3/115.k  LOCS
+load c3/116.k
+save new/c3/116.k  LOCS
+load c3/117.k
+save new/c3/117.k  LOCS
+load c3/118.k
+save new/c3/118.k  LOCS
+load c3/119.k
+save new/c3/119.k  LOCS
+load c3/12.k
+save new/c3/12.k  LOCS
+load c3/120.k
+save new/c3/120.k  LOCS
+load c3/121.k
+save new/c3/121.k  LOCS
+load c3/122.k
+save new/c3/122.k  LOCS
+load c3/123.k
+save new/c3/123.k  LOCS
+load c3/124.k
+save new/c3/124.k  LOCS
+load c3/125.k
+save new/c3/125.k  LOCS
+load c3/126.k
+save new/c3/126.k  LOCS
+load c3/127.k
+save new/c3/127.k  LOCS
+load c3/128.k
+save new/c3/128.k  LOCS
+load c3/129.k
+save new/c3/129.k  LOCS
+load c3/13.k
+save new/c3/13.k  LOCS
+load c3/130.k
+save new/c3/130.k  LOCS
+load c3/131.k
+save new/c3/131.k  LOCS
+load c3/132.k
+save new/c3/132.k  LOCS
+load c3/133.k
+save new/c3/133.k  LOCS
+load c3/134.k
+save new/c3/134.k  LOCS
+load c3/135.k
+save new/c3/135.k  LOCS
+load c3/136.k
+save new/c3/136.k  LOCS
+load c3/137.k
+save new/c3/137.k  LOCS
+load c3/138.k
+save new/c3/138.k  LOCS
+load c3/139.k
+save new/c3/139.k  LOCS
+load c3/14.k
+save new/c3/14.k  LOCS
+load c3/140.k
+save new/c3/140.k  LOCS
+load c3/141.k
+save new/c3/141.k  LOCS
+load c3/142.k
+save new/c3/142.k  LOCS
+load c3/143.k
+save new/c3/143.k  LOCS
+load c3/144.k
+save new/c3/144.k  LOCS
+load c3/145.k
+save new/c3/145.k  LOCS
+load c3/146.k
+save new/c3/146.k  LOCS
+load c3/147.k
+save new/c3/147.k  LOCS
+load c3/148.k
+save new/c3/148.k  LOCS
+load c3/149.k
+save new/c3/149.k  LOCS
+load c3/15.k
+save new/c3/15.k  LOCS
+load c3/150.k
+save new/c3/150.k  LOCS
+load c3/151.k
+save new/c3/151.k  LOCS
+load c3/152.k
+save new/c3/152.k  LOCS
+load c3/153.k
+save new/c3/153.k  LOCS
+load c3/154.k
+save new/c3/154.k  LOCS
+load c3/155.k
+save new/c3/155.k  LOCS
+load c3/156.k
+save new/c3/156.k  LOCS
+load c3/157.k
+save new/c3/157.k  LOCS
+load c3/158.k
+save new/c3/158.k  LOCS
+load c3/159.k
+save new/c3/159.k  LOCS
+load c3/16.k
+save new/c3/16.k  LOCS
+load c3/17.k
+save new/c3/17.k  LOCS
+load c3/18.k
+save new/c3/18.k  LOCS
+load c3/19.k
+save new/c3/19.k  LOCS
+load c3/2.k
+save new/c3/2.k  LOCS
+load c3/20.k
+save new/c3/20.k  LOCS
+load c3/21.k
+save new/c3/21.k  LOCS
+load c3/22.k
+save new/c3/22.k  LOCS
+load c3/23.k
+save new/c3/23.k  LOCS
+load c3/24.k
+save new/c3/24.k  LOCS
+load c3/25.k
+save new/c3/25.k  LOCS
+load c3/26.k
+save new/c3/26.k  LOCS
+load c3/27.k
+save new/c3/27.k  LOCS
+load c3/28.k
+save new/c3/28.k  LOCS
+load c3/29.k
+save new/c3/29.k  LOCS
+load c3/3.k
+save new/c3/3.k  LOCS
+load c3/30.k
+save new/c3/30.k  LOCS
+load c3/31.k
+save new/c3/31.k  LOCS
+load c3/32.k
+save new/c3/32.k  LOCS
+load c3/33.k
+save new/c3/33.k  LOCS
+load c3/34.k
+save new/c3/34.k  LOCS
+load c3/35.k
+save new/c3/35.k  LOCS
+load c3/36.k
+save new/c3/36.k  LOCS
+load c3/37.k
+save new/c3/37.k  LOCS
+load c3/38.k
+save new/c3/38.k  LOCS
+load c3/39.k
+save new/c3/39.k  LOCS
+load c3/4.k
+save new/c3/4.k  LOCS
+load c3/40.k
+save new/c3/40.k  LOCS
+load c3/41.k
+save new/c3/41.k  LOCS
+load c3/42.k
+save new/c3/42.k  LOCS
+load c3/43.k
+save new/c3/43.k  LOCS
+load c3/44.k
+save new/c3/44.k  LOCS
+load c3/45.k
+save new/c3/45.k  LOCS
+load c3/46.k
+save new/c3/46.k  LOCS
+load c3/47.k
+save new/c3/47.k  LOCS
+load c3/48.k
+save new/c3/48.k  LOCS
+load c3/49.k
+save new/c3/49.k  LOCS
+load c3/5.k
+save new/c3/5.k  LOCS
+load c3/50.k
+save new/c3/50.k  LOCS
+load c3/51.k
+save new/c3/51.k  LOCS
+load c3/52.k
+save new/c3/52.k  LOCS
+load c3/53.k
+save new/c3/53.k  LOCS
+load c3/54.k
+save new/c3/54.k  LOCS
+load c3/55.k
+save new/c3/55.k  LOCS
+load c3/56.k
+save new/c3/56.k  LOCS
+load c3/57.k
+save new/c3/57.k  LOCS
+load c3/58.k
+save new/c3/58.k  LOCS
+load c3/59.k
+save new/c3/59.k  LOCS
+load c3/6.k
+save new/c3/6.k  LOCS
+load c3/60.k
+save new/c3/60.k  LOCS
+load c3/61.k
+save new/c3/61.k  LOCS
+load c3/62.k
+save new/c3/62.k  LOCS
+load c3/63.k
+save new/c3/63.k  LOCS
+load c3/64.k
+save new/c3/64.k  LOCS
+load c3/65.k
+save new/c3/65.k  LOCS
+load c3/66.k
+save new/c3/66.k  LOCS
+load c3/67.k
+save new/c3/67.k  LOCS
+load c3/68.k
+save new/c3/68.k  LOCS
+load c3/69.k
+save new/c3/69.k  LOCS
+load c3/7.k
+save new/c3/7.k  LOCS
+load c3/70.k
+save new/c3/70.k  LOCS
+load c3/71.k
+save new/c3/71.k  LOCS
+load c3/72.k
+save new/c3/72.k  LOCS
+load c3/73.k
+save new/c3/73.k  LOCS
+load c3/74.k
+save new/c3/74.k  LOCS
+load c3/75.k
+save new/c3/75.k  LOCS
+load c3/76.k
+save new/c3/76.k  LOCS
+load c3/77.k
+save new/c3/77.k  LOCS
+load c3/78.k
+save new/c3/78.k  LOCS
+load c3/79.k
+save new/c3/79.k  LOCS
+load c3/8.k
+save new/c3/8.k  LOCS
+load c3/80.k
+save new/c3/80.k  LOCS
+load c3/81.k
+save new/c3/81.k  LOCS
+load c3/82.k
+save new/c3/82.k  LOCS
+load c3/83.k
+save new/c3/83.k  LOCS
+load c3/84.k
+save new/c3/84.k  LOCS
+load c3/85.k
+save new/c3/85.k  LOCS
+load c3/86.k
+save new/c3/86.k  LOCS
+load c3/87.k
+save new/c3/87.k  LOCS
+load c3/88.k
+save new/c3/88.k  LOCS
+load c3/89.k
+save new/c3/89.k  LOCS
+load c3/9.k
+save new/c3/9.k  LOCS
+load c3/90.k
+save new/c3/90.k  LOCS
+load c3/91.k
+save new/c3/91.k  LOCS
+load c3/92.k
+save new/c3/92.k  LOCS
+load c3/93.k
+save new/c3/93.k  LOCS
+load c3/94.k
+save new/c3/94.k  LOCS
+load c3/95.k
+save new/c3/95.k  LOCS
+load c3/96.k
+save new/c3/96.k  LOCS
+load c3/97.k
+save new/c3/97.k  LOCS
+load c3/98.k
+save new/c3/98.k  LOCS
+load c3/99.k
+save new/c3/99.k  LOCS
+load c4/0.k
+save new/c4/0.k  LOCS
+load c4/1.k
+save new/c4/1.k  LOCS
+load c4/10.k
+save new/c4/10.k  LOCS
+load c4/100.k
+save new/c4/100.k  LOCS
+load c4/101.k
+save new/c4/101.k  LOCS
+load c4/102.k
+save new/c4/102.k  LOCS
+load c4/103.k
+save new/c4/103.k  LOCS
+load c4/104.k
+save new/c4/104.k  LOCS
+load c4/105.k
+save new/c4/105.k  LOCS
+load c4/106.k
+save new/c4/106.k  LOCS
+load c4/107.k
+save new/c4/107.k  LOCS
+load c4/108.k
+save new/c4/108.k  LOCS
+load c4/109.k
+save new/c4/109.k  LOCS
+load c4/11.k
+save new/c4/11.k  LOCS
+load c4/110.k
+save new/c4/110.k  LOCS
+load c4/111.k
+save new/c4/111.k  LOCS
+load c4/112.k
+save new/c4/112.k  LOCS
+load c4/113.k
+save new/c4/113.k  LOCS
+load c4/114.k
+save new/c4/114.k  LOCS
+load c4/115.k
+save new/c4/115.k  LOCS
+load c4/116.k
+save new/c4/116.k  LOCS
+load c4/117.k
+save new/c4/117.k  LOCS
+load c4/118.k
+save new/c4/118.k  LOCS
+load c4/119.k
+save new/c4/119.k  LOCS
+load c4/12.k
+save new/c4/12.k  LOCS
+load c4/120.k
+save new/c4/120.k  LOCS
+load c4/121.k
+save new/c4/121.k  LOCS
+load c4/122.k
+save new/c4/122.k  LOCS
+load c4/123.k
+save new/c4/123.k  LOCS
+load c4/124.k
+save new/c4/124.k  LOCS
+load c4/125.k
+save new/c4/125.k  LOCS
+load c4/126.k
+save new/c4/126.k  LOCS
+load c4/127.k
+save new/c4/127.k  LOCS
+load c4/128.k
+save new/c4/128.k  LOCS
+load c4/129.k
+save new/c4/129.k  LOCS
+load c4/13.k
+save new/c4/13.k  LOCS
+load c4/130.k
+save new/c4/130.k  LOCS
+load c4/131.k
+save new/c4/131.k  LOCS
+load c4/132.k
+save new/c4/132.k  LOCS
+load c4/133.k
+save new/c4/133.k  LOCS
+load c4/134.k
+save new/c4/134.k  LOCS
+load c4/135.k
+save new/c4/135.k  LOCS
+load c4/136.k
+save new/c4/136.k  LOCS
+load c4/137.k
+save new/c4/137.k  LOCS
+load c4/138.k
+save new/c4/138.k  LOCS
+load c4/139.k
+save new/c4/139.k  LOCS
+load c4/14.k
+save new/c4/14.k  LOCS
+load c4/140.k
+save new/c4/140.k  LOCS
+load c4/141.k
+save new/c4/141.k  LOCS
+load c4/142.k
+save new/c4/142.k  LOCS
+load c4/143.k
+save new/c4/143.k  LOCS
+load c4/144.k
+save new/c4/144.k  LOCS
+load c4/145.k
+save new/c4/145.k  LOCS
+load c4/146.k
+save new/c4/146.k  LOCS
+load c4/147.k
+save new/c4/147.k  LOCS
+load c4/148.k
+save new/c4/148.k  LOCS
+load c4/149.k
+save new/c4/149.k  LOCS
+load c4/15.k
+save new/c4/15.k  LOCS
+load c4/150.k
+save new/c4/150.k  LOCS
+load c4/151.k
+save new/c4/151.k  LOCS
+load c4/152.k
+save new/c4/152.k  LOCS
+load c4/153.k
+save new/c4/153.k  LOCS
+load c4/154.k
+save new/c4/154.k  LOCS
+load c4/155.k
+save new/c4/155.k  LOCS
+load c4/156.k
+save new/c4/156.k  LOCS
+load c4/157.k
+save new/c4/157.k  LOCS
+load c4/158.k
+save new/c4/158.k  LOCS
+load c4/159.k
+save new/c4/159.k  LOCS
+load c4/16.k
+save new/c4/16.k  LOCS
+load c4/160.k
+save new/c4/160.k  LOCS
+load c4/161.k
+save new/c4/161.k  LOCS
+load c4/17.k
+save new/c4/17.k  LOCS
+load c4/18.k
+save new/c4/18.k  LOCS
+load c4/19.k
+save new/c4/19.k  LOCS
+load c4/2.k
+save new/c4/2.k  LOCS
+load c4/20.k
+save new/c4/20.k  LOCS
+load c4/21.k
+save new/c4/21.k  LOCS
+load c4/22.k
+save new/c4/22.k  LOCS
+load c4/23.k
+save new/c4/23.k  LOCS
+load c4/24.k
+save new/c4/24.k  LOCS
+load c4/25.k
+save new/c4/25.k  LOCS
+load c4/26.k
+save new/c4/26.k  LOCS
+load c4/27.k
+save new/c4/27.k  LOCS
+load c4/28.k
+save new/c4/28.k  LOCS
+load c4/29.k
+save new/c4/29.k  LOCS
+load c4/3.k
+save new/c4/3.k  LOCS
+load c4/30.k
+save new/c4/30.k  LOCS
+load c4/31.k
+save new/c4/31.k  LOCS
+load c4/32.k
+save new/c4/32.k  LOCS
+load c4/33.k
+save new/c4/33.k  LOCS
+load c4/34.k
+save new/c4/34.k  LOCS
+load c4/35.k
+save new/c4/35.k  LOCS
+load c4/36.k
+save new/c4/36.k  LOCS
+load c4/37.k
+save new/c4/37.k  LOCS
+load c4/38.k
+save new/c4/38.k  LOCS
+load c4/39.k
+save new/c4/39.k  LOCS
+load c4/4.k
+save new/c4/4.k  LOCS
+load c4/40.k
+save new/c4/40.k  LOCS
+load c4/41.k
+save new/c4/41.k  LOCS
+load c4/42.k
+save new/c4/42.k  LOCS
+load c4/43.k
+save new/c4/43.k  LOCS
+load c4/44.k
+save new/c4/44.k  LOCS
+load c4/45.k
+save new/c4/45.k  LOCS
+load c4/46.k
+save new/c4/46.k  LOCS
+load c4/47.k
+save new/c4/47.k  LOCS
+load c4/48.k
+save new/c4/48.k  LOCS
+load c4/49.k
+save new/c4/49.k  LOCS
+load c4/5.k
+save new/c4/5.k  LOCS
+load c4/50.k
+save new/c4/50.k  LOCS
+load c4/51.k
+save new/c4/51.k  LOCS
+load c4/52.k
+save new/c4/52.k  LOCS
+load c4/53.k
+save new/c4/53.k  LOCS
+load c4/54.k
+save new/c4/54.k  LOCS
+load c4/55.k
+save new/c4/55.k  LOCS
+load c4/56.k
+save new/c4/56.k  LOCS
+load c4/57.k
+save new/c4/57.k  LOCS
+load c4/58.k
+save new/c4/58.k  LOCS
+load c4/59.k
+save new/c4/59.k  LOCS
+load c4/6.k
+save new/c4/6.k  LOCS
+load c4/60.k
+save new/c4/60.k  LOCS
+load c4/61.k
+save new/c4/61.k  LOCS
+load c4/62.k
+save new/c4/62.k  LOCS
+load c4/63.k
+save new/c4/63.k  LOCS
+load c4/64.k
+save new/c4/64.k  LOCS
+load c4/65.k
+save new/c4/65.k  LOCS
+load c4/66.k
+save new/c4/66.k  LOCS
+load c4/67.k
+save new/c4/67.k  LOCS
+load c4/68.k
+save new/c4/68.k  LOCS
+load c4/69.k
+save new/c4/69.k  LOCS
+load c4/7.k
+save new/c4/7.k  LOCS
+load c4/70.k
+save new/c4/70.k  LOCS
+load c4/71.k
+save new/c4/71.k  LOCS
+load c4/72.k
+save new/c4/72.k  LOCS
+load c4/73.k
+save new/c4/73.k  LOCS
+load c4/74.k
+save new/c4/74.k  LOCS
+load c4/75.k
+save new/c4/75.k  LOCS
+load c4/76.k
+save new/c4/76.k  LOCS
+load c4/77.k
+save new/c4/77.k  LOCS
+load c4/78.k
+save new/c4/78.k  LOCS
+load c4/79.k
+save new/c4/79.k  LOCS
+load c4/8.k
+save new/c4/8.k  LOCS
+load c4/80.k
+save new/c4/80.k  LOCS
+load c4/81.k
+save new/c4/81.k  LOCS
+load c4/82.k
+save new/c4/82.k  LOCS
+load c4/83.k
+save new/c4/83.k  LOCS
+load c4/84.k
+save new/c4/84.k  LOCS
+load c4/85.k
+save new/c4/85.k  LOCS
+load c4/86.k
+save new/c4/86.k  LOCS
+load c4/87.k
+save new/c4/87.k  LOCS
+load c4/88.k
+save new/c4/88.k  LOCS
+load c4/89.k
+save new/c4/89.k  LOCS
+load c4/9.k
+save new/c4/9.k  LOCS
+load c4/90.k
+save new/c4/90.k  LOCS
+load c4/91.k
+save new/c4/91.k  LOCS
+load c4/92.k
+save new/c4/92.k  LOCS
+load c4/93.k
+save new/c4/93.k  LOCS
+load c4/94.k
+save new/c4/94.k  LOCS
+load c4/95.k
+save new/c4/95.k  LOCS
+load c4/96.k
+save new/c4/96.k  LOCS
+load c4/97.k
+save new/c4/97.k  LOCS
+load c4/98.k
+save new/c4/98.k  LOCS
+load c4/99.k
+save new/c4/99.k  LOCS
+load c5/0.k
+save new/c5/0.k  LOCS
+load c5/1.k
+save new/c5/1.k  LOCS
+load c5/10.k
+save new/c5/10.k  LOCS
+load c5/100.k
+save new/c5/100.k  LOCS
+load c5/101.k
+save new/c5/101.k  LOCS
+load c5/102.k
+save new/c5/102.k  LOCS
+load c5/103.k
+save new/c5/103.k  LOCS
+load c5/104.k
+save new/c5/104.k  LOCS
+load c5/105.k
+save new/c5/105.k  LOCS
+load c5/106.k
+save new/c5/106.k  LOCS
+load c5/107.k
+save new/c5/107.k  LOCS
+load c5/108.k
+save new/c5/108.k  LOCS
+load c5/109.k
+save new/c5/109.k  LOCS
+load c5/11.k
+save new/c5/11.k  LOCS
+load c5/110.k
+save new/c5/110.k  LOCS
+load c5/111.k
+save new/c5/111.k  LOCS
+load c5/112.k
+save new/c5/112.k  LOCS
+load c5/113.k
+save new/c5/113.k  LOCS
+load c5/114.k
+save new/c5/114.k  LOCS
+load c5/115.k
+save new/c5/115.k  LOCS
+load c5/116.k
+save new/c5/116.k  LOCS
+load c5/117.k
+save new/c5/117.k  LOCS
+load c5/118.k
+save new/c5/118.k  LOCS
+load c5/119.k
+save new/c5/119.k  LOCS
+load c5/12.k
+save new/c5/12.k  LOCS
+load c5/120.k
+save new/c5/120.k  LOCS
+load c5/121.k
+save new/c5/121.k  LOCS
+load c5/122.k
+save new/c5/122.k  LOCS
+load c5/123.k
+save new/c5/123.k  LOCS
+load c5/124.k
+save new/c5/124.k  LOCS
+load c5/125.k
+save new/c5/125.k  LOCS
+load c5/126.k
+save new/c5/126.k  LOCS
+load c5/127.k
+save new/c5/127.k  LOCS
+load c5/128.k
+save new/c5/128.k  LOCS
+load c5/129.k
+save new/c5/129.k  LOCS
+load c5/13.k
+save new/c5/13.k  LOCS
+load c5/130.k
+save new/c5/130.k  LOCS
+load c5/131.k
+save new/c5/131.k  LOCS
+load c5/132.k
+save new/c5/132.k  LOCS
+load c5/133.k
+save new/c5/133.k  LOCS
+load c5/134.k
+save new/c5/134.k  LOCS
+load c5/135.k
+save new/c5/135.k  LOCS
+load c5/136.k
+save new/c5/136.k  LOCS
+load c5/137.k
+save new/c5/137.k  LOCS
+load c5/138.k
+save new/c5/138.k  LOCS
+load c5/139.k
+save new/c5/139.k  LOCS
+load c5/14.k
+save new/c5/14.k  LOCS
+load c5/140.k
+save new/c5/140.k  LOCS
+load c5/141.k
+save new/c5/141.k  LOCS
+load c5/142.k
+save new/c5/142.k  LOCS
+load c5/143.k
+save new/c5/143.k  LOCS
+load c5/144.k
+save new/c5/144.k  LOCS
+load c5/145.k
+save new/c5/145.k  LOCS
+load c5/146.k
+save new/c5/146.k  LOCS
+load c5/147.k
+save new/c5/147.k  LOCS
+load c5/148.k
+save new/c5/148.k  LOCS
+load c5/149.k
+save new/c5/149.k  LOCS
+load c5/15.k
+save new/c5/15.k  LOCS
+load c5/150.k
+save new/c5/150.k  LOCS
+load c5/151.k
+save new/c5/151.k  LOCS
+load c5/152.k
+save new/c5/152.k  LOCS
+load c5/153.k
+save new/c5/153.k  LOCS
+load c5/154.k
+save new/c5/154.k  LOCS
+load c5/155.k
+save new/c5/155.k  LOCS
+load c5/156.k
+save new/c5/156.k  LOCS
+load c5/157.k
+save new/c5/157.k  LOCS
+load c5/158.k
+save new/c5/158.k  LOCS
+load c5/159.k
+save new/c5/159.k  LOCS
+load c5/16.k
+save new/c5/16.k  LOCS
+load c5/17.k
+save new/c5/17.k  LOCS
+load c5/18.k
+save new/c5/18.k  LOCS
+load c5/19.k
+save new/c5/19.k  LOCS
+load c5/2.k
+save new/c5/2.k  LOCS
+load c5/20.k
+save new/c5/20.k  LOCS
+load c5/21.k
+save new/c5/21.k  LOCS
+load c5/22.k
+save new/c5/22.k  LOCS
+load c5/23.k
+save new/c5/23.k  LOCS
+load c5/24.k
+save new/c5/24.k  LOCS
+load c5/25.k
+save new/c5/25.k  LOCS
+load c5/26.k
+save new/c5/26.k  LOCS
+load c5/27.k
+save new/c5/27.k  LOCS
+load c5/28.k
+save new/c5/28.k  LOCS
+load c5/29.k
+save new/c5/29.k  LOCS
+load c5/3.k
+save new/c5/3.k  LOCS
+load c5/30.k
+save new/c5/30.k  LOCS
+load c5/31.k
+save new/c5/31.k  LOCS
+load c5/32.k
+save new/c5/32.k  LOCS
+load c5/33.k
+save new/c5/33.k  LOCS
+load c5/34.k
+save new/c5/34.k  LOCS
+load c5/35.k
+save new/c5/35.k  LOCS
+load c5/36.k
+save new/c5/36.k  LOCS
+load c5/37.k
+save new/c5/37.k  LOCS
+load c5/38.k
+save new/c5/38.k  LOCS
+load c5/39.k
+save new/c5/39.k  LOCS
+load c5/4.k
+save new/c5/4.k  LOCS
+load c5/40.k
+save new/c5/40.k  LOCS
+load c5/41.k
+save new/c5/41.k  LOCS
+load c5/42.k
+save new/c5/42.k  LOCS
+load c5/43.k
+save new/c5/43.k  LOCS
+load c5/44.k
+save new/c5/44.k  LOCS
+load c5/45.k
+save new/c5/45.k  LOCS
+load c5/46.k
+save new/c5/46.k  LOCS
+load c5/47.k
+save new/c5/47.k  LOCS
+load c5/48.k
+save new/c5/48.k  LOCS
+load c5/49.k
+save new/c5/49.k  LOCS
+load c5/5.k
+save new/c5/5.k  LOCS
+load c5/50.k
+save new/c5/50.k  LOCS
+load c5/51.k
+save new/c5/51.k  LOCS
+load c5/52.k
+save new/c5/52.k  LOCS
+load c5/53.k
+save new/c5/53.k  LOCS
+load c5/54.k
+save new/c5/54.k  LOCS
+load c5/55.k
+save new/c5/55.k  LOCS
+load c5/56.k
+save new/c5/56.k  LOCS
+load c5/57.k
+save new/c5/57.k  LOCS
+load c5/58.k
+save new/c5/58.k  LOCS
+load c5/59.k
+save new/c5/59.k  LOCS
+load c5/6.k
+save new/c5/6.k  LOCS
+load c5/60.k
+save new/c5/60.k  LOCS
+load c5/61.k
+save new/c5/61.k  LOCS
+load c5/62.k
+save new/c5/62.k  LOCS
+load c5/63.k
+save new/c5/63.k  LOCS
+load c5/64.k
+save new/c5/64.k  LOCS
+load c5/65.k
+save new/c5/65.k  LOCS
+load c5/66.k
+save new/c5/66.k  LOCS
+load c5/67.k
+save new/c5/67.k  LOCS
+load c5/68.k
+save new/c5/68.k  LOCS
+load c5/69.k
+save new/c5/69.k  LOCS
+load c5/7.k
+save new/c5/7.k  LOCS
+load c5/70.k
+save new/c5/70.k  LOCS
+load c5/71.k
+save new/c5/71.k  LOCS
+load c5/72.k
+save new/c5/72.k  LOCS
+load c5/73.k
+save new/c5/73.k  LOCS
+load c5/74.k
+save new/c5/74.k  LOCS
+load c5/75.k
+save new/c5/75.k  LOCS
+load c5/76.k
+save new/c5/76.k  LOCS
+load c5/77.k
+save new/c5/77.k  LOCS
+load c5/78.k
+save new/c5/78.k  LOCS
+load c5/79.k
+save new/c5/79.k  LOCS
+load c5/8.k
+save new/c5/8.k  LOCS
+load c5/80.k
+save new/c5/80.k  LOCS
+load c5/81.k
+save new/c5/81.k  LOCS
+load c5/82.k
+save new/c5/82.k  LOCS
+load c5/83.k
+save new/c5/83.k  LOCS
+load c5/84.k
+save new/c5/84.k  LOCS
+load c5/85.k
+save new/c5/85.k  LOCS
+load c5/86.k
+save new/c5/86.k  LOCS
+load c5/87.k
+save new/c5/87.k  LOCS
+load c5/88.k
+save new/c5/88.k  LOCS
+load c5/89.k
+save new/c5/89.k  LOCS
+load c5/9.k
+save new/c5/9.k  LOCS
+load c5/90.k
+save new/c5/90.k  LOCS
+load c5/91.k
+save new/c5/91.k  LOCS
+load c5/92.k
+save new/c5/92.k  LOCS
+load c5/93.k
+save new/c5/93.k  LOCS
+load c5/94.k
+save new/c5/94.k  LOCS
+load c5/95.k
+save new/c5/95.k  LOCS
+load c5/96.k
+save new/c5/96.k  LOCS
+load c5/97.k
+save new/c5/97.k  LOCS
+load c5/98.k
+save new/c5/98.k  LOCS
+load c5/99.k
+save new/c5/99.k  LOCS
+load c6/0.k
+save new/c6/0.k  LOCS
+load c6/1.k
+save new/c6/1.k  LOCS
+load c6/10.k
+save new/c6/10.k  LOCS
+load c6/100.k
+save new/c6/100.k  LOCS
+load c6/101.k
+save new/c6/101.k  LOCS
+load c6/102.k
+save new/c6/102.k  LOCS
+load c6/103.k
+save new/c6/103.k  LOCS
+load c6/104.k
+save new/c6/104.k  LOCS
+load c6/105.k
+save new/c6/105.k  LOCS
+load c6/106.k
+save new/c6/106.k  LOCS
+load c6/107.k
+save new/c6/107.k  LOCS
+load c6/108.k
+save new/c6/108.k  LOCS
+load c6/109.k
+save new/c6/109.k  LOCS
+load c6/11.k
+save new/c6/11.k  LOCS
+load c6/110.k
+save new/c6/110.k  LOCS
+load c6/111.k
+save new/c6/111.k  LOCS
+load c6/112.k
+save new/c6/112.k  LOCS
+load c6/113.k
+save new/c6/113.k  LOCS
+load c6/114.k
+save new/c6/114.k  LOCS
+load c6/115.k
+save new/c6/115.k  LOCS
+load c6/116.k
+save new/c6/116.k  LOCS
+load c6/117.k
+save new/c6/117.k  LOCS
+load c6/118.k
+save new/c6/118.k  LOCS
+load c6/119.k
+save new/c6/119.k  LOCS
+load c6/12.k
+save new/c6/12.k  LOCS
+load c6/120.k
+save new/c6/120.k  LOCS
+load c6/121.k
+save new/c6/121.k  LOCS
+load c6/122.k
+save new/c6/122.k  LOCS
+load c6/123.k
+save new/c6/123.k  LOCS
+load c6/124.k
+save new/c6/124.k  LOCS
+load c6/125.k
+save new/c6/125.k  LOCS
+load c6/125rel.k
+save new/c6/125rel.k  LOCS
+load c6/126.k
+save new/c6/126.k  LOCS
+load c6/127.k
+save new/c6/127.k  LOCS
+load c6/128.k
+save new/c6/128.k  LOCS
+load c6/129.k
+save new/c6/129.k  LOCS
+load c6/13.k
+save new/c6/13.k  LOCS
+load c6/130.k
+save new/c6/130.k  LOCS
+load c6/131.k
+save new/c6/131.k  LOCS
+load c6/132.k
+save new/c6/132.k  LOCS
+load c6/133.k
+save new/c6/133.k  LOCS
+load c6/14.k
+save new/c6/14.k  LOCS
+load c6/15.k
+save new/c6/15.k  LOCS
+load c6/16.k
+save new/c6/16.k  LOCS
+load c6/17.k
+save new/c6/17.k  LOCS
+load c6/18.k
+save new/c6/18.k  LOCS
+load c6/19.k
+save new/c6/19.k  LOCS
+load c6/2.k
+save new/c6/2.k  LOCS
+load c6/20.k
+save new/c6/20.k  LOCS
+load c6/21.k
+save new/c6/21.k  LOCS
+load c6/22.k
+save new/c6/22.k  LOCS
+load c6/23.k
+save new/c6/23.k  LOCS
+load c6/24.k
+save new/c6/24.k  LOCS
+load c6/25.k
+save new/c6/25.k  LOCS
+load c6/26.k
+save new/c6/26.k  LOCS
+load c6/27.k
+save new/c6/27.k  LOCS
+load c6/28.k
+save new/c6/28.k  LOCS
+load c6/29.k
+save new/c6/29.k  LOCS
+load c6/3.k
+save new/c6/3.k  LOCS
+load c6/30.k
+save new/c6/30.k  LOCS
+load c6/31.k
+save new/c6/31.k  LOCS
+load c6/32.k
+save new/c6/32.k  LOCS
+load c6/33.k
+save new/c6/33.k  LOCS
+load c6/34.k
+save new/c6/34.k  LOCS
+load c6/35.k
+save new/c6/35.k  LOCS
+load c6/36.k
+save new/c6/36.k  LOCS
+load c6/37.k
+save new/c6/37.k  LOCS
+load c6/38.k
+save new/c6/38.k  LOCS
+load c6/39.k
+save new/c6/39.k  LOCS
+load c6/4.k
+save new/c6/4.k  LOCS
+load c6/40.k
+save new/c6/40.k  LOCS
+load c6/41.k
+save new/c6/41.k  LOCS
+load c6/42.k
+save new/c6/42.k  LOCS
+load c6/43.k
+save new/c6/43.k  LOCS
+load c6/44.k
+save new/c6/44.k  LOCS
+load c6/45.k
+save new/c6/45.k  LOCS
+load c6/46.k
+save new/c6/46.k  LOCS
+load c6/47.k
+save new/c6/47.k  LOCS
+load c6/48.k
+save new/c6/48.k  LOCS
+load c6/49.k
+save new/c6/49.k  LOCS
+load c6/5.k
+save new/c6/5.k  LOCS
+load c6/50.k
+save new/c6/50.k  LOCS
+load c6/51.k
+save new/c6/51.k  LOCS
+load c6/52.k
+save new/c6/52.k  LOCS
+load c6/53.k
+save new/c6/53.k  LOCS
+load c6/54.k
+save new/c6/54.k  LOCS
+load c6/55.k
+save new/c6/55.k  LOCS
+load c6/56.k
+save new/c6/56.k  LOCS
+load c6/57.k
+save new/c6/57.k  LOCS
+load c6/58.k
+save new/c6/58.k  LOCS
+load c6/59.k
+save new/c6/59.k  LOCS
+load c6/6.k
+save new/c6/6.k  LOCS
+load c6/60.k
+save new/c6/60.k  LOCS
+load c6/61.k
+save new/c6/61.k  LOCS
+load c6/62.k
+save new/c6/62.k  LOCS
+load c6/63.k
+save new/c6/63.k  LOCS
+load c6/64.k
+save new/c6/64.k  LOCS
+load c6/65.k
+save new/c6/65.k  LOCS
+load c6/66.k
+save new/c6/66.k  LOCS
+load c6/67.k
+save new/c6/67.k  LOCS
+load c6/68.k
+save new/c6/68.k  LOCS
+load c6/69.k
+save new/c6/69.k  LOCS
+load c6/7.k
+save new/c6/7.k  LOCS
+load c6/70.k
+save new/c6/70.k  LOCS
+load c6/71.k
+save new/c6/71.k  LOCS
+load c6/72.k
+save new/c6/72.k  LOCS
+load c6/73.k
+save new/c6/73.k  LOCS
+load c6/74.k
+save new/c6/74.k  LOCS
+load c6/75.k
+save new/c6/75.k  LOCS
+load c6/76.k
+save new/c6/76.k  LOCS
+load c6/77.k
+save new/c6/77.k  LOCS
+load c6/78.k
+save new/c6/78.k  LOCS
+load c6/79.k
+save new/c6/79.k  LOCS
+load c6/8.k
+save new/c6/8.k  LOCS
+load c6/80.k
+save new/c6/80.k  LOCS
+load c6/81.k
+save new/c6/81.k  LOCS
+load c6/82.k
+save new/c6/82.k  LOCS
+load c6/83.k
+save new/c6/83.k  LOCS
+load c6/84.k
+save new/c6/84.k  LOCS
+load c6/85.k
+save new/c6/85.k  LOCS
+load c6/86.k
+save new/c6/86.k  LOCS
+load c6/87.k
+save new/c6/87.k  LOCS
+load c6/88.k
+save new/c6/88.k  LOCS
+load c6/89.k
+save new/c6/89.k  LOCS
+load c6/9.k
+save new/c6/9.k  LOCS
+load c6/90.k
+save new/c6/90.k  LOCS
+load c6/91.k
+save new/c6/91.k  LOCS
+load c6/92.k
+save new/c6/92.k  LOCS
+load c6/93.k
+save new/c6/93.k  LOCS
+load c6/94.k
+save new/c6/94.k  LOCS
+load c6/95.k
+save new/c6/95.k  LOCS
+load c6/96.k
+save new/c6/96.k  LOCS
+load c6/97.k
+save new/c6/97.k  LOCS
+load c6/98.k
+save new/c6/98.k  LOCS
+load c6/99.k
+save new/c6/99.k  LOCS
+load c7/0.k
+save new/c7/0.k  LOCS
+load c7/1.k
+save new/c7/1.k  LOCS
+load c7/10.k
+save new/c7/10.k  LOCS
+load c7/100.k
+save new/c7/100.k  LOCS
+load c7/101.k
+save new/c7/101.k  LOCS
+load c7/102.k
+save new/c7/102.k  LOCS
+load c7/103.k
+save new/c7/103.k  LOCS
+load c7/104.k
+save new/c7/104.k  LOCS
+load c7/105.k
+save new/c7/105.k  LOCS
+load c7/106.k
+save new/c7/106.k  LOCS
+load c7/107.k
+save new/c7/107.k  LOCS
+load c7/108.k
+save new/c7/108.k  LOCS
+load c7/109.k
+save new/c7/109.k  LOCS
+load c7/11.k
+save new/c7/11.k  LOCS
+load c7/110.k
+save new/c7/110.k  LOCS
+load c7/111.k
+save new/c7/111.k  LOCS
+load c7/112.k
+save new/c7/112.k  LOCS
+load c7/113.k
+save new/c7/113.k  LOCS
+load c7/114.k
+save new/c7/114.k  LOCS
+load c7/115.k
+save new/c7/115.k  LOCS
+load c7/116.k
+save new/c7/116.k  LOCS
+load c7/117.k
+save new/c7/117.k  LOCS
+load c7/118.k
+save new/c7/118.k  LOCS
+load c7/118rel.k
+save new/c7/118rel.k  LOCS
+load c7/119.k
+save new/c7/119.k  LOCS
+load c7/12.k
+save new/c7/12.k  LOCS
+load c7/120.k
+save new/c7/120.k  LOCS
+load c7/121.k
+save new/c7/121.k  LOCS
+load c7/122.k
+save new/c7/122.k  LOCS
+load c7/123.k
+save new/c7/123.k  LOCS
+load c7/124.k
+save new/c7/124.k  LOCS
+load c7/125.k
+save new/c7/125.k  LOCS
+load c7/126.k
+save new/c7/126.k  LOCS
+load c7/127.k
+save new/c7/127.k  LOCS
+load c7/128.k
+save new/c7/128.k  LOCS
+load c7/129.k
+save new/c7/129.k  LOCS
+load c7/13.k
+save new/c7/13.k  LOCS
+load c7/130.k
+save new/c7/130.k  LOCS
+load c7/131.k
+save new/c7/131.k  LOCS
+load c7/132.k
+save new/c7/132.k  LOCS
+load c7/133.k
+save new/c7/133.k  LOCS
+load c7/134.k
+save new/c7/134.k  LOCS
+load c7/135.k
+save new/c7/135.k  LOCS
+load c7/136.k
+save new/c7/136.k  LOCS
+load c7/137.k
+save new/c7/137.k  LOCS
+load c7/138.k
+save new/c7/138.k  LOCS
+load c7/139.k
+save new/c7/139.k  LOCS
+load c7/14.k
+save new/c7/14.k  LOCS
+load c7/140.k
+save new/c7/140.k  LOCS
+load c7/141.k
+save new/c7/141.k  LOCS
+load c7/142.k
+save new/c7/142.k  LOCS
+load c7/143.k
+save new/c7/143.k  LOCS
+load c7/144.k
+save new/c7/144.k  LOCS
+load c7/145.k
+save new/c7/145.k  LOCS
+load c7/146.k
+save new/c7/146.k  LOCS
+load c7/147.k
+save new/c7/147.k  LOCS
+load c7/148.k
+save new/c7/148.k  LOCS
+load c7/149.k
+save new/c7/149.k  LOCS
+load c7/15.k
+save new/c7/15.k  LOCS
+load c7/150.k
+save new/c7/150.k  LOCS
+load c7/151.k
+save new/c7/151.k  LOCS
+load c7/152.k
+save new/c7/152.k  LOCS
+load c7/153.k
+save new/c7/153.k  LOCS
+load c7/154.k
+save new/c7/154.k  LOCS
+load c7/155.k
+save new/c7/155.k  LOCS
+load c7/156.k
+save new/c7/156.k  LOCS
+load c7/157.k
+save new/c7/157.k  LOCS
+load c7/158.k
+save new/c7/158.k  LOCS
+load c7/159.k
+save new/c7/159.k  LOCS
+load c7/16.k
+save new/c7/16.k  LOCS
+load c7/17.k
+save new/c7/17.k  LOCS
+load c7/18.k
+save new/c7/18.k  LOCS
+load c7/19.k
+save new/c7/19.k  LOCS
+load c7/2.k
+save new/c7/2.k  LOCS
+load c7/20.k
+save new/c7/20.k  LOCS
+load c7/21.k
+save new/c7/21.k  LOCS
+load c7/22.k
+save new/c7/22.k  LOCS
+load c7/23.k
+save new/c7/23.k  LOCS
+load c7/24.k
+save new/c7/24.k  LOCS
+load c7/25.k
+save new/c7/25.k  LOCS
+load c7/26.k
+save new/c7/26.k  LOCS
+load c7/27.k
+save new/c7/27.k  LOCS
+load c7/28.k
+save new/c7/28.k  LOCS
+load c7/29.k
+save new/c7/29.k  LOCS
+load c7/3.k
+save new/c7/3.k  LOCS
+load c7/30.k
+save new/c7/30.k  LOCS
+load c7/31.k
+save new/c7/31.k  LOCS
+load c7/32.k
+save new/c7/32.k  LOCS
+load c7/33.k
+save new/c7/33.k  LOCS
+load c7/34.k
+save new/c7/34.k  LOCS
+load c7/35.k
+save new/c7/35.k  LOCS
+load c7/36.k
+save new/c7/36.k  LOCS
+load c7/37.k
+save new/c7/37.k  LOCS
+load c7/38.k
+save new/c7/38.k  LOCS
+load c7/39.k
+save new/c7/39.k  LOCS
+load c7/4.k
+save new/c7/4.k  LOCS
+load c7/40.k
+save new/c7/40.k  LOCS
+load c7/41.k
+save new/c7/41.k  LOCS
+load c7/42.k
+save new/c7/42.k  LOCS
+load c7/43.k
+save new/c7/43.k  LOCS
+load c7/44.k
+save new/c7/44.k  LOCS
+load c7/45.k
+save new/c7/45.k  LOCS
+load c7/46.k
+save new/c7/46.k  LOCS
+load c7/47.k
+save new/c7/47.k  LOCS
+load c7/48.k
+save new/c7/48.k  LOCS
+load c7/49.k
+save new/c7/49.k  LOCS
+load c7/5.k
+save new/c7/5.k  LOCS
+load c7/50.k
+save new/c7/50.k  LOCS
+load c7/51.k
+save new/c7/51.k  LOCS
+load c7/52.k
+save new/c7/52.k  LOCS
+load c7/53.k
+save new/c7/53.k  LOCS
+load c7/54.k
+save new/c7/54.k  LOCS
+load c7/55.k
+save new/c7/55.k  LOCS
+load c7/56.k
+save new/c7/56.k  LOCS
+load c7/57.k
+save new/c7/57.k  LOCS
+load c7/58.k
+save new/c7/58.k  LOCS
+load c7/59.k
+save new/c7/59.k  LOCS
+load c7/6.k
+save new/c7/6.k  LOCS
+load c7/60.k
+save new/c7/60.k  LOCS
+load c7/61.k
+save new/c7/61.k  LOCS
+load c7/62.k
+save new/c7/62.k  LOCS
+load c7/63.k
+save new/c7/63.k  LOCS
+load c7/64.k
+save new/c7/64.k  LOCS
+load c7/65.k
+save new/c7/65.k  LOCS
+load c7/66.k
+save new/c7/66.k  LOCS
+load c7/67.k
+save new/c7/67.k  LOCS
+load c7/68.k
+save new/c7/68.k  LOCS
+load c7/69.k
+save new/c7/69.k  LOCS
+load c7/7.k
+save new/c7/7.k  LOCS
+load c7/70.k
+save new/c7/70.k  LOCS
+load c7/71.k
+save new/c7/71.k  LOCS
+load c7/72.k
+save new/c7/72.k  LOCS
+load c7/73.k
+save new/c7/73.k  LOCS
+load c7/74.k
+save new/c7/74.k  LOCS
+load c7/75.k
+save new/c7/75.k  LOCS
+load c7/76.k
+save new/c7/76.k  LOCS
+load c7/77.k
+save new/c7/77.k  LOCS
+load c7/78.k
+save new/c7/78.k  LOCS
+load c7/79.k
+save new/c7/79.k  LOCS
+load c7/8.k
+save new/c7/8.k  LOCS
+load c7/80.k
+save new/c7/80.k  LOCS
+load c7/81.k
+save new/c7/81.k  LOCS
+load c7/82.k
+save new/c7/82.k  LOCS
+load c7/83.k
+save new/c7/83.k  LOCS
+load c7/84.k
+save new/c7/84.k  LOCS
+load c7/85.k
+save new/c7/85.k  LOCS
+load c7/86.k
+save new/c7/86.k  LOCS
+load c7/87.k
+save new/c7/87.k  LOCS
+load c7/88.k
+save new/c7/88.k  LOCS
+load c7/89.k
+save new/c7/89.k  LOCS
+load c7/9.k
+save new/c7/9.k  LOCS
+load c7/90.k
+save new/c7/90.k  LOCS
+load c7/91.k
+save new/c7/91.k  LOCS
+load c7/92.k
+save new/c7/92.k  LOCS
+load c7/93.k
+save new/c7/93.k  LOCS
+load c7/94.k
+save new/c7/94.k  LOCS
+load c7/95.k
+save new/c7/95.k  LOCS
+load c7/96.k
+save new/c7/96.k  LOCS
+load c7/97.k
+save new/c7/97.k  LOCS
+load c7/97b.k
+save new/c7/97b.k  LOCS
+load c7/98.k
+save new/c7/98.k  LOCS
+load c7/99.k
+save new/c7/99.k  LOCS
+load c8/0.k
+save new/c8/0.k  LOCS
+load c8/1.k
+save new/c8/1.k  LOCS
+load c8/10.k
+save new/c8/10.k  LOCS
+load c8/11.k
+save new/c8/11.k  LOCS
+load c8/12.k
+save new/c8/12.k  LOCS
+load c8/13.k
+save new/c8/13.k  LOCS
+load c8/14.k
+save new/c8/14.k  LOCS
+load c8/15.k
+save new/c8/15.k  LOCS
+load c8/16.k
+save new/c8/16.k  LOCS
+load c8/17.k
+save new/c8/17.k  LOCS
+load c8/18.k
+save new/c8/18.k  LOCS
+load c8/19.k
+save new/c8/19.k  LOCS
+load c8/2.k
+save new/c8/2.k  LOCS
+load c8/20.k
+save new/c8/20.k  LOCS
+load c8/21.k
+save new/c8/21.k  LOCS
+load c8/22.k
+save new/c8/22.k  LOCS
+load c8/23.k
+save new/c8/23.k  LOCS
+load c8/24.k
+save new/c8/24.k  LOCS
+load c8/25.k
+save new/c8/25.k  LOCS
+load c8/26.k
+save new/c8/26.k  LOCS
+load c8/27.k
+save new/c8/27.k  LOCS
+load c8/28.k
+save new/c8/28.k  LOCS
+load c8/29.k
+save new/c8/29.k  LOCS
+load c8/3.k
+save new/c8/3.k  LOCS
+load c8/30.k
+save new/c8/30.k  LOCS
+load c8/31.k
+save new/c8/31.k  LOCS
+load c8/32.k
+save new/c8/32.k  LOCS
+load c8/33.k
+save new/c8/33.k  LOCS
+load c8/34.k
+save new/c8/34.k  LOCS
+load c8/35.k
+save new/c8/35.k  LOCS
+load c8/36.k
+save new/c8/36.k  LOCS
+load c8/37.k
+save new/c8/37.k  LOCS
+load c8/38.k
+save new/c8/38.k  LOCS
+load c8/39.k
+save new/c8/39.k  LOCS
+load c8/4.k
+save new/c8/4.k  LOCS
+load c8/40.k
+save new/c8/40.k  LOCS
+load c8/41.k
+save new/c8/41.k  LOCS
+load c8/42.k
+save new/c8/42.k  LOCS
+load c8/43.k
+save new/c8/43.k  LOCS
+load c8/44.k
+save new/c8/44.k  LOCS
+load c8/45.k
+save new/c8/45.k  LOCS
+load c8/46.k
+save new/c8/46.k  LOCS
+load c8/47.k
+save new/c8/47.k  LOCS
+load c8/48.k
+save new/c8/48.k  LOCS
+load c8/49.k
+save new/c8/49.k  LOCS
+load c8/5.k
+save new/c8/5.k  LOCS
+load c8/50.k
+save new/c8/50.k  LOCS
+load c8/51.k
+save new/c8/51.k  LOCS
+load c8/52.k
+save new/c8/52.k  LOCS
+load c8/53.k
+save new/c8/53.k  LOCS
+load c8/54.k
+save new/c8/54.k  LOCS
+load c8/55.k
+save new/c8/55.k  LOCS
+load c8/56.k
+save new/c8/56.k  LOCS
+load c8/57.k
+save new/c8/57.k  LOCS
+load c8/58.k
+save new/c8/58.k  LOCS
+load c8/59.k
+save new/c8/59.k  LOCS
+load c8/6.k
+save new/c8/6.k  LOCS
+load c8/60.k
+save new/c8/60.k  LOCS
+load c8/61.k
+save new/c8/61.k  LOCS
+load c8/62.k
+save new/c8/62.k  LOCS
+load c8/7.k
+save new/c8/7.k  LOCS
+load c8/8.k
+save new/c8/8.k  LOCS
+load c8/9.k
+save new/c8/9.k  LOCS
+load c8/a0.k
+save new/c8/a0.k  LOCS
+load d3/0.k
+save new/d3/0.k  LOCS
+load d3/1.k
+save new/d3/1.k  LOCS
+load d3/10.k
+save new/d3/10.k  LOCS
+load d3/100.k
+save new/d3/100.k  LOCS
+load d3/101.k
+save new/d3/101.k  LOCS
+load d3/102.k
+save new/d3/102.k  LOCS
+load d3/103.k
+save new/d3/103.k  LOCS
+load d3/104.k
+save new/d3/104.k  LOCS
+load d3/105.k
+save new/d3/105.k  LOCS
+load d3/106.k
+save new/d3/106.k  LOCS
+load d3/107.k
+save new/d3/107.k  LOCS
+load d3/108.k
+save new/d3/108.k  LOCS
+load d3/109.k
+save new/d3/109.k  LOCS
+load d3/11.k
+save new/d3/11.k  LOCS
+load d3/110.k
+save new/d3/110.k  LOCS
+load d3/111.k
+save new/d3/111.k  LOCS
+load d3/112.k
+save new/d3/112.k  LOCS
+load d3/113.k
+save new/d3/113.k  LOCS
+load d3/114.k
+save new/d3/114.k  LOCS
+load d3/115.k
+save new/d3/115.k  LOCS
+load d3/116.k
+save new/d3/116.k  LOCS
+load d3/117.k
+save new/d3/117.k  LOCS
+load d3/118.k
+save new/d3/118.k  LOCS
+load d3/119.k
+save new/d3/119.k  LOCS
+load d3/12.k
+save new/d3/12.k  LOCS
+load d3/120.k
+save new/d3/120.k  LOCS
+load d3/121.k
+save new/d3/121.k  LOCS
+load d3/122.k
+save new/d3/122.k  LOCS
+load d3/123.k
+save new/d3/123.k  LOCS
+load d3/124.k
+save new/d3/124.k  LOCS
+load d3/125.k
+save new/d3/125.k  LOCS
+load d3/126.k
+save new/d3/126.k  LOCS
+load d3/127.k
+save new/d3/127.k  LOCS
+load d3/128.k
+save new/d3/128.k  LOCS
+load d3/129.k
+save new/d3/129.k  LOCS
+load d3/13.k
+save new/d3/13.k  LOCS
+load d3/130.k
+save new/d3/130.k  LOCS
+load d3/131.k
+save new/d3/131.k  LOCS
+load d3/132.k
+save new/d3/132.k  LOCS
+load d3/133.k
+save new/d3/133.k  LOCS
+load d3/134.k
+save new/d3/134.k  LOCS
+load d3/135.k
+save new/d3/135.k  LOCS
+load d3/136.k
+save new/d3/136.k  LOCS
+load d3/137.k
+save new/d3/137.k  LOCS
+load d3/138.k
+save new/d3/138.k  LOCS
+load d3/139.k
+save new/d3/139.k  LOCS
+load d3/14.k
+save new/d3/14.k  LOCS
+load d3/140.k
+save new/d3/140.k  LOCS
+load d3/141.k
+save new/d3/141.k  LOCS
+load d3/142.k
+save new/d3/142.k  LOCS
+load d3/143.k
+save new/d3/143.k  LOCS
+load d3/144.k
+save new/d3/144.k  LOCS
+load d3/145.k
+save new/d3/145.k  LOCS
+load d3/146.k
+save new/d3/146.k  LOCS
+load d3/147.k
+save new/d3/147.k  LOCS
+load d3/148.k
+save new/d3/148.k  LOCS
+load d3/149.k
+save new/d3/149.k  LOCS
+load d3/15.k
+save new/d3/15.k  LOCS
+load d3/150.k
+save new/d3/150.k  LOCS
+load d3/151.k
+save new/d3/151.k  LOCS
+load d3/152.k
+save new/d3/152.k  LOCS
+load d3/153.k
+save new/d3/153.k  LOCS
+load d3/154.k
+save new/d3/154.k  LOCS
+load d3/155.k
+save new/d3/155.k  LOCS
+load d3/156.k
+save new/d3/156.k  LOCS
+load d3/157.k
+save new/d3/157.k  LOCS
+load d3/158.k
+save new/d3/158.k  LOCS
+load d3/159.k
+save new/d3/159.k  LOCS
+load d3/16.k
+save new/d3/16.k  LOCS
+load d3/17.k
+save new/d3/17.k  LOCS
+load d3/18.k
+save new/d3/18.k  LOCS
+load d3/19.k
+save new/d3/19.k  LOCS
+load d3/2.k
+save new/d3/2.k  LOCS
+load d3/20.k
+save new/d3/20.k  LOCS
+load d3/21.k
+save new/d3/21.k  LOCS
+load d3/22.k
+save new/d3/22.k  LOCS
+load d3/23.k
+save new/d3/23.k  LOCS
+load d3/24.k
+save new/d3/24.k  LOCS
+load d3/25.k
+save new/d3/25.k  LOCS
+load d3/26.k
+save new/d3/26.k  LOCS
+load d3/27.k
+save new/d3/27.k  LOCS
+load d3/28.k
+save new/d3/28.k  LOCS
+load d3/29.k
+save new/d3/29.k  LOCS
+load d3/3.k
+save new/d3/3.k  LOCS
+load d3/30.k
+save new/d3/30.k  LOCS
+load d3/31.k
+save new/d3/31.k  LOCS
+load d3/32.k
+save new/d3/32.k  LOCS
+load d3/33.k
+save new/d3/33.k  LOCS
+load d3/34.k
+save new/d3/34.k  LOCS
+load d3/35.k
+save new/d3/35.k  LOCS
+load d3/36.k
+save new/d3/36.k  LOCS
+load d3/37.k
+save new/d3/37.k  LOCS
+load d3/38.k
+save new/d3/38.k  LOCS
+load d3/39.k
+save new/d3/39.k  LOCS
+load d3/4.k
+save new/d3/4.k  LOCS
+load d3/40.k
+save new/d3/40.k  LOCS
+load d3/41.k
+save new/d3/41.k  LOCS
+load d3/42.k
+save new/d3/42.k  LOCS
+load d3/43.k
+save new/d3/43.k  LOCS
+load d3/44.k
+save new/d3/44.k  LOCS
+load d3/45.k
+save new/d3/45.k  LOCS
+load d3/46.k
+save new/d3/46.k  LOCS
+load d3/47.k
+save new/d3/47.k  LOCS
+load d3/48.k
+save new/d3/48.k  LOCS
+load d3/49.k
+save new/d3/49.k  LOCS
+load d3/5.k
+save new/d3/5.k  LOCS
+load d3/50.k
+save new/d3/50.k  LOCS
+load d3/51.k
+save new/d3/51.k  LOCS
+load d3/52.k
+save new/d3/52.k  LOCS
+load d3/53.k
+save new/d3/53.k  LOCS
+load d3/54.k
+save new/d3/54.k  LOCS
+load d3/55.k
+save new/d3/55.k  LOCS
+load d3/56.k
+save new/d3/56.k  LOCS
+load d3/57.k
+save new/d3/57.k  LOCS
+load d3/58.k
+save new/d3/58.k  LOCS
+load d3/59.k
+save new/d3/59.k  LOCS
+load d3/6.k
+save new/d3/6.k  LOCS
+load d3/60.k
+save new/d3/60.k  LOCS
+load d3/61.k
+save new/d3/61.k  LOCS
+load d3/62.k
+save new/d3/62.k  LOCS
+load d3/63.k
+save new/d3/63.k  LOCS
+load d3/64.k
+save new/d3/64.k  LOCS
+load d3/65.k
+save new/d3/65.k  LOCS
+load d3/66.k
+save new/d3/66.k  LOCS
+load d3/67.k
+save new/d3/67.k  LOCS
+load d3/68.k
+save new/d3/68.k  LOCS
+load d3/69.k
+save new/d3/69.k  LOCS
+load d3/7.k
+save new/d3/7.k  LOCS
+load d3/70.k
+save new/d3/70.k  LOCS
+load d3/71.k
+save new/d3/71.k  LOCS
+load d3/72.k
+save new/d3/72.k  LOCS
+load d3/73.k
+save new/d3/73.k  LOCS
+load d3/74.k
+save new/d3/74.k  LOCS
+load d3/75.k
+save new/d3/75.k  LOCS
+load d3/76.k
+save new/d3/76.k  LOCS
+load d3/77.k
+save new/d3/77.k  LOCS
+load d3/78.k
+save new/d3/78.k  LOCS
+load d3/79.k
+save new/d3/79.k  LOCS
+load d3/8.k
+save new/d3/8.k  LOCS
+load d3/80.k
+save new/d3/80.k  LOCS
+load d3/81.k
+save new/d3/81.k  LOCS
+load d3/82.k
+save new/d3/82.k  LOCS
+load d3/83.k
+save new/d3/83.k  LOCS
+load d3/84.k
+save new/d3/84.k  LOCS
+load d3/85.k
+save new/d3/85.k  LOCS
+load d3/86.k
+save new/d3/86.k  LOCS
+load d3/87.k
+save new/d3/87.k  LOCS
+load d3/88.k
+save new/d3/88.k  LOCS
+load d3/89.k
+save new/d3/89.k  LOCS
+load d3/9.k
+save new/d3/9.k  LOCS
+load d3/90.k
+save new/d3/90.k  LOCS
+load d3/91.k
+save new/d3/91.k  LOCS
+load d3/92.k
+save new/d3/92.k  LOCS
+load d3/93.k
+save new/d3/93.k  LOCS
+load d3/94.k
+save new/d3/94.k  LOCS
+load d3/95.k
+save new/d3/95.k  LOCS
+load d3/96.k
+save new/d3/96.k  LOCS
+load d3/97.k
+save new/d3/97.k  LOCS
+load d3/98.k
+save new/d3/98.k  LOCS
+load d3/99.k
+save new/d3/99.k  LOCS
+load d3/a1.k
+save new/d3/a1.k  LOCS
+load d4/0.k
+save new/d4/0.k  LOCS
+load d4/1.k
+save new/d4/1.k  LOCS
+load d4/10.k
+save new/d4/10.k  LOCS
+load d4/100.k
+save new/d4/100.k  LOCS
+load d4/101.k
+save new/d4/101.k  LOCS
+load d4/102.k
+save new/d4/102.k  LOCS
+load d4/103.k
+save new/d4/103.k  LOCS
+load d4/104.k
+save new/d4/104.k  LOCS
+load d4/105.k
+save new/d4/105.k  LOCS
+load d4/106.k
+save new/d4/106.k  LOCS
+load d4/107.k
+save new/d4/107.k  LOCS
+load d4/108.k
+save new/d4/108.k  LOCS
+load d4/109.k
+save new/d4/109.k  LOCS
+load d4/11.k
+save new/d4/11.k  LOCS
+load d4/110.k
+save new/d4/110.k  LOCS
+load d4/111.k
+save new/d4/111.k  LOCS
+load d4/112.k
+save new/d4/112.k  LOCS
+load d4/113.k
+save new/d4/113.k  LOCS
+load d4/114.k
+save new/d4/114.k  LOCS
+load d4/115.k
+save new/d4/115.k  LOCS
+load d4/116.k
+save new/d4/116.k  LOCS
+load d4/117.k
+save new/d4/117.k  LOCS
+load d4/118.k
+save new/d4/118.k  LOCS
+load d4/119.k
+save new/d4/119.k  LOCS
+load d4/12.k
+save new/d4/12.k  LOCS
+load d4/120.k
+save new/d4/120.k  LOCS
+load d4/121.k
+save new/d4/121.k  LOCS
+load d4/122.k
+save new/d4/122.k  LOCS
+load d4/123.k
+save new/d4/123.k  LOCS
+load d4/124.k
+save new/d4/124.k  LOCS
+load d4/125.k
+save new/d4/125.k  LOCS
+load d4/126.k
+save new/d4/126.k  LOCS
+load d4/127.k
+save new/d4/127.k  LOCS
+load d4/128.k
+save new/d4/128.k  LOCS
+load d4/129.k
+save new/d4/129.k  LOCS
+load d4/13.k
+save new/d4/13.k  LOCS
+load d4/130.k
+save new/d4/130.k  LOCS
+load d4/131.k
+save new/d4/131.k  LOCS
+load d4/132.k
+save new/d4/132.k  LOCS
+load d4/133.k
+save new/d4/133.k  LOCS
+load d4/134.k
+save new/d4/134.k  LOCS
+load d4/135.k
+save new/d4/135.k  LOCS
+load d4/136.k
+save new/d4/136.k  LOCS
+load d4/137.k
+save new/d4/137.k  LOCS
+load d4/138.k
+save new/d4/138.k  LOCS
+load d4/139.k
+save new/d4/139.k  LOCS
+load d4/14.k
+save new/d4/14.k  LOCS
+load d4/140.k
+save new/d4/140.k  LOCS
+load d4/141.k
+save new/d4/141.k  LOCS
+load d4/142.k
+save new/d4/142.k  LOCS
+load d4/143.k
+save new/d4/143.k  LOCS
+load d4/144.k
+save new/d4/144.k  LOCS
+load d4/145.k
+save new/d4/145.k  LOCS
+load d4/146.k
+save new/d4/146.k  LOCS
+load d4/147.k
+save new/d4/147.k  LOCS
+load d4/148.k
+save new/d4/148.k  LOCS
+load d4/149.k
+save new/d4/149.k  LOCS
+load d4/15.k
+save new/d4/15.k  LOCS
+load d4/150.k
+save new/d4/150.k  LOCS
+load d4/151.k
+save new/d4/151.k  LOCS
+load d4/152.k
+save new/d4/152.k  LOCS
+load d4/153.k
+save new/d4/153.k  LOCS
+load d4/154.k
+save new/d4/154.k  LOCS
+load d4/155.k
+save new/d4/155.k  LOCS
+load d4/156.k
+save new/d4/156.k  LOCS
+load d4/157.k
+save new/d4/157.k  LOCS
+load d4/158.k
+save new/d4/158.k  LOCS
+load d4/159.k
+save new/d4/159.k  LOCS
+load d4/16.k
+save new/d4/16.k  LOCS
+load d4/17.k
+save new/d4/17.k  LOCS
+load d4/18.k
+save new/d4/18.k  LOCS
+load d4/19.k
+save new/d4/19.k  LOCS
+load d4/2.k
+save new/d4/2.k  LOCS
+load d4/20.k
+save new/d4/20.k  LOCS
+load d4/21.k
+save new/d4/21.k  LOCS
+load d4/22.k
+save new/d4/22.k  LOCS
+load d4/23.k
+save new/d4/23.k  LOCS
+load d4/24.k
+save new/d4/24.k  LOCS
+load d4/25.k
+save new/d4/25.k  LOCS
+load d4/26.k
+save new/d4/26.k  LOCS
+load d4/27.k
+save new/d4/27.k  LOCS
+load d4/28.k
+save new/d4/28.k  LOCS
+load d4/29.k
+save new/d4/29.k  LOCS
+load d4/3.k
+save new/d4/3.k  LOCS
+load d4/30.k
+save new/d4/30.k  LOCS
+load d4/31.k
+save new/d4/31.k  LOCS
+load d4/32.k
+save new/d4/32.k  LOCS
+load d4/33.k
+save new/d4/33.k  LOCS
+load d4/34.k
+save new/d4/34.k  LOCS
+load d4/35.k
+save new/d4/35.k  LOCS
+load d4/36.k
+save new/d4/36.k  LOCS
+load d4/37.k
+save new/d4/37.k  LOCS
+load d4/38.k
+save new/d4/38.k  LOCS
+load d4/39.k
+save new/d4/39.k  LOCS
+load d4/4.k
+save new/d4/4.k  LOCS
+load d4/40.k
+save new/d4/40.k  LOCS
+load d4/41.k
+save new/d4/41.k  LOCS
+load d4/42.k
+save new/d4/42.k  LOCS
+load d4/43.k
+save new/d4/43.k  LOCS
+load d4/44.k
+save new/d4/44.k  LOCS
+load d4/45.k
+save new/d4/45.k  LOCS
+load d4/46.k
+save new/d4/46.k  LOCS
+load d4/47.k
+save new/d4/47.k  LOCS
+load d4/48.k
+save new/d4/48.k  LOCS
+load d4/49.k
+save new/d4/49.k  LOCS
+load d4/5.k
+save new/d4/5.k  LOCS
+load d4/50.k
+save new/d4/50.k  LOCS
+load d4/51.k
+save new/d4/51.k  LOCS
+load d4/52.k
+save new/d4/52.k  LOCS
+load d4/53.k
+save new/d4/53.k  LOCS
+load d4/54.k
+save new/d4/54.k  LOCS
+load d4/55.k
+save new/d4/55.k  LOCS
+load d4/56.k
+save new/d4/56.k  LOCS
+load d4/57.k
+save new/d4/57.k  LOCS
+load d4/58.k
+save new/d4/58.k  LOCS
+load d4/59.k
+save new/d4/59.k  LOCS
+load d4/6.k
+save new/d4/6.k  LOCS
+load d4/60.k
+save new/d4/60.k  LOCS
+load d4/61.k
+save new/d4/61.k  LOCS
+load d4/62.k
+save new/d4/62.k  LOCS
+load d4/63.k
+save new/d4/63.k  LOCS
+load d4/64.k
+save new/d4/64.k  LOCS
+load d4/65.k
+save new/d4/65.k  LOCS
+load d4/66.k
+save new/d4/66.k  LOCS
+load d4/67.k
+save new/d4/67.k  LOCS
+load d4/68.k
+save new/d4/68.k  LOCS
+load d4/69.k
+save new/d4/69.k  LOCS
+load d4/7.k
+save new/d4/7.k  LOCS
+load d4/70.k
+save new/d4/70.k  LOCS
+load d4/71.k
+save new/d4/71.k  LOCS
+load d4/72.k
+save new/d4/72.k  LOCS
+load d4/73.k
+save new/d4/73.k  LOCS
+load d4/74.k
+save new/d4/74.k  LOCS
+load d4/75.k
+save new/d4/75.k  LOCS
+load d4/76.k
+save new/d4/76.k  LOCS
+load d4/77.k
+save new/d4/77.k  LOCS
+load d4/78.k
+save new/d4/78.k  LOCS
+load d4/79.k
+save new/d4/79.k  LOCS
+load d4/8.k
+save new/d4/8.k  LOCS
+load d4/80.k
+save new/d4/80.k  LOCS
+load d4/81.k
+save new/d4/81.k  LOCS
+load d4/82.k
+save new/d4/82.k  LOCS
+load d4/83.k
+save new/d4/83.k  LOCS
+load d4/84.k
+save new/d4/84.k  LOCS
+load d4/85.k
+save new/d4/85.k  LOCS
+load d4/86.k
+save new/d4/86.k  LOCS
+load d4/87.k
+save new/d4/87.k  LOCS
+load d4/88.k
+save new/d4/88.k  LOCS
+load d4/89.k
+save new/d4/89.k  LOCS
+load d4/9.k
+save new/d4/9.k  LOCS
+load d4/90.k
+save new/d4/90.k  LOCS
+load d4/91.k
+save new/d4/91.k  LOCS
+load d4/92.k
+save new/d4/92.k  LOCS
+load d4/93.k
+save new/d4/93.k  LOCS
+load d4/94.k
+save new/d4/94.k  LOCS
+load d4/95.k
+save new/d4/95.k  LOCS
+load d4/96.k
+save new/d4/96.k  LOCS
+load d4/97.k
+save new/d4/97.k  LOCS
+load d4/98.k
+save new/d4/98.k  LOCS
+load d4/99.k
+save new/d4/99.k  LOCS
+load d4/a0.k
+save new/d4/a0.k  LOCS
+load d4/a1.k
+save new/d4/a1.k  LOCS
+load d4/a2.k
+save new/d4/a2.k  LOCS
+load d4/a3.k
+save new/d4/a3.k  LOCS
+load d5/0.k
+save new/d5/0.k  LOCS
+load d5/1.k
+save new/d5/1.k  LOCS
+load d5/10.k
+save new/d5/10.k  LOCS
+load d5/100.k
+save new/d5/100.k  LOCS
+load d5/101.k
+save new/d5/101.k  LOCS
+load d5/102.k
+save new/d5/102.k  LOCS
+load d5/103.k
+save new/d5/103.k  LOCS
+load d5/104.k
+save new/d5/104.k  LOCS
+load d5/105.k
+save new/d5/105.k  LOCS
+load d5/106.k
+save new/d5/106.k  LOCS
+load d5/107.k
+save new/d5/107.k  LOCS
+load d5/108.k
+save new/d5/108.k  LOCS
+load d5/109.k
+save new/d5/109.k  LOCS
+load d5/11.k
+save new/d5/11.k  LOCS
+load d5/110.k
+save new/d5/110.k  LOCS
+load d5/111.k
+save new/d5/111.k  LOCS
+load d5/112.k
+save new/d5/112.k  LOCS
+load d5/113.k
+save new/d5/113.k  LOCS
+load d5/114.k
+save new/d5/114.k  LOCS
+load d5/115.k
+save new/d5/115.k  LOCS
+load d5/116.k
+save new/d5/116.k  LOCS
+load d5/117.k
+save new/d5/117.k  LOCS
+load d5/118.k
+save new/d5/118.k  LOCS
+load d5/119.k
+save new/d5/119.k  LOCS
+load d5/12.k
+save new/d5/12.k  LOCS
+load d5/120.k
+save new/d5/120.k  LOCS
+load d5/121.k
+save new/d5/121.k  LOCS
+load d5/122.k
+save new/d5/122.k  LOCS
+load d5/123.k
+save new/d5/123.k  LOCS
+load d5/124.k
+save new/d5/124.k  LOCS
+load d5/125.k
+save new/d5/125.k  LOCS
+load d5/126.k
+save new/d5/126.k  LOCS
+load d5/127.k
+save new/d5/127.k  LOCS
+load d5/128.k
+save new/d5/128.k  LOCS
+load d5/129.k
+save new/d5/129.k  LOCS
+load d5/13.k
+save new/d5/13.k  LOCS
+load d5/130.k
+save new/d5/130.k  LOCS
+load d5/131.k
+save new/d5/131.k  LOCS
+load d5/132.k
+save new/d5/132.k  LOCS
+load d5/133.k
+save new/d5/133.k  LOCS
+load d5/134.k
+save new/d5/134.k  LOCS
+load d5/135.k
+save new/d5/135.k  LOCS
+load d5/136.k
+save new/d5/136.k  LOCS
+load d5/137.k
+save new/d5/137.k  LOCS
+load d5/138.k
+save new/d5/138.k  LOCS
+load d5/139.k
+save new/d5/139.k  LOCS
+load d5/14.k
+save new/d5/14.k  LOCS
+load d5/140.k
+save new/d5/140.k  LOCS
+load d5/141.k
+save new/d5/141.k  LOCS
+load d5/142.k
+save new/d5/142.k  LOCS
+load d5/143.k
+save new/d5/143.k  LOCS
+load d5/144.k
+save new/d5/144.k  LOCS
+load d5/145.k
+save new/d5/145.k  LOCS
+load d5/146.k
+save new/d5/146.k  LOCS
+load d5/147.k
+save new/d5/147.k  LOCS
+load d5/148.k
+save new/d5/148.k  LOCS
+load d5/149.k
+save new/d5/149.k  LOCS
+load d5/15.k
+save new/d5/15.k  LOCS
+load d5/150.k
+save new/d5/150.k  LOCS
+load d5/151.k
+save new/d5/151.k  LOCS
+load d5/152.k
+save new/d5/152.k  LOCS
+load d5/153.k
+save new/d5/153.k  LOCS
+load d5/154.k
+save new/d5/154.k  LOCS
+load d5/155.k
+save new/d5/155.k  LOCS
+load d5/156.k
+save new/d5/156.k  LOCS
+load d5/157.k
+save new/d5/157.k  LOCS
+load d5/158.k
+save new/d5/158.k  LOCS
+load d5/159.k
+save new/d5/159.k  LOCS
+load d5/16.k
+save new/d5/16.k  LOCS
+load d5/17.k
+save new/d5/17.k  LOCS
+load d5/18.k
+save new/d5/18.k  LOCS
+load d5/19.k
+save new/d5/19.k  LOCS
+load d5/2.k
+save new/d5/2.k  LOCS
+load d5/20.k
+save new/d5/20.k  LOCS
+load d5/21.k
+save new/d5/21.k  LOCS
+load d5/22.k
+save new/d5/22.k  LOCS
+load d5/23.k
+save new/d5/23.k  LOCS
+load d5/24.k
+save new/d5/24.k  LOCS
+load d5/25.k
+save new/d5/25.k  LOCS
+load d5/26.k
+save new/d5/26.k  LOCS
+load d5/27.k
+save new/d5/27.k  LOCS
+load d5/28.k
+save new/d5/28.k  LOCS
+load d5/29.k
+save new/d5/29.k  LOCS
+load d5/3.k
+save new/d5/3.k  LOCS
+load d5/30.k
+save new/d5/30.k  LOCS
+load d5/31.k
+save new/d5/31.k  LOCS
+load d5/32.k
+save new/d5/32.k  LOCS
+load d5/33.k
+save new/d5/33.k  LOCS
+load d5/34.k
+save new/d5/34.k  LOCS
+load d5/35.k
+save new/d5/35.k  LOCS
+load d5/36.k
+save new/d5/36.k  LOCS
+load d5/37.k
+save new/d5/37.k  LOCS
+load d5/38.k
+save new/d5/38.k  LOCS
+load d5/39.k
+save new/d5/39.k  LOCS
+load d5/4.k
+save new/d5/4.k  LOCS
+load d5/40.k
+save new/d5/40.k  LOCS
+load d5/41.k
+save new/d5/41.k  LOCS
+load d5/42.k
+save new/d5/42.k  LOCS
+load d5/43.k
+save new/d5/43.k  LOCS
+load d5/44.k
+save new/d5/44.k  LOCS
+load d5/45.k
+save new/d5/45.k  LOCS
+load d5/46.k
+save new/d5/46.k  LOCS
+load d5/47.k
+save new/d5/47.k  LOCS
+load d5/48.k
+save new/d5/48.k  LOCS
+load d5/49.k
+save new/d5/49.k  LOCS
+load d5/4almost.k
+save new/d5/4almost.k  LOCS
+load d5/5.k
+save new/d5/5.k  LOCS
+load d5/50.k
+save new/d5/50.k  LOCS
+load d5/51.k
+save new/d5/51.k  LOCS
+load d5/52.k
+save new/d5/52.k  LOCS
+load d5/53.k
+save new/d5/53.k  LOCS
+load d5/54.k
+save new/d5/54.k  LOCS
+load d5/55.k
+save new/d5/55.k  LOCS
+load d5/56.k
+save new/d5/56.k  LOCS
+load d5/57.k
+save new/d5/57.k  LOCS
+load d5/58.k
+save new/d5/58.k  LOCS
+load d5/59.k
+save new/d5/59.k  LOCS
+load d5/6.k
+save new/d5/6.k  LOCS
+load d5/60.k
+save new/d5/60.k  LOCS
+load d5/61.k
+save new/d5/61.k  LOCS
+load d5/62.k
+save new/d5/62.k  LOCS
+load d5/63.k
+save new/d5/63.k  LOCS
+load d5/64.k
+save new/d5/64.k  LOCS
+load d5/65.k
+save new/d5/65.k  LOCS
+load d5/66.k
+save new/d5/66.k  LOCS
+load d5/67.k
+save new/d5/67.k  LOCS
+load d5/68.k
+save new/d5/68.k  LOCS
+load d5/69.k
+save new/d5/69.k  LOCS
+load d5/7.k
+save new/d5/7.k  LOCS
+load d5/70.k
+save new/d5/70.k  LOCS
+load d5/71.k
+save new/d5/71.k  LOCS
+load d5/72.k
+save new/d5/72.k  LOCS
+load d5/73.k
+save new/d5/73.k  LOCS
+load d5/74.k
+save new/d5/74.k  LOCS
+load d5/75.k
+save new/d5/75.k  LOCS
+load d5/76.k
+save new/d5/76.k  LOCS
+load d5/77.k
+save new/d5/77.k  LOCS
+load d5/78.k
+save new/d5/78.k  LOCS
+load d5/79.k
+save new/d5/79.k  LOCS
+load d5/8.k
+save new/d5/8.k  LOCS
+load d5/80.k
+save new/d5/80.k  LOCS
+load d5/81.k
+save new/d5/81.k  LOCS
+load d5/82.k
+save new/d5/82.k  LOCS
+load d5/83.k
+save new/d5/83.k  LOCS
+load d5/84.k
+save new/d5/84.k  LOCS
+load d5/85.k
+save new/d5/85.k  LOCS
+load d5/86.k
+save new/d5/86.k  LOCS
+load d5/87.k
+save new/d5/87.k  LOCS
+load d5/88.k
+save new/d5/88.k  LOCS
+load d5/89.k
+save new/d5/89.k  LOCS
+load d5/9.k
+save new/d5/9.k  LOCS
+load d5/90.k
+save new/d5/90.k  LOCS
+load d5/91.k
+save new/d5/91.k  LOCS
+load d5/92.k
+save new/d5/92.k  LOCS
+load d5/93.k
+save new/d5/93.k  LOCS
+load d5/94.k
+save new/d5/94.k  LOCS
+load d5/95.k
+save new/d5/95.k  LOCS
+load d5/96.k
+save new/d5/96.k  LOCS
+load d5/97.k
+save new/d5/97.k  LOCS
+load d5/98.k
+save new/d5/98.k  LOCS
+load d5/99.k
+save new/d5/99.k  LOCS
+load d5/a0.k
+save new/d5/a0.k  LOCS
+load d5/a1.k
+save new/d5/a1.k  LOCS
+load d5/a2.k
+save new/d5/a2.k  LOCS
+load d5/a3.k
+save new/d5/a3.k  LOCS
+load d5/a4.k
+save new/d5/a4.k  LOCS
+load d5/a5.k
+save new/d5/a5.k  LOCS
+load d6/0.k
+save new/d6/0.k  LOCS
+load d6/1.k
+save new/d6/1.k  LOCS
+load d6/10.k
+save new/d6/10.k  LOCS
+load d6/100.k
+save new/d6/100.k  LOCS
+load d6/101.k
+save new/d6/101.k  LOCS
+load d6/102.k
+save new/d6/102.k  LOCS
+load d6/103.k
+save new/d6/103.k  LOCS
+load d6/104.k
+save new/d6/104.k  LOCS
+load d6/105.k
+save new/d6/105.k  LOCS
+load d6/106.k
+save new/d6/106.k  LOCS
+load d6/107.k
+save new/d6/107.k  LOCS
+load d6/108.k
+save new/d6/108.k  LOCS
+load d6/109.k
+save new/d6/109.k  LOCS
+load d6/11.k
+save new/d6/11.k  LOCS
+load d6/110.k
+save new/d6/110.k  LOCS
+load d6/111.k
+save new/d6/111.k  LOCS
+load d6/112.k
+save new/d6/112.k  LOCS
+load d6/113.k
+save new/d6/113.k  LOCS
+load d6/114.k
+save new/d6/114.k  LOCS
+load d6/115.k
+save new/d6/115.k  LOCS
+load d6/116.k
+save new/d6/116.k  LOCS
+load d6/117.k
+save new/d6/117.k  LOCS
+load d6/118.k
+save new/d6/118.k  LOCS
+load d6/119.k
+save new/d6/119.k  LOCS
+load d6/12.k
+save new/d6/12.k  LOCS
+load d6/120.k
+save new/d6/120.k  LOCS
+load d6/121.k
+save new/d6/121.k  LOCS
+load d6/122.k
+save new/d6/122.k  LOCS
+load d6/123.k
+save new/d6/123.k  LOCS
+load d6/124.k
+save new/d6/124.k  LOCS
+load d6/125.k
+save new/d6/125.k  LOCS
+load d6/126.k
+save new/d6/126.k  LOCS
+load d6/127.k
+save new/d6/127.k  LOCS
+load d6/128.k
+save new/d6/128.k  LOCS
+load d6/129.k
+save new/d6/129.k  LOCS
+load d6/13.k
+save new/d6/13.k  LOCS
+load d6/130.k
+save new/d6/130.k  LOCS
+load d6/131.k
+save new/d6/131.k  LOCS
+load d6/132.k
+save new/d6/132.k  LOCS
+load d6/133.k
+save new/d6/133.k  LOCS
+load d6/134.k
+save new/d6/134.k  LOCS
+load d6/135.k
+save new/d6/135.k  LOCS
+load d6/136.k
+save new/d6/136.k  LOCS
+load d6/137.k
+save new/d6/137.k  LOCS
+load d6/138.k
+save new/d6/138.k  LOCS
+load d6/139.k
+save new/d6/139.k  LOCS
+load d6/14.k
+save new/d6/14.k  LOCS
+load d6/140.k
+save new/d6/140.k  LOCS
+load d6/141.k
+save new/d6/141.k  LOCS
+load d6/142.k
+save new/d6/142.k  LOCS
+load d6/143.k
+save new/d6/143.k  LOCS
+load d6/144.k
+save new/d6/144.k  LOCS
+load d6/145.k
+save new/d6/145.k  LOCS
+load d6/146.k
+save new/d6/146.k  LOCS
+load d6/147.k
+save new/d6/147.k  LOCS
+load d6/148.k
+save new/d6/148.k  LOCS
+load d6/149.k
+save new/d6/149.k  LOCS
+load d6/15.k
+save new/d6/15.k  LOCS
+load d6/150.k
+save new/d6/150.k  LOCS
+load d6/151.k
+save new/d6/151.k  LOCS
+load d6/152.k
+save new/d6/152.k  LOCS
+load d6/153.k
+save new/d6/153.k  LOCS
+load d6/154.k
+save new/d6/154.k  LOCS
+load d6/155.k
+save new/d6/155.k  LOCS
+load d6/156.k
+save new/d6/156.k  LOCS
+load d6/157.k
+save new/d6/157.k  LOCS
+load d6/158.k
+save new/d6/158.k  LOCS
+load d6/159.k
+save new/d6/159.k  LOCS
+load d6/16.k
+save new/d6/16.k  LOCS
+load d6/17.k
+save new/d6/17.k  LOCS
+load d6/18.k
+save new/d6/18.k  LOCS
+load d6/19.k
+save new/d6/19.k  LOCS
+load d6/2.k
+save new/d6/2.k  LOCS
+load d6/20.k
+save new/d6/20.k  LOCS
+load d6/21.k
+save new/d6/21.k  LOCS
+load d6/22.k
+save new/d6/22.k  LOCS
+load d6/23.k
+save new/d6/23.k  LOCS
+load d6/24.k
+save new/d6/24.k  LOCS
+load d6/25.k
+save new/d6/25.k  LOCS
+load d6/26.k
+save new/d6/26.k  LOCS
+load d6/27.k
+save new/d6/27.k  LOCS
+load d6/28.k
+save new/d6/28.k  LOCS
+load d6/29.k
+save new/d6/29.k  LOCS
+load d6/3.k
+save new/d6/3.k  LOCS
+load d6/30.k
+save new/d6/30.k  LOCS
+load d6/31.k
+save new/d6/31.k  LOCS
+load d6/32.k
+save new/d6/32.k  LOCS
+load d6/33.k
+save new/d6/33.k  LOCS
+load d6/34.k
+save new/d6/34.k  LOCS
+load d6/35.k
+save new/d6/35.k  LOCS
+load d6/36.k
+save new/d6/36.k  LOCS
+load d6/37.k
+save new/d6/37.k  LOCS
+load d6/38.k
+save new/d6/38.k  LOCS
+load d6/39.k
+save new/d6/39.k  LOCS
+load d6/4.k
+save new/d6/4.k  LOCS
+load d6/40.k
+save new/d6/40.k  LOCS
+load d6/41.k
+save new/d6/41.k  LOCS
+load d6/42.k
+save new/d6/42.k  LOCS
+load d6/43.k
+save new/d6/43.k  LOCS
+load d6/44.k
+save new/d6/44.k  LOCS
+load d6/45.k
+save new/d6/45.k  LOCS
+load d6/46.k
+save new/d6/46.k  LOCS
+load d6/47.k
+save new/d6/47.k  LOCS
+load d6/48.k
+save new/d6/48.k  LOCS
+load d6/49.k
+save new/d6/49.k  LOCS
+load d6/5.k
+save new/d6/5.k  LOCS
+load d6/50.k
+save new/d6/50.k  LOCS
+load d6/51.k
+save new/d6/51.k  LOCS
+load d6/52.k
+save new/d6/52.k  LOCS
+load d6/53.k
+save new/d6/53.k  LOCS
+load d6/54.k
+save new/d6/54.k  LOCS
+load d6/55.k
+save new/d6/55.k  LOCS
+load d6/56.k
+save new/d6/56.k  LOCS
+load d6/57.k
+save new/d6/57.k  LOCS
+load d6/58.k
+save new/d6/58.k  LOCS
+load d6/59.k
+save new/d6/59.k  LOCS
+load d6/6.k
+save new/d6/6.k  LOCS
+load d6/60.k
+save new/d6/60.k  LOCS
+load d6/61.k
+save new/d6/61.k  LOCS
+load d6/62.k
+save new/d6/62.k  LOCS
+load d6/63.k
+save new/d6/63.k  LOCS
+load d6/64.k
+save new/d6/64.k  LOCS
+load d6/65.k
+save new/d6/65.k  LOCS
+load d6/66.k
+save new/d6/66.k  LOCS
+load d6/67.k
+save new/d6/67.k  LOCS
+load d6/68.k
+save new/d6/68.k  LOCS
+load d6/69.k
+save new/d6/69.k  LOCS
+load d6/7.k
+save new/d6/7.k  LOCS
+load d6/70.k
+save new/d6/70.k  LOCS
+load d6/71.k
+save new/d6/71.k  LOCS
+load d6/72.k
+save new/d6/72.k  LOCS
+load d6/73.k
+save new/d6/73.k  LOCS
+load d6/74.k
+save new/d6/74.k  LOCS
+load d6/75.k
+save new/d6/75.k  LOCS
+load d6/76.k
+save new/d6/76.k  LOCS
+load d6/77.k
+save new/d6/77.k  LOCS
+load d6/78.k
+save new/d6/78.k  LOCS
+load d6/79.k
+save new/d6/79.k  LOCS
+load d6/8.k
+save new/d6/8.k  LOCS
+load d6/80.k
+save new/d6/80.k  LOCS
+load d6/81.k
+save new/d6/81.k  LOCS
+load d6/82.k
+save new/d6/82.k  LOCS
+load d6/83.k
+save new/d6/83.k  LOCS
+load d6/84.k
+save new/d6/84.k  LOCS
+load d6/85.k
+save new/d6/85.k  LOCS
+load d6/86.k
+save new/d6/86.k  LOCS
+load d6/87.k
+save new/d6/87.k  LOCS
+load d6/88.k
+save new/d6/88.k  LOCS
+load d6/89.k
+save new/d6/89.k  LOCS
+load d6/9.k
+save new/d6/9.k  LOCS
+load d6/90.k
+save new/d6/90.k  LOCS
+load d6/91.k
+save new/d6/91.k  LOCS
+load d6/92.k
+save new/d6/92.k  LOCS
+load d6/93.k
+save new/d6/93.k  LOCS
+load d6/94.k
+save new/d6/94.k  LOCS
+load d6/95.k
+save new/d6/95.k  LOCS
+load d6/96.k
+save new/d6/96.k  LOCS
+load d6/97.k
+save new/d6/97.k  LOCS
+load d6/98.k
+save new/d6/98.k  LOCS
+load d6/99.k
+save new/d6/99.k  LOCS
+load d6/a0.k
+save new/d6/a0.k  LOCS
+load d7/0.k
+save new/d7/0.k  LOCS
+load d7/1.k
+save new/d7/1.k  LOCS
+load d7/10.k
+save new/d7/10.k  LOCS
+load d7/100.k
+save new/d7/100.k  LOCS
+load d7/101.k
+save new/d7/101.k  LOCS
+load d7/102.k
+save new/d7/102.k  LOCS
+load d7/103.k
+save new/d7/103.k  LOCS
+load d7/104.k
+save new/d7/104.k  LOCS
+load d7/105.k
+save new/d7/105.k  LOCS
+load d7/106.k
+save new/d7/106.k  LOCS
+load d7/107.k
+save new/d7/107.k  LOCS
+load d7/108.k
+save new/d7/108.k  LOCS
+load d7/109.k
+save new/d7/109.k  LOCS
+load d7/11.k
+save new/d7/11.k  LOCS
+load d7/110.k
+save new/d7/110.k  LOCS
+load d7/111.k
+save new/d7/111.k  LOCS
+load d7/112.k
+save new/d7/112.k  LOCS
+load d7/113.k
+save new/d7/113.k  LOCS
+load d7/114.k
+save new/d7/114.k  LOCS
+load d7/115.k
+save new/d7/115.k  LOCS
+load d7/116.k
+save new/d7/116.k  LOCS
+load d7/117.k
+save new/d7/117.k  LOCS
+load d7/118.k
+save new/d7/118.k  LOCS
+load d7/119.k
+save new/d7/119.k  LOCS
+load d7/12.k
+save new/d7/12.k  LOCS
+load d7/120.k
+save new/d7/120.k  LOCS
+load d7/121.k
+save new/d7/121.k  LOCS
+load d7/122.k
+save new/d7/122.k  LOCS
+load d7/123.k
+save new/d7/123.k  LOCS
+load d7/124.k
+save new/d7/124.k  LOCS
+load d7/125.k
+save new/d7/125.k  LOCS
+load d7/126.k
+save new/d7/126.k  LOCS
+load d7/127.k
+save new/d7/127.k  LOCS
+load d7/128.k
+save new/d7/128.k  LOCS
+load d7/129.k
+save new/d7/129.k  LOCS
+load d7/13.k
+save new/d7/13.k  LOCS
+load d7/130.k
+save new/d7/130.k  LOCS
+load d7/131.k
+save new/d7/131.k  LOCS
+load d7/132.k
+save new/d7/132.k  LOCS
+load d7/133.k
+save new/d7/133.k  LOCS
+load d7/134.k
+save new/d7/134.k  LOCS
+load d7/135.k
+save new/d7/135.k  LOCS
+load d7/136.k
+save new/d7/136.k  LOCS
+load d7/137.k
+save new/d7/137.k  LOCS
+load d7/138.k
+save new/d7/138.k  LOCS
+load d7/139.k
+save new/d7/139.k  LOCS
+load d7/14.k
+save new/d7/14.k  LOCS
+load d7/140.k
+save new/d7/140.k  LOCS
+load d7/141.k
+save new/d7/141.k  LOCS
+load d7/142.k
+save new/d7/142.k  LOCS
+load d7/143.k
+save new/d7/143.k  LOCS
+load d7/144.k
+save new/d7/144.k  LOCS
+load d7/145.k
+save new/d7/145.k  LOCS
+load d7/146.k
+save new/d7/146.k  LOCS
+load d7/147.k
+save new/d7/147.k  LOCS
+load d7/148.k
+save new/d7/148.k  LOCS
+load d7/149.k
+save new/d7/149.k  LOCS
+load d7/15.k
+save new/d7/15.k  LOCS
+load d7/150.k
+save new/d7/150.k  LOCS
+load d7/151.k
+save new/d7/151.k  LOCS
+load d7/152.k
+save new/d7/152.k  LOCS
+load d7/153.k
+save new/d7/153.k  LOCS
+load d7/154.k
+save new/d7/154.k  LOCS
+load d7/155.k
+save new/d7/155.k  LOCS
+load d7/156.k
+save new/d7/156.k  LOCS
+load d7/157.k
+save new/d7/157.k  LOCS
+load d7/158.k
+save new/d7/158.k  LOCS
+load d7/159.k
+save new/d7/159.k  LOCS
+load d7/16.k
+save new/d7/16.k  LOCS
+load d7/17.k
+save new/d7/17.k  LOCS
+load d7/18.k
+save new/d7/18.k  LOCS
+load d7/19.k
+save new/d7/19.k  LOCS
+load d7/2.k
+save new/d7/2.k  LOCS
+load d7/20.k
+save new/d7/20.k  LOCS
+load d7/21.k
+save new/d7/21.k  LOCS
+load d7/22.k
+save new/d7/22.k  LOCS
+load d7/23.k
+save new/d7/23.k  LOCS
+load d7/24.k
+save new/d7/24.k  LOCS
+load d7/25.k
+save new/d7/25.k  LOCS
+load d7/26.k
+save new/d7/26.k  LOCS
+load d7/27.k
+save new/d7/27.k  LOCS
+load d7/28.k
+save new/d7/28.k  LOCS
+load d7/29.k
+save new/d7/29.k  LOCS
+load d7/3.k
+save new/d7/3.k  LOCS
+load d7/30.k
+save new/d7/30.k  LOCS
+load d7/31.k
+save new/d7/31.k  LOCS
+load d7/32.k
+save new/d7/32.k  LOCS
+load d7/33.k
+save new/d7/33.k  LOCS
+load d7/34.k
+save new/d7/34.k  LOCS
+load d7/35.k
+save new/d7/35.k  LOCS
+load d7/36.k
+save new/d7/36.k  LOCS
+load d7/37.k
+save new/d7/37.k  LOCS
+load d7/38.k
+save new/d7/38.k  LOCS
+load d7/39.k
+save new/d7/39.k  LOCS
+load d7/4.k
+save new/d7/4.k  LOCS
+load d7/40.k
+save new/d7/40.k  LOCS
+load d7/41.k
+save new/d7/41.k  LOCS
+load d7/42.k
+save new/d7/42.k  LOCS
+load d7/43.k
+save new/d7/43.k  LOCS
+load d7/44.k
+save new/d7/44.k  LOCS
+load d7/45.k
+save new/d7/45.k  LOCS
+load d7/46.k
+save new/d7/46.k  LOCS
+load d7/47.k
+save new/d7/47.k  LOCS
+load d7/48.k
+save new/d7/48.k  LOCS
+load d7/49.k
+save new/d7/49.k  LOCS
+load d7/5.k
+save new/d7/5.k  LOCS
+load d7/50.k
+save new/d7/50.k  LOCS
+load d7/51.k
+save new/d7/51.k  LOCS
+load d7/52.k
+save new/d7/52.k  LOCS
+load d7/53.k
+save new/d7/53.k  LOCS
+load d7/54.k
+save new/d7/54.k  LOCS
+load d7/55.k
+save new/d7/55.k  LOCS
+load d7/56.k
+save new/d7/56.k  LOCS
+load d7/57.k
+save new/d7/57.k  LOCS
+load d7/58.k
+save new/d7/58.k  LOCS
+load d7/59.k
+save new/d7/59.k  LOCS
+load d7/6.k
+save new/d7/6.k  LOCS
+load d7/60.k
+save new/d7/60.k  LOCS
+load d7/61.k
+save new/d7/61.k  LOCS
+load d7/62.k
+save new/d7/62.k  LOCS
+load d7/63.k
+save new/d7/63.k  LOCS
+load d7/64.k
+save new/d7/64.k  LOCS
+load d7/65.k
+save new/d7/65.k  LOCS
+load d7/66.k
+save new/d7/66.k  LOCS
+load d7/67.k
+save new/d7/67.k  LOCS
+load d7/68.k
+save new/d7/68.k  LOCS
+load d7/69.k
+save new/d7/69.k  LOCS
+load d7/7.k
+save new/d7/7.k  LOCS
+load d7/70.k
+save new/d7/70.k  LOCS
+load d7/71.k
+save new/d7/71.k  LOCS
+load d7/72.k
+save new/d7/72.k  LOCS
+load d7/73.k
+save new/d7/73.k  LOCS
+load d7/74.k
+save new/d7/74.k  LOCS
+load d7/75.k
+save new/d7/75.k  LOCS
+load d7/76.k
+save new/d7/76.k  LOCS
+load d7/77.k
+save new/d7/77.k  LOCS
+load d7/78.k
+save new/d7/78.k  LOCS
+load d7/79.k
+save new/d7/79.k  LOCS
+load d7/8.k
+save new/d7/8.k  LOCS
+load d7/80.k
+save new/d7/80.k  LOCS
+load d7/81.k
+save new/d7/81.k  LOCS
+load d7/82.k
+save new/d7/82.k  LOCS
+load d7/83.k
+save new/d7/83.k  LOCS
+load d7/84.k
+save new/d7/84.k  LOCS
+load d7/84rel.k
+save new/d7/84rel.k  LOCS
+load d7/85.k
+save new/d7/85.k  LOCS
+load d7/85rel.k
+save new/d7/85rel.k  LOCS
+load d7/86.k
+save new/d7/86.k  LOCS
+load d7/87.k
+save new/d7/87.k  LOCS
+load d7/88.k
+save new/d7/88.k  LOCS
+load d7/89.k
+save new/d7/89.k  LOCS
+load d7/9.k
+save new/d7/9.k  LOCS
+load d7/90.k
+save new/d7/90.k  LOCS
+load d7/91.k
+save new/d7/91.k  LOCS
+load d7/92.k
+save new/d7/92.k  LOCS
+load d7/93.k
+save new/d7/93.k  LOCS
+load d7/94.k
+save new/d7/94.k  LOCS
+load d7/95.k
+save new/d7/95.k  LOCS
+load d7/96.k
+save new/d7/96.k  LOCS
+load d7/97.k
+save new/d7/97.k  LOCS
+load d7/98.k
+save new/d7/98.k  LOCS
+load d7/99.k
+save new/d7/99.k  LOCS
+load d7/a0.k
+save new/d7/a0.k  LOCS
+load d7/a1.k
+save new/d7/a1.k  LOCS
+load d7/a10.k
+save new/d7/a10.k  LOCS
+load d7/a11.k
+save new/d7/a11.k  LOCS
+load d7/a12.k
+save new/d7/a12.k  LOCS
+load d7/a2.k
+save new/d7/a2.k  LOCS
+load d7/a3.k
+save new/d7/a3.k  LOCS
+load d7/a4.k
+save new/d7/a4.k  LOCS
+load d7/a5.k
+save new/d7/a5.k  LOCS
+load d7/a6.k
+save new/d7/a6.k  LOCS
+load d7/a7.k
+save new/d7/a7.k  LOCS
+load d7/a8.k
+save new/d7/a8.k  LOCS
+load d7/a9.k
+save new/d7/a9.k  LOCS
+load d8/0.k
+save new/d8/0.k  LOCS
+load d8/0fix.k
+save new/d8/0fix.k  LOCS
+load d8/1.k
+save new/d8/1.k  LOCS
+load d8/10.k
+save new/d8/10.k  LOCS
+load d8/11.k
+save new/d8/11.k  LOCS
+load d8/12.k
+save new/d8/12.k  LOCS
+load d8/13.k
+save new/d8/13.k  LOCS
+load d8/14.k
+save new/d8/14.k  LOCS
+load d8/15.k
+save new/d8/15.k  LOCS
+load d8/16.k
+save new/d8/16.k  LOCS
+load d8/17.k
+save new/d8/17.k  LOCS
+load d8/18.k
+save new/d8/18.k  LOCS
+load d8/19.k
+save new/d8/19.k  LOCS
+load d8/2.k
+save new/d8/2.k  LOCS
+load d8/20.k
+save new/d8/20.k  LOCS
+load d8/21.k
+save new/d8/21.k  LOCS
+load d8/22.k
+save new/d8/22.k  LOCS
+load d8/23.k
+save new/d8/23.k  LOCS
+load d8/24.k
+save new/d8/24.k  LOCS
+load d8/25.k
+save new/d8/25.k  LOCS
+load d8/26.k
+save new/d8/26.k  LOCS
+load d8/27.k
+save new/d8/27.k  LOCS
+load d8/28.k
+save new/d8/28.k  LOCS
+load d8/29.k
+save new/d8/29.k  LOCS
+load d8/3.k
+save new/d8/3.k  LOCS
+load d8/30.k
+save new/d8/30.k  LOCS
+load d8/31.k
+save new/d8/31.k  LOCS
+load d8/32.k
+save new/d8/32.k  LOCS
+load d8/33.k
+save new/d8/33.k  LOCS
+load d8/34.k
+save new/d8/34.k  LOCS
+load d8/35.k
+save new/d8/35.k  LOCS
+load d8/36.k
+save new/d8/36.k  LOCS
+load d8/37.k
+save new/d8/37.k  LOCS
+load d8/38.k
+save new/d8/38.k  LOCS
+load d8/39.k
+save new/d8/39.k  LOCS
+load d8/4.k
+save new/d8/4.k  LOCS
+load d8/40.k
+save new/d8/40.k  LOCS
+load d8/41.k
+save new/d8/41.k  LOCS
+load d8/42.k
+save new/d8/42.k  LOCS
+load d8/43.k
+save new/d8/43.k  LOCS
+load d8/44.k
+save new/d8/44.k  LOCS
+load d8/45.k
+save new/d8/45.k  LOCS
+load d8/46.k
+save new/d8/46.k  LOCS
+load d8/47.k
+save new/d8/47.k  LOCS
+load d8/48.k
+save new/d8/48.k  LOCS
+load d8/49.k
+save new/d8/49.k  LOCS
+load d8/5.k
+save new/d8/5.k  LOCS
+load d8/50.k
+save new/d8/50.k  LOCS
+load d8/51.k
+save new/d8/51.k  LOCS
+load d8/52.k
+save new/d8/52.k  LOCS
+load d8/53.k
+save new/d8/53.k  LOCS
+load d8/54.k
+save new/d8/54.k  LOCS
+load d8/55.k
+save new/d8/55.k  LOCS
+load d8/56.k
+save new/d8/56.k  LOCS
+load d8/57.k
+save new/d8/57.k  LOCS
+load d8/58.k
+save new/d8/58.k  LOCS
+load d8/59.k
+save new/d8/59.k  LOCS
+load d8/6.k
+save new/d8/6.k  LOCS
+load d8/60.k
+save new/d8/60.k  LOCS
+load d8/61.k
+save new/d8/61.k  LOCS
+load d8/62.k
+save new/d8/62.k  LOCS
+load d8/63.k
+save new/d8/63.k  LOCS
+load d8/7.k
+save new/d8/7.k  LOCS
+load d8/8.k
+save new/d8/8.k  LOCS
+load d8/9.k
+save new/d8/9.k  LOCS

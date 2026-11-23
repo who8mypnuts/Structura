@@ -1,0 +1,205 @@
+%`-
+
+require KPbuild 4162
+reset all
+
+silent=t
+
+
+func init
+func silent
+ccmode = 2
+hstart=22
+
+if stereo then "back=0"
+
+func 1 <spool1.kps
+
+verbose=f
+
+alias ~alignafter nop
+
+
+txt fcolour royalblue .5
+
+txt font 4
+txt fill on
+txt right
+txt -14 14 ? "help popup spool1.kps handoff"
+
+txt clobber on
+
+scale=.7
+rotate x -65
+
+txt font 2
+txt left
+txt lineskip -24
+txt fill on
+txt select on
+txt scolour #000
+txt sfcolour orange .9
+
+alias ~new "delete all"
+alias ~rotatebefore nop
+
+alias ~showit "disp t"
+par1=0
+
+func s 2 "if idling then {mode l}"
+
+txt group 102
+txt 15 40 luxo "alias ~showit disp;par1=0;mode cB"
+txt set selected  % sets the last txt object to be selected
+txt 15 a cheapo "alias ~showit disp;par1=1;func exec s 2"
+txt 15 a off  "alias ~showit nop;par1=0"
+txt fill off
+txt 10 a "show process:"
+
+par4 = 30
+
+par0 = 100
+
+alias ~beads "txt unselect group 108;par0=$0"
+alias ~setbeads "echo;echo;echo equivalent to the command;echo ~beads $0;par0=$0;echo use the ~beads command in the command window to set a custom number of beads"
+
+
+txt fill on
+txt group 108
+txt 15 a1.3 200 "~setbeads 200"
+txt 15 a 180 "~setbeads 180"
+txt 15 a 160 "~setbeads 160"
+txt 15 a 140 "~setbeads 140"
+txt 15 a 120 "~setbeads 120"
+txt 15 a 100 "~setbeads 100"
+txt set selected
+txt 15 a 80 "~setbeads 80"
+txt 15 a 60 "~setbeads 60"
+txt fill off
+txt 10 a "N beads:"
+
+
+alias ~r "txt unselect group 4722031;par3=$0"
+alias ~setr "echo;echo;echo equivalent to the command;echo ~r $0;par3=$0;echo use the ~r command in the command window to set a custom value for r"
+
+txt group 4722031
+txt fill on
+txt 15 a1.3 1.0 "~setr 1.0"
+txt 15 a 0.5 "~setr 0.5"
+txt set selected
+par3=0.5
+txt 15 a 0.2 "~setr 0.2"
+txt 15 a 0.1 "~setr 0.1"
+txt fill off
+txt 10 a "r:"
+
+
+alias ~R "txt unselect group 7347980;par2=$0;sphere $0"
+alias ~setR "echo;echo;echo equivalent to the command;echo ~R $0;par2=$0;sphere $0;echo use the ~R command in the command window to set a custom radius"
+
+txt group 7347980
+txt fill on
+txt 15 a1.3 10 "~setR 10"
+txt 15 a 5 "~setR 5"
+txt set selected
+par2=5
+txt 15 a 2 "~setR 2"
+txt 15 a 1 "~setR 1"
+txt fill off
+txt 10 a "R:"
+
+txt group 0
+txt right
+txt fill on
+txt select off
+txt -15 60 fullscreen "full toggle"
+txt -15 a closed "spool closed toggle"
+txt -15 a sphere "spec ~sphere"
+txt -15 a axes   "spec ~axes"
+txt fill off
+txt -10 a toggle:
+
+alias det "alex -1"
+
+txt fill on
+txt -15 a1.3 det det
+txt -15 a ACN acn
+txt -15 a rog "echo;echo;echo Radius of gyration is;rog"
+txt fill off
+txt -10 a calc:
+
+txt on
+
+stus = 4
+
+alias ~hh "spool \ppar0 \ppar2 \ppar3"
+alias ~cease <hedgehog-stop.kps
+
+
+
+<hedgehog-start.kps
+
+
+
+mode cB
+cyl-rad=.1
+bead=.13
+
+silent=f
+
+echo 
+echo 
+echo 
+echo 
+echo " *** Click on the `?' button in the view window for more info"
+echo "     Press F1 to rerun demo"
+echo
+
+
+
+
+exit
+
+%`+
+
+Random knots using the spooling algorithm of Arsuaga and Diao
+
+
+Things to try:
+
+  --- While simulation is stopped, set the number of beads or the R value
+      using the buttons provided (when you click on a button, instructions 
+      will be printed in the command window on how to set custom values).
+      
+      Then click on the `make knot' button to attempt to make the knot. 
+
+  --- You can change the number of beads, or the values of R or r while
+      KnotPlot is searching for a knot.  
+
+  --- Try changing the `show progress' to either `cheapo' or `off' to speed
+      up the seaching process.  Note that when off you won't see the display
+      updating (it may appear frozen, but isn't).  Just click and drag in the
+      view window and you will see things are still happening. 
+
+  --- Calculate the radius of gyration, average crossing number using the
+      buttons on the right side of the view window.  For closed spools, you 
+      can also compute the knot determinant.
+
+Important points:
+
+  --- KnotPlot searches for knots with have a certain amount of volume 
+      exclusion (non-adjacent edges aren't allowed to be too close). 
+      The acceptance criterion is that the knot must be a "safe position".
+      What this means is that no two non-adjacent edges are closer than
+      a certain small distance.  The distance is the value of the parameter
+      "close", which you can change using the slider on the Dyna panel. 
+      You can also type in a value explicitly, for example
+     
+            close = .2
+
+      or effectively turn off volume exclusion by entering
+
+            close = 0
+
+      Be warned that if "close" is less than "max-dr" (also on Dyna panel)
+      then KnotPlot's relaxation mechanism will not work properly. 

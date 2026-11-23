@@ -1,0 +1,18 @@
+reset all
+
+silent=t
+scale=.55
+cyl=.6
+load red1-init.k
+hincr=0
+mass open
+func silent
+silent=f
+
+echo 
+echo
+echo "  *** Press F4 to animate the Type 1 Reidemeister move."
+echo "      Press F1, F2, or F3 to set up a move of Type 1, 2, or 3."
+echo
+
+

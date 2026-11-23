@@ -1,0 +1,4 @@
+txt delete group 421720571
+idle
+until time 6
+until Ncomp 1 ~cfy

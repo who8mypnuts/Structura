@@ -1,0 +1,5 @@
+bfacf z 1
+bfacf run 15000
+
+txt fill on
+txt c -50 "walk super fast!" <bfacf/walk-super.kps

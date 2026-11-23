@@ -1,0 +1,235 @@
+<html>
+<head>
+<title>KnotPlot Main Control Panel</title>
+</head>
+
+<body>
+
+<h2><img src="inlines/ControlPanel.gif" align=middle> 
+KnotPlot Control Panel (Main)</h2>
+
+<hr>
+
+<b>Note:
+This page explains the main control panel (there's more than one).
+If you're just starting with KnotPlot, you might want to begin with the
+top page of the 
+<a href="KnotPlotManual.html">KnotPlot Manual</a>
+(can also be accessed by using the
+<a href="PopupMenus.html">pop-up menus</a>).
+</b>
+<p>
+<hr>
+I'll go through the control panel from the 
+top down, explaining each feature in turn.
+<p>
+<a name="toppanel"></a>
+
+<center>
+<img src="inlines/TopPanel0.gif" width=426 height=197><p>
+</center>
+
+<ul>
+<li>Click on one of the buttons at the top 
+ to load some knots, randomly selected, 
+from the
+<a href="KnotCatalogue.html">knot catalogue</a>.
+The 'All' button chooses a knot from the entire catalogue,
+the numbered buttons choose a link  with that many components.
+The 'Sp' button picks a knot selected at random from 
+the 
+<a href="SpecialColl.html">Special Collection</a>.
+
+
+<li>Yes, it's true, the 'Quit' button terminates KnotPlot.
+You can also do this by typing in the commands
+'quit', 'exit', or 'stop', by hitting the ESC-key
+or by selecting 'Quit' from the 
+<a href="PopupMenus.html">pop-up menus</a>.
+
+<li>The 'Zoo' button will bring up an assortment of knots and
+links, selected from the catalogue at random.  
+Click on the one you want and it'll be loaded.
+You can also use the <a href="commands.html#zoo">zoo</a>
+command to display the knot catalogue in order, starting
+from a given point.
+
+<li>There are a number of pre-packaged demos ready to run.
+Click on 'Demo' in the Main control panel, then click on
+'Load Demos'
+Using the demos is explained on
+<a href="BasicDemos.html">another page.</a>
+
+<li>The button labelled 'DM' is for 'direct manipulation'. 
+  Click on this if you want to pull the knot around. Note
+that it is possible to change the knot type with the method.
+A very brief explanation of 
+<a href="DirMan.html">direct manipulating</a> is available.
+
+<li>Clicking on the 'Help' button will start a WWW browser
+and load this page.  Other control panels may also have
+a 'Help' button which will provide information on that control
+panel.
+
+<li>The 'Man' button will start the WWW browser at 
+the top page of the KnotPlot Manual.  
+
+<li>To sketch a knot, click on 'Draw'.  
+Sketching is explained on a 
+<a href=SketchingKnots.html>separate page</a>.
+
+<LI>A number of special objects may be drawn along with knots or links.
+These can be selected using the radio buttons or by using the 
+<a href="commands.html#special">special</a> command.
+
+<ul>
+
+<li>Various kinds of grids, useful when sketching.  The parameter
+<a href="parameters.html#grmode">grmode</a> controls the kind of grid drawn.
+
+<li>The knot energy, currently the minumum distance energy as defined by
+Simon.  You can watch the energy change during relaxation.  Note that this
+will slow down relaxation considerably as it is a fairly expensive calculation.
+It can be useful setting 
+<a href="parameters.html#dstep">dstep</a> to something around 10 to 
+(often greatly) improve performance.
+
+<li>A coloured backdrop, just for fun.
+
+<li>xyz axes and bead labels.
+
+<li>The spin plane.  When the spin plane is on it may be moved using the
+Shift key and the mouse buttons in the view window.
+
+</ul>
+</ul>
+
+<hr>
+
+<a name="display"></a>
+
+<center>
+<img src=inlines/Display.gif width=427 height=378><p>
+</center>
+
+All the parameters in this section control how
+the knot is displayed.  
+In addition, some of them will affect any surface
+geometry exported by KnotPlot.  
+Nothing in this section affects the underlying
+mathematical object (that is, what is read and written
+with the 
+<a href="commands.html#load">load</a>
+and 
+<a href="commands.html#save">save</a>
+ commands).
+
+<p>
+
+To get a feel for how things work try loading a knot
+at random (see above) and then
+click on the two large buttons labelled
+'Smooth Tubes' and 'Beads and Sticks'.
+This will show you the two principal methods
+of displaying knots.
+The beads and sticks closely approximate the 
+actual mathematical object.
+KnotPlot starts out in a smooth tube mode, mostly
+because knots look prettier in this mode. 
+
+
+<ul>
+
+<li>You can rotate the view seen in the view window
+by using a 
+virtual trackball (left mouse) and translate the view
+by using the right mouse in the view window. 
+These transformations may be undone, and the view
+restored 
+to the default orientation by clicking on the 'untran' button.
+
+<li>Sometimes, especially if 'nseg' is too small, you'll
+see a funny crimp in the knot or link's surface at the point
+at which the drawing begins and ends for each 
+component. 
+There are technical reasons for this that
+are explained elsewhere.
+For the present you can get rid of this deficit
+angle by clicking on the 'twfix' button (twist fix).
+There is also a 
+<a href="commands.html#twfix">twfix</a> command that
+does the same job (and more).
+
+<li>To reset the display, click on the 'reset' button in the right of
+the display section.
+This reset button also resets pretty much everything
+else in the program, including 4D parameters, 
+Postscript output, the dynamics, and what knot.
+
+<li>Don't ask me why the 'scale' slider is on top all by
+itself.  The drawing scale can also be changed by
+using the middle mouse button in the view window.
+
+<li>The 'norm', 'spec', 'brok', 'sbro',
+ 'flat', 'hflat' buttons 
+need explaining, try them out when you're in
+'Smooth Tubes' mode.
+
+
+</ul>
+
+<hr>
+<a name="gobutton"></a>
+
+<center>
+<img src="inlines/Dynamics.gif" width=426 height=258><p>
+</center>
+
+<ul>
+
+<li>The default dynamical model is a damped force law with collision 
+avoidance.  This is what you get if you click the button 'A' in 
+the dynamics section.
+The other main force law of interest is an undamped force law without
+collision checking.
+You can get this by clicking 'B'.
+Another interesting combination is 'Damped' with 'Collide'. 
+This speeds up the relaxation but allows for possible change of knot type.
+The 'Init' button initializes the dynamical model to the default 
+setting (including all the slider positions).
+
+<li>Click on the 'Go' button to watch the knot relax.  
+The 'Go' button will turn into a red 'Stop' button while
+relaxation is taking place.
+Sometimes, if your knot is quite large, you may have to click and
+hold down the mouse button over the 'Stop' button until something happens.
+
+<li>The 'zero' button zeros the velocities of all the beads.  This is
+only applicable to undamped relaxations.
+
+</ul>
+
+All of the parameters for the dynamics may be changed
+while relaxation is taking place. 
+The same thing applies to any display parameters.
+Just remember you may have to click and hold down
+the left mouse button over the control panel 
+until you see some visual feedback in the case
+where a large knot is being relaxed.
+
+
+<hr>
+
+[<a href="KnotPlotManual.html">KnotPlot Manual</a>], 
+[<a href="ViewWindow.html">View Window</a>], 
+[<a href="ControlPanel.html">Control Panel</a>], 
+[<a href="CommandWindow.html">Command Window</a>],
+[<a href="KPManOverView.html">Overview</a>]
+<br>
+[<a href="http://www.cs.ubc.ca/spider/scharein">Rob Scharein's</a>
+ main WWW site], 
+[<a href="http://www.cs.ubc.ca/nest/imager/contributions/scharein/KnotPlot.html">KnotPlot Site</a>]
+
+</body>
+</html>
+

@@ -1,0 +1,71 @@
+require KPbuild 4691
+<bfacf/basicinit.kps
+ccmode=2
+silent=t
+bfacf cent off
+
+%unknot 80
+line
+#5 dupl
+force 1
+coll a
+velf=t
+jitter 99999
+fitto .1
+until safe "ago 22"
+fitto 22
+
+test clkembed
+
+bfacf load
+
+% the following nonsense is because of a bug in the recentering routines
+% note: the bug was fixed
+
+bfacf fill -120 -120 -120  120  120 -120
+bfacf fill -120 -120  120 120  120 120
+
+bfacf fill -120 -120 -120 -120  120  120 
+bfacf fill 120 -120 -120 120  120  120 
+
+bfacf fill -120 -120 -120   120 -120  120 
+bfacf fill -120 120 -120   120 120  120 
+
+scale = 0.33
+cyl-rad = 0.12
+bead-radius = 0.2
+mode cB
+untran
+
+txt centre
+
+txt font 4
+alias ~ttitle "txt c -20 {unfinished demo}"
+
+alias ~rtitle "txt c -20 {unfinished demo}"
+
+
+alias ~freezerings "colour all sienna;colour 0 SGIteal;bfacf freeze 1;bfacf freeze 2;bfacf freeze 3"
+alias ~freezetref  "colour 1 chartreuse;colour 2 violetred;colour 3 skyblue;colour 0 sienna;bfacf freeze 0"
+if \rr2 < 1 then "~freezerings;~ttitle" else "~freezetref;~rtitle"
+
+func 1 <bfacf/obstacle5.kps
+
+
+silent=f
+
+#5 echo
+
+txt font 3
+
+txt fcolour royalblue .6
+txt push
+txt expire 11
+txt c 45 "click on the `run' button on the KnotPlot Control Panel"
+txt pop
+
+txt fill on
+txt c 20 "reload obstacle5" <bfacf/obstacle5.kps
+
+txt on
+safe

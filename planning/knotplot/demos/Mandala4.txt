@@ -1,0 +1,4 @@
+par3
+10 dfunc symm \ri[3/8] \ri[0/2]
+20 dfunc symm \ri[5/8] 1
+2 dfunc symm \ri[4/18] \ri[0/2]

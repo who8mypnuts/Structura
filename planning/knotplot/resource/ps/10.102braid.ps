@@ -1,0 +1,43 @@
+
+% -1  -2.9 toPS
+0 0 toPS
+
+/ycentre exch def
+/xcentre exch def
+
+/crossing {
+  gsave
+  1 setlinewidth
+  0 setgray
+  pop pop pop
+  newpath
+  xcentre ycentre moveto
+  lineto
+  stroke
+  grestore
+} def
+
+/Circsize 20 3 div def
+/circsize Circsize 0.75 mul def
+
+/DrawCirc {
+  gsave
+
+  0 0 toPS translate
+
+  0 setlinewidth
+
+  newpath
+  0 0  moveto
+  0 0  Circsize 0 360 arc
+  fill
+
+  1 setgray
+  0 0  moveto
+  0 0  circsize 0 360 arc
+  fill
+    
+  grestore
+} def
+
+

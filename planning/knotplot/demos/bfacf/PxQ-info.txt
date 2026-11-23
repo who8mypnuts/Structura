@@ -1,0 +1,20 @@
+try to fit any knot into any one of six different sized tubes
+using the 1x2, 1x3, 1x4, 2x2, 2x3 and 3x3 commands
+
+example usage:
+1x2 7_6
+1x3 4_1
+2x2 6_3
+2x3 8_7
+1x4 8_3
+2x2 8_17
+2x2 9.3
+3x3 10.66
+2x2 10.123
+2x2 8.2.6
+
+entire Rolfsen Appendix C is available
+use _ for proper knots less than nine crossings
+
+note: the 1x2, 1x3, 1x4, 2x2, 2x3 and 3x3 commands are defined for this KnotPlot session
+(i.e., you don't have to click the `PxQ-tube' button again)

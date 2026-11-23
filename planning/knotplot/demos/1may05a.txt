@@ -1,0 +1,4 @@
+par4
+100 func exec 2;silent=t
+100 nop
+100 func exec 2;silent=t;func exec 3

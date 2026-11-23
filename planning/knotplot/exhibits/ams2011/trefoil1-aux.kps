@@ -1,0 +1,5 @@
+sbuff
+clrfun zf
+disp t
+clrfun z
+ago \ri[400/600]

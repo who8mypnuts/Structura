@@ -1,0 +1,93 @@
+BFACF Load Help
+
+Click on one of the buttons to load the indicated knot type into the BFACF engine,
+or click the `cancel' button to return to the BFACF Basic control panel.
+
+IMPORTANT NOTE on writhe convention:
+
+   --- The knots in the first section use the TopoII convention for writhe,
+       that is the writhe of a minimal crossing diagram is non-negative.  
+       If a knot has a `_' in the file name, then it is in the TopoII convention.
+       
+   --- The buttons in the second section will load a minimal stick candidate 
+       from the KnotPlot minimal stick catalog.  In some cases, these knots are
+       the opposite chirality from the corresponding TopoII knot.  See below.
+       If a knot has a `.' in the file name, then it is in the KnotPlot convention.
+       The `1 comp' and `2 comp' buttons randomly select a one or two component
+       link and load it into the BFACF engine.
+
+Look in the KnotPlot Command Window when the knot is loaded to see which 
+convention it follows.
+
+Here is the correspondence between the TopoII and KnotPlot conventions, with 
+differences indicated by `***':
+
+TopoII              KnotPlot
+
+0_1_coords.txt      0.1
+3_1_coords.txt      3.1
+3_1s_coords.txt     3.1*
+4_1_coords.txt      4.1
+5_1_coords.txt      5.1
+5_1s_coords.txt     5.1*
+5_2_coords.txt      5.2
+5_2s_coords.txt     5.2*
+6_1_coords.txt      6.1
+6_1s_coords.txt     6.1*
+6_2_coords.txt      6.2
+6_2s_coords.txt     6.2*
+6_3_coords.txt      6.3
+7_1_coords.txt      7.1
+7_1s_coords.txt     7.1*
+7_2_coords.txt      7.2
+7_2s_coords.txt     7.2*
+7_3_coords.txt      7.3*     ***
+7_3s_coords.txt     7.3      ***
+7_4_coords.txt      7.4*     ***
+7_4s_coords.txt     7.4      ***
+7_5_coords.txt      7.5
+7_5s_coords.txt     7.5*
+7_6_coords.txt      7.6
+7_6s_coords.txt     7.6*
+7_7_coords.txt      7.7*     ***
+7_7s_coords.txt     7.7      ***
+8_1_coords.txt      8.1
+8_1s_coords.txt     8.1*
+8_2_coords.txt      8.2
+8_2s_coords.txt     8.2*
+8_3_coords.txt      8.3
+8_4_coords.txt      8.4      
+8_4s_coords.txt     8.4*
+8_5_coords.txt      8.5*     ***
+8_5s_coords.txt     8.5      ***
+8_6_coords.txt      8.6
+8_6s_coords.txt     8.6*
+8_7_coords.txt      8.7*     ***
+8_7s_coords.txt     8.7      ***
+8_8_coords.txt      8.8*     ***
+8_8s_coords.txt     8.8      ***
+8_9_coords.txt      8.9
+8_10_coords.txt     8.10*    ***
+8_10s_coords.txt    8.10     ***
+8_11_coords.txt     8.11
+8_11s_coords.txt    8.11*
+8_12_coords.txt     8.12
+8_13_coords.txt     8.13*    ***
+8_13s_coords.txt    8.13     ***
+8_14_coords.txt     8.14
+8_14s_coords.txt    8.14*
+8_15_coords.txt     8.15
+8_15s_coords.txt    8.15*
+8_16_coords.txt     8.16
+8_16s_coords.txt    8.16*
+8_17_coords.txt     8.17
+8_17s_coords.txt    8.17
+8_18_coords.txt     8.18
+8_18s_coords.txt    8.18
+8_19_coords.txt     8.19*    ***
+8_19s_coords.txt    8.19     ***
+8_20_coords.txt     8.20
+8_20s_coords.txt    8.20*
+8_21_coords.txt     8.21
+8_21s_coords.txt    8.21*
+

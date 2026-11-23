@@ -1,0 +1,29 @@
+% how to make a helix
+
+% Rob Scharein, 15 May 2001
+
+
+reset all 
+cyl-rad=.3
+draw spec
+
+line dir 0 .1 0 % about to make a line in the y-direction
+line num 160    % with 160 beads
+
+line            % make the line
+centre          % and centre it
+
+translate 3 0 0 % translate it off to one side
+swirl end 1800  % and give it a swirl
+                % swirl amount is x full rotations
+
+
+
+
+
+
+
+
+
+
+

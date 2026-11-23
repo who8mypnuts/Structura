@@ -1,0 +1,10 @@
+delete all
+vscale=\rr[.4/.8]
+func exec 3
+untran
+%if \rr2 < 1 then "rotate x 90" else "rotate x -90"
+if \rr2 < 1 then "torus \ri102 \ri102 \ri[22/88]" else "knot cd"
+par3 = \rr+-.2
+spec comm "align axes"
+
+

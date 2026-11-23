@@ -1,0 +1,28 @@
+cursor 0
+idle
+go
+trackmouse rotate on
+trackmouse scale on
+trackmouse translate on
+txt delete click
+echo
+echo
+echo
+echo trackball enabled, try rotating the scene
+echo
+silent = t
+
+txt font 3
+txt cent
+txt fill on
+txt push
+txt expire 8
+txt group 2001
+~ah
+txt c 20 "enable sound" <sound/monolith.kps
+txt group 2001 off
+txt pop
+txt on
+silent = f
+
+if oal then "txt group 2001 on"

@@ -1,0 +1,13 @@
+reset all
+bindkey l <lsys1.kps
+ls delta 90
+ls axiom F+XF+F+XF
+ls X XF-F+F-XF+F+XF-F+F-X
+ls 4
+ 
+scale = 0.127
+cyl-rad = 0.247
+bead-radius = 0.276939
+mode cB
+
+ortho

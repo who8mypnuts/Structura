@@ -1,0 +1,9 @@
+reset all
+
+<monster-init.kps
+disp t
+nap 2
+
+<monster-movie.kps
+
+nap 1

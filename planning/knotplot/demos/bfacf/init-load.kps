@@ -1,0 +1,108 @@
+
+require KPbuild 4217
+
+button Nbuttons 5
+button hspace 4 
+button pos 1
+button height 8
+
+button blank @
+button Nbuttons 8
+
+button 18 "Initial conformations - click button to load knot into BFACF engine" nop 4 265 102 10 4 3
+
+
+
+
+
+
+
+
+
+button 18 0_1 "read bfacf/basicinit.kps;bfacf load mscl/0_1;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -2 -1 0 0 0 3
+button 18 3_1 "read bfacf/basicinit.kps;bfacf load mscl/3_1;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 3_1* "read bfacf/basicinit.kps;load mscl/3_1*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 4_1 "read bfacf/basicinit.kps;bfacf load mscl/4_1;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 5_1 "read bfacf/basicinit.kps;bfacf load mscl/5_1;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 5_1* "read bfacf/basicinit.kps;load mscl/5_1*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 5_2 "read bfacf/basicinit.kps;bfacf load mscl/5_2;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 5_2* "read bfacf/basicinit.kps;load mscl/5_2*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 6_1 "read bfacf/basicinit.kps;bfacf load mscl/6_1;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 6_1* "read bfacf/basicinit.kps;load mscl/6_1*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 6_2 "read bfacf/basicinit.kps;bfacf load mscl/6_2;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 6_2* "read bfacf/basicinit.kps;load mscl/6_2*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 6_3 "read bfacf/basicinit.kps;bfacf load mscl/6_3;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 7_1 "read bfacf/basicinit.kps;bfacf load mscl/7_1;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 7_1* "read bfacf/basicinit.kps;load mscl/7_1*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 7_2 "read bfacf/basicinit.kps;bfacf load mscl/7_2;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 7_2* "read bfacf/basicinit.kps;load mscl/7_2*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 7_3 "read bfacf/basicinit.kps;bfacf load mscl/7_3;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 7_3* "read bfacf/basicinit.kps;load mscl/7_3*;bfacf load;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 7_4 "read bfacf/basicinit.kps;bfacf load mscl/7_4;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 7_4* "read bfacf/basicinit.kps;load mscl/7_4*;bfacf load;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 7_5 "read bfacf/basicinit.kps;bfacf load mscl/7_5;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 7_5* "read bfacf/basicinit.kps;load mscl/7_5*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 7_6 "read bfacf/basicinit.kps;bfacf load mscl/7_6;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 7_6* "read bfacf/basicinit.kps;load mscl/7_6*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 7_7 "read bfacf/basicinit.kps;bfacf load mscl/7_7;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 7_7* "read bfacf/basicinit.kps;load mscl/7_7*;bfacf load;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 8_1 "read bfacf/basicinit.kps;bfacf load mscl/8_1;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_1* "read bfacf/basicinit.kps;load mscl/8_1*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_2 "read bfacf/basicinit.kps;bfacf load mscl/8_2;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_2* "read bfacf/basicinit.kps;load mscl/8_2*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_3 "read bfacf/basicinit.kps;bfacf load mscl/8_3;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_4 "read bfacf/basicinit.kps;bfacf load mscl/8_4;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_4* "read bfacf/basicinit.kps;load mscl/8_4*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_5 "read bfacf/basicinit.kps;bfacf load mscl/8_5;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 8_5* "read bfacf/basicinit.kps;load mscl/8_5*;bfacf load;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 8_6 "read bfacf/basicinit.kps;bfacf load mscl/8_6;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_6* "read bfacf/basicinit.kps;load mscl/8_6*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_7 "read bfacf/basicinit.kps;bfacf load mscl/8_7;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 8_7* "read bfacf/basicinit.kps;load mscl/8_7*;bfacf load;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 8_8 "read bfacf/basicinit.kps;bfacf load mscl/8_8;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 8_8* "read bfacf/basicinit.kps;load mscl/8_8*;bfacf load;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 8_9 "read bfacf/basicinit.kps;bfacf load mscl/8_9;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_10 "read bfacf/basicinit.kps;bfacf load mscl/8_10;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 8_10* "read bfacf/basicinit.kps;load mscl/8_10*;bfacf load;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 8_11 "read bfacf/basicinit.kps;bfacf load mscl/8_11;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_11* "read bfacf/basicinit.kps;load mscl/8_11*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_12 "read bfacf/basicinit.kps;bfacf load mscl/8_12;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_13 "read bfacf/basicinit.kps;bfacf load mscl/8_13;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 8_13* "read bfacf/basicinit.kps;load mscl/8_13*;bfacf load;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 8_14 "read bfacf/basicinit.kps;bfacf load mscl/8_14;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_14* "read bfacf/basicinit.kps;load mscl/8_14*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_15 "read bfacf/basicinit.kps;bfacf load mscl/8_15;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_15* "read bfacf/basicinit.kps;load mscl/8_15*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_16 "read bfacf/basicinit.kps;bfacf load mscl/8_16;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_16* "read bfacf/basicinit.kps;load mscl/8_16*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_17 "read bfacf/basicinit.kps;bfacf load mscl/8_17;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_18 "read bfacf/basicinit.kps;bfacf load mscl/8_18;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_19 "read bfacf/basicinit.kps;bfacf load mscl/8_19;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 8_19* "read bfacf/basicinit.kps;load mscl/8_19*;bfacf load;panel set bfacf 0;echo knot follows TopoII convention only" -1 -1 0 0 0 3
+button 18 8_20 "read bfacf/basicinit.kps;bfacf load mscl/8_20;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_20* "read bfacf/basicinit.kps;load mscl/8_20*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_21 "read bfacf/basicinit.kps;bfacf load mscl/8_21;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8_21* "read bfacf/basicinit.kps;load mscl/8_21*;bfacf load;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 6c_1 "read bfacf/basicinit.kps;bfacf load 6c_1;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -2 -1 0 0 0 3
+button 18 6c_1s "read bfacf/basicinit.kps;bfacf load 6c_1s;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 6c_2 "read bfacf/basicinit.kps;bfacf load 6c_2;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 7c_1 "read bfacf/basicinit.kps;bfacf load 7c_1;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 7c_1s "read bfacf/basicinit.kps;bfacf load 7c_1s;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8c_1 "read bfacf/basicinit.kps;bfacf load 8c_1;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8c_1s "read bfacf/basicinit.kps;bfacf load 8c_1s;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8c_2 "read bfacf/basicinit.kps;bfacf load 8c_2;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8c_2s "read bfacf/basicinit.kps;bfacf load 8c_2s;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8c_3 "read bfacf/basicinit.kps;bfacf load 8c_3;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8c_3s "read bfacf/basicinit.kps;bfacf load 8c_3s;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8c_4 "read bfacf/basicinit.kps;bfacf load 8c_4;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8c_4s "read bfacf/basicinit.kps;bfacf load 8c_4s;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 8c_5 "read bfacf/basicinit.kps;bfacf load 8c_5;panel set bfacf 0;echo knot follows both TopoII and KnotPlot conventions" -1 -1 0 0 0 3
+button 18 "KnotPlot catalog" nop 4 -2 102 10 4 3
+button bfacf "1 comp" "ccmode=2;knot numb \ri[1/250] mscl;bfacf load;panel set bfacf 0" -2 -1 -2 0 0 3
+button bfacf "2 comp" "ccmode=2;knot numb \ri[251/342] mscl;bfacf load;panel set bfacf 0" -1 -1 -2 0 0 3
+button bfacf "3 comp" "ccmode=2;knot numb \ri[343/378] mscl;bfacf load;panel set bfacf 0" -1 -1 -2 0 0 3
+button bfacf "4 comp" "ccmode=2;knot numb \ri[379/383] mscl;bfacf load;panel set bfacf 0" -1 -1 -2 0 0 3
+button 18 " " nop 4 -2 102 10 4 3
+button pos 3
+button 18 cancel "panel set bfacf 0" -1 -1 -2 0 0 3
+button 18 "*** NEW: click on the `help' button for important information" nop 4 -2 102 10 4 3

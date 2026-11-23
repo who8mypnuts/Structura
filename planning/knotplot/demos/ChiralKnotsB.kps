@@ -1,0 +1,67 @@
+if par5 != 344585448 then "reset all;ortho;hstart=\rr[20/40];par4=\rr100"
+
+silent=t
+
+trackmouse rotate off
+trackmouse translate off
+
+txt init
+txt fcolour royalblue .7
+
+txt space _
+func init
+func silent
+func 1 <ChiralKnotsB.kps
+
+verbose=f
+%silent =t
+scale=1
+cyl=.13
+ncur = 4
+nseg = 15
+spec back
+
+ortho
+untran
+
+par5 = 344585448
+
+
+load fig8symm.k
+load comb fig8symm.k
+hincr=0
+trans 4 0 0 1 
+centre
+about zc 90 0
+
+if \rr2 < 1 then "reflect z"
+
+txt clobber on
+txt centre
+txt font 4
+txt lineskip 24
+
+if \ppar4 < 95 then "txt c -30 a_chiral_knot_is_one_that_is_not;txt c a equivalent_to_its_mirror_image" else "txt c -30 an_achiral_knot_is_one_that_is;txt c a equivalent_to_its_mirror_image"
+
+txt c a " "
+txt c a "examine the two knots below and note"
+txt c a "that they appear to be mirror images"
+txt c a " "
+txt c a "try rotating one by a quarter turn"
+txt font 3
+txt c a "(use one of the buttons under the knots)"
+
+txt on
+
+par3 = 1   % time to rotate
+par2 = 90  % rotation rate in degrees per second
+
+txt font 3
+txt fill on
+txt left
+txt 50 75 "rotate 1st knot" "par1=0;<ChiralKnotsB_aux1.kps"
+txt right
+txt -50 75 "rotate 2nd knot" "par1=1;<ChiralKnotsB_aux1.kps"
+
+
+silent=f

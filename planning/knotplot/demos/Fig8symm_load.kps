@@ -1,0 +1,14 @@
+silent=t
+delete all
+load Fig8symm_axes.k
+mcyl 0 .7
+mcyl 1 3 .2
+dofx = 0
+colour 0 33 orange
+colour 1 red
+colour 2 green
+colour 3 blue
+dofx=0
+dupl
+colour 4 purple
+silent=f

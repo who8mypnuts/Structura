@@ -1,0 +1,19 @@
+% List of known standard pagesizes.  Feel free to add more entries.
+% Acceptible units are:
+%      mm (millimetres)
+%      cm (centimetres)
+%      ft (feet)
+%      in (inches)
+% If no units are specified, the dimension will be interpreted as
+% PostScript points (exactly 1/72 in, note slightly bigger than the `pt'
+% points used by TeX, which are 1/72.27 in). 
+% KnotPlot is insensitive to case for both the units and the pagesize name. 
+% Pagesize will be set to the first entry below upon a reset operation.
+letter 8.5in 11.0in
+presentation 8.0in 6.25in
+legal 8.5in 14.0in
+tabloid 11in 17in
+ledger 17in 11in
+A4 210mm 297mm
+A3 297mm 420mm
+poster 22in 17in

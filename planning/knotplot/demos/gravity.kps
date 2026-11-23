@@ -1,0 +1,33 @@
+require KPbuild 4358
+
+reset all
+
+
+func 1 <14sep02a.kps
+func 2 <14sep02b.kps
+func 3 <14sep02c.kps
+
+<14sep02c.kps
+
+silent=t
+txt fcolour "royal blue" .6
+txt lineskip -24
+
+txt font 3
+txt fill on
+
+txt left
+txt 15 15 hitch <14sep02a.kps
+txt 15 a  slide <14sep02b.kps
+txt 15 a  drop  <14sep02c.kps
+
+
+txt right
+txt -15 60 fullscreen "full toggle"
+txt -15 a  gravity "param gravity toggle"
+txt fill off
+txt -10 a toggle:
+
+txt on
+
+silent=f

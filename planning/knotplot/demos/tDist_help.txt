@@ -1,0 +1,32 @@
+Missing tDistvalues2 file
+
+This feature requires data from a file named tDistvalues2, which can be found
+at the KnotPlot download site
+
+    knotplot.com/download
+
+in the TopoICE section (near the bottom of the page).  To install 
+follow these steps:
+
+    --- click on the tDistvalues2.gz link (tDistvalues2.gz is the compressed
+        version of  tDistvalues2 using the gzip program)
+
+    --- if you are running Windows and have WinZip (or another archiving
+        program) installed, the file should open automatically.  extract
+        the file to the KnotPlot home folder (where the KnotPlot.exe is
+        located) 
+
+    --- on a Mac something similar should occur, but if it doesn't save the
+        file to your desktop and follow these steps:
+
+                --- open a Terminal window and type in these commands:
+
+                           cd ~/Desktop
+                           gunzip tDistvalues2.gz
+
+                --- move the uncompressed version to your KnotPlot folder 
+                    (where the KnotPlot application is located)
+
+
+
+    

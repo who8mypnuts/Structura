@@ -1,0 +1,35 @@
+reset all
+reset all
+
+Draw  = f
+silent = t
+cyl = .3
+scale = .23
+scale = 0.103405
+
+drop all 52 35 -20
+spe back
+popview = f
+
+drop ca 0xff000000
+drop cb 0xff000000
+drop cc 0xffff0000
+drop cd 0xffff0000
+
+
+rot x -60
+rot z 45
+cheapo
+
+spe +vwt
+3dop colt 0 1 1
+ 
+str 0 -10 -10 0 20 "Six Component"
+str 1 -14 -14 3 20 "Brunnian Link"
+
+
+load brunnian6as
+
+Draw = t
+
+silent = f

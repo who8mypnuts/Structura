@@ -1,0 +1,120 @@
+reset all
+
+func init 
+func silent
+func 1 <ACN_illustrate3.kps
+
+silent=t
+back=#000
+
+unknot 3
+scale 0 0 0
+rotor scale .1
+rotor colour #fff
+rotor add dummy
+spec rotor
+
+ortho
+mode cb
+cyl=.1
+
+ccmode=2
+
+line numb 2
+line 0 \rr[-7/-3] 0 0 \rr[7/3] 0 
+refl r
+trans \rr[3/7] 0 0 
+save |x
+line 0 \rr[-7/-3] 0 0 \rr[7/3] 0 
+refl r
+trans \rr[-3/-7] 0 0 
+load comb |x
+
+
+fitto 6
+
+glop back t
+
+scenery acn minx 0
+scenery acn level 5
+scenery acn on
+scenery on
+
+txt init
+txt font 2
+txt left
+
+txt fcolour hsv:102.2/.4/.4 .6
+txt lineskip -24
+
+txt 20 1 "  "
+txt fill on
+txt group 108
+txt select on
+txt 20 a 16 "scen acn minx 16"
+txt 20 a 15 "scen acn minx 15"
+txt 20 a 14 "scen acn minx 14"
+txt 20 a 13 "scen acn minx 13"
+txt 20 a 12 "scen acn minx 12"
+txt 20 a 11 "scen acn minx 11"
+txt 20 a 10 "scen acn minx 10"
+txt 20 a 9 "scen acn minx 9"
+txt 20 a 8 "scen acn minx 8"
+txt 20 a 7 "scen acn minx 7"
+txt 20 a 6 "scen acn minx 6"
+txt 20 a 5 "scen acn minx 5"
+txt 20 a 4 "scen acn minx 4"
+txt 20 a 3 "scen acn minx 3"
+txt 20 a 2 "scen acn minx 2"
+txt 20 a 1 "scen acn minx 1"
+txt 20 a 0 "scen acn minx 0"
+txt set selected
+
+
+txt fill off
+txt 10 a "number:"
+txt lineskip -15
+txt 10 a "crossing"
+txt 10 a "minimum"
+
+txt lineskip -24
+txt right
+txt -20 1 " "
+txt fill on
+txt group 102
+%txt -20 a 8 "scen acn level 8"
+txt -20 a 7 "scen acn level 7"
+txt -20 a 6 "scen acn level 6"
+txt -20 a 5 "scen acn level 5"
+txt set selected
+txt -20 a 4 "scen acn level 4"
+txt fill off
+txt -20 a "refinement level:"
+
+txt group 0
+txt fill on
+txt select off
+
+txt right
+txt -15 c help "help popup ACN_help.txt"
+
+txt centre
+txt c 15 "run another ACN demo" <ACN_illustrate2.kps
+txt c a "run this demo again" <ACN_illustrate.kps
+
+
+
+txt fill off
+txt centre
+txt font 4
+txt c -20 "Average Crossing Number Map"
+txt on
+
+
+
+silent=f
+echo
+echo
+echo
+echo
+

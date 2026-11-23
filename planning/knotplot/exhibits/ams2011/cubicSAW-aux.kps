@@ -1,0 +1,7 @@
+cubic init
+%cubic steps \ri[120/188]    % for laptop
+cubic steps \ri[188/277]   % for GeForce2 or better
+centre
+%save dumSAW.k
+close all
+

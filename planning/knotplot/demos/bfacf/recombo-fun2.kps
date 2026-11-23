@@ -1,0 +1,57 @@
+silent=t
+
+delete all 
+
+unknot 4 .5
+about z 45
+scenery init
+play init
+bfacf init
+show orient
+untran
+fitto .5
+info
+scale=.22
+alloc 15000
+alloc comp 1500
+#8 dupl;trans 2 0 0;trans -2 0 0 0
+cent
+save |tmp
+#8 trans 0 2 0;load comb |tmp
+cent
+save |tmp
+#8 trans 0 0 2;load comb |tmp
+cent
+bfacf load
+bfacf box 11
+bfacf ned 0 9999
+bfacf recomb dist 0
+bfacf recomb direct on
+bfacf recomb limit off
+
+tfunc .1 "bfacf setstep \ri[1000/1500];reset sliders" 0 rep 4 22
+tfunc .1 "bfacf nap \rr[.1/.15];reset sliders" 0 rep 4 22
+
+alias ~doit ~recomb
+show orient
+<bfacf/recombo-search.kps
+txt init
+txt fcolour "dark blue" .5
+txt font 3
+txt right 
+txt fill on
+txt lineskip -25
+txt -15 15 "fullscreen" "full togg"
+txt -15 a arrows "show ~orient"
+txt -15 a music "play toggle"
+txt fill off
+txt -10 toggle:
+
+txt expire 12
+txt centre
+txt c 20 "wait until the number of components reaches equilibrium"
+
+txt on
+
+silent=f
+#5 echo

@@ -1,0 +1,48 @@
+% Oct 10, 2002
+
+reset all
+light model onesided
+txt subwindows off
+silent=t
+Draw=f
+%sbuff
+load Knot.k
+if \rr33 < 1 then "del 4;cent"
+
+scale = 0.258594
+if \rr6 < 1 then "about y 180"
+if \rr6 < 1 then "<randorient.kps"
+
+cyl-rad = 0.09
+if \rr1 < .99 then "hincr=0"
+hstar=\rr44
+back=0
+power=\rr[1/5]
+if \rr21 < 1 then "tanfo=t"
+tanmag=9
+
+if \rr1 < .2 then "jit \rr1"
+if \rr1 < .1 then "hstar=\rr360"
+if \rr1 < .5 then "refl z"
+value=\rr.5
+
+if \rr1 < .5 then "mathsv k 0 0 0 s;value=\rr[.1/.5]"
+if \rr1 < .8 then "dstep=\ri[1/7]"
+if \rr1 < .5 then "zbuff f"
+
+if \rr2 < 1 then "rot x -40;scale=.4"
+Draw=t
+disp t
+clrfun n
+blend one one
+go
+
+silent=f
+
+func 1 <knottype.kps
+
+echo " "
+echo " "
+echo " **** Randomized demo, try it again!"
+echo "      (press F1 to rerun)"
+echo " "

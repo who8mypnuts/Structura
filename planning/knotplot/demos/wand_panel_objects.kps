@@ -1,0 +1,104 @@
+% See documentation in the file `DemoA.kps' in this directory
+
+button Nbuttons 4
+button hspace 4
+button pos 2
+button 18 Reset reset    -1  270 0 10
+button 18 "Full screen" <full-screen.kps -1 -1 0 10
+
+% button LABEL ACTION XPOS YPOS WIDTH HEIGHT
+% if XPOS == -2 then XPOS = hspace
+% if XPOS < 0.0 then XPOS += (hspace + prev_button_width)
+% if WIDTH <= 0.0 then WIDTH = 
+
+panel off
+%button 18 "Next demos" "panel set 11" 120 -2 35 12 
+
+
+button 18 "Bizarre Things" dum     -2 270  55 10 4
+button 18 "Sea Things" <sea-things.kps -2 -1  0 10    8
+button 18 "Tangled mess" <TangledMess.kps -1 -1 0 10
+button 18 Panes <panes.kps -1 -1 0 10
+if \rr13 > 1 then "button 18 Skelions <skelions.kps -1 -1 0 10" else "button 18 Crop_circles <skelions.kps -1 -1 0 10"
+button 18 Flower <UnknotFlowers.kps -1 -1 0 10
+button 18 Negative_cylinder_space <negcylspace.kps   -1 -1 -2 10
+button 18 "orbit" <orbit.kps -1 -1 0 10
+button 18 "Knot paint" <KnotPaint0.kps -1 -1 0 10
+button 18 "Paint 1" <paint1.kps   -1 -1 0 10
+%button 18 "Paint 2" <7oct94c   -1 -1 0 10
+button 18 "Paint 2" <paint2.kps   -1 -1 0 10
+%button 18 "Paint 3" <setup-paint -1 -1 0 10
+button 18 "Paint 3" <paint3.kps -1 -1 0 10
+
+%button 18 "Frame buffer tricks" <4jun96a -1 -1 70 10
+%button 18 "Mangle a knot" <mangle-demo  -1 -1 70 10
+button 18 "UFOs" <ufos.kps -1 -1 0 10
+button 18 v._happy <violently-happy.kps -1 -1 0 10
+if \rr10 < 1 then "button 18 do_not_click <do-not-click.kps -1 -1 0 10" else "button 18 Weird_Cone <WeirdCone.kps -1 -1 0 10"
+button 18 Freaky <FreakyA.kps -1 -1 0 10
+
+%button 18 "Mandala 1" <15apr98b.kps -1 -1 0 10
+%button 18 "Mandala 2" <15apr98a.kps -1 -1 0 10
+
+button 18 "4D" dum -2 -1 44 10 4
+button 18 "spun knot" <4d-spun-knot.kps -2 -1 0 10
+button 18 "illusion" <4d-illusion.kps -1 -1 0 10
+
+ 
+button 18 "Graphics" dum -2 -1 55 10 4
+button 18 "Benchmarks" "panel set 13" -2 -1 0 10 
+if KPbuild > 3237 then "button 18 flicker_test <flicker_test2.kps -1 -1 0 10"
+button 18 clip_test <clip_test.kps -1 -1 0 10
+button 18 fog_test <graphicsB.kps -1 -1 0 10
+button 18 "Random lights" <random-lights.kps -1 -1 0 10
+button 18 "PT frame" <PTframe.kps -1 -1 0 10
+button 18 knottype <knottype.kps -1 -1  0 10
+button 18 "St. Elmo" <StElmo.kps -1 -1 0 10
+
+button Nbuttons 12
+button 18 A <graphicsA.kps -2 -1 0 0
+button 18 C <graphicsC.kps -1 -1 0 0
+button 18 D <graphicsD.kps -1 -1 0 0
+button 18 E <graphicsE.kps -1 -1 0 0
+if KPbuild > 3185 then "button 18 Ea <graphicsEa.kps -1 -1 0 0"
+if KPbuild > 3185 then "button 18 Eb <graphicsEb.kps -1 -1 0 0"
+if KPbuild > 3185 then "button 18 Ec <graphicsEc.kps -1 -1 0 0"
+button 18 F <graphicsF.kps -1 -1 0 0
+button 18 G <graphicsG.kps -1 -1 0 0
+button 18 H <graphicsH.kps -1 -1 0 0
+button 18 Ha <graphicsHa.kps -1 -1 0 0
+button 18 I <graphicsI.kps -1 -1 0 0
+button 18 J <graphicsJ.kps -1 -1 0 0
+button 18 K <graphicsK.kps -1 -1 0 0
+button 18 L <graphicsL.kps -1 -1 0 0
+if KPbuild > 3381 then "button 18 M <graphicsM.kps -1 -1 0 0"
+button 18 N <graphicsN.kps -1 -1 0 0
+if KPbuild > 3419 then <procomp_DemoB_aux.kps
+button 18 "W" <wings.kps -1 -1 0 0
+
+button 18 wand_1 <wand_demo1.kps -2 -1 -2 10
+button 18 wand_2 <wand_demo2.kps -1 -1 -2 10
+button 18 wand_3 <wand_demo3.kps -1 -1 -2 10
+button 18 wand_4 <wand_demo4.kps -1 -1 -2 10
+button 18 wand_5 <wand_demo5.kps -1 -1 -2 10
+button 18 wand_6 <wand_demo6.kps -1 -1 -2 10
+
+if KPbuild > 3428 then "button 18 L_field <field_lorenz.kps -1 -1 -2 10"
+button Nbuttons 12
+button 18 "Texture" dum -2 -1 55 10 4
+button pos 6
+button 18 Bugs dum  -1 -1 55 10 4
+
+button Nbuttons 12
+
+button 18 A <textureA.kps 4 -1 0 0
+button 18 B <textureB.kps -1 -1 0 0
+button 18 C <textureC.kps -1 -1 0 0
+button 18 D <textureD.kps -1 -1 0 0
+button 18 E <27oct02a.kps -1 -1 0 0
+
+button pos 6
+
+panel on
+
+if KPbuild < 3446 then "<warn_KPbuild.kps"

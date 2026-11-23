@@ -1,0 +1,17 @@
+reset all
+panel off
+pop
+load smallmonster
+scale=.84
+trx=.9
+try=-.2
+splthresh=.05
+
+go 400
+
+#8 go 102; split stuck; go 5; del downto 33
+
+go 400
+
+panel on
+

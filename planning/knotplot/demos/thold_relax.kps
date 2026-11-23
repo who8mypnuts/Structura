@@ -1,0 +1,29 @@
+silent=t
+tholder init
+show none
+until timelimit 10
+silent=f
+if safe then nop else "echo;echo;echo Scaling knot to make it safe...;echo -f"
+until safe "scale 1.08 1.08 1.08;disp t"
+require safe ifnot "echo;echo Can't make knot safe!  Panicking!"
+txt delete start
+%coll a   % to speed up the following a bit
+%save |.weird
+% when doing a tangle $`t with the 10*v holder, this fits to a 
+% different size than when trying it later with .weird.
+% also, why when run from the button, do scales 1 and 2 have such
+% huge values for RMS?   later on, when using .weird, these seem about right.
+%fitto snatsize 1 2 11
+%rotate x 0  % because of bug in scenery scaling
+%coll n
+stus=11
+txt fill on
+txt c 40 "stop relaxing" "go 0;read thold_go.kps"
+txt fill off
+mass open
+dstep=3
+go
+echo 
+echo
+echo "  *** Go to the `Dyna' panel for more options for relaxation"
+echo

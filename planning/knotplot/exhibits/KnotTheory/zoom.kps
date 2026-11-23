@@ -1,0 +1,28 @@
+reset all
+if \rr1 < 0.5 then "back = 0"
+
+disp t
+disp t
+
+clrfun z
+scale = 0.8
+sbuff
+
+
+if \rr1 < 0.1 then "draw spec" else "draw norm"
+%if \rr1 < 0.9 then "torus 0 0 0" else "knot spe"
+
+close = 10  % forces unsafe
+torus 0 0 0
+Draw=f
+if \rr1 < .33 then "par0=\rr.33"
+par2 = \rr1
+
+par par
+
+until timelimit \rr[10/20]
+silent=t
+until safe <zoom-aux.kps
+silent=f
+
+

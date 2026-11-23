@@ -1,0 +1,41 @@
+reset all
+
+Draw = t
+silent=t
+
+rotate home
+func init
+func silent
+func 1 <rotate-stick-things.kps
+
+mode cb
+cyl=.2
+bead = .28
+scale=.3
+rot x \rr[-45/-80]
+
+
+if \rr2 < 1 then "par0=\rr[20/102]" else "par0=\rr[-20/-102]"
+nop \t0
+idle "about z \T1"
+
+% do the following operation twice.  this is because
+% it sometimes fails with the "less than 3 beads per component" error
+
+if \rr2 < 1 then "torus \ri[1/40] \ri[1/40] \ri[20/60] \rr[2/10] \rr[-2/6]" else "torus \ri[3/222] \ri[3/222] \ri[22/222]"
+if \rr2 < 1 then "torus \ri[1/40] \ri[1/40] \ri[20/60] \rr[2/10] \rr[-2/6]" else "torus \ri[3/222] \ri[3/222] \ri[22/222]"
+
+% in the above, half the time same as the stick things demo, other half of the time
+% a different construction with varying R and d torus values
+
+<randorient.kps
+
+silent=f
+
+echo
+echo 
+echo " *** Randomized demo. May take a few clicks of the button to get something interesting."
+echo "     Try rotating the thing with the trackball!"
+echo
+
+%tfunc \rr[1/3] <anaglyphG.kps

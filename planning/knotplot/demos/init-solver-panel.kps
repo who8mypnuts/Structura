@@ -1,0 +1,43 @@
+
+% THIS FILE IS DEPRECATED.
+
+% THIS FILE IS DEPRECATED.
+
+% THIS FILE IS DEPRECATED.
+
+% THIS FILE IS DEPRECATED.
+
+% THIS FILE IS DEPRECATED.
+
+% THIS FILE IS DEPRECATED.
+
+% USE init_tsolver.kps INSTEAD
+
+button 14 "get UL" "string;solv get 0" 5 100 30 10
+button 14 "get UR" "string;solv get 1" -1 -1 30 10
+button 14 "get LL" "string;solv get 2" 5 88 30 10
+button 14 "get LR" "string;solv get 3" -1 -1 30 10
+
+
+button 14 up "solv view 1" 5 60 20 10
+button 14 down "solv view -1" -1 -1 20 10
+
+button 14 "incr" "solv view 2" -1 -1 20 10
+button 14 "decr" "solv view -2" -1 -1 20 10
+
+button 14 "incr2" "solv view 3" -1 -1 20 10
+button 14 "decr2" "solv view -3" -1 -1 20 10
+
+
+button 0 "tangle solver" "panel set 14" 72 272 30 10
+button 14 "Main panel" "solve reset;string;panel set 0" 72 272 30 10
+
+tg1off=6
+cyl=.4
+
+reset sliders
+
+load tsolver_sumNumer.k
+thold install s
+delete all
+

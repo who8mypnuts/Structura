@@ -1,0 +1,4 @@
+bfacf z .208
+bfacf run 20000
+
+txt c -50 "walk now" <bfacf/walk-start.kps

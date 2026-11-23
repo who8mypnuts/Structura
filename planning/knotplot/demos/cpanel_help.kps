@@ -1,0 +1,27 @@
+% should go from least to most specific
+
+help panel general_help.txt
+help panel tangle 0 Tangle_help.txt
+help panel TopoICE 3 TopoICE-X_help.txt
+help panel TopoICE 2 TopoICE-R_help.txt
+help panel TopoICE 1 TopoICE-Dyna_help.txt
+help panel Dyna Dyna_help.txt
+help panel main Main_help.txt
+help panel DemoA DemoA_help.txt
+help panel DemoB DemoB_help.txt
+help panel Cat Cat_help.txt
+help panel Cons Cons_help.txt
+help panel Surf Surf_help.txt
+help panel Comp Comp_help.txt
+help panel Lorenz Lorenz_help.txt
+help panel Edit Edit_help.txt
+help panel 4D 4D_help.txt
+help panel Sketch Sketch_help.txt
+help panel Export Export_help.txt
+help panel Disp Disp_help.txt
+help panel Bench Benchmark_help.txt
+help panel Celtic Celtic_help.txt
+help panel bfacf 0 bfacf/help-basic.txt
+help panel bfacf 1 bfacf/help-boxes.txt
+help panel bfacf 2 bfacf/help-demos.txt
+help panel bfacf 3 bfacf/help-load.txt

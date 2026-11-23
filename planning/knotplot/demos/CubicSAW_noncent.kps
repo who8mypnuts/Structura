@@ -1,0 +1,3 @@
+echo -n "      Not centering. "
+echo "Press F6, F7, or F8 for other centering options."
+idle "cubic step 1"

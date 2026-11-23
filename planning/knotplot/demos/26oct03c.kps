@@ -1,0 +1,37 @@
+reset all
+
+silent=t
+hsta=\rr360
+par2=\rr2
+
+knot num \ri[2/22]
+
+fitto 10
+align ax
+<randorient.kps
+if \rr2 < 1 then revb
+
+cyl=.001
+refine 6
+double
+warp install
+
+cyl=.2
+if par2 < 1 then "mode cb;cyl=.07"
+if par2 < 1 then "unknot \ri[3/4] .4" else "unknot 9 .4"
+about x 90
+trans 10 0 0
+#179 about z 2;dup;about z -2 0
+
+new=f
+
+par1 = \rr3
+
+if par1 < 1 then "unknot 102 10"
+
+
+warp along
+
+if par1 < 1 then "mcyl all .2;mcyl 180 .4"
+
+silent=f

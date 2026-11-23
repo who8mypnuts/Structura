@@ -1,0 +1,9 @@
+scale=.4
+
+mode cb
+cyl = .06
+
+#20 shift \ri100; del bead 0
+info
+
+

@@ -1,0 +1,18 @@
+delete all
+line num \ri[4/10]
+frame 0 num 6
+
+glue l0 f1
+glue l0 l4
+
+glue l1 l2
+glue l1 l5
+
+glue f0 f5
+glue f0 f3
+
+glue l3 f4
+glue l3 f2
+
+
+

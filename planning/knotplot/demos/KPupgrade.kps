@@ -1,0 +1,32 @@
+require KPfree
+
+button Main "Upgrade your copy of KnotPlot now --->" nop 4 5 80 10 4
+button Main "upgrade now!" "read web-upgrade.kps" 100 5 56 10
+
+%button comp "Upgrade your copy of KnotPlot now --->" nop 4 5 80 10 4
+%button comp "upgrade now!" "read web-upgrade.kps" 100 5 56 10
+
+button cons "Upgrade your copy of KnotPlot now --->" nop 4 5 80 10 4
+button cons "upgrade now!" "read web-upgrade.kps" 100 5 56 10
+
+button export "Upgrade your copy of KnotPlot now --->" nop 4 5 80 10 4
+button export "upgrade now!" "read web-upgrade.kps" 100 5 56 10
+
+button surf "Upgrade your copy of KnotPlot now --->" nop 4 5 80 10 4
+button surf "upgrade now!" "read web-upgrade.kps" 100 5 56 10
+
+button cat "Upgrade your copy of KnotPlot now --->" nop 4 5 80 10 4
+button cat "upgrade now!" "read web-upgrade.kps" 100 5 56 10
+
+
+button DemoA "Some buttons on this panel are randomly chosen to be inactive." nop 4 11 80 10 4
+button DemoA "Rerun KnotPlot to see a different selection or upgrade" nop 4 6 80 10 4
+button DemoA "KnotPlot now to see all the buttons all the time.  >>>>>>>>>>" nop 4 1 80 10 4
+button DemoA "upgrade now" "read web-upgrade.kps" 125 3 32 8
+
+button DemoB "Some buttons on this panel are randomly chosen to be inactive." nop 4 11 80 10 4
+button DemoB "Rerun KnotPlot to see a different selection or upgrade" nop 4 6 80 10 4
+button DemoB "KnotPlot now to see all the buttons all the time.  >>>>>>>>>>" nop 4 1 80 10 4
+button DemoB "upgrade now" "read web-upgrade.kps" 125 3 32 8
+
+<startup_upgrade.kps

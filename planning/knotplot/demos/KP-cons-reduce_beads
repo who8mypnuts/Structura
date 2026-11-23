@@ -1,0 +1,63 @@
+#!/bin/csh -f
+
+# Constructor routine: KP-cons-reduce_beads
+# Sept 27, 1997
+# Rob Scharein
+
+# A hack to get around the fact that "nbead mult" works for proper knots only
+
+# Constructor arguments:
+#    $0 Constructor executable file (this file).
+#    $1 First file read by KnotPlot (the prefile).
+#    $2 Second file read by KnotPlot (the postfile).
+#    $3 Type of machine we're running on (sgi, ibm, etc...)
+#    $4 A flag either 0 or 1.
+#    $5 Name of constructor.
+#       Anymore more arguments are the arguments to the contructor
+#       from the KnotPlot command line.
+
+set factor = $6
+
+switch ($4)
+
+case 0:
+  echo info short \> $1.ncomps >> $1
+
+  breaksw
+
+case 1:
+    
+  set ndum = `cat $1.ncomps`
+  set ncomps = $ndum[1]
+
+  set knot = $1.k
+  echo silent=t > $2
+
+  echo save $knot 0 >> $2
+  
+  set compnum = 0
+  while ($compnum < $ncomps)
+    set comp = $1"."$compnum
+    echo keep $compnum >> $2
+    echo nbead mult $6  >> $2
+    echo save $comp >> $2
+    echo load $knot >> $2
+    @ compnum++
+  end
+  
+  echo load $1".0" >> $2
+  set compnum = 1
+
+  while ($compnum < $ncomps)
+    set comp = $1"."$compnum
+    echo load comb $comp >> $2
+    @ compnum++
+  end
+  echo silent=f >> $2
+
+  cp $2 dum
+  breaksw
+
+endsw
+
+

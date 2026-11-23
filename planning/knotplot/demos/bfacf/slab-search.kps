@@ -1,0 +1,20 @@
+tfunc reset
+
+alias kload "echo;echo;echo *** click on the `rerun' button to rerun;echo"
+
+txt font 3
+txt fill on
+txt centre
+
+alias ~delbutt "txt delete retr;txt delete group 33;txt delete group 102"
+txt c 30 "retrieve min" "~delbutt;txt delete found;txt group 108 on;bfacf init;show ener;load |min;centre;trans to lattice;info;mode cB;scenery off;scale=.6;~rerun"
+
+txt push
+txt fill off
+txt group 33
+txt c 50 "try fiddling with the step size and/or z-value"
+txt pop
+
+bfacf search on ~foundnew
+bfacf target 108
+

@@ -1,0 +1,6 @@
+Loading Scenery into KnotPlot (part 4)
+
+Knots may be used to create scenery.
+
+
+

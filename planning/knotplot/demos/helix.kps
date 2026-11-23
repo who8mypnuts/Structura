@@ -1,0 +1,17 @@
+require KPbuild 4898
+
+reset all
+
+cyl-rad=0.14
+
+alias ~h2 "helix $0 $1/$2 $3 $4"
+alias ~h  "~h2 \ri[60/140] \rr+-12 \rr+-12 \rr[0/4] \rr[2/7]"   % ;par nbeads;tfunc .5 ~r"
+
+alias ~r "refine 8;refine nbeads 222"
+
+~h
+name
+
+rotate x -65
+
+

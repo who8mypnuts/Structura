@@ -1,0 +1,15 @@
+
+require KPbuild 4404
+
+button Nbuttons 5
+button hspace 4 
+button pos 1
+button height 8
+
+button blank @
+button Nbuttons 4
+
+button 18 "Initial conformations" nop 4 265 102 10 4 
+
+button bfacf "load..." "panel set bfacf 3" -2 -1 0 0
+

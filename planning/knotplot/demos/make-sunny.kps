@@ -1,0 +1,7 @@
+ortho
+sunny  .1
+coll a
+centre
+force 64
+go 222
+dstep = 44

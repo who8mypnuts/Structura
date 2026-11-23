@@ -1,0 +1,14 @@
+% This file is no longer used by KnotPlot,
+% as of 13 May 2007, KnotPlot build 4019
+% Please look in the file TopoICE-init.kps
+
+silent=t
+tg1off=6
+cyl=.4
+mode s
+tangle sense biology
+reset sliders
+load tsolver_sumNumer.k
+thold install s
+delete all
+silent=f

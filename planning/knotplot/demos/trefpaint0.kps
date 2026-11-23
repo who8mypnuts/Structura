@@ -1,0 +1,35 @@
+reset all
+back=0
+disp t
+
+silent = t
+blend one one
+back = 0
+cyl-rad = .01
+bead-rad = .01
+coll a
+force 1
+
+scale = 1.48
+mode cb
+hooke=30
+mathsv k 222 .9 .1 d
+mathsv k 22 .96 0 s
+mathsv k  0 0 0 a
+
+mathsv b 0 0 0 e
+mathsv b 0 0 0 s
+mathsv b 22 .94 .9 d
+mathsv b 0 0 0 a
+tinc=.13
+conway 3
+
+clrfun 0
+display true
+display true
+clrfun 1
+
+go 204
+
+silent = f
+

@@ -1,0 +1,21 @@
+resize 256 256 0 0
+resize 256 256 0 0
+resize 256 256 0 0
+resize 256 256 0 0
+reset all
+func 1 <trippy.kps
+atw=t
+back t
+back=0
+trx=-1
+try=-3
+break f 2
+par0=1
+break f 2
+load 3.1
+tex orig 0 0 
+tex size 256 256
+draw tbrok
+
+%spe comm "tex screen 1 1 1"
+

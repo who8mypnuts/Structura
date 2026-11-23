@@ -1,0 +1,23 @@
+% this is almost like a `reset all' but doesn't affect any txt objects or scenery
+
+delete all
+cyl-rad = 0.900000
+scale = 0.350000
+nsegments = 12
+ncurve = 3
+broff = 0.100000
+bead-radius = 0.180000
+draw norm
+mode s
+tex off
+blend sa msa
+zbuff t
+glop polygonmode fill
+clrf zf
+light reset
+value = 1.000000
+saturation = 1.000000
+hstart = 33.000000
+hincr = 120.000000
+vcn = 0
+

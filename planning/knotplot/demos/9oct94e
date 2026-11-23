@@ -1,0 +1,30 @@
+
+
+reset all
+silent = t
+singlebuffer
+
+Draw = f
+background = 0
+blendfunction one one
+backface f
+zbuffer f
+draw broken
+load 8.2.1
+scale=.3
+twist = 167.936829
+nseg = 12
+ncur = 88
+vcn = 6
+vcA = -1.220508
+broff = 1.099278
+hstart = 33.608284
+hincr = -120.000000
+value = 0.324235
+saturation = 1.000000
+cyl = 1.020000
+Draw = t
+
+silent = f
+
+

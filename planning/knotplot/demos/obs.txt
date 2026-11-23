@@ -1,0 +1,61 @@
+14sep02b.kps:back f
+15apr98a.kps:backface t
+15apr98b.kps:backface t
+22jun05a.kps:backface f
+27oct02a.kps:back t
+28may05a.kps:backface t
+30oct05a.kps:backface t
+6.3-relax.kps:% special backdrop
+AntoinesNecklace.kps:rotsense x R   % put it back to the default
+Backdrops.kps:spe back
+SeaThings.kps:backface t
+StElmo_aux.kps:back f
+UnknotFlowers.kps:backface f
+bug1.kps:% give it a nice blue background so at least it looks nice!
+fig8-relax.kps:special backdrop
+fig8-relax.kps:persp 600 1 20    % Otherwise backdrop will disappear!
+fig8-relaxB.kps:if \rr1 < .5 "special backdrop"
+fig8-relaxB.kps:persp 60 1 20    % Otherwise backdrop will disappear!
+glo-knot.kps:back t
+graphicsE.kps:back f
+graphicsEa.kps:back f
+graphicsEb.kps:back f
+graphicsEc.kps:back f
+graphicsM.kps:backface f
+init-textureC.kps:backface t
+kpath-demo0.kps:% Load back the temporary file
+logo2.kps:back t           % Turn off back facing polygons.
+lorenz-idle.kps:idle "nlor 200;nlor setback 195"
+lorenz-idle2.kps:%idle "nlor 200;nlor setback 195"
+more-sea-things.kps:backface t
+negcylspace.kps:backface f
+new.kps:back t
+open-end-aux3.kps:back f
+paint1.kps:backf t
+paint2.kps:backf t
+panes.kps:backface true
+rand_anchors.kps:spec back
+rand_anchors.kps:spec back
+random-lights.kps:backf f
+relax1-extra.kps:if \rr3 < 1 then "shift \ri99;open all;back f"
+relax2.kps:persp 60 1 20    % Otherwise backdrop will disappear!
+relaxB.kps:if \rr1 < .5 then "special backdrop"
+relaxB.kps:persp 60 1 20    % Otherwise backdrop will disappear!
+ring-pack-old.kps:if \rr1 < .3 then "spe back"
+ring-pack.kps:if \rr1 < .3 then "spe back"
+ringToss.kps:back f
+ringToss.kps:if \rr17 < 1 then "open all;back f"
+sea-things.kps:backface t                % Turn off backfacing polygon drawing.
+start-Lorenz.kps:idle "nlor 200;nlor setback 195"
+stereo-Hopf-sea-thing.kps:backface t                % Turn off backfacing polygon drawing.
+stereo-brun-relax-init.kps:spe back
+stereo-brun-relax-movie.kps:spe back
+stereo-monster-init.kps:spe back
+textureDL.kps:backface t
+textureDb.kps:backface t
+ufos.kps:back f
+violently-happy.kps:backface f
+violently-happy.kps:echo "     Press F6 to randomize lighting, F7 to toggle background, F12 to rerun demo."
+wave_demo_aux.kps:echo "      Press F5, F6, or F7 for different background colours."
+wings.kps:if \rr5 < 1 then "spe back"
+wings.kps:backface t

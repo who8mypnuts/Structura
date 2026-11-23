@@ -1,0 +1,72 @@
+%`-
+
+reset all
+
+<bfacf/basicinit.kps
+ccmode=2
+
+alias ~cl "plugin clasp $0 $1 $2 $3"
+~cl load
+
+alias ~kload "knot numb $0 mscl;bfacf load"
+txt fcolour "royal blue" .6
+txt left
+txt lineskip -25
+txt fill on
+txt font 3
+txt 15 15 "4-comp" "~dd;~kload \ri[380/383]"
+txt 15 a "3-comp"  "~dd;~kload \ri[344/378]"
+txt 15 a "2-comp"  "~dd;~kload \ri[252/342]"
+txt 15 a "1-comp"  "~dd;~kload \ri[2/250]"
+txt fill off
+txt 10 a "load:"
+
+txt fill on
+txt 15 a3 "thinner sticks" "cyl-rad=.07;disp t"
+txt 15 a  "smaller beads"  "bead=.12;disp t"
+txt 15 a  "mode l" "mode l"
+txt 15 a "mode cB" "mode cB"
+
+txt right
+txt fill on
+txt -15 15 all "~cl label"
+txt -15 a "all pairs" "~cl label p"
+txt -15 a "all hhooks" "~cl label h"
+txt -15 a  "all clasps" "~cl label c"x
+txt -15 a  "pair 4" "~cl label p 4"
+txt -15 a  "pair 3" "~cl label p 3"
+txt -15 a  "pair 2" "~cl label p 2"
+txt -15 a  "pair 1" "~cl label p 1"
+txt -15 a  "pair 0" "~cl label p 0"
+txt -15 a  "hhook 4" "~cl label h 4"
+txt -15 a  "hhook 3" "~cl label h 3"
+txt -15 a  "hhook 2" "~cl label h 2"
+txt -15 a  "hhook 1" "~cl label h 1"
+txt -15 a  "hhook 0" "~cl label h 0"
+txt -15 a  "clasp 4" "~cl label c 4"
+txt -15 a  "clasp 3" "~cl label c 3"
+txt -15 a  "clasp 2" "~cl label c 2"
+txt -15 a  "clasp 1" "~cl label c 1"
+txt -15 a  "clasp 0" "~cl label c 0"
+
+txt -15 a2 "highest ranked pair" "~cl label P"
+txt -15 a "random pair" ~rpair
+txt -15 a "random hhook" ~rhhook
+txt -15 a "random clasp" ~rclasp
+
+txt -15 a2 "step / highest"  "~dd;bfacf step 0;~cl;~cl label P"
+txt -15 a "step / rand"  "~dd;bfacf step 0;~cl;~rpair"
+txt -15 a "step" "~dd;bfacf step 0;~cl"
+
+alias ~dd "txt delete group 87432710"
+
+txt on
+
+txt fill off
+bfacf centre on
+
+
+exit 
+
+%`+
+

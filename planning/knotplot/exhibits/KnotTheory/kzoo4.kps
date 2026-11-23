@@ -1,0 +1,44 @@
+reset all
+tfunc -1.0
+func 1 <kzoo4.kps
+
+reset all
+sbuff
+silent=t
+hstart=\rr[10/50]
+
+
+Draw=f
+spe bac
+spe +vwt
+font 4
+nstrin cm cm "A Zoo of Knots"
+disp t
+nap 1
+spe back
+
+if \rr1 < 0.5 then "back=0"
+delete all
+clrfun zf
+disp t
+clrfun z
+frame comm "knot;fitto 9;read rand_orient.kps;vport tile %d 4;disp t;gflush"
+if \rr1 < 0.5 then "frame 0 to 15" else "frame 15 to 0"
+
+nap \rr[4/5]
+
+if \rr1 < .15 then <kzoo-replace.kps
+
+silent=f
+dbuff
+
+%tfunc 0.01 "read kzoo4.kps"
+
+%if T < Tmax then "read kzoo4-aux.kps"  else "read dispatch.kps"
+
+%if T < Tmax then "tfunc 0.01 <kzoo4.kps"  else "read dispatch.kps"
+
+
+
+
+

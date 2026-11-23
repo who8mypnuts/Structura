@@ -1,0 +1,40 @@
+reset all
+silent=t
+ortho
+
+if stereo then back=0 else back=x660000
+scale = 0.331886
+%hstart = \rr360
+cyl=.3
+
+% add celtic box and celtic star
+% for box, apply rotation:  rot x \rr[-40/-90];rot z \rr360
+% for star, 0.5 chance of rot z 180
+
+%% Generated Sat Oct 29 13:01:51 2005
+%% with command line: c:\usr\KnotPlot\resource\win32\multiif.exe plaits.txt
+par1 = \rr127
+if par1 < 90 then "celtic grid \ri[3/12] \ri[3/12];par1=129"
+if par1 < 100 then "celtic cgrid \ri[12/20] \ri[3/6] \rr[3/9];scale=;par1=129"
+if par1 < 112 then "celtic grid \ri[2/22] \ri[2/22];scale=.18;alloc ;par1=129"
+if par1 < 128 then "celtic grid \ri[12/22] \ri[12/22];scale=.18;alloc 4444;par1=129"
+
+celtic auto f
+celtic random active \rr[.6/1.3]
+
+
+
+celtic show 43
+
+tfunc .1 "celt clear;celt rand act .9;celt rand prim .1;celt rand sec .1;celt copy;disp t" 0 rep .2 .6
+func init 
+func silent
+func 6 "echo;echo;echo Celtic knot sketching panel.;echo Press F7 to go to normal Sketching panel.;echo"
+func 7 "panel set Sketch 0"
+func 8 "back=x444444;disp t;func exec 6;panel set Sketch 1;celtic auto t"
+silent=f
+
+echo 
+echo
+echo " *** Plait work."
+echo

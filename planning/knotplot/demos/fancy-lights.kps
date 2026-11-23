@@ -1,0 +1,7 @@
+silent=t
+sat=\rr[0/.2]
+frame reset
+frame comm "read lights%d.kps"
+frame \ri6
+silent=f
+

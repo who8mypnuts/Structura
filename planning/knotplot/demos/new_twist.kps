@@ -1,0 +1,85 @@
+require KPbuild 4691
+require KPbuild 4184
+
+reset all
+
+background = "Lupin Gray"
+func init
+func silent
+
+func 1 <new_twist.kps
+silent=t
+txt fcolour "Royal Blue" .7
+txt font 4
+txt centre
+txt c -20 "Creating a twist knot"
+
+txt push
+txt group 16008
+txt font 3
+txt lineskip 20
+txt c -50 file doc/twist.txt
+txt pop
+
+rotate z 90
+hstar=\rr360
+cyl=\rr[.9/1.5]
+scale=.055
+Draw=f
+braid -str 2 0^14
+scale 2 1 1 
+join all
+split 4
+ago 20
+Draw=t
+
+swirl end 45
+
+alias ~twist "#10 swirl end $0;disp t"
+txt lineskip 30
+
+alias ~complain "txt group 99 on;echo;echo;echo {enough already!}"
+
+
+alias ~complain+ "if \ppar0 > 30 then ~complain"
+
+alias ~complain- "if \ppar0 < -31 then ~complain"
+
+
+alias ~incr "test paradjust 0 1 $0;txt group 99 off;~complain+;~complain-;echo -n \ppar0;echo { twists}"
+
+
+txt fill on
+txt clobber on
+txt font 3
+txt push
+txt group 102
+txt c 108 "twist once +" "silent = t;~twist 9;txt group 108 on;txt group 16008 off;silent=f;~incr 1"
+txt c a "twist once -" "silent=t;~twist -9;txt group 108 on;txt group 16008 off;silent=f;~incr -1"
+txt pop
+
+txt push
+txt group 108
+txt c a2 "warp and clasp" <twist-warp.kps
+txt group 108 off
+txt pop
+
+txt push
+txt font 4
+txt group 99
+txt centre
+txt fill off
+txt c c "enough already!"
+txt group 99 off
+txt pop
+
+silent=f
+txt on
+
+echo
+echo
+echo
+echo " *** Click on one of the twist buttons a couple of times"
+echo "     Press F1 key to rerun demo"
+
+

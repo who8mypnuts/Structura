@@ -1,0 +1,36 @@
+
+silent=t
+
+tfunc reset
+oal gain all 0
+frame comm "oal gain %d 1"
+frame 0 numb 8
+
+oal velmul 0
+~usvm
+~usvd
+
+oal pitch 0 c 0
+oal pitch 1 c 204
+oal pitch 2 c 386
+oal pitch 3 c 498
+oal pitch 4 c 702
+oal pitch 5 c 884
+oal pitch 6 c 1088
+oal pitch 7 c 1200
+
+txt delete group 777333
+
+txt push
+txt  group 777333
+txt font 4
+txt fill off
+txt cent
+txt expire 7
+txt c -33 "just intonation of first 8 sources"
+txt font 3
+txt c -55 "velocity multiplier set to 0"
+txt fill on
+txt c -77 "Wikipedia article" "www en.wikipedia.org/wiki/Just_intonation"
+txt pop
+silent = f

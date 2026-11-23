@@ -1,0 +1,7 @@
+Loading Scenery into KnotPlot (part 3)
+
+Scenery may be attached to a particular bead.
+Click on the buttons below to load at random bead positions.
+Rotate the view with the left mouse to see how orientation
+of scenery changes.  After that, try changing the rotation 
+method using the buttons in the lower right of the window.

@@ -1,0 +1,21 @@
+tfunc reset 22
+
+tfunc 1 "oal pitch \ri32 cr -1200" 11 rep 1 7
+tfunc 1 "oal pitch \ri32 cr  1200" 11 rep 1 7
+tfunc 1 "oal pitch \ri32 c  \rr+-1200" 11 rep 1 7
+tfunc 1 "oal pitch \ri32 c  1200" 11 rep 1 7
+
+echo adjust2
+
+
+exit
+
+
+swirling should add more dissonance
+
+two competing forces: 
+
+  --- chaotic motion and dissonant
+
+  --- more relaxed and more consonant
+

@@ -1,0 +1,22 @@
+% simple representation of base pair sequence
+
+
+dna atom 4          % we have 4 types of atoms, red, green, blue & white
+dna atom shape 0    % the shape is a sphere
+% usage of the following four commands is:
+% dna atom ATOMTYPE RADIUS RED GREEN BLUE
+dna atom 0 1 1 0 0  % adenine
+dna atom 1 1 0 1 0  % thymine
+dna atom 2 1 0 0 1  % guanine
+dna atom 3 1 1 1 1  % cytosine
+
+dna base 4       % we have 4 types of base pairs
+% usage of the following four commands is:
+% dna base BASETYPE DEFINITIONFILE
+dna base 0 adenine-simple.txt
+dna base 1 thymine-simple.txt
+dna base 2 guanine-simple.txt
+dna base 3 cytosine-simple.txt
+
+% draw as fancy atoms rather than simple slabs
+dna draw fancy

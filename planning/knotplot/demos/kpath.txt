@@ -1,0 +1,5 @@
+par4
+1 knot spec
+21 knot 1
+1 unknot \ri[22/333]
+2 knot cd

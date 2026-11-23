@@ -1,0 +1,20 @@
+reset all
+
+
+cyl-rad = 0.472000
+ncurve = 6
+nsegments = 22
+
+torus 11 15 777
+twfix
+
+draw spec
+spec fra
+
+idle "about y 10"
+
+<../benchmarks/blurb-bm.kps
+
+
+
+

@@ -1,0 +1,9 @@
+<StElmo_aux.kps
+
+func 1 <StElmo.kps
+echo " "
+echo " "
+echo " *** Random parameters, try again... "
+echo "     Also, try changing to the `Cat' panel, and click"
+echo "     on one of the `Decorative knots'."
+echo " "

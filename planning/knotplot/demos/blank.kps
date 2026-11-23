@@ -1,0 +1,9 @@
+reset all
+
+background = black
+cursor 1
+
+fullscreen
+
+tfunc 1 "pop 0"
+

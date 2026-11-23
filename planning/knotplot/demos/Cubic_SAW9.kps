@@ -1,0 +1,5 @@
+Draw=f
+coll a
+
+
+idle "cubic step 1;close all;ago 18;cent;disp t"

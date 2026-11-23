@@ -1,0 +1,6 @@
+silent=t
+untran
+scale=.35
+3dop bgimage essay/j_mn_4 18
+spec +bgimage
+silent=f

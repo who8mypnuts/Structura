@@ -1,0 +1,19 @@
+silent=t
+
+%func s 1 "torus \ri[2/8] \ri[2/8] 0"
+
+%func exec s 1
+texture off
+txt off
+satu=1
+delete all
+
+%until Ncomp 1 "func exec s 1"
+silent=f
+until Ncomp 1 "torus \ri[2/8] \ri[2/9] 0"
+
+
+refine 2
+par nbeads
+
+

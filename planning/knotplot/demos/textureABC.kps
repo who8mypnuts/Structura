@@ -1,0 +1,7 @@
+%% Generated Wed Oct 04 14:25:32 2006
+%% with command line: c:\usr\KnotPlot\resource\win32\multiif.exe textureABC.txt
+par4 = \rr52
+if par4 < 10 then "read textureA.kps;par4=54"
+if par4 < 30 then "read textureB.kps;par4=54"
+if par4 < 32 then "read textureC.kps;par4=54"
+if par4 < 53 then "read texturePaint1.kps;par4=54"

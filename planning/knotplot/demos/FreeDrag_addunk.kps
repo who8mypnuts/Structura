@@ -1,0 +1,4 @@
+unknot \ri[4/6] 1
+trans \rr[-5/-7] \rr[-5/-7] \rr+-1 last
+if unsafe then "delete last;echo Press that key again." else "echo something more to play with"
+

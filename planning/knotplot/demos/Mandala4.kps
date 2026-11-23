@@ -1,0 +1,64 @@
+require accbuff
+
+reset all
+
+silent=t
+verbose=f
+Draw=f
+back=#000
+disp t
+<fun-with-accbuff.kps
+
+func init
+func silent
+func 1 <Mandala4.kps 
+
+line numb 15
+line
+oal random
+centre
+refl r
+cyl=.1
+stus=11
+
+func 2 "silent=t;cut \ri[44/108];keep 0;silent=f"
+func 4 "silent=t;<weaveA_new.kps"
+
+
+func exec 4
+idle "ago 44;split cyl 0"
+
+scale = 0.622190
+cyl-rad = 0.040000
+
+%% Generated Sun Apr 22 12:03:08 2007
+%% with command line: c:\usr\KnotPlot\resource\win32\multiif.exe Mandala4.txt
+par3 = \rr32
+if par3 < 10 then "dfunc symm \ri[3/8] \ri[0/2];par3=34"
+if par3 < 30 then "dfunc symm \ri[5/8] 1;par3=34"
+if par3 < 33 then "dfunc symm \ri[4/18] \ri[0/2];par3=34"
+
+func 5 "cmode -1"
+
+vcn=1
+vcA=1
+vcphi=3.14159
+
+draw spec
+tfunc \rr12 "func exec 2" 0 rep 33 108
+tfunc \rr12 "func exec 4" 0 rep 9 22
+tfunc \rr12 "func exec 5" 0 rep 9 22
+tfunc \rr12 "line;cent;refl r" 0 rep 22 77
+tfunc \rr[54/108] "read Mandala4.kps" 0 rep 54 108
+
+func 10 "tfunc .4 {accbuff clear}"
+func 9 "full togg;func exec 10"
+
+
+echo
+echo
+echo " *** Press F1 to rerun demo with different parameters"
+echo "     Press F2 - F6 to change some things, F9 to toggle full screen"
+echo "     Press F5 if you don't like the colours, F10 to clear screen"
+<mandala-common.kps
+~title "Mandala 4"

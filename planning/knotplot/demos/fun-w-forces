@@ -1,0 +1,29 @@
+reset all
+dstep=3
+reset slider
+silent=t
+Draw=f
+scale=1.02
+cyl=.06
+mode acb
+conway 3
+anchor
+ancauto=f
+anch=t
+grastr=.467
+gravity=on
+elec=f
+mech=f
+velforce=on
+velmag=.1
+coll a
+force 1
+silent=f
+Draw=t
+panel set 12
+panel draw
+alert "Press Go and then play with forces" OK
+panel draw
+
+
+

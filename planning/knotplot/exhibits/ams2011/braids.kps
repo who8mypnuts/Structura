@@ -1,0 +1,80 @@
+reset all
+back f  % to prevent bad lighting
+
+func 12 <braids.kps
+
+Draw=f
+silent=t
+braid -open a
+delete all
+scale=.075
+hstart=\rr360
+Draw=t
+silent=f
+if \rr1 < .5 then "rota z 180"
+
+random braid \ri[3/7] \ri[6/13]
+
+
+silent=f
+
+frame comm "read nonp%d.kps"
+frame \ri[0/7]
+
+txt clobber on
+txt on
+txt centre
+txt font 4
+spe +vwt
+txt c 40 "Random braid"
+disp t
+nap 1
+
+Draw=f
+refl x
+save \br_1
+warp rec2ann 125
+refl y
+cent
+save \br_2
+load \br_1
+refl x
+
+Draw=t
+txt c 40 "Warping braid"
+deform to \br_2
+silent=t
+Draw=f
+
+frame comm "load \br_1;warp rec2ann %d;cent mass;refl y;disp t"
+frame 125 to 1 step -4
+nap 1
+join all
+txt c 40 "Closed braid"
+disp t
+nap 2
+stu=6
+ncur=5
+dstep=4
+dbmin=5
+Draw=t
+fixcofm=t
+txt c 40 "Simplifying knot"
+del rrobin
+#3 del down 5;ago 33
+anim scale .075 .15 22 log
+txt c 40 "Simplifying knot"
+del rrobin
+#5 del down 5;ago 33
+anim cyl .9 .7 10 log
+anim scale .15 .37 22 log
+txt c 40 "Simplifying knot"
+del rrobin
+#5 del down 5;ago 33
+anim cyl .7 .2 22 log
+#11 del down 5;ago 33
+
+ago 22
+
+silent=f
+nap 3

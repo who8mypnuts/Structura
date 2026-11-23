@@ -1,0 +1,45 @@
+Dynamics Help
+
+This panel has controls for setting various forces that affect the dynamical 
+behaviour of the knot when the "go" button is clicked.  Use the check boxes to
+enable or disable a force.
+
+     elec --- a repulsive force that acts between pairs of beads.  use the 
+              charge slider to change the magnitude of the force.  this force
+              is generally not a 1/r^2 force, but falls off as 1/r^power
+
+     mech --- an attractive force that acts between neighbouring beads on a
+              strand.  this force is non-linear (use amech to get a linear 
+              force).  the value of the hooke slider is used to scale the force
+
+     amech --- `alternative mech', this is similar to the mech force.   edges 
+                in the knot act like springs with rest length `spring'.  
+                set `afmpower' to 1 to get a linear spring.
+
+     symm --- an approximation to Greg Buck's symmetric energy force
+
+     velfo --- a force proportional to velocity
+
+     grav --- gravity
+
+     therm --- random agitation
+
+     tanf --- force acting along the tangent direction of the knot.  has an 
+              implementation bug that makes for interesting demos
+
+Click on the `go' button to start/stop dynamics. 
+
+     Undamped / Damped --- `Undamped' is closest to Newton's law F = ma,
+                           with `Damped', beads do not retain any inertia
+                           
+     A / B --- just a convenience feature that sets multiple things simultaneously
+     
+     Init --- resets dynamics to initial setting,  zero --- zeros out velocities
+
+Slower graphics cards can benefit from increasing the value of `dstep' (display
+step).  A redraw of the knot occurs every dstep dynamical steps.
+
+Set `stusplit' to a positive value to enable auto-splitting of stuck cylinders. 
+This is useful in conjunction with the `dbeads' button which attempts to delete
+beads.  Try the Split/delete demo on DemoA to see how these two can be used to
+quickly simplify knots. 

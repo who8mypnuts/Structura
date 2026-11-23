@@ -1,0 +1,20 @@
+idle
+rotor disable all
+close all
+
+echo 
+echo 
+echo 
+echo "  *** Joining ends and relaxing normally..."
+echo
+txt right
+txt delete join
+txt delete trim
+txt delete change
+txt -15 a "fast simplify" "delete downto 0;centre"
+dbmin=5
+
+if safe then nop else <weaveA_fix.kps
+save |.weave
+
+go

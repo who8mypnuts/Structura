@@ -1,0 +1,19 @@
+reset all
+ortho
+scale=.15
+font 4
+spe +vwt
+auto=f
+hstar=33
+hincr=180
+if \rr1 < .5 then "hstart=213"
+ncur=4
+nseg=18
+cyl=.7
+
+nstring cm 65 "Which knot is the unknot,"
+nstring cm 40 "and which is the trefoil?" 1
+
+if \rr1 < .5 then <combo-monsterA.kps else <combo-monsterB.kps
+
+

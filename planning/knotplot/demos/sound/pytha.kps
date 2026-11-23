@@ -1,0 +1,38 @@
+
+silent=t
+
+tfunc reset
+oal gain all 0
+frame comm "oal gain %d 1"
+frame 0 numb 8
+
+oal velmul 0
+~usvm
+~usvd
+
+oal pitch 0 1/1
+oal pitch 1 9/8
+oal pitch 2 81/64
+oal pitch 3 4/3
+oal pitch 4 3/2
+oal pitch 5 27/16
+oal pitch 6 243/128
+oal pitch 7 2/1
+
+% 1/1 	9/8 	81/64 	4/3 	3/2 	27/16 	243/128 	2/1
+
+txt delete group 777333
+
+txt push
+txt  group 777333
+txt font 4
+txt fill off
+txt cent
+txt expire 7
+txt c -33 "Pythagorean tuning of first 8 sources"
+txt font 3
+txt c -55 "velocity multiplier set to 0"
+txt fill on
+txt c -77 "Wikipedia article" "www en.wikipedia.org/wiki/Pythagorean_tuning"
+txt pop
+silent = f

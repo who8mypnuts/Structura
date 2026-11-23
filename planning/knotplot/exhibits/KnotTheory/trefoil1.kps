@@ -1,0 +1,42 @@
+reset all
+func 12 <trefoil1.kps
+silent = t
+blend one one
+back = 0
+cyl = .01
+bead-rad = .01
+coll a
+force 1
+
+scale = \rr[1/1.48]
+mode cb
+hooke 30
+mathsv k 222 .9 .1 d
+mathsv k 22 .96 0 s
+mathsv k  0 0 0 a
+
+mathsv b 0 0 0 e
+mathsv b 0 0 0 s
+mathsv b 22 .94 .9 d
+mathsv b 0 0 0 a
+time .13
+if \rr1 < 0.8 then "conway 3" else "conway 2,2,2"
+
+if \rr2 < 1 then "about x 90"
+
+<randorient.kps
+
+if \rr1 < .2 then "jit .2"
+if \rr1 < .02 then "jit 2"
+dstep = \ri[1/2]
+
+<trefoil1-aux.kps
+if \rr10 < 2 then <trefoil1-aux.kps
+if \rr10 < 1 then <trefoil1-aux.kps
+if \rr10 < .5 then <trefoil1-aux.kps
+if \rr10 < .25 then <trefoil1-aux.kps
+
+silent = f
+
+nap 2
+

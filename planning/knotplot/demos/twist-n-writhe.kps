@@ -1,0 +1,22 @@
+%func 1 <twist-n-writhe.kps
+
+power=4.33
+coll a
+force 1
+aftwist=on
+twdef=66
+draw hflat
+scale = 0.830524
+ncurve = 5
+nsegments = 9
+cyl-rad = 0.500541
+satur=0
+back=0
+dstep=1
+
+alert "This goes for a long time, click on the `Quit' button when you've seen enough" Sure
+panel set 0
+reset sliders
+
+#9999999 del all;read random-lights;knot;refl rr;go 40
+

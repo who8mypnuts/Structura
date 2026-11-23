@@ -1,0 +1,5 @@
+silent = t
+save *f "%03d"
+save *i 0
+tfunc 1 "save *f++" 0 rep 15
+silent = f

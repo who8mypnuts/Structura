@@ -1,0 +1,43 @@
+require KPbuild 4053
+
+reset all
+
+silent=f
+verbose=t
+
+func init
+func silent
+
+back=#000
+func 1 <proj-plane.kps
+
+4dscm=1
+if \rr2 < 1 then 4dsm=0 else 4dsm=4
+4dhmult=\rr[3/5]
+
+construct klein 108 108
+spin
+
+txt centre
+txt font 4
+txt c -30 "4D Klein Bottle"
+
+txt font 3
+txt left
+txt fill on
+
+txt fcol "royal blue" .6
+txt 15 15 solid "4dsm=0;spin"
+txt 15 40 wire  "4dsm=1;spin"
+
+
+txt on
+
+
+silent=f
+
+echo 
+echo
+echo " *** 4D Klein Bottle"
+echo "     Press F1 to rerun demo"
+echo

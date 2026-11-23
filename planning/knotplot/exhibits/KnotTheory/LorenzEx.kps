@@ -1,0 +1,16 @@
+reset all
+
+cyl-rad = 0.200000
+scale = 0.100000
+ncur=2
+nseg=10
+hstart=\rr360
+
+nlor buffer 410
+nlor offset -.39 -.39 23.67
+nlor init \rr33 \rr33 \rr33
+nlor 222
+
+
+idle "nlor 200;nlor setback 195"
+

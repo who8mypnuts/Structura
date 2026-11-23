@@ -1,0 +1,72 @@
+require KPbuild 4651
+
+reset all
+back = black
+mode b
+bead = .43
+scale = .32
+torus 2 3 108
+
+go
+
+txt fcolour royalblue .6
+
+glsl shader orb
+
+alias ~col "orb all hcol $0;orb all lcol $1"
+
+txt on
+txt left
+txt lineskip 25
+txt 10 -20 colours:
+txt fill on
+txt 15 a white/black "~col white black"
+txt 15 a red/green "~col red green"
+txt 15 a "random hue" <orb-rcol.kps
+
+txt fill off
+txt 10 a2 sync:
+txt fill on
+txt 15 a unison "orb all age 0"
+txt 16 a random "orb all age (0/999)"
+
+txt fill off
+txt 10 a2 in:
+txt fill on
+txt 15 a instant "orb all in 0"
+txt 15 a slow "orb all in 1"
+txt 15 a fast "orb all in .1"
+txt 15 a random "orb all in (0/.2)"
+
+
+txt fill off
+txt 10 a2 hi:
+txt fill on
+txt 15 a long "orb all hi 2"
+txt 15 a short "orb all hi .5"
+txt 15 a random "orb all hi (.5/1)"
+
+
+txt fill off
+txt 10 a2 out:
+txt fill on
+txt 15 a instant "orb all out 0"
+txt 15 a slow "orb all out 1"
+txt 15 a fast "orb all out .2"
+txt 15 a random "orb all out (.2/1)"
+
+
+txt fill off
+txt 10 a2 lo:
+txt fill on
+txt 15 a long "orb all lo 2"
+txt 15 a short "orb all lo .5"
+txt 15 a random "orb all lo (.5/2)"
+
+
+txt centre
+txt fill on
+txt font 3
+txt c 20 "reload demo" <orbs.kps
+
+orb init

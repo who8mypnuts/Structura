@@ -1,0 +1,12 @@
+reset all
+
+echo 
+echo 
+echo "  *** WARNING!  Your KnotPlot executable is out of date!"
+echo "      Some of the demos may not work correctly!"
+echo
+
+spec +vwt
+nstring cm cm "WARNING!  Your KnotPlot executable is out of date!"
+nstring cm cm-20 "Some of the demos may not work correctly!" 1
+

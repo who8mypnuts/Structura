@@ -1,0 +1,32 @@
+reset all
+panel off
+silent = t
+trx=.3
+sbuff
+back=0
+bead=.015
+cyl = .001
+disp
+blend one one
+clrfun n
+zbuff f
+
+mode b
+time 1
+scale = 1.25
+
+% this knot is just conway 3 in a nice orientation
+
+load demos-demo0.k
+
+ago 333
+
+zbuff t
+blend sa msa
+mode cb
+cyl=.1
+bead=.14
+
+
+silent = f
+panel on

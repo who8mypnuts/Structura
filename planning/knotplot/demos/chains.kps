@@ -1,0 +1,32 @@
+require KPbuild 4965
+
+reset all
+
+silent=t
+knot num \ri[2/23]
+if \rr99 < 1 then "knot 1"
+<randorient.kps
+fitto 10
+cyl=.01
+double
+refine 3
+warp install
+delete all
+cyl=\rr[.1/.3]
+
+if \rr3 < 2 then "chain \ri[66/102]" else "chain \ri[66/102] 9 \ri+-11"
+if \rr5 < 1 then "swap randomize"
+
+if \rr21 < 1 then "cmode -1;cmode 3 1 1 1"
+
+warp conf
+warp along
+<Backdrops.kps
+if \rr19 < 1 then "texture appmode replace;cyl=.3;texture lupin"
+silent=f
+
+echo 
+echo
+echo "  *** Knotted chain"
+echo
+

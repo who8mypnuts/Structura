@@ -1,0 +1,9 @@
+load ComboB.k
+disp t
+nap 2
+load ComboMovieB.k
+string 0 12 -15 0 0 "Trefoil"
+string 1 -12 -15 0 0 "Unknot"
+disp t
+nap 2
+

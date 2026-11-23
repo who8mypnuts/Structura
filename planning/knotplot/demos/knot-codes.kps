@@ -1,0 +1,300 @@
+%`-
+
+require KPbuild 4946
+
+reset all
+
+silent=t
+func init
+func silent
+func 1 <codes.kps
+func 5 "knot \ri[2/3]"
+
+alias ~refz "if \rr100 < $0 then {refl z}"
+
+
+func cs 1 "if \ppar4 == 0 then <dowker_aux1.kps"
+func cs 2 "if \pncomp > 1 then {echo *** DT code may not be correct for links;echo}"
+
+func s 1 "3dop ostart 0;3dop oscale .6;3dop ostep 2;3dop colo #fa0"
+func s 5 "mode s;cyl=.2;par5=0"
+func s 6 "mode cB;cyl=.1;par5=1"
+func s 7 "if \ppar5 == 1 then {func exec s 5} else {func exec s 6}"
+
+func c 1 "3dop ostart 0;3dop oscale .75;3dop ostep 2;3dop colo #000"
+func c 2 "3dop ostart 3;3dop oscale 1;3dop ostep 20;3dop colo #000"
+
+func exec c 2
+
+alias ~stanorient "untran;read randorient.kps;shift maxx"
+alias ~shouldnt "echo;echo;echo *** shouldn't change the DT code;echo"
+alias ~might "echo;echo;echo *** might change the DT code (ignoring sign) if not an orthographic projection;echo"
+
+
+dowker proj view
+cyl=.2
+spec orient
+knot 1
+~stanorient
+
+txt hspace 5
+txt font 2
+alias ~
+alias ~dtorgauss "txt fill off;if par3 == 0 then ~dtcode else ~gausscode"
+
+alias ~dtcode "txt centre;txt font 4;txt c -20 {DT code};txt font 2;txt left;txt 5 10 {DT code:}"
+
+alias ~gausscode "txt centre;txt font 4;txt c -20 {Gauss code};txt font 2;txt left;txt 5 10 {Gauss code:}"
+
+
+
+
+
+~dtorgauss
+
+txt 60 a0 d     % text `d' will be overwritten by dowker code
+txt set dowker  % sets the text of the last defined txt object to the current dowker code
+
+txt fcolour royalblue .6
+
+txt clobber on
+
+txt font 3
+
+txt clobber off
+txt bcomp 0 "   <-- start here"
+txt bcomp 1 "   <-- start here"
+txt bcomp 2 "   <-- start here"
+txt bcomp 3 "   <-- start here"
+txt clobbber on
+
+txt on
+
+
+txt left
+txt 5 -18 "shift start to:"
+txt fill on
+txt 80 a0 "max x" "rot fix;shift maxx"
+txt R a0 "min x" "rot fix;shift minx"
+txt 80 a "max y" "rot fix;shift maxy"
+txt R a0 "min y" "rot fix;shift miny"
+
+txt 10 a   "revbeads" "revbeads;shift 1"
+
+txt fill off
+txt 10 a reflect:
+txt fill on
+txt 55 a0 "x" "rot fix;reflect x;~shouldnt"
+txt R a0   "y" "rot fix;reflect y;~shouldnt"
+txt R a0   "z" "rot fix;reflect z;~might"
+txt R a0 "x and z" "rot fix;reflect xz"
+
+txt fill off
+txt 10 a compute:
+txt fill on
+txt 70 a0 "DT code" "par3=0;dowker compute dtcode;~dtorgauss;disp t"
+
+alias ~togauss "par3=1;dowker compute gauss;~dtorgauss;disp t"
+txt R a0 "Gauss code" ~togauss
+
+
+
+txt fill off
+txt 10 a "relax:"
+txt fill on
+txt 10 a "normal" "tanf=f;force 2;coll n;go"
+txt 10 a "tangent" "tanf=t;force 2;coll n;go inf limit 66"
+txt 10 a "wild" "tanf=f;zero;force 1;coll a;go"
+txt 10 a stop "go 0"
+
+func s 12 "idle {about x .2}"
+txt 10 a1.5 "diagram" "func exec cs 1;diag .;func exec c 2;untran"
+txt push
+txt group 108
+txt fcolour rgb:1/0/0 .4
+txt R a0 "click here" "txt delete group 108;help popup dowker_aux1.kps handoff"
+txt group 108 off
+txt pop
+
+txt font 3
+txt 10 a "memtest" "txt group 109 on;go 0;func exec s 12"
+txt push
+txt group 109
+txt fcolour rgb:1/0/0 .4
+txt R a0 "stop test" "txt group 109 off;idle"
+txt group 109 off
+txt pop
+
+
+txt 10 a "DT test" "go 0;txt xing on;func exec s 6;load dowker_test.k;~stanorient;func exec s 1;~blurtname"
+
+alias ~play "txt 10 a {play init} <dowker-play-init.kps"
+
+if macos then ~play
+
+txt push
+txt group 5678
+txt clobber off
+txt 10 a0 "play code" "~togauss;echo -f;echo;disp t;play code"
+txt fcolour #596061
+txt fill on
+txt colour #373533
+txt left
+txt 15 30 ! <gauss-music.kps
+txt group 5678 off
+txt clobber on
+txt pop
+
+if macos then nop else "txt delete group 5678;txt delete play" 
+
+txt right
+txt fill off
+txt -10 -18 "new knot:" 
+txt fill on
+
+txt -10 a "many stick" "knot;func exec cs 2;~stanorient;func exec c 2"
+txt L a0 "min stick" "func exec s 6;knot num \ri[2/250] ms;fitto 10;func exec c 1;~stanorient"
+
+alias ~blurtname "echo;echo;echo;echo;echo;echo;name;echo"
+
+alias ~refly "if \rr2 < 1 then {refl y}"
+
+alias ~reflz "if \rr2 < 1 then {refl z}"
+
+alias ~aboutz "if \rr2 < 1 then {about z 90}"
+
+
+txt fill off
+txt -10 a "favourites:" 
+txt fill on
+txt -10 a  5.2 "load 5.2;~stanorient;func exec c 2"
+txt L a0 5.1 "load 5.1;~stanorient;func exec c 2"
+txt L a0 4.1 "load 4.1;~stanorient;func exec c 2"
+txt L a0 3.1 "load 3.1;~stanorient;func exec c 2"
+txt L a0 0.1 "load infinity;scale 1 1 \rr[.1/.5];~stanorient;func exec c 2"
+txt -10 a 7.4 "load buddhist_knot.k;~aboutz;~stanorient;func exec c 2"
+txt L a0 7.1 "load 7.1;~stanorient;func exec c 2"
+txt L a0 6.3 "load 6.3;~stanorient;func exec c 2"
+txt L a0 6.2 "load 6.2;~stanorient;func exec c 2"
+txt L a0 6.1 "load 6.1;~stanorient;func exec c 2"
+
+txt -10 a ZWT "load zero-writhe-tref.k;fitto 10;~stanorient;func exec c 2;~blurtname"
+txt L a0 "3-tangle" "load 3tang.k;untran;revb rand;~refly;~reflz;func exec c 2;par3=1;dowker compute gauss;~dtorgauss"
+txt L a0 TLK "load TrueLoveKnot.k;scale 1 1 .3;~stanorient;func exec c 2;~blurtname"
+txt -10 a Ashley "load Ash2445.k;fitto 10;untran;revb rand;~refz 20;scale=.368;shift maxx;func exec c 2;~blurtname"
+txt L a0 monster "load Monster.k;shift maxx;untran;func exec c 2;;~blurtname;echo *** you might find it interesting to click on relax `normal' button;echo"
+
+txt fill off
+txt -10 a "composites:"
+txt fill on
+txt -10 a granny "load SameDowkerGranny.k;untran;func exec c 2;~blurtname;~sqgran square"
+txt L a0 square "load SameDowkerSquare.k;untran;func exec c 2;~blurtname;~sqgran granny"
+
+alias ~sqgran "par3=0;dowker compute dowk;~dtorgauss;echo;echo;echo *** Note how the DT code is the same as for the $0 knot;echo {    (but signs of crossings are different)};echo"
+
+
+drag=t
+
+
+
+txt xing on
+
+
+
+
+txt fill on
+txt right
+txt font 4
+txt -15 15 ? "help popup knot-codes.kps handoff"
+
+txt lineskip -25
+txt right
+txt font 3
+txt fill on
+txt -15 a2  "fullscreen" "full toggle"
+txt -15 a mode "func exec s 7"
+txt -15 a "xings" "txt xing toggle;disp t"
+txt fill off
+txt -10 a toggle:
+
+
+silent=f
+
+echo
+echo
+echo " *** Try rotating the knot to see how the DT or gauss code changes"
+echo "     For more instructions, click on the `?' button in the lower right of the view window"
+echo
+
+txt push
+txt group 1047118425
+txt fill off
+txt centre
+txt font 3
+txt lineskip 17
+txt c 80 "DT or gauss code displayed at bottom left of view window"
+txt c a "for more instructions, click on `?' button in bottom right of view window"
+%txt c a "(be sure you see the entire window)"
+txt fill on 
+txt c a1.5 ok "txt delete group 1047118425"
+txt pop
+tfunc 5  "txt delete group 1047118425"
+
+func 4 "www en.wikipedia.org/wiki/Dowker_notation"
+
+exit
+
+%`+
+
+This demo illustrates DT (Dowker-Thistlethwaite) codes.  At any time, you can find out
+the DT code for the current knot by typing the command `dowker' into the KnotPlot Command 
+Window.  Crossings are numbered 1, 2, 3, ... starting from the point indicated and in the
+direction of the arrows.  Each crossing receives an even number and an odd number.  These
+numbers are indicated next to the crossing.  Also next to the crossings are + or - symbols 
+depending on the sign of the crossing.  This sign shouldn't be confused with the + and -
+used to indicate over and under in the DT code itself. 
+
+Things to try:
+
+   --- try rotating the knot with the trackball and see how the DT code changes.  
+       DT code is computed based on the current projection of the knot to the view screen.
+
+   --- the reflect buttons reflect the knot in the viewing direction, not in the KnotPlot 
+       coordinate space.  reflecting in x or y direction won't change the code. reflecting
+       in the z direction should change only the signs of the code if you are using 
+       an orthographic projection.  possibly the code itself if viewing with perspective.
+
+   --- go to the `Disp' panel and click on the `Orthographic' radio button.  
+       `reflect z' should now change only the signs of the code, but not the numbers.
+
+   --- click new knot `many stick' and select relax `normal', then hover mouse over 
+       where a bead is until you see a wireframe icosahedron appear. then click down and 
+       drag the bead to a new location.  watch the DT code change.
+
+   --- `memtest' tests for memory leaks.  it's funnest if you first click `min stick' button.
+
+   --- click the "x and z" reflect button.  Since this is a double reflection, it doesn't 
+       change the knot type, but all the entries in the DT code negate.  Note that the signs
+       of the crossings (the + and - next to each crossing) do not change, however.
+
+   --- you can compute either the DT code or the extened Gauss code of Gouesbet et. al.
+
+
+For more information on Dowker-Thistlethwaite / Gauss codes, please refer to the following:
+
+http://en.wikipedia.org/wiki/Dowker_notation  (press F4 now) 
+
+Adams, Colin Conrad (2001).
+   The Knot Book: An Elementary Introduction to the Mathematical Theory of Knots
+
+Dowker, C. H.; Morwen B. Thistlethwaite (1983). 
+   "Classification of knot projections"
+   Topology and its Applications 16 (1): 19-31.
+
+Gouesbet, G.; Meunier-Guttin-Cluzel, S. and Letellier, C.
+   "Computer evaluation of Homfly polynomials by using Gauss codes,
+    with a skein-template algorithm"
+   Applied Mathematics and Computation 105 (1999) 271-289.
+                                                         
+
+NOTE: Close this window using the button below!  

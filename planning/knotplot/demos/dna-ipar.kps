@@ -1,0 +1,12 @@
+sphere 2.5
+sphere on
+cyl = .15
+ldna acni .49
+ldna acnd .51 1
+ldna length 52 104
+ldna cone 90
+ldna fan 90
+ldna close 40
+ldna ned 15
+ldna intang 89.5
+ldna arc 40 180
